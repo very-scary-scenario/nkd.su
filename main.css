@@ -239,3 +239,14 @@ div.tweet_deets .screen_name {
 #footer .hashtag {
   margin-top: .6em;
 }
+
+/* markdown */
+.markdown {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.markdown * {
+  text-align: left;
+  margin-top: .5em;
+}
