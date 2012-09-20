@@ -6,6 +6,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response
 from django.utils import timezone
 from django import forms
+from django.conf import settings
 import re
 from markdown import markdown
 
@@ -160,7 +161,7 @@ def artist(request, artist):
     return render_to_response('tracks.html', RequestContext(request, context))
 
 def info(request):
-    words = markdown(open('README.md').read())
+    words = markdown(open(settings.SITE_ROOT + 'README.md').read())
     context = {
             'words': words,
             }
