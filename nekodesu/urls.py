@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^everything/$', 'vote.views.everything', name='everything'),
     url(r'^artist/(?P<artist>.+)/$', 'vote.views.artist', name='artist'),
     url(r'^search/(?P<query>.+)/$', 'vote.views.search', name='search'),
+    url(r'^info/$', 'vote.views.info', name='info'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
