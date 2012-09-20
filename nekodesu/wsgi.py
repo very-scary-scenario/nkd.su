@@ -13,7 +13,8 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
-import os
+import os, sys
+sys.path.append('/home/nivi/code/nkdsu')
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nekodesu.settings")
 
@@ -26,3 +27,6 @@ application = get_wsgi_application()
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
+
+import djcelery
+djcelery.setup_loader()
