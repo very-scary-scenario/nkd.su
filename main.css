@@ -116,10 +116,10 @@ div.metadata {
 
 p.artist, p.aside {
   display: block;
-  width: 50%;
+  width: 48%;
   float: left;
   text-align: right;
-  margin-left: .5em;
+  margin-left: 2%;
 }
 
 p.title {
