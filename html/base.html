@@ -13,7 +13,7 @@
 
     <h1><a href="/">nkd.su</a></h1>
     {% if show %}
-      <p class="subtitle">taking requests for {{ show|date:"F jS"|lower }}</p>
+    <p class="subtitle">taking requests for {{ show|date:"F"|lower }}&nbsp;{{ show|date:"jS"|lower }}</p>
     {% else %}
       <p class="subtitle">a neko desu request robot</p>
     {% endif %}

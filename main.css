@@ -35,15 +35,13 @@ div.playlist .last_played {
   display: none;
 }
 
-.tracklist .ineligible:before {
+.played {
   font-family: "IM Fell English SC", serif;
-  content: "[played]";
   position: absolute;
   padding-left: 1.8em;
   margin-top: .2em;
   z-index: -1;
   font-size: 4em;
-  font-weight: bold;
   text-shadow: #fff 0 0 1em;
   color: #eaa;
   padding-top: .1em;
@@ -121,11 +119,13 @@ p.artist, p.aside {
   width: 50%;
   float: left;
   text-align: right;
+  margin-left: .5em;
 }
 
 p.title {
   text-align: center;
   clear: both;
+  padding: 0 2em;
 }
 
 span.title {
@@ -137,7 +137,7 @@ p.role, p.last_played {
   font-size: .8em;
   clear: both;
   margin-left: 50%;
-  margin-top: .3em;
+  margin-top: .2em;
 }
 
 div.voters {
@@ -171,10 +171,11 @@ a.voter:hover {
 .track span.plusone {
   float: right;
   color: #ccc;
-  margin-right: .4em;
   position: relative;
-  top: .4em;
-  margin-bottom: -1.2em;
+  left: .5em;
+  top: .3em;
+  margin-bottom: -2em;
+  width: 0;
 }
 
 .track:hover span.plusone {
@@ -207,7 +208,7 @@ div.tweet_deets .screen_name {
 
 .search_form {
   position: relative;
-  top: -4.6em;
+  top: -4.8em;
   margin-bottom: -2em;
   text-align: center;
   margin-left: 40%;
