@@ -46,8 +46,9 @@ def log_play(tweet):
             leven = Levenshtein.ratio(text, track.canonical_string())
             if leven > .7:
                 matches.append((leven, track))
-
-        match = max(matches)[1]
+        
+        if matches:
+            match = max(matches)[1]
 
     if match:
         match.last_played = tweettime(tweet)
