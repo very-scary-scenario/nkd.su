@@ -23,7 +23,7 @@ def split_id3_title(id3_title):
 
     return title, role
 
-def build_context_for_tracks(tracks, hide_ineligible=False):
+def build_context_for_tracks(tracks, hide_ineligible=False, sort=True):
     """ Build a template-digestible context for a list/set of tracks """
     context = []
 
@@ -58,7 +58,8 @@ def build_context_for_tracks(tracks, hide_ineligible=False):
                 })
 
     # sort by votes
-    context.sort(key=lambda track: len(track['votes']), reverse=True)
+    if sort:
+        context.sort(key=lambda track: len(track['votes']), reverse=True)
 
     return context
 
@@ -95,10 +96,29 @@ def summary(request):
 
 def everything(request):
     """ Every track """
-    all_tracks = Track.objects.all().order_by('last_played')
+    tracks = Track.objects.all().order_by('last_played')
     context = {
             'title': 'everything',
-            'tracks': build_context_for_tracks(all_tracks),
+            'tracks': build_context_for_tracks(tracks),
+            'show': showtime(),
+            }
+
+    return render_to_response('tracks.html', RequestContext(request, context))
+
+def roulette(request):
+    """ Five random tracks """
+    any_tracks = Track.objects.filter().order_by('?')
+    tracks = []
+    pos = 0
+    while len(tracks) < 5 and pos < len(any_tracks):
+        track = any_tracks[pos]
+        if track.eligible():
+            tracks.append(track)
+        pos += 1
+
+    context = {
+            'title': 'roulette',
+            'tracks': build_context_for_tracks(tracks, sort=False),
             'show': showtime(),
             }
 

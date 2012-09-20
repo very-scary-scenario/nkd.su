@@ -186,7 +186,7 @@ div.tweet_deets .screen_name {
 
 .search_form {
   position: relative;
-  top: -3.5em;
+  top: -4.6em;
   margin-bottom: -2em;
   text-align: center;
   margin-left: 40%;
@@ -214,6 +214,7 @@ div.tweet_deets .screen_name {
 
 #query {
   width: 100%;
+  margin-top: .3em;
   background-color: #eee;
   background-image: url('http://nkdsm.bldm.us/noise.png');
   color: #444;
@@ -225,6 +226,10 @@ div.tweet_deets .screen_name {
 
 #query:focus {
   outline: none;
+}
+
+.roulette {
+  font-size: .8em;
 }
 
 /* footer */
