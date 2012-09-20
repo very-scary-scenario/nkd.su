@@ -1,5 +1,7 @@
 import time
 
+import Levenshtein
+
 from django.conf import settings
 
 from celery import task
@@ -19,18 +21,37 @@ def vote_is_allowable(the_vote, track):
 
     return False
 
+def strip_hashtags(text):
+    for word in text.split():
+        if word.startswith('#'):
+            text = text.replace(word, '')
+
+    return text
 
 @task
 def log_play(tweet):
+    text = strip_hashtags(tweet['text'])
+    match = None
     matches = []
-    for track in Track.objects.all():
-        if track.canonical_string() in tweet['text']:
+    tracks = Track.objects.all()
+
+    for track in tracks:
+        if track.canonical_string() in text:
             matches.append(track)
 
     if matches:
-        track = min(matches, key=lambda s: len(s.canonical_string()))
-        track.last_played = tweettime(tweet)
-        track.save()
+        match = min(matches, key=lambda t: len(t.canonical_string()))
+    else:
+        for track in tracks:
+            leven = Levenshtein.ratio(text, track.canonical_string())
+            if leven > .7:
+                matches.append((leven, track))
+
+        match = max(matches)[1]
+
+    if match:
+        match.last_played = tweettime(tweet)
+        match.save()
 
 @task
 def log_vote(tweet):
