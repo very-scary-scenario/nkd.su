@@ -56,7 +56,7 @@ class Track(models.Model):
 
     def elligible(self):
         """ Returns True if the track can be requested """
-        if (not self.last_played) or timezone.make_naive(self.last_played, timezone.utc) < showtime(prev_cutoff=True):
+        if (not self.last_played) or timezone.make_naive(self.last_played, timezone.utc) + datetime.timedelta(7) < showtime(prev_cutoff=True):
             return True
         else:
             return False
