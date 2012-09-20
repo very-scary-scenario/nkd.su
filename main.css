@@ -150,6 +150,11 @@ div.voters {
   width: 32px;
   margin: 1px;
 }
+.track:hover .voter img {
+  border: 1px solid #eee;
+  outline: 1px solid #d66;
+  margin: 0;
+}
 
 div.track a.voter:hover img {
   border: 1px solid #eee;
