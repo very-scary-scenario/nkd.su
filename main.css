@@ -152,7 +152,7 @@ div.voters {
   width: 32px;
   margin: 1px;
 }
-.track:hover .voter img {
+div.track:hover a.voter img {
   border: 1px solid #eee;
   outline: 1px solid #d66;
   margin: 0;
