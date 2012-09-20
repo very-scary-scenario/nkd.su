@@ -1,0 +1,33 @@
+<div class="track {% if track.elligible %}elligible{% else %}inelligible{% endif %}" id="{{ track.id }}">
+  <div class="metadata">
+    <p class="artist"><a href="/artist/{{ track.artist }}/">{{ track.artist }}</a></p>
+    <p class="title">
+    {% if track.elligible %}
+    <a class="upvote" href="https://twitter.com/intent/tweet?text=@nkdsu%20{{ track.id }}">{{ track.title }}</a>
+    {% else %}
+    {{ track.title }}
+    {% endif %}
+    </p>
+
+    {% if track.role %}
+      <p class="role">{{ track.role }}</p>
+    {% endif %}
+
+    {% if track.last_played %}
+    <p class="last_played">last played {{ track.last_played|date:"d/m" }}</p>
+    {% endif %}
+
+  </div>
+  <div class="voters">
+    {% for vote in track.votes %}
+    <a class="voter" href="http://twitter.com/{{ vote.screen_name }}/status/{{ vote.tweet_id }}/">
+        <img src="{{ vote.user_image }}">
+        <div class="tweet_deets">
+            <span class="screen_name">@{{ vote.screen_name }}</span>{% if vote.content %}:
+            <span class="text">{{ vote.content }}</span>{% endif %}
+        </div>
+    </a>
+    {% endfor %}
+  </div>
+  <div class="endof"></div>
+</div>

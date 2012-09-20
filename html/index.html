@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if playlist %}
+<h2>this week's playlist</h2>
+{% include "playlist.html" %}
+{% endif %}
+
+{% if tracks %}
+<h2>current requests</h2>
+{% include "tracklist.html" %}
+{% else %}
+<h2>no requests yet</h2>
+<p class="aside">search for something you want to hear</p>
+{% endif %}
+
+{% endblock %}

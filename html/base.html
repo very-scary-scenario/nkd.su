@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}main.css">
+    <link href="http://fonts.googleapis.com/css?family=Lora:700,400" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Gloria%20Hallelujah" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=IM+Fell+English+SC' rel='stylesheet' type='text/css'>
+    <title>
+      nkd.su | {% block title %}{% if title %}{{ title }}{% else %}a neko desu request robot{% endif %}{% endblock %}
+    </title>
+  </head>
+  <body>
+
+    <h1><a href="/">nkd.su</a></h1>
+    {% if show %}
+      <p class="subtitle">taking requests for {{ show|date:"F jS"|lower }}</p>
+    {% else %}
+      <p class="subtitle">a neko desu request robot</p>
+    {% endif %}
+
+    <form class="search_form" name="search" action="/" method="post">{% csrf_token %}
+      <p>
+      <input id="query" type="text" name="q" value="{% block query %}{% endblock %}">
+      </p>
+      <p>
+      <input id="submit" type="submit" value="search">
+      </p>
+    </form>
+    
+    {% if tracks %}
+    <p class="instructions">click a title to request/upvote a track via twitter</p>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <div id="footer">
+      <p class="credit">listen to <a href="http://twitter.com/nekodesuradio">neko desu</a> on <a href="http://thisisthecat.com">the cat</a> every saturday from 9&ndash;11 PM</p>
+      <p class="credit">nkd.su is a <a href="http://musicfortheblind.co.uk/">music for the blind</a> production</p>
+    </div>
+  </body>
+<script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+</html>
