@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.utils import timezone
 from django import forms
 import re
+from markdown import markdown
 
 def split_id3_title(id3_title):
     """ Split a Title (role) ID3 title up """
@@ -157,3 +158,10 @@ def artist(request, artist):
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
+
+def info(request):
+    words = markdown(open('README.md').read())
+    context = {
+            'words': words,
+            }
+    return render_to_response('markdown.html', RequestContext(request, context))
