@@ -38,7 +38,7 @@ def build_context_for_tracks(tracks, hide_ineligible=False, sort=True):
         votes = Vote.objects.filter(track=track, date__gt=showtime(prev_cutoff=True)).order_by('date')
 
         # vote replicator for testan'
-        #n = 30
+        #n = 15
         #new_votes = []
         #while n > 0:
         #    for vote in votes:

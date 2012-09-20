@@ -124,9 +124,11 @@ p.artist, p.aside {
 }
 
 p.title {
-  display: block;
   text-align: center;
   clear: both;
+}
+
+span.title {
   font-size: 1.4em;
   font-weight: bold;
 }
@@ -139,7 +141,7 @@ p.role, p.last_played {
 }
 
 div.voters {
-  margin-top: .7em;
+  margin-top: 1em;
   float: right;
   width: 25%;
 }
@@ -165,6 +167,20 @@ div.track a.voter:hover img {
 a.voter:hover {
   border-bottom: none;
 }
+
+.track span.plusone {
+  float: right;
+  color: #ccc;
+  margin-right: .4em;
+  position: relative;
+  top: .4em;
+  margin-bottom: -1.2em;
+}
+
+.track:hover span.plusone {
+  color: #d66;
+}
+
 
 div.tweet_deets {
   display: none

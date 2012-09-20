@@ -3,11 +3,15 @@
     <p class="artist"><a href="/artist/{{ track.artist }}/">{{ track.artist }}</a></p>
     <p class="title">
     {% if track.eligible %}
-    <a class="upvote" href="https://twitter.com/intent/tweet?text=@nkdsu%20{{ track.id }}">{{ track.title }}</a>
-    {% else %}
-    {{ track.title }}
+    <a class="upvote" href="https://twitter.com/intent/tweet?text=@nkdsu%20{{ track.id }}">
+    {% endif %}
+    <span class="title">{{ track.title }}</span>
+    <span class="plusone">+1</span>
+    {% if track.eligible %}
+    </a>
     {% endif %}
     </p>
+
 
     {% if track.role %}
       <p class="role">{{ track.role }}</p>
@@ -16,7 +20,6 @@
     {% if track.last_played %}
     <p class="last_played">last played {{ track.last_played|date:"d/m" }}</p>
     {% endif %}
-
   </div>
   <div class="voters">
     {% for vote in track.votes %}

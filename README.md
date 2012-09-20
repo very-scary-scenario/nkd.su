@@ -10,10 +10,10 @@ them.
 ### How do I vote?
 
 If there are any songs on the front page you would like to vote for, click on
-the song title and send the generated tweet. If nothing on the front page
-strikes your fancy (or if there's nothing there yet), feel free to use the
+the song title or the +1 and send the generated tweet. If nothing on the front
+page strikes your fancy (or if there's nothing there yet), feel free to use the
 search box to find something more your style. Once you've found something,
-click the title. If you can't find what you're looking for, bug
+click the title or the +1. If you can't find what you're looking for, bug
 [Peter](http://twitter.com/theshillito) to add it to the Neko Desu library and
 bug [me](http://twitter.com/mftb) to update my database.
 
