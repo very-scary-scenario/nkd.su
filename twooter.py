@@ -22,11 +22,16 @@ access_token_secret = settings.ACCESS_TOKEN_SECRET
 user_id = 634047438 # @nekodesuradio (production)
 
 def parse(data):
-    tweet = json.loads(data)
+    try:
+        tweet = json.loads(data)
+    except ValueError:
+        return
+
 
     if 'text' not in tweet:
         # this could be a deletion or some shit
-        return True
+        return
+
 
     if tweet['text'].startswith('@nkdsu'):
         # this is potentially a request
@@ -48,13 +53,20 @@ class TweetListener(StreamListener):
         print status
         return True
 
-def peruse():
-    archive_dir = '/home/nivi/code/hrldcpr/twitter-archive/tweets/users/nekodesuradio/'
-    tweetfiles = listdir(archive_dir)
+def parse_dir(directory):
+    tweetfiles = listdir(directory)
+
     for tweetfile in tweetfiles:
-        tf = open(archive_dir + tweetfile)
+        tf = open(directory + tweetfile)
         parse(tf.read())
         tf.close()
+
+def peruse():
+    np_dir = '/home/nivi/code/hrldcpr/twitter-archive/tweets/users/nekodesuradio/'
+    parse_dir(np_dir)
+
+    request_dir = '/home/nivi/code/hrldcpr/twitter-archive/tweets/searches/%40nkdsu/'
+    parse_dir(request_dir)
 
 
 def react():
@@ -64,14 +76,16 @@ def react():
     auth.set_access_token(access_token, access_token_secret)
 
     stream = Stream(auth, l, headers={'User-Agent': 'nkd.su'})
-    # stream.filter(track=['@nkdsu'], follow=[]) # @nkdsu
-    stream.filter(track=['@nkdsu'], follow=[str(user_id)]) # @nekodesuradio
+    stream.filter(track=['@nkdsu'], follow=[str(user_id)])
 
 if 'peruse' in argv:
-    print 'stripping dates...'
+    print 'stripping...'
     for song in Track.objects.all():
         song.last_played = None
         song.save()
+
+    for vote in Vote.objects.all():
+        vote.delete()
 
     peruse()
 else:

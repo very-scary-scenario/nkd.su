@@ -170,11 +170,12 @@ a.voter:hover div.tweet_deets {
   display: block;
   background-color: #eee;
   background-image: url('http://nkdsm.bldm.us/noise.png');
-  border: 1px solid #999;
+  border: 1px solid #aaa;
   text-align: center;
   padding: .2em .5em;
   color: #444;
   max-width: 20%;
+  font-size: .8em;
 }
 
 div.tweet_deets .screen_name {
@@ -233,4 +234,8 @@ div.tweet_deets .screen_name {
   text-align: center;
   color: #999;
   line-height: 1.5em;
+}
+
+#footer .hashtag {
+  margin-top: .6em;
 }

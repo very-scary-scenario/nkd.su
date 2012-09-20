@@ -6,16 +6,20 @@ from django.conf import settings
 
 from celery import task
 
-from models import Vote, Track
+from models import Vote, Track, showtime
 
 def tweettime(tweet):
-    return time.strftime('%Y-%m-%d %H:%M:%S+00:00', time.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y'))
+    try:
+        return time.strftime('%Y-%m-%d %H:%M:%S+00:00', time.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y'))
+    except ValueError:
+        #Thu, 20 Sep 2012 14:51:24 +0000
+        return time.strftime('%Y-%m-%d %H:%M:%S+00:00', time.strptime(tweet['created_at'], '%a, %d %b %Y %H:%M:%S +0000'))
 
 
 def vote_is_allowable(the_vote, track):
-    try:
-        Vote.objects.get(track=track, user_id=the_vote.user_id)
-    except Vote.DoesNotExist:
+    # as long as there are no votes in the current voting period from this person for this track...
+    if not Vote.objects.filter(track=track, user_id=the_vote.user_id, date__gt=showtime(prev_cutoff=True)):
+        # ...and as long as this track is elligible...
         if the_vote.track.elligible():
             return True
 
@@ -70,17 +74,28 @@ def log_vote(tweet):
     date = tweettime(tweet)
 
     # make Vote
-    the_vote = Vote(
-            screen_name=tweet['user']['screen_name'],
-            user_id=tweet['user']['id'],
-            tweet_id=tweet['id'],
-            track=track,
-            date=date,
-            user_image=tweet['user']['profile_image_url'],
-            text=tweet['text'],
-            )
+    if 'user' in tweet: # this is from the streaming api
+        the_vote = Vote(
+                screen_name=tweet['user']['screen_name'],
+                user_id=tweet['user']['id'],
+                tweet_id=tweet['id'],
+                track=track,
+                date=date,
+                user_image=tweet['user']['profile_image_url'],
+                text=tweet['text'],
+                )
+
+    else: # this is from the archive
+        the_vote = Vote(
+                screen_name=tweet['from_user'],
+                user_id=tweet['from_user_id'],
+                tweet_id=tweet['id'],
+                track=track,
+                date=date,
+                user_image=tweet['profile_image_url'],
+                text=tweet['text'],
+                )
 
     if vote_is_allowable(the_vote, track):
         the_vote.save()
 
-    return

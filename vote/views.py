@@ -33,7 +33,7 @@ def build_context_for_tracks(tracks, hide_inelligible=False):
         else:
             last_played = track.last_played
 
-        votes = Vote.objects.filter(track=track, date__gte=showtime(prev_cutoff=True)).order_by('date')
+        votes = Vote.objects.filter(track=track, date__gt=showtime(prev_cutoff=True)).order_by('date')
 
         # vote replicator for testan'
         #n = 30
