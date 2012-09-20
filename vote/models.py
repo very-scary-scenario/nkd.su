@@ -54,7 +54,7 @@ class Track(models.Model):
     def canonical_string(self):
         return u'%s - %s' % (self.id3_title, self.id3_artist)
 
-    def elligible(self):
+    def eligible(self):
         """ Returns True if the track can be requested """
         if (not self.last_played) or timezone.make_naive(self.last_played, timezone.utc) + datetime.timedelta(7) < showtime(prev_cutoff=True):
             return True

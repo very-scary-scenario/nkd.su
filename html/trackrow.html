@@ -1,8 +1,8 @@
-<div class="track {% if track.elligible %}elligible{% else %}inelligible{% endif %}" id="{{ track.id }}">
+<div class="track {% if track.eligible %}eligible{% else %}ineligible{% endif %}" id="{{ track.id }}">
   <div class="metadata">
     <p class="artist"><a href="/artist/{{ track.artist }}/">{{ track.artist }}</a></p>
     <p class="title">
-    {% if track.elligible %}
+    {% if track.eligible %}
     <a class="upvote" href="https://twitter.com/intent/tweet?text=@nkdsu%20{{ track.id }}">{{ track.title }}</a>
     {% else %}
     {{ track.title }}

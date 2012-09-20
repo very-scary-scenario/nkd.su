@@ -21,7 +21,7 @@ def split_id3_title(id3_title):
 
     return title, role
 
-def build_context_for_tracks(tracks, hide_inelligible=False):
+def build_context_for_tracks(tracks, hide_ineligible=False):
     """ Build a template-digestible context for a list/set of tracks """
     context = []
 
@@ -44,7 +44,7 @@ def build_context_for_tracks(tracks, hide_inelligible=False):
         #    n -= 1
         #votes = new_votes
 
-        if (not hide_inelligible) or track.elligible():
+        if (not hide_ineligible) or track.eligible():
             context.append({
                 'title': title,
                 'role': role,
@@ -52,7 +52,7 @@ def build_context_for_tracks(tracks, hide_inelligible=False):
                 'id': track.id,
                 'votes': votes,
                 'last_played': last_played,
-                'elligible': track.elligible(),
+                'eligible': track.eligible(),
                 })
 
     # sort by votes
@@ -84,7 +84,7 @@ def summary(request):
             'playlist': build_context_for_tracks(playlist),
             'show': showtime(),
             'form': form,
-            'tracks': build_context_for_tracks(trackset, hide_inelligible=False),
+            'tracks': build_context_for_tracks(trackset, hide_ineligible=False),
             'show': showtime(),
             }
 

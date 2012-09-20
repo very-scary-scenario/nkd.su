@@ -19,8 +19,8 @@ def tweettime(tweet):
 def vote_is_allowable(the_vote, track):
     # as long as there are no votes in the current voting period from this person for this track...
     if not Vote.objects.filter(track=track, user_id=the_vote.user_id, date__gt=showtime(prev_cutoff=True)):
-        # ...and as long as this track is elligible...
-        if the_vote.track.elligible():
+        # ...and as long as this track is eligible...
+        if the_vote.track.eligible():
             return True
 
     return False

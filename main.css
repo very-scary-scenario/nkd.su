@@ -35,7 +35,7 @@ div.playlist .last_played {
   display: none;
 }
 
-.tracklist .inelligible:before {
+.tracklist .ineligible:before {
   font-family: "IM Fell English SC", serif;
   content: "[played]";
   position: absolute;
