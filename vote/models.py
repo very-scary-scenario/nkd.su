@@ -36,6 +36,9 @@ def showtime(prev_cutoff=False):
 
 
 class Track(models.Model):
+    def __unicode__(self):
+        return self.canonical_string()
+
     id3_title = models.CharField(max_length=500)
     title_en = models.CharField(max_length=500, blank=True)
     title_ro = models.CharField(max_length=500, blank=True)
@@ -49,7 +52,7 @@ class Track(models.Model):
     last_played = models.DateTimeField(null=True, blank=True)
 
     def canonical_string(self):
-        return '%s - %s' % (self.id3_title, self.id3_artist)
+        return u'%s - %s' % (self.id3_title, self.id3_artist)
 
     def elligible(self):
         """ Returns True if the track can be requested """
