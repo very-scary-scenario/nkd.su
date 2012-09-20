@@ -3,12 +3,15 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 
 from vote import tasks
+from vote.models import Track, Vote
 
 import json
 
 from os import listdir
 
 from django.conf import settings
+
+from sys import argv
 
 consumer_key = settings.CONSUMER_KEY
 consumer_secret = settings.CONSUMER_SECRET
@@ -46,7 +49,7 @@ class TweetListener(StreamListener):
         return True
 
 def peruse():
-    archive_dir = '/Users/nivi/code/hrldcpr/twitter-archive/tweets/users/nekodesuradio/'
+    archive_dir = '/home/nivi/code/hrldcpr/twitter-archive/tweets/users/nekodesuradio/'
     tweetfiles = listdir(archive_dir)
     for tweetfile in tweetfiles:
         tf = open(archive_dir + tweetfile)
@@ -64,5 +67,12 @@ def react():
     # stream.filter(track=['@nkdsu'], follow=[]) # @nkdsu
     stream.filter(track=['@nkdsu'], follow=[str(user_id)]) # @nekodesuradio
 
-#peruse()
-react()
+if 'peruse' in argv:
+    print 'stripping dates...'
+    for song in Track.objects.all():
+        song.last_played = None
+        song.save()
+
+    peruse()
+else:
+    react()

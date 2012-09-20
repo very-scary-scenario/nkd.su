@@ -21,16 +21,12 @@ def vote_is_allowable(the_vote, track):
 
     return False
 
-def strip_hashtags(text):
-    for word in text.split():
-        if word.startswith('#'):
-            text = text.replace(word, '')
-
-    return text
+def strip_after_hashtags(text):
+    return text.split(' #')[0]
 
 @task
 def log_play(tweet):
-    text = strip_hashtags(tweet['text'])
+    text = strip_after_hashtags(tweet['text'])
     match = None
     matches = []
     tracks = Track.objects.all()
@@ -46,7 +42,7 @@ def log_play(tweet):
             leven = Levenshtein.ratio(text, track.canonical_string())
             if leven > .7:
                 matches.append((leven, track))
-        
+
         if matches:
             match = max(matches)[1]
 

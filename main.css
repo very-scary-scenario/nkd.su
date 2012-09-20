@@ -1,0 +1,236 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: #fff;
+  background-image: url('http://nkdsm.bldm.us/noise.png');
+  color: #444;
+  max-width: 50em;
+  min-width: 30em;
+  margin: 1em auto 5em auto;
+  padding: 0 1em;
+  font-family: "Lora", sans-serif;
+  text-shadow: #fff 0 .1em 0;
+}
+
+h1 {
+  font-size: 2.5em;
+  font-weight: bold;
+  z-index: 1;
+  margin-bottom: .1em;
+}
+
+h2 {
+  margin-top: 1em;
+}
+
+div.tracklist, div.playlist {
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
+div.playlist .last_played {
+  display: none;
+}
+
+.tracklist .inelligible:before {
+  font-family: "IM Fell English SC", serif;
+  content: "[played]";
+  position: absolute;
+  padding-left: 1.8em;
+  margin-top: .2em;
+  z-index: -1;
+  font-size: 4em;
+  font-weight: bold;
+  text-shadow: #fff 0 0 1em;
+  color: #eaa;
+  padding-top: .1em;
+  -webkit-transform: rotate(-6deg); 
+  -moz-transform: rotate(-6deg);
+  -o-transform: rotate(-6deg);
+}
+
+.aligned {
+  text-align: center;
+  clear: both;
+  width: 75%;
+}
+
+.everything {
+  margin-top: 2em;
+}
+
+h1, h2, h3 {
+  clear: both;
+  width: 37.5%;
+  text-align: right;
+/*  border-top: 1px solid #ddd; */
+}
+
+.subtitle {
+  width: 37.5%;
+  text-align: right;
+}
+
+.instructions {
+  margin-left: 37.5%;
+}
+
+a {
+  color: #d66;
+  text-decoration: none;
+}
+
+a:hover {
+  border-bottom: 1px dotted #444;
+}
+
+/* track tables */
+
+div.endof {
+  clear: both;
+}
+
+div.track {
+  clear: both;
+  margin-bottom: 2em;
+}
+
+div.track .artist a {
+  color: #444;
+}
+
+div.track:hover {
+  border-left: 2px solid #d66;
+  margin-left: -2px;
+}
+
+div.track:hover .artist a {
+  color: #d66;
+}
+
+div.metadata {
+  float: left;
+  width: 75%;
+}
+
+p.artist, p.aside {
+  display: block;
+  width: 50%;
+  float: left;
+  text-align: right;
+}
+
+p.title {
+  display: block;
+  text-align: center;
+  clear: both;
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+p.role, p.last_played {
+  font-size: .8em;
+  clear: both;
+  margin-left: 50%;
+  margin-top: .3em;
+}
+
+div.voters {
+  margin-top: .7em;
+  float: right;
+  width: 25%;
+}
+
+.voter img {
+  display: inline-block;
+  height: 32px;
+  width: 32px;
+  margin: 1px;
+}
+
+div.track a.voter:hover img {
+  border: 1px solid #eee;
+  outline: 1px solid #444;
+  margin: 0;
+}
+
+a.voter:hover {
+  border-bottom: none;
+}
+
+div.tweet_deets {
+  display: none
+}
+
+a.voter:hover div.tweet_deets {
+  position: absolute;
+  display: block;
+  background-color: #eee;
+  background-image: url('http://nkdsm.bldm.us/noise.png');
+  border: 1px solid #999;
+  text-align: center;
+  padding: .2em .5em;
+  color: #444;
+  max-width: 20%;
+}
+
+div.tweet_deets .screen_name {
+  color: #d66;
+}
+
+/* search form */
+
+.search_form {
+  position: relative;
+  top: -3.5em;
+  margin-bottom: -2em;
+  text-align: center;
+  margin-left: 40%;
+  width: 40%;
+}
+
+#submit {
+  background-color: #eee;
+  background-image: url('http://nkdsm.bldm.us/noise.png');
+  color: #d66;
+  z-index: -4;
+  font-family: 'Lora', sans-serif;
+  border: 1px solid #999;
+  border-top: none;
+  font-size: 1em;
+  position: relative;
+  top: -1px;
+  z-index: 0;
+  padding: 0 .3em .1em;
+}
+
+#submit:hover {
+  color: #444;
+}
+
+#query {
+  width: 100%;
+  background-color: #eee;
+  background-image: url('http://nkdsm.bldm.us/noise.png');
+  color: #444;
+  border: 1px solid #999;
+  font-size: 1.3em;
+  font-family: "Gloria Hallelujah", cursive;
+  padding-left: .2em;
+}
+
+#query:focus {
+  outline: none;
+}
+
+/* footer */
+#footer {
+  margin-top: 4em;
+  font-size: .8em;
+  text-align: center;
+  color: #999;
+  line-height: 1.5em;
+}
