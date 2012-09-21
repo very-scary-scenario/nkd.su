@@ -35,7 +35,7 @@ h2.heading {
 .played {
   font-family: "IM Fell English SC", serif;
   position: absolute;
-  padding-left: 2.2em;
+  padding-left: 1em;
   z-index: -1;
   font-size: 4em;
   text-shadow: #fff 0 0 1em;
@@ -117,7 +117,7 @@ span.title {
   font-weight: bold;
 }
 
-p.role, p.last_played {
+p.role, p.last_played, p.peter {
   font-size: .8em;
   clear: both;
   margin-top: .2em;
@@ -155,7 +155,7 @@ a.voter:hover {
   float: right;
   color: #ccc;
   position: relative;
-  left: 2.5%;
+  left: 3.5%;
   top: .3em;
   margin-bottom: -2em;
   width: 0;
@@ -194,6 +194,14 @@ p.aside {
   text-align: center;
 }
 
+/* login form */
+form.login {
+  text-align: center;
+}
+
+form.login tr {
+  clear: both;
+}
 
 /* search form */
 
@@ -304,3 +312,4 @@ div.playlist h2 {
   width: 100%;
   padding: 0 .3em;
 }
+
