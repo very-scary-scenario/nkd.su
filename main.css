@@ -24,22 +24,14 @@ h1 {
 
 h2 {
   margin-top: 1em;
-}
-
-div.tracklist, div.playlist {
-  margin-top: 1em;
-  margin-bottom: 2em;
-}
-
-div.playlist .last_played {
-  display: none;
+  width: 57%;
+  text-align: right;
 }
 
 .played {
   font-family: "IM Fell English SC", serif;
   position: absolute;
-  padding-left: 1.8em;
-  margin-top: .2em;
+  padding-left: 2.2em;
   z-index: -1;
   font-size: 4em;
   text-shadow: #fff 0 0 1em;
@@ -60,11 +52,10 @@ div.playlist .last_played {
   margin-top: 2em;
 }
 
-h1, h2, h3 {
+h1 {
   clear: both;
   width: 37.5%;
   text-align: right;
-/*  border-top: 1px solid #ddd; */
 }
 
 .subtitle {
@@ -94,7 +85,8 @@ div.endof {
 
 div.track {
   clear: both;
-  margin-bottom: 2em;
+  margin: 1em 0;
+  padding: 0 .5em;
 }
 
 div.track:hover {
@@ -108,21 +100,13 @@ div.track.ineligible:hover {
 
 div.metadata {
   float: left;
-  width: 75%;
-}
-
-p.artist, p.aside {
-  display: block;
-  width: 48%;
-  float: left;
+  width: 57%;
   text-align: right;
-  margin-left: 2%;
 }
 
 p.title {
-  text-align: center;
   clear: both;
-  padding: 0 2em;
+  padding-right: -4%;
 }
 
 span.title {
@@ -133,14 +117,13 @@ span.title {
 p.role, p.last_played {
   font-size: .8em;
   clear: both;
-  margin-left: 50%;
   margin-top: .2em;
 }
 
 div.voters {
   margin-top: 1em;
   float: right;
-  width: 25%;
+  width: 37%;
 }
 
 .voter img {
@@ -169,7 +152,7 @@ a.voter:hover {
   float: right;
   color: #ccc;
   position: relative;
-  left: .5em;
+  left: 2.5%;
   top: .3em;
   margin-bottom: -2em;
   width: 0;
@@ -203,6 +186,14 @@ a.voter:hover div.tweet_deets {
 div.tweet_deets .screen_name {
   color: #d66;
 }
+p.aside {
+  display: block;
+  width: 48%;
+  float: left;
+  text-align: right;
+  margin-left: 2%;
+}
+
 
 /* search form */
 
@@ -256,7 +247,8 @@ div.tweet_deets .screen_name {
 
 /* footer */
 #footer {
-  margin-top: 4em;
+  clear: both;
+  padding-top: 3em;
   font-size: .8em;
   text-align: center;
   color: #999;
@@ -276,4 +268,39 @@ div.tweet_deets .screen_name {
 .markdown * {
   text-align: left;
   margin-top: .5em;
+}
+
+/* front-page divs */
+div.playlist {
+  float: right;
+  width: 28%;
+}
+
+div.playlist .played {
+  font-size: 2em;
+  margin-top: .4em;
+  padding-left: 1em;
+}
+
+div.current {
+  float: left;
+  width: 68%;
+}
+
+div.playlist .last_played, div.playlist .voters {
+  display: none;
+}
+
+div.playlist .metadata {
+  width: 100%;
+}
+
+div.playlist .metadata {
+  text-align: left;
+}
+
+div.playlist h2 {
+  text-align: left;
+  width: 100%;
+  padding: 0 .3em;
 }

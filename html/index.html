@@ -3,13 +3,21 @@
 {% block content %}
 
 {% if playlist %}
-<h2>this week's playlist</h2>
+<div class="playlist">
+<h2>played</h2>
 {% include "playlist.html" %}
+</div>
 {% endif %}
 
 {% if tracks %}
+{% if playlist %}
+<div class="current">
+{% endif %}
 <h2>current requests</h2>
 {% include "tracklist.html" %}
+{% if playlist %}
+</div>
+{% endif %}
 {% else %}
 <h2>no requests yet</h2>
 <p class="aside">search for something you want to hear</p>
