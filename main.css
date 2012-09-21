@@ -97,17 +97,13 @@ div.track {
   margin-bottom: 2em;
 }
 
-div.track .artist a {
-  color: #444;
-}
-
 div.track:hover {
   border-left: 2px solid #d66;
   margin-left: -2px;
 }
 
-div.track:hover .artist a {
-  color: #d66;
+div.track.ineligible:hover {
+  border-color: #666;
 }
 
 div.metadata {
@@ -181,6 +177,10 @@ a.voter:hover {
 
 .track:hover span.plusone {
   color: #d66;
+}
+
+a.upvote:hover span.plusone {
+  color: #444;
 }
 
 div.tweet_deets {
