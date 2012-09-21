@@ -31,6 +31,10 @@ h2.heading {
   width: 57%;
   text-align: right;
 }
+p.subheading {
+  width: 57%;
+  text-align: right;
+}
 
 .played {
   font-family: "IM Fell English SC", serif;
@@ -263,8 +267,8 @@ form.login tr {
   line-height: 1.5em;
 }
 
-#footer .hashtag {
-  margin-top: .6em;
+#footer .credit {
+  margin: .5em 0;
 }
 
 /* markdown */
