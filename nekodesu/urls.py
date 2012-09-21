@@ -12,6 +12,11 @@ urlpatterns = patterns('',
     url(r'^search/(?P<query>.+)/$', 'vote.views.search', name='search'),
     url(r'^info/$', 'vote.views.info', name='info'),
     url(r'^roulette/$', 'vote.views.roulette', name='roulette'),
+    url(r'^played/(?P<track_id>.+)/$', 'vote.views.mark_as_played', name='mark_as_played'),
+
+    url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}),
+    url(r'^login/', 'django.contrib.auth.views.login'),
+
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

@@ -25,6 +25,9 @@
     {% if track.last_played %}
     <p class="last_played">last played {{ track.last_played|date:"d/m" }}</p>
     {% endif %}
+    {% if user.is_authenticated and track.eligible %}
+    <p class="peter"><a href="/played/{{ track.id }}/">just played&hellip;</a></p>
+    {% endif %}
   </div>
   <div class="voters">
     {% for vote in track.votes %}

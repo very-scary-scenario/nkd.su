@@ -3,10 +3,13 @@
 from django.template import RequestContext, loader
 from vote.models import Track, Vote, showtime, is_on_air
 from django.http import HttpResponse, Http404
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
 from django import forms
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.utils.http import urlquote
+
 import re
 from markdown import markdown
 
@@ -84,7 +87,7 @@ def summary(request):
     playlist = Track.objects.filter(last_played__gte=showtime(prev_cutoff=True)).order_by('last_played')
 
     context = {
-            'playlist': build_context_for_tracks(playlist),
+            'playlist': build_context_for_tracks(playlist, sort=False),
             'form': form,
             'tracks': build_context_for_tracks(trackset, hide_ineligible=False),
             'show': showtime(),
@@ -191,3 +194,14 @@ def info(request):
             'words': words,
             }
     return render_to_response('markdown.html', RequestContext(request, context))
+
+@login_required
+def mark_as_played(request, track_id):
+    track = Track.objects.get(id=track_id)
+    if track:
+        track.last_played = timezone.now()
+        track.save()
+    else:
+        raise Http404
+
+    return(redirect('https://twitter.com/intent/tweet?text=%s' % urlquote(track.canonical_string())))
