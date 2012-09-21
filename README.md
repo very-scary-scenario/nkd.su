@@ -3,9 +3,8 @@
 [nkd.su](http://nkd.su) is a request-gathering and voting service for [The
 Cat](http://thisisthecat.com)'s [Neko
 Desu](http://www.thisisthecat.com/index.php/neko-desu) radio show. Songs are
-sorted according to popularity and <a
-href="http://twitter.com/theshillito">Peter Shillito</a> diligently ignores
-them.
+sorted according to popularity on the front page and, if played on the show,
+are flagged as played and are no longer votable.
 
 ### How do I vote?
 
@@ -18,7 +17,7 @@ click the title or the +1. If you can't find what you're looking for, bug
 bug [me](http://twitter.com/mftb) to update my database.
 
 You can personalise your vote all you like, as long as you leave the
-[@nkdsu](http://twitter.com/nkdus) mention and the number in tact. The message
+[@nkdsu](http://twitter.com/nkdsu) mention and the number in tact. The message
 you leave will appear when you hover over your avatar.
 
 None of your Twitter followers will see your vote in their timelines unless
