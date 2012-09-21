@@ -13,7 +13,9 @@
   <body>
 
     <h1><a href="/">nkd.su</a></h1>
-    {% if show %}
+    {% if on_air %}
+    <p class="subtitle">on air! listen live at <a href="http://thisisthecat.com">the cat</a>
+    {% elif show %}
     <p class="subtitle">taking requests for {{ show|date:"F"|lower }}&nbsp;{{ show|date:"jS"|lower }}</p>
     {% else %}
       <p class="subtitle">a neko desu request robot</p>

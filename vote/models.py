@@ -10,7 +10,7 @@ weekday = 5 # saturday
 def is_on_air():
     """ Returns True if the show is currently on air """
     now = datetime.datetime.now()
-    if now.hour >= start_time and now.hour < end_time and now.weekday() == weekday:
+    if now.hour >= start_time.hour and now.hour < end_time.hour and now.weekday() == weekday:
         return True
     else:
         return False

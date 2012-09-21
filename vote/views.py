@@ -85,10 +85,10 @@ def summary(request):
 
     context = {
             'playlist': build_context_for_tracks(playlist),
-            'show': showtime(),
             'form': form,
             'tracks': build_context_for_tracks(trackset, hide_ineligible=False),
             'show': showtime(),
+            'on_air': is_on_air(),
             }
 
     return render_to_response('index.html', RequestContext(request, context))
@@ -101,6 +101,7 @@ def everything(request):
             'title': 'everything',
             'tracks': build_context_for_tracks(tracks),
             'show': showtime(),
+            'on_air': is_on_air(),
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
@@ -120,6 +121,7 @@ def roulette(request):
             'title': 'roulette',
             'tracks': build_context_for_tracks(tracks, sort=False),
             'show': showtime(),
+            'on_air': is_on_air(),
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
@@ -161,6 +163,7 @@ def search(request, form):
             'query': keywords,
             'tracks': build_context_for_tracks(trackset),
             'show': showtime(),
+            'on_air': is_on_air(),
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
@@ -176,6 +179,7 @@ def artist(request, artist):
             'title': artist.lower(),
             'tracks': build_context_for_tracks(artist_tracks),
             'show': showtime(),
+            'on_air': is_on_air(),
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
