@@ -110,10 +110,6 @@ div.track:hover .artist a {
   color: #d66;
 }
 
-div.track .artist a:hover {
-  color: #444;
-}
-
 div.metadata {
   float: left;
   width: 75%;
