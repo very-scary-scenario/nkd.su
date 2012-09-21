@@ -82,7 +82,8 @@ a {
 }
 
 a:hover {
-  border-bottom: 1px dotted #444;
+  color: #444;
+  border-bottom: 1px dotted #d66;
 }
 
 /* track tables */
@@ -107,6 +108,10 @@ div.track:hover {
 
 div.track:hover .artist a {
   color: #d66;
+}
+
+div.track .artist a:hover {
+  color: #444;
 }
 
 div.metadata {
@@ -181,7 +186,6 @@ a.voter:hover {
 .track:hover span.plusone {
   color: #d66;
 }
-
 
 div.tweet_deets {
   display: none
