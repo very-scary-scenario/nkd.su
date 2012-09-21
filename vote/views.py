@@ -187,6 +187,7 @@ def artist(request, artist):
 def info(request):
     words = markdown(open(settings.SITE_ROOT + 'README.md').read())
     context = {
+            'title': 'what?',
             'words': words,
             }
     return render_to_response('markdown.html', RequestContext(request, context))
