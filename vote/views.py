@@ -96,10 +96,10 @@ def summary(request):
 
 def everything(request):
     """ Every track """
-    tracks = Track.objects.all().order_by('last_played')
+    tracks = Track.objects.all()
     context = {
             'title': 'everything',
-            'tracks': build_context_for_tracks(tracks),
+            'tracks': build_context_for_tracks(tracks, sort_by_votes=True),
             'show': showtime(),
             'on_air': is_on_air(),
             }
