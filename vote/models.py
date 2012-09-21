@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 import datetime
+import re
 
 # when is neko desu?
 start_time = datetime.time(21)
@@ -14,6 +15,21 @@ def is_on_air():
         return True
     else:
         return False
+
+
+def split_id3_title(id3_title):
+    """ Split a Title (role) ID3 title up """
+    try:
+        role = re.findall('\(.*?\)', id3_title)[-1]
+    except IndexError:
+        role = None
+        title = id3_title
+    else:
+        title = id3_title.replace(role, '').strip()
+        role = role[1:-1] # strip brackets
+
+    return title, role
+
 
 def showtime(prev_cutoff=False):
     """ Get the next showtime (or the end of the previous show) """
@@ -52,7 +68,11 @@ class Track(models.Model):
     last_played = models.DateTimeField(null=True, blank=True)
 
     def canonical_string(self):
-        return u'%s - %s' % (self.id3_title, self.id3_artist)
+        title, role = split_id3_title(self.id3_title)
+        if role:
+            return u'"%s" (%s) - %s' % (title, role, self.id3_artist)
+        else:
+            return u'"%s" - %s' % (title, self.id3_artist)
 
     def eligible(self):
         """ Returns True if the track can be requested """

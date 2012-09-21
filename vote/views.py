@@ -1,7 +1,7 @@
 # Create your views here.
 
 from django.template import RequestContext, loader
-from vote.models import Track, Vote, showtime, is_on_air
+from vote.models import Track, Vote, showtime, is_on_air, split_id3_title
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
@@ -10,21 +10,8 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 
-import re
 from markdown import markdown
 
-def split_id3_title(id3_title):
-    """ Split a Title (role) ID3 title up """
-    try:
-        role = re.findall('\(.*?\)', id3_title)[-1]
-    except IndexError:
-        role = None
-        title = id3_title
-    else:
-        title = id3_title.replace(role, '').strip()
-        role = role[1:-1] # strip brackets
-
-    return title, role
 
 def build_context_for_tracks(tracks, hide_ineligible=False, sort=True):
     """ Build a template-digestible context for a list/set of tracks """
@@ -204,4 +191,4 @@ def mark_as_played(request, track_id):
     else:
         raise Http404
 
-    return(redirect('https://twitter.com/intent/tweet?text=%s' % urlquote(track.canonical_string())))
+    return(redirect('https://twitter.com/intent/tweet?text=%s' % urlquote(track.canonical_string() + ' #NekoDesu')))
