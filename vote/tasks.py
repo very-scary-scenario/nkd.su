@@ -50,7 +50,7 @@ def log_play(tweet):
         if matches:
             match = max(matches)[1]
 
-    if match:
+    if match and match.eligible():
         play = Play(
                 datetime=tweettime(tweet),
                 track=match
