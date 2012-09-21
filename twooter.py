@@ -3,7 +3,7 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 
 from vote import tasks
-from vote.models import Track, Vote
+from vote.models import Vote, Play
 
 import json
 
@@ -62,12 +62,11 @@ def parse_dir(directory):
         tf.close()
 
 def peruse():
-    np_dir = '/home/nivi/code/hrldcpr/twitter-archive/tweets/users/nekodesuradio/'
+    np_dir = settings.TWITTER_ARCHIVE + '/users/nekodesuradio/'
     parse_dir(np_dir)
 
-    request_dir = '/home/nivi/code/hrldcpr/twitter-archive/tweets/searches/%40nkdsu/'
+    request_dir = settings.TWITTER_ARCHIVE + '/searches/%40nkdsu/'
     parse_dir(request_dir)
-
 
 def react():
     l = TweetListener()
@@ -80,9 +79,8 @@ def react():
 
 if 'peruse' in argv:
     print 'stripping...'
-    for song in Track.objects.all():
-        song.last_played = None
-        song.save()
+    for play in Play.objects.all():
+        play.delete()
 
     for vote in Vote.objects.all():
         vote.delete()

@@ -23,7 +23,7 @@
     {% endif %}
 
     {% if track.last_played %}
-    <p class="last_played">last played {{ track.last_played|date:"d/m" }}</p>
+    <p class="last_played">last played <a href="/show/{{ track.last_played|date:"d-m-Y" }}/">{{ track.last_played|date:"d-m-Y" }}</a></p>
     {% endif %}
     {% if user.is_authenticated and track.eligible %}
     <p class="peter"><a href="/played/{{ track.id }}/">just played&hellip;</a></p>

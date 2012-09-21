@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="heading">playlist for {{ this_show|date:"d-m-Y" }}</h2>
+<p class="subheading">
+{% if prev_show %}
+&lt; <a href="/show/{{ prev_show|date:"d-m-Y" }}/">{{ prev_show|date:"d-m-Y" }}</a>
+{% else %}
+-
+{% endif %}
+|
+{% if next_show %}
+<a href="/show/{{ next_show|date:"d-m-Y" }}/">{{ next_show|date:"d-m-Y" }}</a> &gt;
+{% else %}
+-
+{% endif %}
+
+</p>
+{% include "tracklist.html" %}
+
+{% endblock %}

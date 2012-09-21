@@ -1,7 +1,7 @@
 # Create your views here.
 
 from django.template import RequestContext, loader
-from vote.models import Track, Vote, showtime, is_on_air, split_id3_title
+from vote.models import Track, Vote, Play, showtime, is_on_air, split_id3_title
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
@@ -10,20 +10,29 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 
+from datetime import date, timedelta
+
 from markdown import markdown
 
 
-def build_context_for_tracks(tracks, hide_ineligible=False, sort=True):
+def build_context_for_tracks(
+        tracks,
+        hide_ineligible=False,
+        sort_by_votes=False,
+        get_last_played=True
+        ):
     """ Build a template-digestible context for a list/set of tracks """
     context = []
 
     for track in tracks:
         title, role = split_id3_title(track.id3_title)
 
-        if track.last_played == None:
-            last_played = ''
+        if get_last_played:
+            last_played = track.last_played()
+            if last_played== None:
+                last_played = ''
         else:
-            last_played = track.last_played
+            last_played = None
 
         votes = Vote.objects.filter(track=track, date__gt=showtime(prev_cutoff=True)).order_by('date')
 
@@ -48,7 +57,7 @@ def build_context_for_tracks(tracks, hide_ineligible=False, sort=True):
                 })
 
     # sort by votes
-    if sort:
+    if sort_by_votes:
         context.sort(key=lambda track: len(track['votes']), reverse=True)
 
     return context
@@ -71,12 +80,13 @@ def summary(request):
     for vote in Vote.objects.filter(date__gte=showtime(prev_cutoff=True)).order_by('date'):
         trackset.add(vote.track)
 
-    playlist = Track.objects.filter(last_played__gte=showtime(prev_cutoff=True)).order_by('last_played')
+    # playlist = Track.objects.filter(last_played__gte=showtime(prev_cutoff=True)).order_by('last_played')
+    playlist = [p.track for p in Play.objects.filter(datetime__gte=showtime(prev_cutoff=True)).order_by('datetime')]
 
     context = {
-            'playlist': build_context_for_tracks(playlist, sort=False),
+            'playlist': build_context_for_tracks(playlist),
             'form': form,
-            'tracks': build_context_for_tracks(trackset, hide_ineligible=False),
+            'tracks': build_context_for_tracks(trackset, hide_ineligible=False, sort_by_votes=True),
             'show': showtime(),
             'on_air': is_on_air(),
             }
@@ -109,7 +119,7 @@ def roulette(request):
 
     context = {
             'title': 'roulette',
-            'tracks': build_context_for_tracks(tracks, sort=False),
+            'tracks': build_context_for_tracks(tracks),
             'show': showtime(),
             'on_air': is_on_air(),
             }
@@ -174,6 +184,49 @@ def artist(request, artist):
 
     return render_to_response('tracks.html', RequestContext(request, context))
 
+def latest_show(request):
+    """ Redirect to the latest show """
+    latest_play = Play.objects.all().order_by('-datetime')[0]
+    return(redirect('/show/%s' % latest_play.datetime.strftime('%d-%m-%Y'))) 
+
+def show(request, showdate):
+    """ All tracks from a particular show """
+    d, m, y = [int(n) for n in showdate.split('-')]
+    start = date(y, m, d)
+    end = start + timedelta(1)
+
+    plays = list(Play.objects.filter(datetime__gt=start, datetime__lt=end).order_by('datetime'))
+
+    try:
+        next_play = Play.objects.filter(datetime__gt=plays[-1].datetime).order_by('datetime')[0]
+    except IndexError:
+        next_show = None
+    else:
+        next_show = next_play.datetime
+
+    try:
+        prev_play = Play.objects.filter(datetime__lt=plays[0].datetime).order_by('-datetime')[0]
+    except IndexError:
+        prev_show = None
+    else:
+        prev_show = prev_play.datetime
+
+
+    if not plays:
+        raise Http404
+
+    context = {
+            'title': showdate,
+            'this_show': start,
+            'tracks': build_context_for_tracks([p.track for p in plays], get_last_played=False),
+            'on_air': is_on_air(),
+            'next_show': next_show,
+            'prev_show': prev_show,
+            }
+
+    return render_to_response('show.html', RequestContext(request, context))
+
+
 def info(request):
     words = markdown(open(settings.SITE_ROOT + 'README.md').read())
     context = {
@@ -186,8 +239,11 @@ def info(request):
 def mark_as_played(request, track_id):
     track = Track.objects.get(id=track_id)
     if track:
-        track.last_played = timezone.now()
-        track.save()
+        play = Play(
+                datetime = timezone.now(),
+                track = track
+                )
+        play.save()
     else:
         raise Http404
 

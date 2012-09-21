@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r'^info/$', 'vote.views.info', name='info'),
     url(r'^roulette/$', 'vote.views.roulette', name='roulette'),
     url(r'^played/(?P<track_id>.+)/$', 'vote.views.mark_as_played', name='mark_as_played'),
+    url(r'^show/(?P<showdate>.+)/$', 'vote.views.show', name='show'),
+    url(r'^show/$', 'vote.views.latest_show', name='latest_show'),
 
     url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}),
     url(r'^login/', 'django.contrib.auth.views.login'),

@@ -65,7 +65,12 @@ class Track(models.Model):
     show_ro = models.CharField(max_length=500, blank=True)
     show_ka = models.CharField(max_length=500, blank=True)
     role = models.CharField(max_length=100, blank=True) # OP, ED, char
-    last_played = models.DateTimeField(null=True, blank=True)
+
+    def last_played(self):
+        try:
+            return Play.objects.filter(track=self).order_by('-datetime')[0].datetime
+        except IndexError:
+            return None
 
     def canonical_string(self):
         title, role = split_id3_title(self.id3_title)
@@ -76,7 +81,7 @@ class Track(models.Model):
 
     def eligible(self):
         """ Returns True if the track can be requested """
-        if (not self.last_played) or timezone.make_naive(self.last_played, timezone.utc) + datetime.timedelta(7) < showtime(prev_cutoff=True):
+        if (not self.last_played()) or timezone.make_naive(self.last_played(), timezone.utc) + datetime.timedelta(7) < showtime(prev_cutoff=True):
             return True
         else:
             return False
@@ -93,3 +98,7 @@ class Vote(models.Model):
 
     def content(self):
         return self.text.replace(str(self.track.id), '').replace('@nkdsu', '').strip()
+
+class Play(models.Model):
+    datetime = models.DateTimeField()
+    track = models.ForeignKey(Track)

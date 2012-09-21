@@ -6,7 +6,7 @@ from django.conf import settings
 
 from celery import task
 
-from models import Vote, Track, showtime
+from models import Play, Vote, Track, showtime
 
 def tweettime(tweet):
     try:
@@ -51,8 +51,13 @@ def log_play(tweet):
             match = max(matches)[1]
 
     if match:
-        match.last_played = tweettime(tweet)
-        match.save()
+        play = Play(
+                datetime=tweettime(tweet),
+                track=match
+                )
+
+        play.save()
+
 
 @task
 def log_vote(tweet):
