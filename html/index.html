@@ -4,7 +4,7 @@
 
 {% if playlist %}
 <div class="playlist">
-<h2>played</h2>
+<h2 class="heading">played</h2>
 {% include "playlist.html" %}
 </div>
 {% endif %}
@@ -13,13 +13,13 @@
 {% if playlist %}
 <div class="current">
 {% endif %}
-<h2>current requests</h2>
+<h2 class="heading">current requests</h2>
 {% include "tracklist.html" %}
 {% if playlist %}
 </div>
 {% endif %}
 {% else %}
-<h2>no requests yet</h2>
+<h2 class="message">no requests yet</h2>
 <p class="aside">search for something you want to hear</p>
 {% endif %}
 
