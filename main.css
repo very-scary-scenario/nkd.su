@@ -215,7 +215,7 @@ div.tweet_deets .screen_name {
 }
 
 p.refusal {
-  color: #999;
+  color: #aaa;
 }
 
 /* login form */
@@ -306,8 +306,12 @@ div.playlist .metadata {
   text-align: left;
 }
 
+h2 {
+  text-align: right;
+}
+
 div.playlist h2 {
-  text-align: left;
+  text-align: right;
   width: 100%;
   padding: 0 .3em;
 }
@@ -412,6 +416,13 @@ a#stamp:hover {
     margin-bottom: .15em;
   }
 
+  p.subheading {
+    text-align: right;
+  }
+
+  div.current div.track.ineligible {
+    display: none;
+  }
 
   div.voters {
     margin-top: .5em;
