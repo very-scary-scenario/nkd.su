@@ -141,13 +141,13 @@ div.voters {
 }
 div.track:hover a.voter img {
   border: 1px solid #eee;
-  outline: 1px solid #d66;
+  outline: 1px solid #faa;
   margin: 0;
 }
 
 div.track a.voter:hover img {
   border: 1px solid #eee;
-  outline: 1px solid #444;
+  outline: 1px solid #aaa;
   margin: 0;
 }
 
