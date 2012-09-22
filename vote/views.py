@@ -82,8 +82,8 @@ def summary(request):
         form = SearchForm()
 
     # only consider votes from before the end of the current show, so we can work in the past
-    [trackset.add(v.track) for v in Vote.objects.filter(date__gte=showtime(prev_end=True)).order_by('date') if v.date < showtime(end=True)]
-    [trackset.add(v.track) for v in ManualVote.objects.filter(date__gte=showtime(prev_end=True)).order_by('date') if v.date < showtime(end=True)]
+    for m in (Vote, ManualVote):
+        [trackset.add(v.track) for v in m.objects.filter(date__gte=showtime(prev_end=True)).order_by('date') if v.date < showtime(end=True)]
 
     # ditto plays
     playlist = [p.track for p in Play.objects.filter(datetime__gte=showtime(prev_end=True)).order_by('datetime') if p.datetime < showtime(end=True)]
