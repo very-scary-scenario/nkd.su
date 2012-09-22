@@ -31,8 +31,13 @@ def is_on_air(time=None):
         return False
 
 
-def showtime(prev_cutoff=False, current=False, time=None):
-    """ Get the next showtime (or the end of the previous show, or the start of the show currently airing) """
+def showtime(prev_start=False, prev_end=False, current=False, time=None, end=False):
+    """ Get the next showtime (or the start or end of the previous show, or the start of the show currently airing or next end time) 
+    prev_start gets the end of the show before the one we're currently taking requests for
+    prev_end gets the end of the same show
+    current returns the start time of the current show if one is airing right now, otherwise returns None
+    end adds <length of show> to any resultant time
+    time specifies a time to consider as now. if unspecified, now is literally now"""
     if time:
         now = time
     else:
@@ -52,14 +57,17 @@ def showtime(prev_cutoff=False, current=False, time=None):
 
     if now.time() > start_time and now.weekday() == weekday:
         # a show has started airing today
-        if now.time() < end_time and current:
+        if current and now.time() < end_time:
             # a show is airing and we care
             return datetime.datetime.combine(next_showdate, start_time)
         elif current:
             # we're too late and we care
             return None
+        elif (end or prev_end or prev_start) and now.time() < end_time:
+            # we're not too late because we're concerned with ends
+            pass
         else:
-            # ...either way, the next show starts next week
+            # the show starts next week
             next_showdate += datetime.timedelta(7)
     elif current:
         # also too early
@@ -70,8 +78,12 @@ def showtime(prev_cutoff=False, current=False, time=None):
     while next_showtime.weekday() != weekday:
         next_showtime += datetime.timedelta(1)
 
-    if prev_cutoff:
-        return next_showtime - (datetime.timedelta(7, hours=start_time.hour - end_time.hour))
+    if prev_end:
+        return next_showtime - (datetime.timedelta(7, hours=-length))
+    elif prev_start:
+        return next_showtime - (datetime.timedelta(7))
+    elif end:
+        return next_showtime + (datetime.timedelta(hours=length))
     else:
         return next_showtime
 
@@ -111,7 +123,7 @@ class Track(models.Model):
         else:
             now = datetime.datetime.utcnow().replace(tzinfo=timezone.utc)
 
-        if Play.objects.filter(track=self, datetime__lt=now, datetime__gt=showtime(time=now, prev_cutoff=True)):
+        if Play.objects.filter(track=self, datetime__lt=showtime(time=now, end=True), datetime__gt=showtime(time=now, prev_start=True)):
             return False
         else:
             return True
@@ -136,7 +148,7 @@ class Vote(models.Model):
             raise ValidationError('This track has been played recently.')
 
         # every vote placed after the cutoff for this track by this person
-        prior_votes = Vote.objects.filter(user_id=self.user_id, track=self.track, date__gt=showtime(time=self.date, prev_cutoff=True))
+        prior_votes = Vote.objects.filter(user_id=self.user_id, track=self.track, date__gt=showtime(time=self.date, prev_end=True))
 
         # we still need to ensure that at least one of these requests happened before the one we're dealing with; we could be digging here
         for vote in prior_votes:
@@ -156,3 +168,20 @@ class Play(models.Model):
         for play in Play.objects.filter(track=self.track):
             if play.datetime.date() == self.datetime.date():
                 raise ValidationError('This has been played today already.')
+
+        if not self.track.eligible(self.datetime):
+            raise ValidationError('This track was played last week.')
+
+KINDS = (
+        ('email', 'email'),
+        ('text', 'text'),
+        ('tweet', 'tweet'),
+        )
+
+class ManualVote(models.Model):
+    track = models.ForeignKey(Track, editable=False)
+    kind = models.CharField(max_length=10, choices=KINDS)
+    name = models.CharField(max_length=100)
+    message = models.CharField(max_length=256)
+    anonymous = models.BooleanField()
+    date = models.DateTimeField(auto_now_add=True)
