@@ -144,7 +144,7 @@ class Vote(models.Model):
         return self.text.replace(str(self.track.id), '').replace('@nkdsu', '').strip()
 
     def clean(self):
-        if not self.track.eligible():
+        if not self.track.eligible(self.date):
             raise ValidationError('This track has been played recently.')
 
         # every vote placed after the cutoff for this track by this person
@@ -181,7 +181,7 @@ KINDS = (
 class ManualVote(models.Model):
     track = models.ForeignKey(Track, editable=False)
     kind = models.CharField(max_length=10, choices=KINDS)
-    name = models.CharField(max_length=100)
-    message = models.CharField(max_length=256)
+    name = models.CharField(max_length=100, blank=True)
+    message = models.CharField(max_length=256, blank=True)
     anonymous = models.BooleanField()
     date = models.DateTimeField(auto_now_add=True)
