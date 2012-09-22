@@ -315,7 +315,7 @@ a#stamp:hover {
   border: none;
 }
 
-@media (min-width:501px) {
+@media (min-width:551px) {
   div.metadata {
     float: left;
     width: 57%;
@@ -396,7 +396,7 @@ a#stamp:hover {
   }
 }
 
-@media (max-width:500px) {
+@media (max-width:550px) {
   h1 {
     font-size: 2.5em;
     font-weight: bold;
