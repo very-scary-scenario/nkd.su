@@ -26,10 +26,12 @@ def build_context_for_tracks(
         tracks,
         hide_ineligible=False,
         sort_by_votes=False,
-        get_last_played=True
+        get_last_played=True,
+        prioritise_eligible=False,
         ):
     """ Build a template-digestible context for a list/set of tracks """
     context = []
+    ineligible_context = []
 
     for track in tracks:
         title, role = split_id3_title(track.id3_title)
@@ -53,8 +55,9 @@ def build_context_for_tracks(
         #    n -= 1
         #votes = new_votes
 
-        if (not hide_ineligible) or track.eligible():
-            context.append({
+        eligible = track.eligible()
+
+        the_dict = {
                 'title': title,
                 'role': role,
                 'artist': track.id3_artist,
@@ -62,12 +65,20 @@ def build_context_for_tracks(
                 'votes': votes,
                 'manual_votes': manual_votes,
                 'last_played': last_played,
-                'eligible': track.eligible(),
-                })
+                'eligible': eligible,
+                }
+
+        if (not (hide_ineligible or prioritise_eligible)) or eligible:
+            context.append(the_dict)
+        elif prioritise_eligible:
+            ineligible_context.append(the_dict)
 
     # sort by votes
     if sort_by_votes:
-        context.sort(key=lambda track: len(track['votes']) + len(track['manual_votes']), reverse=True)
+        for l in (context, ineligible_context):
+            l.sort(key=lambda track: len(track['votes']) + len(track['manual_votes']), reverse=True)
+
+    context = context + ineligible_context
 
     return context
 
@@ -91,12 +102,12 @@ def summary(request):
         [trackset.add(v.track) for v in m.objects.filter(date__gte=showtime(prev_end=True)).order_by('date') if v.date < showtime(end=True)]
 
     # ditto plays
-    playlist = [p.track for p in Play.objects.filter(datetime__gte=showtime(prev_end=True)).order_by('datetime') if p.datetime < showtime(end=True)]
+    playlist = [p.track for p in Play.objects.filter(datetime__gte=showtime(prev_end=True)).order_by('-datetime') if p.datetime < showtime(end=True)]
 
     context = {
             'playlist': build_context_for_tracks(playlist),
             'form': form,
-            'tracks': build_context_for_tracks(trackset, hide_ineligible=False, sort_by_votes=True),
+            'tracks': build_context_for_tracks(trackset, prioritise_eligible=True, sort_by_votes=True),
             'show': showtime(),
             'on_air': is_on_air(),
             }
