@@ -38,10 +38,11 @@ def parse(data):
         print tweet['text']
         tasks.log_vote.delay(tweet)
 
-    elif tweet['user']['id'] == user_id:
+    #elif tweet['user']['id'] == user_id:
         # this is potentially an np
-        print tweet['text']
-        tasks.log_play.delay(tweet)
+        # we no longer care; twootin's automatic
+        #print tweet['text']
+        #tasks.log_play.delay(tweet)
 
 
 class TweetListener(StreamListener):
