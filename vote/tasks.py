@@ -69,7 +69,7 @@ def log_vote(tweet):
         except ValueError:
             # is not a number
             pass
-        except Vote.DoesNotExist:
+        except: # Vote.DoesNotExist: fukken celery doesn't let us be specific
             # is not ours
             pass
         else:
