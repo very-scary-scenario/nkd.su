@@ -2,13 +2,6 @@
 
 {% block content %}
 
-{% if playlist %}
-<div class="playlist">
-<h2 class="heading">played</h2>
-{% include "playlist.html" %}
-</div>
-{% endif %}
-
 {% if tracks %}
 {% if playlist %}
 <div class="current">
@@ -17,6 +10,11 @@
 {% include "tracklist.html" %}
 {% if playlist %}
 </div>
+<div class="playlist">
+<h2 class="heading">played</h2>
+{% include "playlist.html" %}
+</div>
+
 {% endif %}
 <p class="aside">Want to vote for something else?</p>
 <p class="aside">Search for it, browse the <a href="/show/">playlist archive</a> or just <a href="/roulette/">throw darts at the wall</a>.</p>
@@ -24,5 +22,6 @@
 <h2 class="message">no requests yet</h2>
 <p class="aside">search for something you want to hear</p>
 {% endif %}
+
 
 {% endblock %}
