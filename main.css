@@ -130,7 +130,7 @@ div.track:hover {
   margin-left: -2px;
 }
 
-div.track.ineligible:hover {
+div.track.ineligible {
   border-color: #666;
 }
 
