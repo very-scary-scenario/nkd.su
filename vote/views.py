@@ -1,5 +1,6 @@
 # Create your views here.
 
+from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
 from vote.models import Track, Vote, Play, showtime, is_on_air, split_id3_title
 from django.http import HttpResponse, Http404
@@ -9,6 +10,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
+from sys import exc_info
 
 from datetime import date, timedelta
 
@@ -77,11 +79,10 @@ def summary(request):
     else:
         form = SearchForm()
 
-    for vote in Vote.objects.filter(date__gte=showtime(prev_cutoff=True)).order_by('date'):
+    for vote in [v for v in Vote.objects.filter(date__gte=showtime(prev_cutoff=True)).order_by('date') if v.date < showtime()]:
         trackset.add(vote.track)
 
-    # playlist = Track.objects.filter(last_played__gte=showtime(prev_cutoff=True)).order_by('last_played')
-    playlist = [p.track for p in Play.objects.filter(datetime__gte=showtime(prev_cutoff=True)).order_by('datetime')]
+    playlist = [p.track for p in Play.objects.filter(datetime__gte=showtime(prev_cutoff=True)).order_by('datetime') if p.datetime < showtime()]
 
     context = {
             'playlist': build_context_for_tracks(playlist),
@@ -243,7 +244,12 @@ def mark_as_played(request, track_id):
                 datetime = timezone.now(),
                 track = track
                 )
-        play.save()
+        try:
+            play.clean()
+        except ValidationError:
+            return(HttpResponse(exc_info()[1].messages[0]))
+        else:
+            play.save()
     else:
         raise Http404
 

@@ -1,29 +1,26 @@
-import time
+from datetime import datetime
 
 import Levenshtein
-
-from django.conf import settings
 
 from celery import task
 
 from models import Play, Vote, Track, showtime
 
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+from django.conf import settings
+
+from sys import exc_info
+
 def tweettime(tweet):
     try:
-        return time.strftime('%Y-%m-%d %H:%M:%S+00:00', time.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y'))
+        tweettime = datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')
     except ValueError:
         #Thu, 20 Sep 2012 14:51:24 +0000
-        return time.strftime('%Y-%m-%d %H:%M:%S+00:00', time.strptime(tweet['created_at'], '%a, %d %b %Y %H:%M:%S +0000'))
+        tweettime = datetime.strptime(tweet['created_at'], '%a, %d %b %Y %H:%M:%S +0000')
 
+    return timezone.make_aware(tweettime, timezone.utc)
 
-def vote_is_allowable(the_vote, track):
-    # as long as there are no votes in the current voting period from this person for this track...
-    if not Vote.objects.filter(track=track, user_id=the_vote.user_id, date__gt=showtime(prev_cutoff=True)):
-        # ...and as long as this track is eligible...
-        if the_vote.track.eligible():
-            return True
-
-    return False
 
 def strip_after_hashtags(text):
     return text.split(' #')[0]
@@ -50,14 +47,18 @@ def log_play(tweet):
         if matches:
             match = max(matches)[1]
 
-    if match and match.eligible():
+    if match:
         play = Play(
                 datetime=tweettime(tweet),
                 track=match
                 )
 
-        play.save()
-
+        try:
+            play.clean()
+        except ValidationError:
+            print exc_info()
+        else:
+            play.save()
 
 @task
 def log_vote(tweet):
@@ -101,6 +102,10 @@ def log_vote(tweet):
                 text=tweet['text'],
                 )
 
-    if vote_is_allowable(the_vote, track):
+    try:
+        the_vote.clean()
+    except ValidationError:
+        print exc_info()
+    else:
         the_vote.save()
 
