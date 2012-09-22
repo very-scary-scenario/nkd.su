@@ -26,7 +26,11 @@
     <p class="last_played">last played <a href="/show/{{ track.last_played|date:"d-m-Y" }}/">{{ track.last_played|date:"d-m-Y" }}</a></p>
     {% endif %}
     {% if user.is_authenticated and track.eligible %}
-    <p class="peter"><a href="/played/{{ track.id }}/">just played&hellip;</a></p>
+    <p class="peter"><a href="/played/{{ track.id }}/">now playing&hellip;</a></p>
+    <p class="peter"><a href="/vote/{{ track.id }}/">add vote&hellip;</a></p>
+    {% endif %}
+    {% if user.is_authenticated and not track.eligible %}
+    <p class="peter"><a href="/unplay/{{ track.id }}/">i didn't mean to play this</a></p>
     {% endif %}
   </div>
   <div class="voters">
@@ -36,6 +40,20 @@
         <div class="tweet_deets">
             <span class="screen_name">@{{ vote.screen_name }}</span>{% if vote.content %}:
             <span class="text">{{ vote.content }}</span>{% endif %}
+        </div>
+    </a>
+    {% endfor %}
+    {% for vote in track.manual_votes %}
+    <a class="voter manual {{ vote.kind }}{% if vote.anonymous %} anonymous{% endif %}" href="{% if vote.kind == 'tweet' and not vote.anonymous %}http://twitter.com/{{ vote.name }}{% else %}#{{ track.id }}{% endif %}">
+      <img src="{{ STATIC_URL}}i/{{ vote.kind }}.png" alt="{{ vote.kind }}">
+        <div class="tweet_deets">
+        {% if not vote.anonymous or user.is_authenticated %}
+          <span class="screen_name">{% if vote.kind == 'tweet' %}@{% endif %}{{ vote.name }}{% if vote.anonymous %} (anonymous){% endif %}</span>{% if vote.message %}:
+          <span class="text">{{ vote.message }}</span>
+          {% endif %}
+        {% else %}
+          <span class="text">[anonymous request]</span>
+        {% endif %}
         </div>
     </a>
     {% endfor %}

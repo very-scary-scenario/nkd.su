@@ -1,7 +1,8 @@
 # Create your views here.
 
+from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
-from vote.models import Track, Vote, Play, showtime, is_on_air, split_id3_title
+from vote.models import Track, Vote, ManualVote, Play, showtime, is_on_air, split_id3_title
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
@@ -9,6 +10,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
+from sys import exc_info
 
 from datetime import date, timedelta
 
@@ -34,7 +36,8 @@ def build_context_for_tracks(
         else:
             last_played = None
 
-        votes = Vote.objects.filter(track=track, date__gt=showtime(prev_cutoff=True)).order_by('date')
+        votes = Vote.objects.filter(track=track, date__gt=showtime(prev_end=True)).order_by('date')
+        manual_votes = ManualVote.objects.filter(track=track, date__gt=showtime(prev_end=True)).order_by('date')
 
         # vote replicator for testan'
         #n = 15
@@ -52,13 +55,14 @@ def build_context_for_tracks(
                 'artist': track.id3_artist,
                 'id': track.id,
                 'votes': votes,
+                'manual_votes': manual_votes,
                 'last_played': last_played,
                 'eligible': track.eligible(),
                 })
 
     # sort by votes
     if sort_by_votes:
-        context.sort(key=lambda track: len(track['votes']), reverse=True)
+        context.sort(key=lambda track: len(track['votes']) + len(track['manual_votes']), reverse=True)
 
     return context
 
@@ -77,11 +81,11 @@ def summary(request):
     else:
         form = SearchForm()
 
-    for vote in Vote.objects.filter(date__gte=showtime(prev_cutoff=True)).order_by('date'):
-        trackset.add(vote.track)
+    # only consider votes from before the end of the current show, so we can work in the past
+    [trackset.add(v.track) for v in Vote.objects.filter(date__gte=showtime(prev_end=True)).order_by('date') if v.date < showtime(end=True)]
 
-    # playlist = Track.objects.filter(last_played__gte=showtime(prev_cutoff=True)).order_by('last_played')
-    playlist = [p.track for p in Play.objects.filter(datetime__gte=showtime(prev_cutoff=True)).order_by('datetime')]
+    # ditto plays
+    playlist = [p.track for p in Play.objects.filter(datetime__gte=showtime(prev_end=True)).order_by('datetime') if p.datetime < showtime(end=True)]
 
     context = {
             'playlist': build_context_for_tracks(playlist),
@@ -235,16 +239,65 @@ def info(request):
             }
     return render_to_response('markdown.html', RequestContext(request, context))
 
+class ManualVoteForm(forms.ModelForm):
+    """ Make a manual vote! """
+    class Meta:
+        model = ManualVote
+
+@login_required
+def make_vote(request, track_id):
+    track = Track.objects.get(id=track_id)
+
+    if request.method == 'POST':
+        vote = ManualVote(track=track)
+        form = ManualVoteForm(request.POST, instance=vote)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    else:
+        form = ManualVoteForm()
+
+    context = {
+            'track': track,
+            'form': form,
+            }
+
+    return render_to_response('vote.html', RequestContext(request, context))
+
 @login_required
 def mark_as_played(request, track_id):
-    track = Track.objects.get(id=track_id)
-    if track:
-        play = Play(
-                datetime = timezone.now(),
-                track = track
-                )
-        play.save()
-    else:
+    try:
+        track = Track.objects.get(id=track_id)
+    except Track.DoesNotExist:
         raise Http404
 
+    play = Play(
+            datetime = timezone.now(),
+            track = track
+            )
+    try:
+        play.clean()
+    except ValidationError:
+        return(HttpResponse(exc_info()[1].messages[0]))
+    else:
+        play.save()
+
     return(redirect('https://twitter.com/intent/tweet?text=%s' % urlquote(track.canonical_string() + ' #NekoDesu')))
+
+@login_required
+def unmark_as_played(request, track_id):
+    """ Deletes the latest Play for a track """
+    try:
+        track = Track.objects.get(id=track_id)
+        latest_play = Play.objects.filter(track=track).order_by('-datetime')[0]
+    except Track.DoesNotExist:
+        raise Http404
+
+    try:
+        latest_play = Play.objects.filter(track=track).order_by('-datetime')[0]
+    except IndexError:
+        raise Http404
+
+    latest_play.delete()
+
+    return(redirect('/'))
