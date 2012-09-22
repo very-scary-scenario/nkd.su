@@ -1,8 +1,48 @@
-{% extends "base.html" %}
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="http://m.nkd.su/main.css">
+    <meta charset="UTF-8">
+    <link href="http://fonts.googleapis.com/css?family=Lora:700,400" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Gloria%20Hallelujah" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=IM+Fell+English+SC' rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="http://m.nkd.su//favicon.ico">
+    <title>
+      nkd.su | 500
+    </title>
+  </head>
+  <body>
 
-{% block title %}500{% endblock %}
-{% block content %}
+    <h1><a href="/">nkd.su</a></h1>
+    
+      <p class="subtitle">a neko desu request robot</p>
+    
+
+    <form class="search_form" name="search" action="/" method="post"><div style='display:none'><input type='hidden' name='csrfmiddlewaretoken' value='6uExcZ95qw41ErlzQ4DNC8MFTGO1XurO' /></div>
+      <a class="roulette" href="/roulette/">surprise me</a>
+      <p>
+      <input id="query" type="text" name="q" value="">
+      </p>
+      <p>
+      <input id="submit" type="submit" value="search">
+      </p>
+    </form>
+    
+    
+
+    
 
 <h2 class="aligned">500</h2>
 
-{% endblock %}
+
+
+    <div id="footer">
+      <!-- <p class="credit">listen to <a href="http://www.thisisthecat.com/index.php/neko-desu">neko desu</a> on <a href="http://thisisthecat.com">the cat</a> every saturday from 9&ndash;11 PM</p> -->
+      
+      <p class="credit"><a href="/info/">what?</a></p>
+      <p class="credit"><a href="/show/">playlist</a></p>
+      <p class="credit"><a href="http://twitter.com/search/?q=%23NekoDesu">#nekodesu</a></p>
+    </div>
+  <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+  </body>
+</html>
