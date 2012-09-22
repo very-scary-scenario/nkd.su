@@ -8,7 +8,7 @@ body {
   background-image: url('http://nkdsm.bldm.us/noise.png');
   color: #444;
   max-width: 50em;
-  min-width: 30em;
+  min-width: 40em;
   margin: 1em auto 5em auto;
   padding: 0 1em;
   font-family: "Lora", sans-serif;
@@ -45,10 +45,39 @@ p.subheading {
   text-shadow: #fff 0 0 1em;
   color: #eaa;
   padding-top: .1em;
+}
+
+/* random jaunty angles! */
+
+div.track:nth-child(2n) .played {
+  -webkit-transform: rotate(3deg); 
+  -ms-transform: rotate(3deg); 
+  -moz-transform: rotate(3deg);
+  -o-transform: rotate(3deg);
+}
+
+div.track:nth-child(3n+2) .played {
+  -webkit-transform: rotate(-4deg); 
+  -ms-transform: rotate(-4deg); 
+  -moz-transform: rotate(-4deg);
+  -o-transform: rotate(-4deg);
+}
+
+div.track:nth-child(5n+3) .played {
+  -webkit-transform: rotate(5deg); 
+  -ms-transform: rotate(5deg); 
+  -moz-transform: rotate(5deg);
+  -o-transform: rotate(5deg);
+}
+
+div.track:nth-child(7n+5) .played {
   -webkit-transform: rotate(-6deg); 
+  -ms-transform: rotate(-6deg); 
   -moz-transform: rotate(-6deg);
   -o-transform: rotate(-6deg);
 }
+
+/* anyway... */
 
 .aligned {
   text-align: center;
@@ -92,7 +121,7 @@ div.endof {
 
 div.track {
   clear: both;
-  margin: 1.5em 0;
+  margin: 2em 0;
   padding: 0 .5em;
 }
 
@@ -286,6 +315,11 @@ form.login tr {
 div.playlist {
   float: right;
   width: 28%;
+}
+
+div.playlist .track {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
 }
 
 div.playlist .played {

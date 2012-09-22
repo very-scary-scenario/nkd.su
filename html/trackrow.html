@@ -8,7 +8,7 @@
     <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>
     <p class="title">
     {% if track.eligible %}
-    <a class="upvote" href="https://twitter.com/intent/tweet?text=@nkdsu%20{{ track.id }}">
+    <a title="Vote for {{ track.title }}" class="upvote" href="https://twitter.com/intent/tweet?text=@nkdsu%20{{ track.id }}">
     <span class="plusone">+1</span>
     {% endif %}
     <span class="title">{{ track.title }}</span>

@@ -292,9 +292,7 @@ def mark_as_played(request, track_id):
     canon = track.canonical_string()
     if len(canon) > 140 - (len(settings.HASHTAG) + 1):
         canon = canon[0:140-(len(settings.HASHTAG)+2)]+u'…'
-    tweet = '%s %s' % (canon, settings.HASHTAG)
-    print len(tweet)
-    print tweet
+    tweet = u'%s %s' % (canon, settings.HASHTAG)
     tw_api.update_status(tweet)
 
     return(redirect('/'))
