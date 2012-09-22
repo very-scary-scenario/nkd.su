@@ -7,7 +7,9 @@ from pprint import pprint
 
 tree = plistlib.readPlist('songlibrary.xml')
 
-Track.objects.all().delete()
+for track in Track.objects.all():
+    track.delete()
+
 # Vote.objects.all().delete() # ids may change
 
 for tid in tree['Tracks']:
