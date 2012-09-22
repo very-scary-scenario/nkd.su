@@ -65,7 +65,7 @@ def log_vote(tweet):
     # get song id
     for word in tweet['text'].split():
         try:
-            track = Track.objects.get(id=int(word))
+            track = Track.objects.get(id=word)
         except ValueError:
             # is not a number
             pass

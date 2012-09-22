@@ -14,7 +14,8 @@ for track in Track.objects.all():
 
 for tid in tree['Tracks']:
     t = tree['Tracks'][tid]
-    track = Track(id3_title=t['Name'], id3_artist=t['Artist'], id=['Persistent ID'])
+    print t
+    track = Track(id3_title=t['Name'], id3_artist=t['Artist'], id=t['Persistent ID'])
 
     try:
         track.id3_album = t['Album']
