@@ -32,6 +32,12 @@ We will only accept one vote per song per week.
 
 All votes are reset at 11&nbsp;p.m. on Saturday, at the end of the show.
 
+### All this is well and good but I don't have a Twitter account
+
+You should! It's a neat thing! If you're determined not to join, though, you
+could just send Peter an [email](mailto:peter.shillito@thisisthecat.com) or a
+text or something.
+
 ## How does it work?
 
 Short answer: [Django](https://www.djangoproject.com), [Celery](http://celeryproject.org) and [tweepy](http://tweepy.github.com).
