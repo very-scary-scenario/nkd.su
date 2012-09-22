@@ -4,7 +4,7 @@
 <dict>
 	<key>Major Version</key><integer>1</integer>
 	<key>Minor Version</key><integer>1</integer>
-	<key>Date</key><date>2012-09-22T13:49:42Z</date>
+	<key>Date</key><date>2012-09-22T14:42:36Z</date>
 	<key>Application Version</key><string>10.7</string>
 	<key>Features</key><integer>5</integer>
 	<key>Show Content Ratings</key><true/>
@@ -2848,8 +2848,8 @@
 			<key>Play Count</key><integer>1</integer>
 			<key>Play Date</key><integer>3406574448</integer>
 			<key>Play Date UTC</key><date>2011-12-12T21:40:48Z</date>
-			<key>Skip Count</key><integer>1</integer>
-			<key>Skip Date</key><date>2011-09-30T20:14:21Z</date>
+			<key>Skip Count</key><integer>2</integer>
+			<key>Skip Date</key><date>2012-09-22T14:14:42Z</date>
 			<key>Rating</key><integer>100</integer>
 			<key>Album Rating</key><integer>80</integer>
 			<key>Album Rating Computed</key><true/>
@@ -2858,8 +2858,8 @@
 			<key>Persistent ID</key><string>216C456A57081727</string>
 			<key>Track Type</key><string>File</string>
 			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Yousei%20Teikoku/Senketsu%20no%20Chikai/01%20Senketsu%20no%20Chikai%20(Magical%20Pokaan%20OP).mp3</string>
-			<key>File Folder Count</key><integer>-1</integer>
-			<key>Library Folder Count</key><integer>-1</integer>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
 		</dict>
 		<key>8728</key>
 		<dict>
@@ -26997,41 +26997,6 @@
 			<key>File Folder Count</key><integer>5</integer>
 			<key>Library Folder Count</key><integer>1</integer>
 		</dict>
-		<key>17910</key>
-		<dict>
-			<key>Track ID</key><integer>17910</integer>
-			<key>Name</key><string>Aoi Tori (Piano Instrumental Version)</string>
-			<key>Artist</key><string>Takada Ryuichi</string>
-			<key>Album Artist</key><string>765PRO ALLSTARS</string>
-			<key>Composer</key><string>Takada Ryuichi</string>
-			<key>Album</key><string>THE IDOLM@STER ANIM@TION MASTER 05</string>
-			<key>Genre</key><string>Anime</string>
-			<key>Kind</key><string>MPEG audio file</string>
-			<key>Size</key><integer>3844096</integer>
-			<key>Total Time</key><integer>121678</integer>
-			<key>Track Number</key><integer>4</integer>
-			<key>Track Count</key><integer>15</integer>
-			<key>Year</key><integer>2011</integer>
-			<key>Date Modified</key><date>2012-03-14T21:27:57Z</date>
-			<key>Date Added</key><date>2012-03-14T21:27:13Z</date>
-			<key>Bit Rate</key><integer>228</integer>
-			<key>Sample Rate</key><integer>44100</integer>
-			<key>Skip Count</key><integer>1</integer>
-			<key>Skip Date</key><date>2012-03-17T00:38:37Z</date>
-			<key>Rating</key><integer>80</integer>
-			<key>Album Rating</key><integer>60</integer>
-			<key>Album Rating Computed</key><true/>
-			<key>Normalization</key><integer>951</integer>
-			<key>Compilation</key><true/>
-			<key>Artwork Count</key><integer>1</integer>
-			<key>Episode</key><string>NOT IN MYRIAD</string>
-			<key>Sort Album</key><string>IDOLM@STER ANIM@TION MASTER 05</string>
-			<key>Persistent ID</key><string>F0685AF2547CF435</string>
-			<key>Track Type</key><string>File</string>
-			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Compilations/THE%20IDOLM@STER%20ANIM@TION%20MASTER%2005/04%20Aoi%20Tori%20(Piano%20Instrumental%20Version).mp3</string>
-			<key>File Folder Count</key><integer>5</integer>
-			<key>Library Folder Count</key><integer>1</integer>
-		</dict>
 		<key>17912</key>
 		<dict>
 			<key>Track ID</key><integer>17912</integer>
@@ -28460,39 +28425,6 @@
 			<key>Persistent ID</key><string>4C9C031D5D565BD4</string>
 			<key>Track Type</key><string>File</string>
 			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Compilations/THE%20IDOLM@STER%20ANIM@TION%20MASTER%2002/20%20Itsumo%20no%20Sora.mp3</string>
-			<key>File Folder Count</key><integer>5</integer>
-			<key>Library Folder Count</key><integer>1</integer>
-		</dict>
-		<key>18010</key>
-		<dict>
-			<key>Track ID</key><integer>18010</integer>
-			<key>Name</key><string>i (Piano Instrumental Version)</string>
-			<key>Artist</key><string>Takada Ryuichi</string>
-			<key>Album Artist</key><string>Various Artists</string>
-			<key>Composer</key><string>Takada Ryuichi</string>
-			<key>Album</key><string>THE IDOLM@STER ANIM@TION MASTER 02</string>
-			<key>Genre</key><string>Anime</string>
-			<key>Kind</key><string>MPEG audio file</string>
-			<key>Size</key><integer>4548608</integer>
-			<key>Total Time</key><integer>147983</integer>
-			<key>Track Number</key><integer>21</integer>
-			<key>Track Count</key><integer>23</integer>
-			<key>Year</key><integer>2011</integer>
-			<key>Date Modified</key><date>2012-03-14T21:29:29Z</date>
-			<key>Date Added</key><date>2012-03-14T21:29:04Z</date>
-			<key>Bit Rate</key><integer>225</integer>
-			<key>Sample Rate</key><integer>44100</integer>
-			<key>Rating</key><integer>80</integer>
-			<key>Album Rating</key><integer>80</integer>
-			<key>Album Rating Computed</key><true/>
-			<key>Normalization</key><integer>752</integer>
-			<key>Compilation</key><true/>
-			<key>Artwork Count</key><integer>1</integer>
-			<key>Episode</key><string>NOT IN MYRIAD</string>
-			<key>Sort Album</key><string>IDOLM@STER ANIM@TION MASTER 02</string>
-			<key>Persistent ID</key><string>F978EB1A2C37AE5E</string>
-			<key>Track Type</key><string>File</string>
-			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Compilations/THE%20IDOLM@STER%20ANIM@TION%20MASTER%2002/21%20i%20(Piano%20Instrumental%20Version).mp3</string>
 			<key>File Folder Count</key><integer>5</integer>
 			<key>Library Folder Count</key><integer>1</integer>
 		</dict>
@@ -35868,6 +35800,500 @@
 			<key>File Folder Count</key><integer>5</integer>
 			<key>Library Folder Count</key><integer>1</integer>
 		</dict>
+		<key>137261</key>
+		<dict>
+			<key>Track ID</key><integer>137261</integer>
+			<key>Name</key><string>Hanamaru Sketch (Hidamari Sketch x☆☆☆ Character Song - Yuno)</string>
+			<key>Artist</key><string>Asumi Kana</string>
+			<key>Album</key><string>Hidamari Sketch X Hoshimittsu Character CD 1 - Yuno</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>9644160</integer>
+			<key>Total Time</key><integer>241057</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2010</integer>
+			<key>Date Modified</key><date>2012-09-22T14:23:34Z</date>
+			<key>Date Added</key><date>2012-09-22T14:22:20Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>3611</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>2EF5D27D1B0BFE42</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Asumi%20Kana/Hidamari%20Sketch%20X%20Hoshimittsu%20Character%20CD%201%20-%20Yuno/01%20Hanamaru%20Sketch%20(Hidamari%20Sketch%20x%E2%98%86%E2%98%86%E2%98%86%20Character%20Song%20-%20Yuno).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137290</key>
+		<dict>
+			<key>Track ID</key><integer>137290</integer>
+			<key>Name</key><string>white days (Hidamari Sketch x☆☆☆ Character Song - Nazuna)</string>
+			<key>Artist</key><string>Omigawa Chiaki</string>
+			<key>Album</key><string>Hidamari Sketch X Hoshimittsu Character CD 2 - Nazuna</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>9435264</integer>
+			<key>Total Time</key><integer>235833</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2010</integer>
+			<key>Date Modified</key><date>2012-09-22T14:26:05Z</date>
+			<key>Date Added</key><date>2012-09-22T14:24:04Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>1585</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>1549BA2F5C568801</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Omigawa%20Chiaki/Hidamari%20Sketch%20X%20Hoshimittsu%20Character%20CD%202%20-%20Nazuna/01%20white%20days%20(Hidamari%20Sketch%20x%E2%98%86%E2%98%86%E2%98%86%20Character%20Song%20-%20Nazuna).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137301</key>
+		<dict>
+			<key>Track ID</key><integer>137301</integer>
+			<key>Name</key><string>Kono Heya de Mata (Hidamari Sketch x☆☆☆ Character Song - Hiro)</string>
+			<key>Artist</key><string>Gotou Yuuko</string>
+			<key>Album</key><string>Hidamari Sketch X Hoshimittsu Character CD 3 - Hiro</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>8620160</integer>
+			<key>Total Time</key><integer>215457</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2010</integer>
+			<key>Date Modified</key><date>2012-09-22T14:26:05Z</date>
+			<key>Date Added</key><date>2012-09-22T14:24:05Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>1277</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>0B96EC1F9FF9ABE4</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Gotou%20Yuuko/Hidamari%20Sketch%20X%20Hoshimittsu%20Character%20CD%203%20-%20Hiro/01%20Kono%20Heya%20de%20Mata%20(Hidamari%20Sketch%20x%E2%98%86%E2%98%86%E2%98%86%20Character%20Song%20-%20Hiro).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137310</key>
+		<dict>
+			<key>Track ID</key><integer>137310</integer>
+			<key>Name</key><string>Kokoro Antenna (Hidamari Sketch x☆☆☆ Character Song - Nori)</string>
+			<key>Artist</key><string>Harada Hitomi</string>
+			<key>Album</key><string>Hidamari Sketch X Hoshimittsu Character CD 4 - Nori</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>8181888</integer>
+			<key>Total Time</key><integer>204512</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2010</integer>
+			<key>Date Modified</key><date>2012-09-22T14:26:05Z</date>
+			<key>Date Added</key><date>2012-09-22T14:24:05Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>7303</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>4485D2FD0ADC440E</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Harada%20Hitomi/Hidamari%20Sketch%20X%20Hoshimittsu%20Character%20CD%204%20-%20Nori/01%20Kokoro%20Antenna%20(Hidamari%20Sketch%20x%E2%98%86%E2%98%86%E2%98%86%20Character%20Song%20-%20Nori).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137319</key>
+		<dict>
+			<key>Track ID</key><integer>137319</integer>
+			<key>Name</key><string>Taiyou to GO!! (Hidamari Sketch x☆☆☆ Character Song - Miyako)</string>
+			<key>Artist</key><string>Mizuhashi Kaori</string>
+			<key>Album</key><string>Hidamari Sketch X Hoshimittsu Character CD 5 - Miyako</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>7866496</integer>
+			<key>Total Time</key><integer>196649</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2010</integer>
+			<key>Date Modified</key><date>2012-09-22T14:26:05Z</date>
+			<key>Date Added</key><date>2012-09-22T14:24:06Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>7046</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>F1B87E13F2595B17</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Mizuhashi%20Kaori/Hidamari%20Sketch%20X%20Hoshimittsu%20Character%20CD%205%20-%20Miyako/01%20Taiyou%20to%20GO!!%20(Hidamari%20Sketch%20x%E2%98%86%E2%98%86%E2%98%86%20Character%20Song%20-%20Miyako).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137328</key>
+		<dict>
+			<key>Track ID</key><integer>137328</integer>
+			<key>Name</key><string>Kokoro no Oku, Ie nai Kotoba (Hidamari Sketch x☆☆☆ Character Song - Sae)</string>
+			<key>Artist</key><string>Shintani Ryouko</string>
+			<key>Album</key><string>Hidamari Sketch X Hoshimittsu Character CD 6 - Sae</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>9955456</integer>
+			<key>Total Time</key><integer>248842</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2010</integer>
+			<key>Date Modified</key><date>2012-09-22T14:26:05Z</date>
+			<key>Date Added</key><date>2012-09-22T14:24:07Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>6871</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>D562B3BA824E4D8C</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Shintani%20Ryouko/Hidamari%20Sketch%20X%20Hoshimittsu%20Character%20CD%206%20-%20Sae/01%20Kokoro%20no%20Oku,%20Ie%20nai%20Kotoba%20(Hidamari%20Sketch%20x%E2%98%86%E2%98%86%E2%98%86%20Character%20Song%20-%20Sae).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137426</key>
+		<dict>
+			<key>Track ID</key><integer>137426</integer>
+			<key>Name</key><string>Konna no Hajimete (Hidamari Sketch x365 Character Song - Yuno)</string>
+			<key>Artist</key><string>Asumi Kana</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.1 - Yuno</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>11652805</integer>
+			<key>Total Time</key><integer>215875</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:31:37Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:00Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>8669</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>A9634FF6ED3D75C9</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Asumi%20Kana/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.1%20-%20Yuno/01%20Konna%20no%20Hajimete%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Yuno).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137431</key>
+		<dict>
+			<key>Track ID</key><integer>137431</integer>
+			<key>Name</key><string>Yaruki ga Funyaa (Hidamari Sketch x365 Character Song - Yuno)</string>
+			<key>Artist</key><string>Asumi Kana</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.1 - Yuno</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>11615188</integer>
+			<key>Total Time</key><integer>214935</integer>
+			<key>Track Number</key><integer>2</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:31:39Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:00Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>8568</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>13632C1109844573</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Asumi%20Kana/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.1%20-%20Yuno/02%20Yaruki%20ga%20Funyaa%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Yuno).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137440</key>
+		<dict>
+			<key>Track ID</key><integer>137440</integer>
+			<key>Name</key><string>Hajimari Survival (Hidamari Sketch x365 Character Song - Miyako)</string>
+			<key>Artist</key><string>Mizuhashi Kaori</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.2 - Miyako</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>10835980</integer>
+			<key>Total Time</key><integer>211722</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:35:44Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:00Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>9584</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>770A49E3A6512916</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Mizuhashi%20Kaori/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.2%20-%20Miyako/01%20Hajimari%20Survival%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Miyako).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137443</key>
+		<dict>
+			<key>Track ID</key><integer>137443</integer>
+			<key>Name</key><string>Nyaa to na Gogo Sanji (Hidamari Sketch x365 Character Song - Miyako)</string>
+			<key>Artist</key><string>Mizuhashi Kaori</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.2 - Miyako</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>11568457</integer>
+			<key>Total Time</key><integer>230034</integer>
+			<key>Track Number</key><integer>2</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:35:46Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:00Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>9093</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>BD583F4C8A134836</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Mizuhashi%20Kaori/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.2%20-%20Miyako/02%20Nyaa%20to%20na%20Gogo%20Sanji%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Miyako).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137452</key>
+		<dict>
+			<key>Track ID</key><integer>137452</integer>
+			<key>Name</key><string>Shalalala Dolce (Hidamari Sketch x365 Character Song - Hiro)</string>
+			<key>Artist</key><string>Gotou Yuuko</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.3 - Hiro</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>11538654</integer>
+			<key>Total Time</key><integer>220943</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:33:54Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:01Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>10024</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>5B605493633BADA8</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Gotou%20Yuuko/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.3%20-%20Hiro/01%20Shalalala%20Dolce%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Hiro).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137455</key>
+		<dict>
+			<key>Track ID</key><integer>137455</integer>
+			<key>Name</key><string>Chiisana Ochakai (Hidamari Sketch x365 Character Song - Hiro)</string>
+			<key>Artist</key><string>Gotou Yuuko</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.3 - Hiro</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>9862638</integer>
+			<key>Total Time</key><integer>179043</integer>
+			<key>Track Number</key><integer>2</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:33:56Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:02Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>8514</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>2DF27CD49D2F1FDA</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Gotou%20Yuuko/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.3%20-%20Hiro/02%20Chiisana%20Ochakai%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Hiro).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137464</key>
+		<dict>
+			<key>Track ID</key><integer>137464</integer>
+			<key>Name</key><string>Shimekiri Junjou Ha (Hidamari Sketch x365 Character Song - Sae)</string>
+			<key>Artist</key><string>Shintani Ryouko</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.4 - Sae</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>12167494</integer>
+			<key>Total Time</key><integer>233168</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:36:33Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:03Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>11503</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>12BE5F74E4D2B338</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Shintani%20Ryouko/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.4%20-%20Sae/01%20Shimekiri%20Junjou%20Ha%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Sae).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137467</key>
+		<dict>
+			<key>Track ID</key><integer>137467</integer>
+			<key>Name</key><string>Tensei Megane Rear (Hidamari Sketch x365 Character Song - Sae)</string>
+			<key>Artist</key><string>Shintani Ryouko</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.4 - Sae</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>12560374</integer>
+			<key>Total Time</key><integer>242991</integer>
+			<key>Track Number</key><integer>2</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:36:37Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:03Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>8927</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>DBA2411D18B5DA58</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Shintani%20Ryouko/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.4%20-%20Sae/02%20Tensei%20Megane%20Rear%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Sae).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137476</key>
+		<dict>
+			<key>Track ID</key><integer>137476</integer>
+			<key>Name</key><string>Princess Teacher! (Hidamari Sketch x365 Character Song - Yoshinoya-sensei)</string>
+			<key>Artist</key><string>Matsuki Miyu</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.5 - Yoshinoya-sensei</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>12694471</integer>
+			<key>Total Time</key><integer>229041</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:34:52Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:04Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>14030</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>830B7CBEDE48A8CC</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Matsuki%20Miyu/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.5%20-%20Yoshinoya-sensei/01%20Princess%20Teacher!%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Yoshinoya-sensei).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137479</key>
+		<dict>
+			<key>Track ID</key><integer>137479</integer>
+			<key>Name</key><string>Bijin Bijutsu Kyoushi no Yuuutsu (Hidamari Sketch x365 Character Song - Yoshinoya-sensei)</string>
+			<key>Artist</key><string>Matsuki Miyu</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.5 - Yoshinoya-sensei</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>14730992</integer>
+			<key>Total Time</key><integer>279954</integer>
+			<key>Track Number</key><integer>2</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:34:54Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:04Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>9577</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>C8E87BA410A4C6E3</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Matsuki%20Miyu/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.5%20-%20Yoshinoya-sensei/02%20Bijin%20Bijutsu%20Kyoushi%20no%20Yuuutsu%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Yoshinoya-sensei).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137488</key>
+		<dict>
+			<key>Track ID</key><integer>137488</integer>
+			<key>Name</key><string>Seishun mo Gakusha mo Ikutoshitsuki (Hidamari Sketch x365 Character Song - Kouchou-sensei/Principal)</string>
+			<key>Artist</key><string>Cho</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.6 - Kouchou-sensei</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>14058171</integer>
+			<key>Total Time</key><integer>264646</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:32:49Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:04Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>15169</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>303C2E7A90A145AD</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Cho/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.6%20-%20Kouchou-sensei/01%20Seishun%20mo%20Gakusha%20mo%20Ikutoshitsuki%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Kouchou-sensei_Principal).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137491</key>
+		<dict>
+			<key>Track ID</key><integer>137491</integer>
+			<key>Name</key><string>Kouchou Kyoku B Tanchou "Shiki"v  (Hidamari Sketch x365 Character Song - Kouchou-sensei/Principal)</string>
+			<key>Artist</key><string>Cho</string>
+			<key>Album</key><string>Hidamari Sketch x365 Character Song Vol.6 - Kouchou-sensei</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>12328861</integer>
+			<key>Total Time</key><integer>221413</integer>
+			<key>Track Number</key><integer>2</integer>
+			<key>Year</key><integer>2008</integer>
+			<key>Date Modified</key><date>2012-09-22T14:40:45Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:04Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>5736</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>6309C3A2EA8537CF</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Cho/Hidamari%20Sketch%20x365%20Character%20Song%20Vol.6%20-%20Kouchou-sensei/02%20Kouchou%20Kyoku%20B%20Tanchou%20_Shiki_v%20%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Kouchou-sensei_Principal).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137500</key>
+		<dict>
+			<key>Track ID</key><integer>137500</integer>
+			<key>Name</key><string>Hidamari Hidamare Hidamarirun (Hidamari Sketch x365 Character Song - Ume-sensei)</string>
+			<key>Artist</key><string>Aoki Ume</string>
+			<key>Album</key><string>Hidamari Hidamare Hidamarirun</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>12396753</integer>
+			<key>Total Time</key><integer>257697</integer>
+			<key>Track Number</key><integer>1</integer>
+			<key>Year</key><integer>2009</integer>
+			<key>Date Modified</key><date>2012-09-22T14:29:43Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:05Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>11952</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>3C3749F1240517E5</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Aoki%20Ume/Hidamari%20Hidamare%20Hidamarirun/01%20Hidamari%20Hidamare%20Hidamarirun%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Ume-sensei).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
+		<key>137503</key>
+		<dict>
+			<key>Track ID</key><integer>137503</integer>
+			<key>Name</key><string>Micha dame Sugoin desu (Hidamari Sketch x365 Character Song - Ume-sensei)</string>
+			<key>Artist</key><string>Aoki Ume</string>
+			<key>Album</key><string>Hidamari Hidamare Hidamarirun</string>
+			<key>Genre</key><string>Anime</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Size</key><integer>11136599</integer>
+			<key>Total Time</key><integer>226194</integer>
+			<key>Track Number</key><integer>2</integer>
+			<key>Year</key><integer>2009</integer>
+			<key>Date Modified</key><date>2012-09-22T14:29:48Z</date>
+			<key>Date Added</key><date>2012-09-22T14:28:05Z</date>
+			<key>Bit Rate</key><integer>320</integer>
+			<key>Sample Rate</key><integer>44100</integer>
+			<key>Normalization</key><integer>6854</integer>
+			<key>Artwork Count</key><integer>1</integer>
+			<key>Episode</key><string>NOT IN MYRIAD</string>
+			<key>Persistent ID</key><string>B8FC8E11B1132E91</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost/Volumes/WD%20Backup%20Drive/Music/Music/Aoki%20Ume/Hidamari%20Hidamare%20Hidamarirun/02%20Micha%20dame%20Sugoin%20desu%20(Hidamari%20Sketch%20x365%20Character%20Song%20-%20Ume-sensei).mp3</string>
+			<key>File Folder Count</key><integer>5</integer>
+			<key>Library Folder Count</key><integer>1</integer>
+		</dict>
 	</dict>
 	<key>Playlists</key>
 	<array>
@@ -36047,6 +36473,12 @@
 					<key>Track ID</key><integer>11496</integer>
 				</dict>
 				<dict>
+					<key>Track ID</key><integer>137500</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137503</integer>
+				</dict>
+				<dict>
 					<key>Track ID</key><integer>9460</integer>
 				</dict>
 				<dict>
@@ -36093,6 +36525,15 @@
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>9450</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137261</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137426</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137431</integer>
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>15460</integer>
@@ -36258,6 +36699,12 @@
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>8800</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137488</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137491</integer>
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>15780</integer>
@@ -36626,6 +37073,15 @@
 					<key>Track ID</key><integer>9452</integer>
 				</dict>
 				<dict>
+					<key>Track ID</key><integer>137301</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137452</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137455</integer>
+				</dict>
+				<dict>
 					<key>Track ID</key><integer>9342</integer>
 				</dict>
 				<dict>
@@ -36741,6 +37197,9 @@
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>20186</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137310</integer>
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>7306</integer>
@@ -37721,6 +38180,12 @@
 					<key>Track ID</key><integer>9456</integer>
 				</dict>
 				<dict>
+					<key>Track ID</key><integer>137476</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137479</integer>
+				</dict>
+				<dict>
 					<key>Track ID</key><integer>7342</integer>
 				</dict>
 				<dict>
@@ -37875,6 +38340,15 @@
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>9458</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137319</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137440</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137443</integer>
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>47579</integer>
@@ -38178,6 +38652,9 @@
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>12340</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137290</integer>
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>11102</integer>
@@ -38606,6 +39083,15 @@
 					<key>Track ID</key><integer>9454</integer>
 				</dict>
 				<dict>
+					<key>Track ID</key><integer>137328</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137464</integer>
+				</dict>
+				<dict>
+					<key>Track ID</key><integer>137467</integer>
+				</dict>
+				<dict>
 					<key>Track ID</key><integer>20160</integer>
 				</dict>
 				<dict>
@@ -38810,13 +39296,7 @@
 					<key>Track ID</key><integer>18008</integer>
 				</dict>
 				<dict>
-					<key>Track ID</key><integer>18010</integer>
-				</dict>
-				<dict>
 					<key>Track ID</key><integer>17904</integer>
-				</dict>
-				<dict>
-					<key>Track ID</key><integer>17910</integer>
 				</dict>
 				<dict>
 					<key>Track ID</key><integer>17916</integer>
