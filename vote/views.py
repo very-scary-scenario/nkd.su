@@ -1,4 +1,5 @@
 # Create your views here.
+# -*- coding: utf-8 -*-
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
@@ -15,7 +16,11 @@ from sys import exc_info
 from datetime import date, timedelta
 
 from markdown import markdown
+import tweepy
 
+tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
+tw_auth.set_access_token(settings.ACCESS_TOKEN, settings.ACCESS_TOKEN_SECRET)
+tw_api = tweepy.API(tw_auth)
 
 def build_context_for_tracks(
         tracks,
@@ -283,7 +288,16 @@ def mark_as_played(request, track_id):
     else:
         play.save()
 
-    return(redirect('https://twitter.com/intent/tweet?text=%s' % urlquote(track.canonical_string() + ' #NekoDesu')))
+    # okay now we tweet it
+    canon = track.canonical_string()
+    if len(canon) > 140 - (len(settings.HASHTAG) + 1):
+        canon = canon[0:140-(len(settings.HASHTAG)+2)]+u'…'
+    tweet = '%s %s' % (canon, settings.HASHTAG)
+    print len(tweet)
+    print tweet
+    tw_api.update_status(tweet)
+
+    return(redirect('/'))
 
 @login_required
 def unmark_as_played(request, track_id):
