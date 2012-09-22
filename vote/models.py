@@ -92,6 +92,8 @@ class Track(models.Model):
     def __unicode__(self):
         return self.canonical_string()
 
+    id = models.CharField(max_length=16, primary_key=True)
+
     id3_title = models.CharField(max_length=500)
     title_en = models.CharField(max_length=500, blank=True)
     title_ro = models.CharField(max_length=500, blank=True)
