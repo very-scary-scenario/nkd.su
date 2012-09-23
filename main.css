@@ -110,7 +110,7 @@ div.track:nth-child(11n+2) .played {
 
 /* anyway... */
 
-.aligned {
+.aligned, p.aside {
   text-align: center;
   clear: both;
 }
@@ -246,16 +246,12 @@ a.voter:hover div.tweet_deets {
   text-align: center;
   padding: .2em .5em;
   color: #444;
-  max-width: 20%;
+  max-width: 25%;
   font-size: .8em;
 }
 
 div.tweet_deets .screen_name {
   color: #d66;
-}
-
-p.aside {
-  text-align: center;
 }
 
 /* login form */
