@@ -1,3 +1,7 @@
+html {
+  height: 100%;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -9,10 +13,22 @@ body {
   color: #444;
   max-width: 50em;
   min-width: 40em;
-  margin: 1em auto;
-  padding: 0 1em;
   font-family: "Lora", sans-serif;
   text-shadow: #fff 0 .1em 0;
+  height: 100%;
+  margin: 0 auto;
+}
+
+#everything {
+  margin: 0 auto;
+  min-height: 100%;
+  position: relative;
+}
+
+#content {
+  padding: 1em;
+  position: relative;
+  padding-bottom: 12em;
 }
 
 h1 {
@@ -304,8 +320,9 @@ form.login tr {
 
 /* footer */
 #footer {
-  clear: both;
-  padding: 3em 0;
+  position: absolute;
+  bottom: 2em;
+  width: 100%;
   font-size: .8em;
   text-align: center;
   color: #999;
