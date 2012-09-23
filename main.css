@@ -11,21 +11,20 @@ body {
   background-color: #fff;
   background-image: url('http://m.nkd.su/noise.png');
   color: #444;
-  max-width: 50em;
-  min-width: 40em;
   font-family: "Lora", sans-serif;
   text-shadow: #fff 0 .1em 0;
   height: 100%;
-  margin: 0 auto;
 }
 
 #everything {
-  margin: 0 auto;
   min-height: 100%;
   position: relative;
 }
 
 #content {
+  margin: 0 auto;
+  max-width: 50em;
+  min-width: 40em;
   padding: 1em;
   position: relative;
   padding-bottom: 12em;
@@ -321,7 +320,7 @@ form.login tr {
 /* footer */
 #footer {
   position: absolute;
-  bottom: 2em;
+  bottom: 1.5em;
   width: 100%;
   font-size: .8em;
   text-align: center;
@@ -385,8 +384,8 @@ div.playlist h2 {
 }
 
 a#stamp img {
-  width: 70px;
-  height: 70px;
+  width: 65px;
+  height: 65px;
 }
 
 a#stamp:hover {
