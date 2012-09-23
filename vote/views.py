@@ -66,6 +66,7 @@ def build_context_for_tracks(
                 'manual_votes': manual_votes,
                 'last_played': last_played,
                 'eligible': eligible,
+                'undoable': track.undoable(),
                 }
 
         if (not (hide_ineligible or prioritise_eligible)) or eligible:

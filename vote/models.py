@@ -111,6 +111,9 @@ class Track(models.Model):
         except IndexError:
             return None
 
+    def undoable(self):
+        return Play.objects.all().order_by('-datetime')[0].track == self
+
     def canonical_string(self):
         title, role = split_id3_title(self.id3_title)
         if role:
