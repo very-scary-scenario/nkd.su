@@ -36,7 +36,7 @@
   </div>
   <div class="voters">
     {% for vote in track.votes %}
-    <a class="voter" href="http://twitter.com/{{ vote.screen_name }}/status/{{ vote.tweet_id }}/">
+    <a target="_blank" class="voter" href="http://twitter.com/{{ vote.screen_name }}/status/{{ vote.tweet_id }}/">
       <img src="{{ vote.user_image }}" alt="{{ vote.screen_name }}">
         <div class="tweet_deets">
             <span class="screen_name">@{{ vote.screen_name }}</span>{% if vote.content %}:

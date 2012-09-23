@@ -15,7 +15,7 @@
 
     <h1><a href="/">nkd.su</a></h1>
     {% if on_air %}
-    <p class="subtitle">on air! listen live at <a href="http://thisisthecat.com">the cat</a>
+    <p class="subtitle">on air! listen live at <a target="_blank" href="http://thisisthecat.com">the cat</a>
     {% elif show %}
     <p class="subtitle">taking requests for {{ show|date:"F"|lower }}&nbsp;{{ show|date:"jS"|lower }}</p>
     {% else %}
@@ -39,11 +39,10 @@
     {% block content %}{% endblock %}
 
     <div id="footer">
-      <!-- <p class="credit">listen to <a href="http://www.thisisthecat.com/index.php/neko-desu">neko desu</a> on <a href="http://thisisthecat.com">the cat</a> every saturday from 9&ndash;11 PM</p> -->
       {% if user.is_authenticated %}
       <p class="credit"><a href="/admin/">admin</a> | <a href="/logout/">log out</a></p>
       {% endif %}
-      <p class="credit"><a href="/info/">help</a> | <a href="/show/">playlist archive</a> | <a href="http://twitter.com/search/?q=%23NekoDesu">#nekodesu</a></p>
+      <p class="credit"><a href="/info/">help</a> : <a href="/show/">playlist archive</a> | <a target="_blank" href="http://thisisthecat.com/">the cat</a> : <a target="_blank" href="http://twitter.com/search/?q=%23NekoDesu">#nekodesu</a></p>
     </div>
     <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
   </body>
