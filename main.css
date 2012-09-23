@@ -9,7 +9,7 @@ body {
   color: #444;
   max-width: 50em;
   min-width: 40em;
-  margin: 1em auto 5em auto;
+  margin: 1em auto;
   padding: 0 1em;
   font-family: "Lora", sans-serif;
   text-shadow: #fff 0 .1em 0;
@@ -305,7 +305,7 @@ form.login tr {
 /* footer */
 #footer {
   clear: both;
-  padding-top: 3em;
+  padding: 3em 0;
   font-size: .8em;
   text-align: center;
   color: #999;
@@ -367,3 +367,11 @@ div.playlist h2 {
   padding: 0 .3em;
 }
 
+a#stamp img {
+  width: 70px;
+  height: 70px;
+}
+
+a#stamp:hover {
+  border: none;
+}
