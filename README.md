@@ -3,8 +3,7 @@
 [nkd.su](http://nkd.su) is a request-gathering and voting service for [The
 Cat](http://thisisthecat.com)'s [Neko
 Desu](http://www.thisisthecat.com/index.php/neko-desu) radio show. Songs are
-sorted according to popularity on the front page and, if played on the show,
-are flagged as played and are no longer votable.
+sorted according to popularity on the front page.
 
 ### How do I vote?
 
@@ -40,7 +39,16 @@ text or something.
 
 ## How does it work?
 
-Short answer: [Django](https://www.djangoproject.com), [Celery](http://celeryproject.org) and [tweepy](http://tweepy.github.com).
+Short answer: [Django](https://www.djangoproject.com),
+[Celery](http://celeryproject.org) and [tweepy](http://tweepy.github.com).
 
-Long answer: [GitHub](https://github.com/colons/nkdsu). [Suggestions](https://github.com/colons/nkdsu/issues/new) welcome.
+Long answer: [GitHub](https://github.com/colons/nkdsu).
+[Suggestions](https://github.com/colons/nkdsu/issues/new) welcome.
 
+## Who's to blame?
+
+[Iain Dawson](http://www.musicfortheblind.co.uk/)
+([@mftb](http://twitter.com/mftb)), with design contributions from
+[Chris Walden](http://www.chriswalden.co.uk)
+([@EuricaeriS](http://twitter.com/EuricaeriS)) and
+[Peter Shillito](http://twitter.com/theshillito) himself.
