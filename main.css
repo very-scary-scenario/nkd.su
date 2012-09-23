@@ -41,10 +41,9 @@ p.subheading {
   position: absolute;
   padding-left: 1em;
   z-index: -1;
-  font-size: 4em;
-  text-shadow: #fff 0 0 1em;
+  text-shadow: none;
   color: #eaa;
-  padding-top: .1em;
+  font-size: 4em;
 }
 
 /* random jaunty angles! */
@@ -75,6 +74,23 @@ div.track:nth-child(7n+5) .played {
   -ms-transform: rotate(-6deg); 
   -moz-transform: rotate(-6deg);
   -o-transform: rotate(-6deg);
+}
+
+div.track:nth-child(3n+1) .played {
+  padding-left: 1.2em;
+  font-size: 3.7em;
+}
+div.track:nth-child(5n) .played {
+  font-size: 3.5em;
+  padding-left: 1.4em;
+}
+div.track:nth-child(7n) .played {
+  font-size: 4.5em;
+  padding-left: 0.6em;
+}
+div.track:nth-child(11n+2) .played {
+  font-size: 4.2em;
+  padding-left: 0.8em;
 }
 
 /* anyway... */
@@ -322,7 +338,7 @@ div.playlist .track {
   margin-bottom: 1.5em;
 }
 
-div.playlist .played {
+div.playlist div.track div.played {
   font-size: 2em;
   margin-top: .4em;
   padding-left: 1em;
