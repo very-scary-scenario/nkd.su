@@ -8,6 +8,7 @@ html {
 }
 
 body {
+  font-family: "Bitter", serif;
   background-color: #fff;
   background-image: url('http://m.nkd.su/noise.png');
   color: #444;
@@ -179,7 +180,7 @@ a.voter:hover {
   color: #ccc;
   position: relative;
   left: 3.5%;
-  top: .3em;
+  top: .45em;
   margin-bottom: -2em;
   width: 0;
 }
@@ -230,7 +231,7 @@ form.login tr {
   background-image: url('http://nkdsm.bldm.us/noise.png');
   color: #d66;
   z-index: -4;
-  font-family: 'Lora', sans-serif;
+  font-family: 'Bitter', sans-serif;
   border: 1px solid #999;
   border-top: none;
   font-size: 1em;
@@ -317,10 +318,6 @@ a#stamp:hover {
 }
 
 @media (min-width:551px) {
-  body {
-    font-family: "Lora", sans-serif;
-  }
-
   div.metadata {
     float: left;
     width: 57%;
@@ -402,10 +399,6 @@ a#stamp:hover {
 }
 
 @media (max-width:550px) {
-  body {
-    font-family: "Bitter", sans-serif;
-  }
-
   h1 {
     font-size: 2.5em;
     font-weight: bold;
