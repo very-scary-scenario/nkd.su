@@ -179,7 +179,8 @@ a.voter:hover {
   float: right;
   color: #ccc;
   position: relative;
-  left: 3.5%;
+  left: 6%;
+  padding-right: .7em;
   top: .45em;
   margin-bottom: -2em;
   width: 0;
@@ -345,12 +346,12 @@ a#stamp:hover {
     font-size: 2.5em;
     font-weight: bold;
     z-index: 1;
-    margin-bottom: .1em;
+    margin-bottom: .15em;
   }
 
   .search_form {
     position: relative;
-    top: -4.8em;
+    bottom: 4.9em;
     margin-bottom: -2em;
     text-align: center;
     margin-left: 40%;
@@ -362,7 +363,7 @@ a#stamp:hover {
   }
 
   div.voters {
-    margin-top: 1em;
+    margin-top: 1.2em;
     float: right;
     width: 37%;
   }
@@ -403,7 +404,7 @@ a#stamp:hover {
     font-size: 2.5em;
     font-weight: bold;
     z-index: 1;
-    margin-bottom: .1em;
+    margin-bottom: .15em;
   }
 
   div.voters {
