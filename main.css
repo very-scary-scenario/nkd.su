@@ -11,7 +11,6 @@ body {
   background-color: #fff;
   background-image: url('http://m.nkd.su/noise.png');
   color: #444;
-  font-family: "Lora", sans-serif;
   text-shadow: #fff 0 .1em 0;
   height: 100%;
 }
@@ -226,6 +225,7 @@ form.login tr {
 /* search form */
 
 #submit {
+  border-radius: 0;
   background-color: #eee;
   background-image: url('http://nkdsm.bldm.us/noise.png');
   color: #d66;
@@ -245,6 +245,7 @@ form.login tr {
 }
 
 #query {
+  border-radius: 0;
   width: 100%;
   margin-top: .3em;
   background-color: #eee;
@@ -316,6 +317,10 @@ a#stamp:hover {
 }
 
 @media (min-width:551px) {
+  body {
+    font-family: "Lora", sans-serif;
+  }
+
   div.metadata {
     float: left;
     width: 57%;
@@ -397,6 +402,10 @@ a#stamp:hover {
 }
 
 @media (max-width:550px) {
+  body {
+    font-family: "Bitter", sans-serif;
+  }
+
   h1 {
     font-size: 2.5em;
     font-weight: bold;
