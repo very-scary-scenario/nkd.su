@@ -24,30 +24,14 @@ body {
 #content {
   margin: 0 auto;
   max-width: 50em;
-  min-width: 40em;
+  min-width: 200px;
   padding: 1em;
   position: relative;
   padding-bottom: 12em;
 }
 
-h1 {
-  font-size: 2.5em;
-  font-weight: bold;
-  z-index: 1;
-  margin-bottom: .1em;
-}
-
 h2.message {
   text-align: center;
-}
-
-h2.heading {
-  width: 57%;
-  text-align: right;
-}
-p.subheading {
-  width: 57%;
-  text-align: right;
 }
 
 .played {
@@ -58,7 +42,6 @@ p.subheading {
   z-index: -1;
   text-shadow: none;
   color: #eaa;
-  font-size: 4em;
 }
 
 /* random jaunty angles! */
@@ -119,17 +102,6 @@ div.track:nth-child(11n+2) .played {
   margin-top: 2em;
 }
 
-h1 {
-  clear: both;
-  width: 37.5%;
-  text-align: right;
-}
-
-.subtitle {
-  width: 37.5%;
-  text-align: right;
-}
-
 .instructions {
   margin-left: 37.5%;
 }
@@ -165,12 +137,6 @@ div.track.ineligible {
   border-color: #666;
 }
 
-div.metadata {
-  float: left;
-  width: 57%;
-  text-align: right;
-}
-
 p.title {
   clear: both;
   padding-right: -4%;
@@ -185,12 +151,6 @@ p.role, p.last_played, p.peter {
   font-size: .8em;
   clear: both;
   margin-top: .2em;
-}
-
-div.voters {
-  margin-top: 1em;
-  float: right;
-  width: 37%;
 }
 
 .voter img {
@@ -265,15 +225,6 @@ form.login tr {
 
 /* search form */
 
-.search_form {
-  position: relative;
-  top: -4.8em;
-  margin-bottom: -2em;
-  text-align: center;
-  margin-left: 40%;
-  width: 40%;
-}
-
 #submit {
   background-color: #eee;
   background-image: url('http://nkdsm.bldm.us/noise.png');
@@ -329,10 +280,6 @@ form.login tr {
 }
 
 /* markdown */
-.markdown {
-  width: 80%;
-  margin: 0 auto;
-}
 
 .markdown * {
   text-align: left;
@@ -340,26 +287,6 @@ form.login tr {
 }
 
 /* front-page divs */
-div.playlist {
-  float: right;
-  width: 28%;
-}
-
-div.playlist .track {
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-}
-
-div.playlist div.track div.played {
-  font-size: 2em;
-  margin-top: .4em;
-  padding-left: 1em;
-}
-
-div.current {
-  float: left;
-  width: 68%;
-}
 
 div.playlist .last_played, div.playlist .voters {
   display: none;
@@ -387,3 +314,121 @@ a#stamp img {
 a#stamp:hover {
   border: none;
 }
+
+@media (min-width:501px) {
+  div.metadata {
+    float: left;
+    width: 57%;
+    text-align: right;
+  }
+  h2.heading {
+    width: 57%;
+    text-align: right;
+  }
+
+  p.subheading {
+    width: 57%;
+    text-align: right;
+  }
+
+  .subtitle {
+    width: 37.5%;
+    text-align: right;
+  }
+
+  h1 {
+    clear: both;
+    width: 37.5%;
+    text-align: right;
+    font-size: 2.5em;
+    font-weight: bold;
+    z-index: 1;
+    margin-bottom: .1em;
+  }
+
+  .search_form {
+    position: relative;
+    top: -4.8em;
+    margin-bottom: -2em;
+    text-align: center;
+    margin-left: 40%;
+    width: 40%;
+  }
+
+  div.metadata {
+    text-align: right;
+  }
+
+  div.voters {
+    margin-top: 1em;
+    float: right;
+    width: 37%;
+  }
+
+  div.playlist {
+    float: right;
+    width: 28%;
+  }
+
+  div.playlist .track {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+  }
+
+  div.playlist div.track div.played {
+    font-size: 2em;
+    margin-top: .4em;
+    padding-left: 1em;
+  }
+
+  div.current {
+    float: left;
+    width: 68%;
+  }
+
+  .played {
+    font-size: 4em;
+  }
+
+  .markdown {
+    width: 80%;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width:500px) {
+  h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    z-index: 1;
+    margin-bottom: .1em;
+  }
+
+  div.voters {
+    margin-top: .3em;
+    clear: both;
+    width: 100%;
+  }
+
+  .search_form {
+    text-align: center;
+    margin: 1em;
+    margin-bottom: 2em;
+  }
+
+  .metadata {
+    padding-right: 1em;
+  }
+
+  .aligned, p.aside {
+    margin: 1em 0;
+  }
+
+  div#everything div.track div.played {
+    font-size: 2em;
+    margin-top: .5em;
+  }
+
+  div.voters div.tweet_deets {
+    min-width: 70%;
+  }
