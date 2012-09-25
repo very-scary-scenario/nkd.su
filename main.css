@@ -416,7 +416,11 @@ a#stamp:hover {
     margin-bottom: .15em;
   }
 
-  div.tracklist div.track.ineligible {
+  p.subheading {
+    text-align: right;
+  }
+
+  div.current div.track.ineligible {
     display: none;
   }
 
