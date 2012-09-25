@@ -33,6 +33,9 @@
     {% if user.is_authenticated and not track.eligible and track.undoable %}
     <p class="peter"><a href="/unplay/{{ track.id }}/">i didn't mean to play this</a></p>
     {% endif %}
+    {% if not track.eligible %}
+    <p class="refusal">you can not request this track until next week</p>
+    {% endif %}
   </div>
   <div class="voters">
     {% for vote in track.votes %}

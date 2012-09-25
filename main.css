@@ -147,7 +147,7 @@ span.title {
   font-weight: bold;
 }
 
-p.role, p.last_played, p.peter {
+p.role, p.last_played, p.peter, p.refusal {
   font-size: .8em;
   clear: both;
   margin-top: .2em;
@@ -179,7 +179,6 @@ a.voter:hover {
   float: right;
   color: #ccc;
   position: relative;
-  left: 6%;
   padding-right: .7em;
   top: .45em;
   margin-bottom: -2em;
@@ -213,6 +212,10 @@ a.voter:hover div.tweet_deets {
 
 div.tweet_deets .screen_name {
   color: #d66;
+}
+
+p.refusal {
+  color: #999;
 }
 
 /* login form */
@@ -291,7 +294,7 @@ form.login tr {
 
 /* front-page divs */
 
-div.playlist .last_played, div.playlist .voters {
+div.playlist .last_played, div.playlist .voters, div.playlist .refusal {
   display: none;
 }
 
@@ -319,11 +322,6 @@ a#stamp:hover {
 }
 
 @media (min-width:551px) {
-  div.metadata {
-    float: left;
-    width: 57%;
-    text-align: right;
-  }
   h2.heading {
     width: 57%;
     text-align: right;
@@ -359,8 +357,15 @@ a#stamp:hover {
   }
 
   div.metadata {
+    float: left;
+    width: 57%;
     text-align: right;
   }
+
+  .track span.plusone {
+    left: 6%;
+  }
+
 
   div.voters {
     margin-top: 1.2em;
@@ -407,6 +412,7 @@ a#stamp:hover {
     margin-bottom: .15em;
   }
 
+
   div.voters {
     margin-top: .5em;
     clear: both;
@@ -421,6 +427,10 @@ a#stamp:hover {
 
   .metadata {
     padding-right: 1em;
+  }
+
+  .track span.plusone {
+    left: 1em;
   }
 
   .aligned, p.aside {
