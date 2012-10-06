@@ -27,7 +27,7 @@ they're also following [@nkdsu](http://twitter.com/nkdsu).
 As long as the track you wish to vote for has not been played either last week
 or during the show currently airing, your vote will be accepted. 
 
-We will only accept one vote per song per week.
+We will only accept one vote per song per Twitter user per week.
 
 All votes are reset at 11&nbsp;p.m. on Saturday, at the end of the show.
 
