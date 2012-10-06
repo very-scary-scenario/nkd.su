@@ -34,7 +34,24 @@ h2.message {
   text-align: center;
 }
 
-.played {
+#disclaimer {
+  font-size: .8em;
+  color: #888;
+  text-align: center
+  margin-bottom: 3em;
+}
+
+#beta {
+  padding-top: .7em;
+  font-size: 2em;
+  -webkit-transform: rotate(-15deg); 
+  -ms-transform: rotate(-15deg); 
+  -moz-transform: rotate(-15deg);
+  -o-transform: rotate(-15deg);
+}
+  
+
+.played, #beta {
   font-family: "IM Fell English SC", serif;
   position: absolute;
   padding-left: 1em;
@@ -281,8 +298,9 @@ form.login tr {
   line-height: 1.5em;
 }
 
+
 #footer .credit {
-  margin: .5em 0;
+  margin: .5em 2em;
 }
 
 /* markdown */
@@ -296,6 +314,13 @@ form.login tr {
 
 div.playlist .last_played, div.playlist .voters, div.playlist .refusal {
   display: none;
+}
+
+div.playlist.today div.track:nth-child(2) .voters {
+  display: block;
+  margin-top: .5em;
+  clear: both;
+  width: 100%;
 }
 
 div.playlist .metadata {
