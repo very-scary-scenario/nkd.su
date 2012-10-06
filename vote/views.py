@@ -100,7 +100,7 @@ def summary(request):
 
     # only consider votes from before the end of the current show, so we can work in the past
     for m in (Vote, ManualVote):
-        [trackset.add(v.track) for v in m.objects.filter(date__gte=showtime(prev_end=True)).order_by('date') if v.date < showtime(end=True)]
+        [trackset.add(v.track) for v in m.objects.filter(date__gte=showtime(prev_end=True)).order_by('date') if v.date < showtime(end=True) and v.track.eligible()]
 
     # ditto plays
     playlist = [p.track for p in Play.objects.filter(datetime__gte=showtime(prev_end=True)).order_by('-datetime') if p.datetime < showtime(end=True)]
@@ -108,7 +108,7 @@ def summary(request):
     context = {
             'playlist': build_context_for_tracks(playlist),
             'form': form,
-            'tracks': build_context_for_tracks(trackset, prioritise_eligible=True, sort_by_votes=True),
+            'tracks': build_context_for_tracks(trackset, sort_by_votes=True),
             'show': showtime(),
             'on_air': is_on_air(),
             }

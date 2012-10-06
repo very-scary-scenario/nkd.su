@@ -441,6 +441,10 @@ a#stamp:hover {
     margin-bottom: .15em;
   }
 
+  #beta {
+    margin-left: 4em;
+  }
+
   p.subheading {
     text-align: right;
   }
