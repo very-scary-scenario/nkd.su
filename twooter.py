@@ -1,3 +1,6 @@
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nekodesu.settings")
+
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
@@ -7,11 +10,10 @@ from vote.models import Vote, Play
 
 import json
 
-from os import listdir
-
 from django.conf import settings
 
 from sys import argv
+
 
 consumer_key = settings.CONSUMER_KEY
 consumer_secret = settings.CONSUMER_SECRET
@@ -55,7 +57,7 @@ class TweetListener(StreamListener):
         return True
 
 def parse_dir(directory):
-    tweetfiles = listdir(directory)
+    tweetfiles = os.listdir(directory)
 
     for tweetfile in tweetfiles:
         tf = open(directory + tweetfile)

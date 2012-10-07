@@ -43,7 +43,7 @@
       <img src="{{ vote.user_image }}" alt="{{ vote.screen_name }}">
         <div class="tweet_deets">
             <span class="screen_name">@{{ vote.screen_name }}</span>{% if vote.content %}:
-            <span class="text">{{ vote.content }}</span>{% endif %}
+            <span class="text">{{ vote.content|safe }}</span>{% endif %}
         </div>
     </a>
     {% endfor %}
