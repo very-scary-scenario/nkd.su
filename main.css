@@ -113,6 +113,7 @@ div.track:nth-child(11n+2) .played {
 .aligned, p.aside {
   text-align: center;
   clear: both;
+  margin: .5em 0;
 }
 
 .everything {
@@ -236,15 +237,51 @@ p.refusal {
 }
 
 /* login form */
-form.login, form.new_vote {
-  text-align: center;
-}
-
 form.login tr {
   clear: both;
 }
 
+form p label {
+  float: left;
+  width: 40%;
+  text-align: right;
+  padding-right: .5em;
+}
+
+form {
+  text-align: center;
+  margin: .5em 0;
+}
+
+form p {
+  text-align: left;
+  margin: .5em 0;
+}
+
+form p input {
+  text-align: left;
+  margin-left: .5em;
+}
+
+form p textarea {
+  text-align: left;
+  margin-left: .5em;
+}
+
+form ul.errorlist li {
+  list-style: none;
+  font-size: .7em;
+  color: #999;
+  position: relative;
+  top: .6em;
+}
+
 /* search form */
+
+.search_form p {
+  text-align: center;
+  margin: 0;
+}
 
 #submit {
   border-radius: 0;
