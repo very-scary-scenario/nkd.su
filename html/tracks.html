@@ -8,7 +8,12 @@
 {% include "tracklist.html" %}
 {% else %}
 <h2 class="message">no tracks found</h2>
-<p class="aligned everything"><a href="/roulette/">show me something else</a></p>
+<p class="aligned"><a href="/roulette/">show me something else</a></p>
+{% endif %}
+
+{% if query %}
+<!-- this is a search and you may not have found what you're looking for -->
+<p class="aligned everything">can't find what you're looking for? <a href="/request?q={{ query|urlencode }}">get it added to the library</a></p>
 {% endif %}
 
 {% if title == 'roulette' %}
