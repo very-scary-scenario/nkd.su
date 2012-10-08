@@ -91,12 +91,7 @@ def summary(request):
     """ Our landing page """
     trackset = set()
 
-    if request.method == 'POST':
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            return search(request, form)
-    else:
-        form = SearchForm()
+    form = SearchForm()
 
     # only consider votes from before the end of the current show, so we can work in the past
     for m in (Vote, ManualVote):
@@ -174,8 +169,13 @@ def search_for_tracks(keywords):
     return trackset
 
 
-def search(request, form):
+def search(request):
     """ Selected tracks """
+    form = SearchForm(request.GET)
+
+    if not form.is_valid():
+        raise Http404
+
     keywords = form.cleaned_data['q']
     keyword_list = split_query_into_keywords(keywords)
     trackset = search_for_tracks(keyword_list)

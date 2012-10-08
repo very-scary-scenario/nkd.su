@@ -26,7 +26,7 @@
           <p class="subtitle">a neko desu request robot</p>
         {% endif %}
 
-        <form id="search" class="search_form" name="search" action="/" method="post">{% csrf_token %}
+        <form id="search" class="search_form" name="search" action="/search" method="get">
           <a class="roulette" href="/roulette/">surprise me</a>
           <p>
           <input id="query" type="text" name="q" value="{% block query %}{% endblock %}">
