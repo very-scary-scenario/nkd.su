@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}404{% endblock %}
+{% block content %}
+
+<h2 class="aligned">Are you sure you want to {{ action }}?</h2>
+<p class="aside"><a href="?confirm=true">yep</a> : <a href="/">NO SHIT NO NO NO NOT AT ALL</a></p>
+
+{% if deets %}
+{{ deets|linebreaks }}
+{% endif %}
+
+{% endblock %}

@@ -114,6 +114,12 @@ class Track(models.Model):
     def undoable(self):
         return Play.objects.all().order_by('-datetime')[0].track == self
 
+    def title(self):
+        return split_id3_title(self.id3_title)[0]
+
+    def role(self):
+        return split_id3_title(self.id3_title)[1]
+
     def canonical_string(self):
         title, role = split_id3_title(self.id3_title)
         if role:

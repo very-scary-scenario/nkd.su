@@ -262,6 +262,14 @@ class ManualVoteForm(forms.ModelForm):
     class Meta:
         model = ManualVote
 
+def confirm(request, action, deets=None):
+    context = {
+            'action': action,
+            'deets': deets,
+            }
+
+    return render_to_response('confirm.html', RequestContext(request, context))
+
 @login_required
 def make_vote(request, track_id):
     track = Track.objects.get(id=track_id)
@@ -296,9 +304,14 @@ def mark_as_played(request, track_id):
     try:
         play.clean()
     except ValidationError:
-        return(HttpResponse(exc_info()[1].messages[0]))
+        context = {'message': exc_info()[1].messages[0]}
+        return render_to_response('message.html', RequestContext(request, context))
+
     else:
-        play.save()
+        if not ('confirm' in request.GET and request.GET['confirm'] == 'true'):
+            return confirm(request, 'mark %s as played' % track.title())
+        else:
+            play.save()
 
     # okay now we tweet it
     canon = track.canonical_string()
