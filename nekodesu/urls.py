@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^show/$', 'vote.views.latest_show', name='latest_show'),
     url(r'^search$', 'vote.views.search', name='search'),
     url(r'^upload/$', 'vote.views.upload_library', name='upload_library'),
+    url(r'^request/$', 'vote.views.request_addition', name='request_addition'),
 
     # registration
     url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}),

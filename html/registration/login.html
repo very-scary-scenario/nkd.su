@@ -6,16 +6,13 @@
 <h2 class=message>login</h2>
 
 {% if form.errors %}
-<p class="aside">wrong username/password, sorry</p>
+<p class="aside problems">wrong username/password, sorry</p>
 {% endif %}
 
 <form class="login" method="post" action="{% url django.contrib.auth.views.login %}">
-{% csrf_token %}
-  <p>user {{ form.username }}</p>
-  <p>pass {{ form.password }}</p>
-
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="login">
 </form>
 
 {% endblock %}

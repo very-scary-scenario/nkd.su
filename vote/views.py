@@ -13,15 +13,19 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from sys import exc_info
+import smtplib
 
 from datetime import date, timedelta
 
 from markdown import markdown
 import tweepy
+import akismet
 
 tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
 tw_auth.set_access_token(settings.ACCESS_TOKEN, settings.ACCESS_TOKEN_SECRET)
 tw_api = tweepy.API(tw_auth)
+
+ak_api = akismet.Akismet(key=settings.AKISMET_API_KEY, blog_url=settings.AKISMET_BLOG_URL, agent='nkdsu/0.0')
 
 def build_context_for_tracks(
         tracks,
@@ -174,7 +178,7 @@ def search(request):
     form = SearchForm(request.GET)
 
     if not form.is_valid():
-        raise Http404
+        return redirect('/')
 
     keywords = form.cleaned_data['q']
     keyword_list = split_query_into_keywords(keywords)
@@ -209,7 +213,7 @@ def artist(request, artist):
 def latest_show(request):
     """ Redirect to the latest show """
     latest_play = Play.objects.all().order_by('-datetime')[0]
-    return(redirect('/show/%s' % latest_play.datetime.strftime('%d-%m-%Y'))) 
+    return(redirect('/show/%s' % latest_play.datetime.strftime('%d-%m-%Y')))
 
 def show(request, showdate):
     """ All tracks from a particular show """
@@ -342,11 +346,13 @@ def unmark_as_played(request, track_id):
 
 
 class LibraryUploadForm(forms.Form):
-    library_xml = forms.FileField()
+    library_xml = forms.FileField(label='Library XML')
 
 @login_required
 def upload_library(request):
     """ Handling library uploads """
+    form = LibraryUploadForm()
+
     if request.method == 'POST':
         form = LibraryUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -365,12 +371,14 @@ def upload_library(request):
             f.close()
 
             return response
-        else:
-            context = {'form': form}
-            return render_to_response('upload.html', RequestContext(request, context))
 
-    elif not ('confirm' in request.GET and request.GET['confirm'] == 'true'):
-        context = {'form': LibraryUploadForm()}
+    elif (not ('confirm' in request.GET and request.GET['confirm'] == 'true')) or (request.method == 'POST' and not form.is_valid()):
+        # this is an initial load OR an invalid submission
+        context = {
+                'form': form,
+                'title': 'library update',
+                }
+
         return render_to_response('upload.html', RequestContext(request, context))
 
     else:
@@ -380,3 +388,58 @@ def upload_library(request):
         plist.close()
 
         return redirect('/')
+
+
+class RequestForm(forms.Form):
+    subject = forms.CharField()
+    name = forms.CharField()
+    email = forms.EmailField()
+    message = forms.CharField(widget=forms.Textarea)
+
+def sendmail(to, mail):
+    mailserver = smtplib.SMTP('smtp.gmail.com', 587)
+    mailserver.starttls()
+    mailserver.login(settings.GMAIL_USER, settings.GMAIL_PASS)
+    mailserver.sendmail(settings.GMAIL_USER, to, mail)
+    mailserver.close()
+
+def request_addition(request):
+    if 'q' in request.GET:
+        d = {'subject': request.GET['q']}
+    else:
+        d = {}
+
+    form = RequestForm(initial=d)
+
+    if request.method == 'POST':
+        form = RequestForm(request.POST)
+        if form.is_valid():
+            ak_data = {
+                    'user_ip': request.META['REMOTE_ADDR'],
+                    'user_agent': request.META['HTTP_USER_AGENT'],
+                    'referrer': request.META['HTTP_REFERER'],
+                    'comment_author': form.cleaned_data['name'],
+                    'comment_author_email': form.cleaned_data['email'],
+                    }
+
+            spam = ak_api.comment_check(form.cleaned_data['message'], data=ak_data)
+
+            if not spam:
+                mail_context = form.cleaned_data
+                mail_context['to'] = settings.REQUEST_CURATOR
+                mail = loader.render_to_string('mail', form.cleaned_data)
+
+                sendmail(settings.REQUEST_CURATOR, mail)
+
+                context = {'message': 'thank you for your request'}
+            else:
+                context = {'message': 'stop it with the spam'}
+
+            return render_to_response('message.html', RequestContext(request, context))
+
+    context = {
+            'title': 'request an addition',
+            'form': form,
+            }
+
+    return render_to_response('request.html', RequestContext(request, context))
