@@ -411,7 +411,7 @@ def request_addition(request):
     if 'q' in request.GET:
         d = {'subject': request.GET['q']}
     else:
-        d = {}
+        d = {'subject': "nkd.su addition request"}
 
     form = RequestForm(initial=d)
 
