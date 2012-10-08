@@ -316,7 +316,7 @@ div.playlist .last_played, div.playlist .voters, div.playlist .refusal {
   display: none;
 }
 
-div.playlist.today div.track:nth-child(2) .voters {
+div.playlist.today div.track .voters {
   display: block;
   margin-top: .5em;
   clear: both;
