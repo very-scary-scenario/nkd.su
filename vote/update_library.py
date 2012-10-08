@@ -4,10 +4,12 @@ from django.core.management.base import BaseCommand, CommandError
 import plistlib
 from models import Track
 
-def update_library(tree, dry_run=False):
+def update_library(plist, dry_run=False):
     changes = []
     alltracks = Track.objects.all()
     tracks_kept = []
+
+    tree = plistlib.readPlist(plist)
 
     for tid in tree['Tracks']:
         changed = False
@@ -39,7 +41,7 @@ def update_library(tree, dry_run=False):
         if changed:
             changes.append('change: %s' % db_track.canonical_string())
 
-        if (new or changed) and not dry_run:
+        if (new or changed) and (not dry_run):
             db_track.save()
 
         tracks_kept.append(db_track)

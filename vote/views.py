@@ -4,6 +4,7 @@
 from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
 from vote.models import Track, Vote, ManualVote, Play, showtime, is_on_air, split_id3_title
+from vote.update_library import update_library
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
@@ -84,7 +85,6 @@ def build_context_for_tracks(
     return context
 
 class SearchForm(forms.Form):
-    """ Search form """
     q = forms.CharField()
 
 def summary(request):
@@ -309,7 +309,7 @@ def mark_as_played(request, track_id):
 
     else:
         if not ('confirm' in request.GET and request.GET['confirm'] == 'true'):
-            return confirm(request, 'mark %s as played' % track.title())
+            return confirm(request, 'mark %s as played' % track.derived_title())
         else:
             play.save()
 
@@ -339,3 +339,44 @@ def unmark_as_played(request, track_id):
     latest_play.delete()
 
     return(redirect('/'))
+
+
+class LibraryUploadForm(forms.Form):
+    library_xml = forms.FileField()
+
+@login_required
+def upload_library(request):
+    """ Handling library uploads """
+    if request.method == 'POST':
+        form = LibraryUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            f = open(settings.TMP_XML_PATH, 'w')
+            f.write(request.FILES['library_xml'].read())
+            f.close()
+
+            f = open(settings.TMP_XML_PATH, 'r')
+            changes = update_library(f, dry_run=True)
+
+            if changes:
+                summary = '\n'.join(changes)
+            else:
+                summary = 'no changes'
+            response = confirm(request, 'update the library', summary)
+            f.close()
+
+            return response
+        else:
+            context = {'form': form}
+            return render_to_response('upload.html', RequestContext(request, context))
+
+    elif not ('confirm' in request.GET and request.GET['confirm'] == 'true'):
+        context = {'form': LibraryUploadForm()}
+        return render_to_response('upload.html', RequestContext(request, context))
+
+    else:
+        # act; this is a confirmation
+        plist = open(settings.TMP_XML_PATH)
+        update_library(plist, dry_run=False)
+        plist.close()
+
+        return redirect('/')

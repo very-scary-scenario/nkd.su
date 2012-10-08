@@ -8,7 +8,7 @@ class Command(BaseCommand):
     help = 'manually update library from songlibrary.xml'
 
     def handle(self, *args, **options):
-        tree = plistlib.readPlist('songlibrary.xml')
+        plist = open('songlibrary.xml')
 
         if 'commit' in args:
             dry_run = False
@@ -16,4 +16,5 @@ class Command(BaseCommand):
             dry_run = True
             print "Performing dry run; 'commit' to confirm"
 
-        self.stdout.write('\n'.join(update_library(tree, dry_run=dry_run))+'\n')
+        self.stdout.write('\n'.join(update_library(plist, dry_run=dry_run))+'\n')
+        plist.close()

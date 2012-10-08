@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^show/(?P<showdate>.+)/$', 'vote.views.show', name='show'),
     url(r'^show/$', 'vote.views.latest_show', name='latest_show'),
     url(r'^search$', 'vote.views.search', name='search'),
+    url(r'^upload/$', 'vote.views.upload_library', name='upload_library'),
 
     # registration
     url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}),
