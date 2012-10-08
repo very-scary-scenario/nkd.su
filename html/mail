@@ -1,5 +1,0 @@
-To: {{ to }}
-From: "{{ name }}" <{{ email }}>
-Subject: {{ subject }}
-
-{{ message }}

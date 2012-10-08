@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from sys import exc_info
 import smtplib
+from cStringIO import StringIO
+from email.mime.text import MIMEText
 
 from datetime import date, timedelta
 
@@ -397,11 +399,13 @@ class RequestForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea)
 
 def sendmail(to, mail):
-    mailserver = smtplib.SMTP('smtp.gmail.com', 587)
-    mailserver.starttls()
-    mailserver.login(settings.GMAIL_USER, settings.GMAIL_PASS)
-    mailserver.sendmail(settings.GMAIL_USER, to, mail)
-    mailserver.close()
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.ehlo()
+    s.starttls()
+    s.ehlo()
+    s.login(settings.GMAIL_USER, settings.GMAIL_PASS)
+    s.sendmail(settings.GMAIL_USER, to, mail)
+    s.close()
 
 def request_addition(request):
     if 'q' in request.GET:
@@ -414,22 +418,26 @@ def request_addition(request):
     if request.method == 'POST':
         form = RequestForm(request.POST)
         if form.is_valid():
+            f = form.cleaned_data
             ak_data = {
                     'user_ip': request.META['REMOTE_ADDR'],
                     'user_agent': request.META['HTTP_USER_AGENT'],
                     'referrer': request.META['HTTP_REFERER'],
-                    'comment_author': form.cleaned_data['name'],
-                    'comment_author_email': form.cleaned_data['email'],
+                    'comment_author': f['name'].encode('ascii', errors='ignore'),
+                    'comment_author_email': f['email'].encode('ascii', errors='ignore'),
                     }
 
-            spam = ak_api.comment_check(form.cleaned_data['message'], data=ak_data)
+            ascii_message = f['message'].encode('ascii', errors='ignore')
+
+            spam = ak_api.comment_check(ascii_message, data=ak_data)
 
             if not spam:
-                mail_context = form.cleaned_data
-                mail_context['to'] = settings.REQUEST_CURATOR
-                mail = loader.render_to_string('mail', form.cleaned_data)
+                msg = MIMEText(f['message'], _charset="UTF-8")
+                msg['Subject'] = f['subject']
+                msg['From'] = '"%s" <%s>' % (f['name'], f['email'])
+                msg['To'] = settings.REQUEST_CURATOR
 
-                sendmail(settings.REQUEST_CURATOR, mail)
+                sendmail(settings.REQUEST_CURATOR, msg.as_string())
 
                 context = {'message': 'thank you for your request'}
             else:
