@@ -1,5 +1,5 @@
 To: {{ to }}
 From: "{{ name }}" <{{ email }}>
-Subject: {{ subject }}
+Subject: {{ subject|safe }}
 
-{{ message }}
+{{ message|safe }}
