@@ -388,6 +388,11 @@ a#stamp:hover {
 }
 
 @media (min-width:551px) {
+  #header {
+    margin: 1em 0;
+    height: 7em;
+  }
+
   h2.heading {
     width: 57%;
     text-align: right;
@@ -398,28 +403,26 @@ a#stamp:hover {
     text-align: right;
   }
 
-  .subtitle {
-    width: 37.5%;
+  div#title {
+    float: left;
+    width: 50%;
     text-align: right;
+    margin-top: .3em;
   }
 
   h1 {
-    clear: both;
-    width: 37.5%;
-    text-align: right;
     font-size: 2.5em;
     font-weight: bold;
     z-index: 1;
     margin-bottom: .15em;
   }
 
-  .search_form {
-    position: relative;
-    bottom: 4.9em;
-    margin-bottom: -2em;
+  div#search_div {
+    display: block;
+    float: left;
     text-align: center;
-    margin-left: 40%;
-    width: 40%;
+    margin-left: .5em;
+    max-width: 40%;
   }
 
   div.metadata {
@@ -471,6 +474,11 @@ a#stamp:hover {
 }
 
 @media (max-width:550px) {
+  #header {
+    margin: 1em 0;
+    height: 12em;
+  }
+
   h1 {
     font-size: 2.5em;
     font-weight: bold;
