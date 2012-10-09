@@ -260,7 +260,6 @@ form p {
 
 form p input {
   text-align: left;
-  margin-left: .5em;
 }
 
 form p textarea {
@@ -418,10 +417,11 @@ a#stamp:hover {
   }
 
   div#search_div {
+    padding-left: .6em;
     display: block;
     float: left;
     text-align: center;
-    margin-left: .5em;
+    margin-left: .7em;
     max-width: 40%;
   }
 
