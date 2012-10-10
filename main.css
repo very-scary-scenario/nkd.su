@@ -241,13 +241,6 @@ form.login tr {
   clear: both;
 }
 
-form p label {
-  float: left;
-  width: 40%;
-  text-align: right;
-  padding-right: .5em;
-}
-
 form {
   text-align: center;
   margin: .5em 0;
@@ -295,6 +288,7 @@ form ul.errorlist li {
   top: -1px;
   z-index: 0;
   padding: 0 .3em .1em;
+  margin: 0 auto;
 }
 
 #submit:hover {
@@ -470,6 +464,14 @@ a#stamp:hover {
     width: 80%;
     margin: 0 auto;
   }
+
+  form p label {
+    clear: both;
+    float: left;
+    width: 42%;
+    text-align: right;
+    padding-right: .5em;
+  }
 }
 
 @media (max-width:550px) {
@@ -528,5 +530,13 @@ a#stamp:hover {
 
   div.voters div.tweet_deets {
     min-width: 70%;
+  }
+
+  form p input, form p label, form p textarea {
+    display: block;
+  }
+
+  form p label {
+    margin-top: .5em;
   }
 }
