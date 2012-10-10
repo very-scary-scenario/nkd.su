@@ -449,7 +449,7 @@ def request_addition(request):
             if not spam:
                 fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
                 msg = MIMEText('\n\n'.join(fields), _charset="UTF-8")
-                msg['Subject'] = 'nkd.su library addition request: %s' % f['title']
+                msg['Subject'] = '[nkd.su] %s' % f['title']
                 msg['From'] = '"nkd.su" <nkdsu@bldm.us>'
                 msg['To'] = settings.REQUEST_CURATOR
 
