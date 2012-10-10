@@ -393,10 +393,26 @@ def upload_library(request):
 
 
 class RequestForm(forms.Form):
-    subject = forms.CharField()
-    name = forms.CharField()
-    email = forms.EmailField()
-    message = forms.CharField(widget=forms.Textarea)
+    title = forms.CharField(required=False)
+    artist = forms.CharField(required=False)
+    show = forms.CharField(label="Source Anime", required=False)
+    role = forms.CharField(label="Role (OP/ED/Insert/Character/etc.)", required=False)
+    details = forms.CharField(widget=forms.Textarea, label="Additional Details", required=False)
+    contact = forms.CharField(label="Twitter/Email/Whatever", required=False)
+
+    def clean(self):
+        cleaned_data = super(RequestForm, self).clean()
+
+        passable = False
+        for t in [cleaned_data[f] for f in cleaned_data]:
+            if t:
+                passable = True
+                break
+
+        if not passable:
+            raise forms.ValidationError("I'm sure you can give us more information than that.")
+
+        return cleaned_data
 
 def sendmail(to, mail):
     s = smtplib.SMTP('smtp.gmail.com', 587)
@@ -409,9 +425,9 @@ def sendmail(to, mail):
 
 def request_addition(request):
     if 'q' in request.GET:
-        d = {'subject': request.GET['q']}
+        d = {'title': request.GET['q']}
     else:
-        d = {'subject': "nkd.su addition request"}
+        d = {}
 
     form = RequestForm(initial=d)
 
@@ -423,18 +439,18 @@ def request_addition(request):
                     'user_ip': request.META['REMOTE_ADDR'],
                     'user_agent': request.META['HTTP_USER_AGENT'],
                     'referrer': request.META['HTTP_REFERER'],
-                    'comment_author': f['name'].encode('ascii', errors='ignore'),
-                    'comment_author_email': f['email'].encode('ascii', errors='ignore'),
+                    'comment_author': f['contact'].encode('ascii', errors='ignore'),
                     }
 
-            ascii_message = f['message'].encode('ascii', errors='ignore')
+            ascii_message = f['details'].encode('ascii', errors='ignore')
 
             spam = ak_api.comment_check(ascii_message, data=ak_data)
 
             if not spam:
-                msg = MIMEText(f['message'], _charset="UTF-8")
-                msg['Subject'] = f['subject']
-                msg['From'] = '"%s" <%s>' % (f['name'], f['email'])
+                fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
+                msg = MIMEText('\n\n'.join(fields), _charset="UTF-8")
+                msg['Subject'] = 'nkd.su library addition request: %s' % f['title']
+                msg['From'] = '"nkd.su" <nkdsu@bldm.us>'
                 msg['To'] = settings.REQUEST_CURATOR
 
                 sendmail(settings.REQUEST_CURATOR, msg.as_string())
