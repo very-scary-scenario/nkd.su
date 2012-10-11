@@ -34,7 +34,7 @@ def parse(data):
         # this could be a deletion or some shit
         if 'delete' in tweet:
             print 'deleting tweet %s' % tweet['delete']['id']
-            tasks.delete_vote(tweet['delete']['id'])
+            tasks.delete_vote.delay(tweet['delete']['id'])
 
         return
 
