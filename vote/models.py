@@ -146,10 +146,11 @@ class Vote(models.Model):
     screen_name = models.CharField(max_length=100)
     text = models.CharField(max_length=140)
     user_id = models.IntegerField()
-    tweet_id = models.IntegerField()
+    tweet_id = models.IntegerField(primary_key=True)
     track = models.ForeignKey(Track)
     date = models.DateTimeField()
     user_image = models.URLField()
+    name = models.CharField(max_length=20)
 
     def content(self):
         return self.text.replace(str(self.track.id), '').replace('@nkdsu', '').strip()

@@ -89,6 +89,7 @@ def log_vote(tweet):
                 date=date,
                 user_image=tweet['user']['profile_image_url'],
                 text=tweet['text'],
+                name=tweet['user']['name'],
                 )
 
     else: # this is from the archive
@@ -100,6 +101,7 @@ def log_vote(tweet):
                 date=date,
                 user_image=tweet['profile_image_url'],
                 text=tweet['text'],
+                name=tweet['from_user_name'],
                 )
 
     try:
@@ -109,3 +111,6 @@ def log_vote(tweet):
     else:
         the_vote.save()
 
+@task
+def delete_vote(tweet_id):
+    Vote.objects.get(tweet_id=tweet_id).delete()

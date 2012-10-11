@@ -32,6 +32,9 @@ def parse(data):
 
     if 'text' not in tweet:
         # this could be a deletion or some shit
+        if 'delete' in tweet:
+            tasks.delete_vote(tweet['delete']['id'])
+
         return
 
 
@@ -82,8 +85,8 @@ def react():
 
 if 'peruse' in argv:
     print 'stripping...'
-    for play in Play.objects.all():
-        play.delete()
+    #for play in Play.objects.all():
+        #play.delete()
 
     for vote in Vote.objects.all():
         vote.delete()
