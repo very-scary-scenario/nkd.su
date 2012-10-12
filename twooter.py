@@ -33,7 +33,8 @@ def parse(data):
     if 'text' not in tweet:
         # this could be a deletion or some shit
         if 'delete' in tweet:
-            tasks.delete_vote(tweet['delete']['id'])
+            print 'deleting tweet %s' % tweet['delete']['id']
+            tasks.delete_vote.delay(tweet['delete']['id'])
 
         return
 
@@ -81,7 +82,7 @@ def react():
     auth.set_access_token(access_token, access_token_secret)
 
     stream = Stream(auth, l, headers={'User-Agent': 'nkd.su'})
-    stream.filter(track=['@nkdsu'], follow=[str(user_id)])
+    stream.filter(track=['@nkdsu']) #, follow=[str(user_id)])
 
 if 'peruse' in argv:
     #print 'stripping...'

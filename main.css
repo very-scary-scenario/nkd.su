@@ -48,6 +48,7 @@ h2.message {
   -ms-transform: rotate(-15deg); 
   -moz-transform: rotate(-15deg);
   -o-transform: rotate(-15deg);
+  left: .2em;
 }
   
 
@@ -228,7 +229,7 @@ a.voter:hover div.tweet_deets {
   font-size: .8em;
 }
 
-div.tweet_deets .screen_name {
+div.tweet_deets .screen_name, div.tweet_deets .full_name {
   color: #d66;
 }
 
