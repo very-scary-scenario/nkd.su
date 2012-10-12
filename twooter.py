@@ -85,12 +85,12 @@ def react():
     stream.filter(track=['@nkdsu']) #, follow=[str(user_id)])
 
 if 'peruse' in argv:
-    print 'stripping...'
+    #print 'stripping...'
     #for play in Play.objects.all():
         #play.delete()
 
-    for vote in Vote.objects.all():
-        vote.delete()
+    #for vote in Vote.objects.all():
+        #vote.delete()
 
     peruse()
 else:
