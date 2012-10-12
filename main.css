@@ -229,8 +229,13 @@ a.voter:hover div.tweet_deets {
   font-size: .8em;
 }
 
-div.tweet_deets .screen_name, div.tweet_deets .full_name {
+div.tweet_deets div.tweet_deets, .full_name {
   color: #d66;
+}
+
+.screen_name {
+  color: #999;
+  font-size: .8em;
 }
 
 p.refusal {
