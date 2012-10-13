@@ -20,11 +20,9 @@ access_token = settings.READING_ACCESS_TOKEN
 access_token_secret = settings.READING_ACCESS_TOKEN_SECRET
 
 def parse(tweet):
-    print type(tweet)
-    print dir(tweet)
-
     if 'text' not in tweet:
         # this could be a deletion or some shit
+        print tweet
         if 'delete' in tweet:
             print 'deleting tweet %s' % tweet['delete']['status']['id']
             tasks.delete_vote.delay(tweet['delete']['status']['id'])
@@ -46,7 +44,7 @@ def react():
     tweeterator = stream.user(replies='all')
 
     for tweet in tweeterator:
-        parse(tweet)
+        parse(dict(tweet))
 
 
 def parse_dir(directory):
