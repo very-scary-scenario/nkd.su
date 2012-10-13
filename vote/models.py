@@ -50,6 +50,7 @@ class Week(object):
         self.start = start
         self.finish = finish
         self.showtime = showtime
+        self.date_range = [self.start, self.finish]
 
     def __eq__(self, other):
         return self.showtime == other.showtime
@@ -81,7 +82,7 @@ class Week(object):
         else:
             order = 'datetime'
 
-        plays = Play.objects.filter(datetime__range=[self.start, self.finish]).order_by(order)
+        plays = Play.objects.filter(datetime__range=self.date_range).order_by(order)
 
         if track:
             plays.filter(track=track)
@@ -91,9 +92,34 @@ class Week(object):
     def block(self, track):
         """ Get any block from this week """
         try:
-            return Block.objects.get(date__range=[self.start, self.finish], track=track)
+            return Block.objects.get(date__range=self.date_range, track=track)
         except Block.DoesNotExist:
             return None
+
+    def _shortlist_or_discard(self, track, c):
+        """ Does the actual work for shortlist() and discard()
+        c is the class to use """
+        if track:
+            try:
+                return c.objects.get(date__range=self.date_range, track=track)
+            except c.DoesNotExist:
+                return None
+        else:
+            return [s.track for s in c.objects.filter(date__range=self.date_range)]
+
+
+    def shortlist(self, track=None):
+        """ Return a list of shortlisted tracks
+        if track is specified, return its Shortlist object for this week if present or None """
+        return self._shortlist_or_discard(track, Shortlist)
+
+    def discard(self, track=None):
+        """ Like shortlist(), but for discards """
+        return self._shortlist_or_discard(track, Discard)
+
+    def shortlist_or_discard(self, track):
+        """ Return True if there are shortlists or discards on this track this week, otherwise return False """
+        return self.discard(track) or self.shortlist(track)
 
     def votes(self, track=None):
         """ Get all votes of any kind (for a particular track) from this week """
@@ -108,13 +134,13 @@ class Week(object):
         return (votes, manual_votes)
 
     def _manual_votes(self, track=None):
-        manual_votes = ManualVote.objects.filter(date__range=[self.start, self.finish]).order_by('date')
+        manual_votes = ManualVote.objects.filter(date__range=self.date_range).order_by('date')
         if track:
             manual_votes = manual_votes.filter(track=track)
         return manual_votes
 
     def _votes(self, track=None):
-        votes = Vote.objects.filter(date__range=[self.start, self.finish]).order_by('date')
+        votes = Vote.objects.filter(date__range=self.date_range).order_by('date')
         if track:
             votes = votes.filter(track=track)
         return votes
@@ -164,7 +190,6 @@ class Track(models.Model):
             return None
 
     def weeks_since_play(self, time=None):
-        print self
         time = now_or_time(time)
         this_week = Week(time)
         last_play = self.last_play()
@@ -238,6 +263,16 @@ class Track(models.Model):
         week = Week(time)
         return week.votes(track=self)
 
+    def shortlist(self, time=None):
+        time = now_or_time(time)
+        week = Week(time)
+        return week.shortlist(self)
+
+    def discard(self, time=None):
+        time = now_or_time(time)
+        week = Week(time)
+        return week.discard(self)
+
 class Vote(models.Model):
     def __unicode__(self):
         return '%s for %s at %s; "%s"' % (self.screen_name, self.track, self.date, self.content())
@@ -303,6 +338,19 @@ class Block(models.Model):
         if self.track.ineligible():
             raise ValidationError('track is already blocked')
 
+class Shortlist(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    track = models.ForeignKey(Track)
+    def clean(self):
+        if Week(self.date).shortlist_or_discard(self.track):
+            raise ValidationError('track is already shortlisted or discarded')
+
+class Discard(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    track = models.ForeignKey(Track)
+    def clean(self):
+        if Week(self.date).shortlist_or_discard(self.track):
+            raise ValidationError('track is already shortlisted or discarded')
 
 class ManualVote(models.Model):
     track = models.ForeignKey(Track, editable=False)

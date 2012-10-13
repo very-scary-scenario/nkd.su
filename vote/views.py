@@ -3,7 +3,7 @@
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
-from vote.models import Track, Vote, ManualVote, Play, Block, Week, split_id3_title, is_on_air
+from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard, Week, split_id3_title, is_on_air
 from vote.update_library import update_library
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
@@ -43,7 +43,14 @@ def summary(request):
     [trackset.add(v.track) for v in week.votes()]
 
     unfiltered_tracklist = sorted(trackset, reverse=True, key=lambda t: len(t.votes()))
-    tracklist = [t for t in unfiltered_tracklist if t.eligible()]
+    if request.user.is_authenticated:
+        tracklist = [t for t in unfiltered_tracklist if t.eligible() and not week.shortlist_or_discard(t)]
+        shortlist = week.shortlist()
+        discard = week.discard()
+    else:
+        shortlist = None
+        discard = None
+        tracklist = [t for t in unfiltered_tracklist if t.eligible()]
     tracklist.extend([t for t in unfiltered_tracklist if t.ineligible() and (t.ineligible() != 'played this week')])
 
     # ditto plays
@@ -53,6 +60,8 @@ def summary(request):
             'playlist': [p.track for p in playlist],
             'form': form,
             'tracks': tracklist,
+            'shortlist': shortlist,
+            'discard': discard,
             'show': week.showtime,
             'on_air': is_on_air(),
             }
@@ -434,3 +443,38 @@ def make_block(request, track_id):
             }
 
     return render_to_response('vote.html', RequestContext(request, context))
+
+
+def shortlist_or_discard(request, track_id, c):
+    """ Shortlist or discard something, whichever class is passed to c """
+    track = Track.objects.get(id=track_id)
+
+    instance = c(track=track)
+    try:
+        instance.clean()
+    except ValidationError:
+        context = {'message': exc_info()[1].messages[0]}
+        return render_to_response('message.html', RequestContext(request, context))
+    else:
+        instance.save()
+        return redirect('/')
+
+@login_required
+def shortlist(request, track_id):
+    return shortlist_or_discard(request, track_id, Shortlist)
+
+@login_required
+def discard(request, track_id):
+    return shortlist_or_discard(request, track_id, Discard)
+
+@login_required
+def undiscard(request, track_id):
+    track = Track.objects.get(id=track_id)
+    Week().discard(track).delete()
+    return redirect('/')
+
+@login_required
+def unshortlist(request, track_id):
+    track = Track.objects.get(id=track_id)
+    Week().shortlist(track).delete()
+    return redirect('/')
