@@ -52,7 +52,7 @@ h2.message {
 }
   
 
-.played, #beta {
+.disabled, #beta {
   font-family: "IM Fell English SC", serif;
   position: absolute;
   padding-left: 1em;
@@ -64,47 +64,47 @@ h2.message {
 
 /* random jaunty angles! */
 
-div.track:nth-child(2n+1) .played {
+div.track:nth-child(2n+1) .disabled {
   -webkit-transform: rotate(3deg); 
   -ms-transform: rotate(3deg); 
   -moz-transform: rotate(3deg);
   -o-transform: rotate(3deg);
 }
 
-div.track:nth-child(3n+2) .played {
+div.track:nth-child(3n+2) .disabled {
   -webkit-transform: rotate(-4deg); 
   -ms-transform: rotate(-4deg); 
   -moz-transform: rotate(-4deg);
   -o-transform: rotate(-4deg);
 }
 
-div.track:nth-child(5n+3) .played {
+div.track:nth-child(5n+3) .disabled {
   -webkit-transform: rotate(5deg); 
   -ms-transform: rotate(5deg); 
   -moz-transform: rotate(5deg);
   -o-transform: rotate(5deg);
 }
 
-div.track:nth-child(7n+5) .played {
+div.track:nth-child(7n+5) .disabled {
   -webkit-transform: rotate(-6deg); 
   -ms-transform: rotate(-6deg); 
   -moz-transform: rotate(-6deg);
   -o-transform: rotate(-6deg);
 }
 
-div.track:nth-child(3n+1) .played {
+div.track:nth-child(3n+1) .disabled {
   font-size: 3.7em;
   padding-left: 1.2em;
 }
-div.track:nth-child(5n) .played {
+div.track:nth-child(5n) .disabled {
   font-size: 4.5em;
   padding-left: 0.6em;
 }
-div.track:nth-child(7n) .played {
+div.track:nth-child(7n) .disabled {
   font-size: 3.5em;
   padding-left: 1.4em;
 }
-div.track:nth-child(11n+2) .played {
+div.track:nth-child(11n+2) .disabled {
   font-size: 4.2em;
   padding-left: 0.8em;
 }
@@ -451,7 +451,7 @@ a#stamp:hover {
     margin-bottom: 1.5em;
   }
 
-  div.playlist div.track div.played {
+  div.playlist div.track div.disabled {
     font-size: 2em;
     margin-top: .4em;
     padding-left: 1em;
@@ -462,7 +462,7 @@ a#stamp:hover {
     width: 68%;
   }
 
-  .played {
+  .disabled {
     font-size: 4em;
   }
 
@@ -529,7 +529,7 @@ a#stamp:hover {
     margin: 1em 0;
   }
 
-  div#everything div.track div.played {
+  div#everything div.track div.disabled {
     font-size: 2em;
     margin-top: .5em;
   }
