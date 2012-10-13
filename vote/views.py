@@ -285,7 +285,10 @@ def unmark_as_played(request, track_id):
     if not ('confirm' in request.GET and request.GET['confirm'] == 'true'):
         return confirm(request, 'unmark %s as played' % track.derived_title())
     else:
-        tw_api.destroy_status(id=latest_play.tweet_id)
+        try:
+            tw_api.destroy_status(id=latest_play.tweet_id)
+        except tweepy.TweepError:
+            pass
         latest_play.delete()
         return(redirect('/'))
 

@@ -211,7 +211,7 @@ class Vote(models.Model):
 
     def clean(self):
         if not self.track.eligible(self.date):
-            raise ValidationError('This track has been played recently.')
+            raise ValidationError(self.track.ineligible())
 
         # every vote placed after the cutoff for this track by this person
         prior_votes = Week(self.date)._votes(track=self.track).filter(user_id=self.user_id)
