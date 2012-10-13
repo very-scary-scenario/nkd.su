@@ -233,6 +233,7 @@ a.voter:hover div.tweet_deets {
   color: #444;
   max-width: 25%;
   font-size: .8em;
+  overflow: hidden;
 }
 
 div.tweet_deets div.tweet_deets, .full_name {
