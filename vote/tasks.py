@@ -4,7 +4,7 @@ import Levenshtein
 
 from celery import task
 
-from models import Play, Vote, Track, showtime
+from models import Play, Vote, Track
 
 from django.utils import timezone
 from django.core.exceptions import ValidationError

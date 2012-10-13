@@ -1,26 +1,26 @@
 <!-- {{ track.id }} -->
 <div class="track {% if track.eligible %}eligible{% else %}ineligible{% endif %}">
-  {% if not track.eligible %}
+  {% if track.ineligible %}
   <div class="played">
-    [played]
+    [disabled]
   </div>
   {% endif %}
   <div class="metadata">
     <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>
     <p class="title">
     {% if track.eligible %}
-    <a title="Vote for {{ track.title }}" class="upvote" href="https://twitter.com/intent/tweet?text=@nkdsu%20{{ track.id }}">
+    <a title="Vote for {{ track.derived_title }}" class="upvote" href="https://twitter.com/intent/tweet?text=@nkdsu%20{{ track.id }}">
     <span class="plusone">+1</span>
     {% endif %}
-    <span class="title">{{ track.title }}</span>
+    <span class="title">{{ track.derived_title }}</span>
     {% if track.eligible %}
     </a>
     {% endif %}
     </p>
 
 
-    {% if track.role %}
-      <p class="role">{{ track.role }}</p>
+    {% if track.derived_role %}
+      <p class="role">{{ track.derived_role }}</p>
     {% endif %}
 
     {% if track.last_played %}
@@ -33,8 +33,8 @@
     {% if user.is_authenticated and not track.eligible and track.undoable %}
     <p class="peter"><a href="/unplay/{{ track.id }}/">i didn't mean to play this</a></p>
     {% endif %}
-    {% if not track.eligible %}
-    <p class="refusal">you can not request this track this week</p>
+    {% if track.ineligible %}
+    <p class="refusal">{{ track.ineligible }}</p>
     {% endif %}
   </div>
   <div class="voters">

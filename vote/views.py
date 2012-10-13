@@ -3,7 +3,7 @@
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
-from vote.models import Track, Vote, ManualVote, Play, showtime, is_on_air, split_id3_title
+from vote.models import Track, Vote, ManualVote, Play, Week, split_id3_title, is_on_air
 from vote.update_library import update_library
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
@@ -13,104 +13,46 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from sys import exc_info
-import smtplib
 from cStringIO import StringIO
 from email.mime.text import MIMEText
 
-from datetime import date, timedelta
+from vote.mail import sendmail
+from datetime import date, timedelta, datetime
 
 from markdown import markdown
 import tweepy
 import akismet
 
-tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-tw_auth.set_access_token(settings.ACCESS_TOKEN, settings.ACCESS_TOKEN_SECRET)
-tw_api = tweepy.API(tw_auth)
+post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
+post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET)
+tw_api = tweepy.API(post_tw_auth)
 
 ak_api = akismet.Akismet(key=settings.AKISMET_API_KEY, blog_url=settings.AKISMET_BLOG_URL, agent='nkdsu/0.0')
-
-def build_context_for_tracks(
-        tracks,
-        hide_ineligible=False,
-        sort_by_votes=False,
-        get_last_played=True,
-        prioritise_eligible=False,
-        ):
-    """ Build a template-digestible context for a list/set of tracks """
-    context = []
-    ineligible_context = []
-
-    for track in tracks:
-        title, role = split_id3_title(track.id3_title)
-
-        if get_last_played:
-            last_played = track.last_played()
-            if last_played== None:
-                last_played = ''
-        else:
-            last_played = None
-
-        votes = Vote.objects.filter(track=track, date__gt=showtime(prev_end=True)).order_by('date')
-        manual_votes = ManualVote.objects.filter(track=track, date__gt=showtime(prev_end=True)).order_by('date')
-
-        # vote replicator for testan'
-        #n = 15
-        #new_votes = []
-        #while n > 0:
-        #    for vote in votes:
-        #        new_votes.append(vote)
-        #    n -= 1
-        #votes = new_votes
-
-        eligible = track.eligible()
-
-        the_dict = {
-                'title': title,
-                'role': role,
-                'artist': track.id3_artist,
-                'id': track.id,
-                'votes': votes,
-                'manual_votes': manual_votes,
-                'last_played': last_played,
-                'eligible': eligible,
-                'undoable': track.undoable(),
-                }
-
-        if (not (hide_ineligible or prioritise_eligible)) or eligible:
-            context.append(the_dict)
-        elif prioritise_eligible:
-            ineligible_context.append(the_dict)
-
-    # sort by votes
-    if sort_by_votes:
-        for l in (context, ineligible_context):
-            l.sort(key=lambda track: len(track['votes']) + len(track['manual_votes']), reverse=True)
-
-    context = context + ineligible_context
-
-    return context
 
 class SearchForm(forms.Form):
     q = forms.CharField()
 
 def summary(request):
     """ Our landing page """
+    week = Week()
     trackset = set()
 
     form = SearchForm()
 
     # only consider votes from before the end of the current show, so we can work in the past
-    for m in (Vote, ManualVote):
-        [trackset.add(v.track) for v in m.objects.filter(date__gte=showtime(prev_end=True)).order_by('date') if v.date < showtime(end=True) and v.track.eligible()]
+    [trackset.add(v.track) for v in week.votes()]
+
+    tracklist = sorted(trackset, reverse=True, key=lambda t: len(t.votes()))
+    tracklist = [t for t in tracklist if t.ineligible() != 'played this week']
 
     # ditto plays
-    playlist = [p.track for p in Play.objects.filter(datetime__gte=showtime(prev_end=True)).order_by('-datetime') if p.datetime < showtime(end=True)]
+    playlist = week.plays(invert=True)
 
     context = {
-            'playlist': build_context_for_tracks(playlist),
+            'playlist': [p.track for p in playlist],
             'form': form,
-            'tracks': build_context_for_tracks(trackset, sort_by_votes=True),
-            'show': showtime(),
+            'tracks': tracklist,
+            'show': week.showtime,
             'on_air': is_on_air(),
             }
 
@@ -119,11 +61,10 @@ def summary(request):
 
 def everything(request):
     """ Every track """
-    tracks = Track.objects.all()
     context = {
             'title': 'everything',
-            'tracks': build_context_for_tracks(tracks, sort_by_votes=True),
-            'show': showtime(),
+            'tracks': Track.objects.all(),
+            'show': Week().showtime,
             'on_air': is_on_air(),
             }
 
@@ -142,8 +83,8 @@ def roulette(request):
 
     context = {
             'title': 'roulette',
-            'tracks': build_context_for_tracks(tracks),
-            'show': showtime(),
+            'tracks': tracks,
+            'show': Week().showtime,
             'on_air': is_on_air(),
             }
 
@@ -189,8 +130,8 @@ def search(request):
     context = {
             'title': keywords,
             'query': keywords,
-            'tracks': build_context_for_tracks(trackset),
-            'show': showtime(),
+            'tracks': trackset,
+            'show': Week().showtime,
             'on_air': is_on_air(),
             }
 
@@ -205,48 +146,44 @@ def artist(request, artist):
 
     context = {
             'title': artist.lower(),
-            'tracks': build_context_for_tracks(artist_tracks),
-            'show': showtime(),
+            'tracks': artist_tracks,
+            'show': Week().showtime,
             'on_air': is_on_air(),
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
 
 def latest_show(request):
-    """ Redirect to the latest show """
-    latest_play = Play.objects.all().order_by('-datetime')[0]
-    return(redirect('/show/%s' % latest_play.datetime.strftime('%d-%m-%Y')))
+    """ Redirect to the last week's show """
+    last_week = Week().prev()
+    return(redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y')))
 
 def show(request, showdate):
-    """ All tracks from a particular show """
-    d, m, y = [int(n) for n in showdate.split('-')]
-    start = date(y, m, d)
-    end = start + timedelta(1)
-
-    plays = list(Play.objects.filter(datetime__gt=start, datetime__lt=end).order_by('datetime'))
-
-    try:
-        next_play = Play.objects.filter(datetime__gt=plays[-1].datetime).order_by('datetime')[0]
-    except IndexError:
-        next_show = None
-    else:
-        next_show = next_play.datetime
-
-    try:
-        prev_play = Play.objects.filter(datetime__lt=plays[0].datetime).order_by('-datetime')[0]
-    except IndexError:
-        prev_show = None
-    else:
-        prev_show = prev_play.datetime
-
+    """ All tracks from a particular Week's show. """
+    day, month, year = (int(t) for t in showdate.split('-'))
+    week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc))
+    plays = week.plays()
 
     if not plays:
         raise Http404
 
+    next_week = week.next()
+    if next_week.plays():
+        next_show = next_week.showtime
+    else:
+        next_show = None
+
+    prev_week = week.prev()
+    if prev_week.plays():
+        prev_show = prev_week.showtime
+    else:
+        prev_show = None
+
+
     context = {
             'title': showdate,
-            'this_show': start,
-            'tracks': build_context_for_tracks([p.track for p in plays], get_last_played=False),
+            'this_show': week.showtime,
+            'tracks': [p.track for p in plays],
             'on_air': is_on_air(),
             'next_show': next_show,
             'prev_show': prev_show,
@@ -317,14 +254,17 @@ def mark_as_played(request, track_id):
         if not ('confirm' in request.GET and request.GET['confirm'] == 'true'):
             return confirm(request, 'mark %s as played' % track.derived_title())
         else:
-            play.save()
+            # tweet it
+            canon = track.canonical_string()
+            if len(canon) > 140 - (len(settings.HASHTAG) + 1):
+                canon = canon[0:140-(len(settings.HASHTAG)+2)]+u'…'
+            status = u'%s %s' % (canon, settings.HASHTAG)
+            tweet = tw_api.update_status(status)
 
-    # okay now we tweet it
-    canon = track.canonical_string()
-    if len(canon) > 140 - (len(settings.HASHTAG) + 1):
-        canon = canon[0:140-(len(settings.HASHTAG)+2)]+u'…'
-    tweet = u'%s %s' % (canon, settings.HASHTAG)
-    tw_api.update_status(tweet)
+            play.tweet_id = tweet.id
+
+            # and finally save the tweet
+            play.save()
 
     return(redirect('/'))
 
@@ -342,9 +282,12 @@ def unmark_as_played(request, track_id):
     except IndexError:
         raise Http404
 
-    latest_play.delete()
-
-    return(redirect('/'))
+    if not ('confirm' in request.GET and request.GET['confirm'] == 'true'):
+        return confirm(request, 'unmark %s as played' % track.derived_title())
+    else:
+        tw_api.destroy_status(id=latest_play.tweet_id)
+        latest_play.delete()
+        return(redirect('/'))
 
 
 class LibraryUploadForm(forms.Form):
@@ -413,15 +356,6 @@ class RequestForm(forms.Form):
             raise forms.ValidationError("I'm sure you can give us more information than that.")
 
         return cleaned_data
-
-def sendmail(to, mail):
-    s = smtplib.SMTP('smtp.gmail.com', 587)
-    s.ehlo()
-    s.starttls()
-    s.ehlo()
-    s.login(settings.GMAIL_USER, settings.GMAIL_PASS)
-    s.sendmail(settings.GMAIL_USER, to, mail)
-    s.close()
 
 def request_addition(request):
     if 'q' in request.GET:
