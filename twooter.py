@@ -29,7 +29,7 @@ def parse(tweet):
 
         return
 
-    if tweet['text'].startswith('@%s' % settings.READING_USERNAME):
+    if tweet['text'].startswith('@%s ' % settings.READING_USERNAME):
         # this is potentially a request
         print tweet['text']
         tasks.log_vote.delay(tweet)
