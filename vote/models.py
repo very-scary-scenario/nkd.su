@@ -19,6 +19,8 @@ def is_on_air(time=None):
 
 class Week(object):
     """ A week. Cut off at the end of each broadcast """
+    def __str__(self):
+        return '%s - %s via %s' % (self.start, self.finish, self.showtime)
 
     showtime_day = 5 # saturday
     start_hour = 21
@@ -48,6 +50,12 @@ class Week(object):
         self.start = start
         self.finish = finish
         self.showtime = showtime
+
+    def __eq__(self, other):
+        return self.showtime == other.showtime
+
+    def __ne__(self, other):
+        return not self == other
 
     def _round_down_to_hour(self, time):
         """ Rounds time down to the nearest hour """
@@ -137,9 +145,35 @@ class Track(models.Model):
 
     def last_played(self):
         try:
-            return Play.objects.filter(track=self).order_by('-datetime')[0].datetime
+            return self.last_play().datetime
+        except AttributeError:
+            return None
+
+    def last_play(self):
+        try:
+            return Play.objects.filter(track=self).order_by('-datetime')[0]
         except IndexError:
             return None
+
+    def weeks_since_play(self, time=None):
+        print self
+        time = now_or_time(time)
+        this_week = Week(time)
+        last_play = self.last_play()
+        if last_play == None:
+            return None
+
+        # prevent infinite loops, just in case
+        assert time > last_play.datetime
+
+        week = last_play.week()
+        weeks_ago = 0
+
+        while this_week != week:
+            week = week.next()
+            weeks_ago += 1
+
+        return weeks_ago
 
     def undoable(self):
         return Play.objects.all().order_by('-datetime')[0].track == self
@@ -238,6 +272,10 @@ class Play(models.Model):
 
         if not self.track.eligible(self.datetime):
             raise ValidationError('This track was played last week.')
+
+    def week(self):
+        return Week(self.datetime)
+
 
 KINDS = (
         ('email', 'email'),
