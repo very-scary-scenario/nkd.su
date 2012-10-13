@@ -2,6 +2,15 @@
 
 {% block content %}
 
+{% if shortlist %}
+<div class="shortlist" id="shortlist">
+<h2 class="heading">shortlist</h2>
+    {% for track in shortlist %}
+    {% include "trackrow.html" %}
+    {% endfor %}
+</div>
+{% endif %}
+
 {% if tracks %}
 {% if playlist %}
 <div class="current">
@@ -14,8 +23,17 @@
 <h2 class="heading">played</h2>
 {% include "playlist.html" %}
 </div>
-
 {% endif %}
+
+{% if discard %}
+<div class="shortlist" id="discard">
+<h2 class="heading">discard</h2>
+    {% for track in discard %}
+    {% include "trackrow.html" %}
+    {% endfor %}
+</div>
+{% endif %}
+
 <p class="aside">Want to vote for something else?</p>
 {% else %}
 <h2 class="message">No requests yet</h2>

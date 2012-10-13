@@ -1,4 +1,4 @@
-from vote.models import Track, Vote, ManualVote, Play, Block
+from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard
 from django.contrib import admin
 
 class VoteAdmin(admin.ModelAdmin):
@@ -16,8 +16,13 @@ class PlayAdmin(admin.ModelAdmin):
 class BlockAdmin(admin.ModelAdmin):
     list_display=('reason', 'date')
 
+class DiscardShortlistAdmin(admin.ModelAdmin):
+    list_display=('track', 'date')
+
 admin.site.register(Track, TrackAdmin)
 admin.site.register(Vote, VoteAdmin)
 admin.site.register(ManualVote, ManualVoteAdmin)
 admin.site.register(Play, PlayAdmin)
 admin.site.register(Block, BlockAdmin)
+admin.site.register(Shortlist, DiscardShortlistAdmin)
+admin.site.register(Discard, DiscardShortlistAdmin)
