@@ -178,6 +178,12 @@ p.role, p.last_played, p.peter, p.refusal {
   width: 32px;
   margin: 1px;
 }
+
+div.track:hover a.voter.commented img {
+  outline-color: #333;
+  border-color: #d66;
+}
+
 div.track:hover a.voter img {
   border: 1px solid #eee;
   outline: 1px solid #faa;
