@@ -128,21 +128,23 @@ def search_for_tracks(keywords):
         trackset = {t for t in trackset if keyword.lower() in t.canonical_string().lower()}
     return trackset
 
-
-def search(request):
-    """ Selected tracks """
+def search_redirect(request):
     form = SearchForm(request.GET)
 
     if not form.is_valid():
         return redirect('/')
+    else:
+        query = form.cleaned_data['q']
+        return redirect('/search/%s' % query)
 
-    keywords = form.cleaned_data['q']
-    keyword_list = split_query_into_keywords(keywords)
+def search(request, query):
+    """ Selected tracks """
+    keyword_list = split_query_into_keywords(query)
     trackset = search_for_tracks(keyword_list)
 
     context = {
-            'title': keywords,
-            'query': keywords,
+            'title': query,
+            'query': query,
             'tracks': trackset,
             'path': request.path,
             'show': Week().showtime,
