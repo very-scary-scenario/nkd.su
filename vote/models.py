@@ -28,6 +28,7 @@ class Week(object):
     target_tuple = (end_hour, 0, 0, showtime_day)
     target_showtime_tuple = (start_hour, 0, 0, showtime_day)
     show_locale = timezone.get_current_timezone()
+    self.date_range = [self.start, self.finish]
 
     def __init__(self, time=None):
         """ Create the Week in which time (or now) resides """
@@ -81,7 +82,7 @@ class Week(object):
         else:
             order = 'datetime'
 
-        plays = Play.objects.filter(datetime__range=[self.start, self.finish]).order_by(order)
+        plays = Play.objects.filter(datetime__range=self.date_range).order_by(order)
 
         if track:
             plays.filter(track=track)
@@ -91,9 +92,31 @@ class Week(object):
     def block(self, track):
         """ Get any block from this week """
         try:
-            return Block.objects.get(date__range=[self.start, self.finish], track=track)
+            return Block.objects.get(date__range=self.date_range, track=track)
         except Block.DoesNotExist:
             return None
+
+    def shortlist(self, track=None):
+        """ Return a list of shortlisted tracks
+
+        if track is specified, return its Shortlist object for this week if present or None """
+        if track:
+            try:
+                return Shortlist.objects.get(date__range=self.date_range, track=track)
+            except Shortlist.DoesNotExist:
+                return None
+        else:
+            return [s.track for s in Shortlist.objects.filter(date__range=self.date_range)]
+
+    def discard(self, track=None):
+        """ Like shortlist(), but for discards """
+        if track:
+            try:
+                return Discard.objects.get(date__range=self.date_range, track=track)
+            except Discard.DoesNotExist:
+                return None
+        else:
+            return [s.track for s in Discard.objects.filter(date__range=self.date_range)]
 
     def votes(self, track=None):
         """ Get all votes of any kind (for a particular track) from this week """
@@ -108,13 +131,13 @@ class Week(object):
         return (votes, manual_votes)
 
     def _manual_votes(self, track=None):
-        manual_votes = ManualVote.objects.filter(date__range=[self.start, self.finish]).order_by('date')
+        manual_votes = ManualVote.objects.filter(date__range=self.date_range).order_by('date')
         if track:
             manual_votes = manual_votes.filter(track=track)
         return manual_votes
 
     def _votes(self, track=None):
-        votes = Vote.objects.filter(date__range=[self.start, self.finish]).order_by('date')
+        votes = Vote.objects.filter(date__range=self.date_range).order_by('date')
         if track:
             votes = votes.filter(track=track)
         return votes
@@ -303,6 +326,19 @@ class Block(models.Model):
         if self.track.ineligible:
             raise ValidationError('track is already blocked')
 
+class Shortlist(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    track = models.ForeignKey(Track)
+    def clean(self):
+        if Week(date).shortlist(track):
+            raise ValidationError('track is already shortlisted')
+
+class Discard(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    track = models.ForeignKey(Track)
+    def clean(self):
+        if Week(date).discard(track):
+            raise ValidationError('track is already discarded')
 
 class ManualVote(models.Model):
     track = models.ForeignKey(Track, editable=False)
