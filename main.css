@@ -382,6 +382,10 @@ div.playlist h2 {
   padding: 0 .3em;
 }
 
+div.shortlist {
+  clear: both;
+}
+
 a#stamp img {
   width: 65px;
   height: 65px;

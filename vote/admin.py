@@ -14,7 +14,7 @@ class PlayAdmin(admin.ModelAdmin):
     list_display=('track', 'datetime')
 
 class BlockAdmin(admin.ModelAdmin):
-    list_display=('reason', 'date')
+    list_display=('track', 'reason', 'date')
 
 admin.site.register(Track, TrackAdmin)
 admin.site.register(Vote, VoteAdmin)
