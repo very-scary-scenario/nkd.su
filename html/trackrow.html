@@ -1,5 +1,5 @@
 <!-- {{ track.id }} -->
-<div class="track {% if track.eligible %}eligible{% else %}ineligible{% endif %}">
+<div class="track {% if track.eligible %}eligible{% else %}ineligible{% endif %}" id="{{ track.id }}">
   {% if track.ineligible %}
     <div class="disabled">
       [disabled]
@@ -32,7 +32,7 @@
       {% endif %}
     {% endif %}
     {% if user.is_authenticated and track.eligible %}
-    <p class="peter"><a href="/played/{{ track.id }}/">now playing&hellip;</a> | <a href="/vote/{{ track.id }}/">add vote&hellip;</a> | <a href="/block/{{ track.id }}/">block track&hellip;</a></p>
+    <p class="peter"><a href="/played/{{ track.id }}/">now playing&hellip;</a> | <a href="/vote/{{ track.id }}/">add vote&hellip;</a> | <a href="/block/{{ track.id }}/">block&hellip;</a></p>
     {% if not track.shortlist and not track.discard %}
     <p class="peter"><a href="/shortlist/{{ track.id }}/">shortlist</a> | <a href="/discard/{{ track.id }}/">discard</a></p>
     {% elif track.shortlist %}
