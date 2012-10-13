@@ -300,7 +300,7 @@ class Block(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
-        if self.track.ineligible:
+        if self.track.ineligible():
             raise ValidationError('track is already blocked')
 
 
