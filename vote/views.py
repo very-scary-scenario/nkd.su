@@ -43,7 +43,7 @@ def summary(request):
     [trackset.add(v.track) for v in week.votes()]
 
     unfiltered_tracklist = sorted(trackset, reverse=True, key=lambda t: len(t.votes()))
-    if request.user.is_authenticated:
+    if request.user.is_authenticated():
         tracklist = [t for t in unfiltered_tracklist if t.eligible() and not week.shortlist_or_discard(t)]
         shortlist = week.shortlist()
         discard = week.discard()
