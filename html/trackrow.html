@@ -34,11 +34,11 @@
     {% if user.is_authenticated and track.eligible %}
     <p class="peter"><a href="/played/{{ track.id }}/">now playing&hellip;</a> | <a href="/vote/{{ track.id }}/">add vote&hellip;</a> | <a href="/block/{{ track.id }}/">block&hellip;</a></p>
     {% if not track.shortlist and not track.discard %}
-    <p class="peter"><a href="/shortlist/{{ track.id }}/">shortlist</a> | <a href="/discard/{{ track.id }}/">discard</a></p>
+    <p class="peter"><a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a> | <a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a></p>
     {% elif track.shortlist %}
-    <p class="peter"><a href="/unshortlist/{{ track.id }}/">un-shortlist</a></p>
+    <p class="peter"><a href="/unshortlist/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a></p>
     {% elif track.discard %}
-    <p class="peter"><a href="/undiscard/{{ track.id }}/">un-discard</a></p>
+    <p class="peter"><a href="/undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-discard</a></p>
     {% endif %}
     {% endif %}
     {% if user.is_authenticated and not track.eligible and track.undoable %}

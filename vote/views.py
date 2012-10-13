@@ -60,6 +60,7 @@ def summary(request):
             'playlist': [p.track for p in playlist],
             'form': form,
             'tracks': tracklist,
+            'path': request.path,
             'shortlist': shortlist,
             'discard': discard,
             'show': week.showtime,
@@ -74,6 +75,7 @@ def everything(request):
     context = {
             'title': 'everything',
             'tracks': Track.objects.all(),
+            'path': request.path,
             'show': Week().showtime,
             'on_air': is_on_air(),
             }
@@ -94,6 +96,7 @@ def roulette(request):
     context = {
             'title': 'roulette',
             'tracks': tracks,
+            'path': request.path,
             'show': Week().showtime,
             'on_air': is_on_air(),
             }
@@ -141,6 +144,7 @@ def search(request):
             'title': keywords,
             'query': keywords,
             'tracks': trackset,
+            'path': request.path,
             'show': Week().showtime,
             'on_air': is_on_air(),
             }
@@ -157,10 +161,12 @@ def artist(request, artist):
     context = {
             'title': artist.lower(),
             'tracks': artist_tracks,
+            'path': request.path,
             'show': Week().showtime,
             'on_air': is_on_air(),
             }
 
+    print RequestContext(request, context).__dict__
     return render_to_response('tracks.html', RequestContext(request, context))
 
 def latest_show(request):
@@ -194,6 +200,7 @@ def show(request, showdate):
             'title': showdate,
             'this_show': week.showtime,
             'tracks': [p.track for p in plays],
+            'path': request.path,
             'on_air': is_on_air(),
             'next_show': next_show,
             'prev_show': prev_show,
@@ -457,7 +464,7 @@ def shortlist_or_discard(request, track_id, c):
         return render_to_response('message.html', RequestContext(request, context))
     else:
         instance.save()
-        return redirect('/')
+        return redirect(request.GET['from'])
 
 @login_required
 def shortlist(request, track_id):
@@ -471,10 +478,10 @@ def discard(request, track_id):
 def undiscard(request, track_id):
     track = Track.objects.get(id=track_id)
     Week().discard(track).delete()
-    return redirect('/')
+    return redirect(request.GET['from'])
 
 @login_required
 def unshortlist(request, track_id):
     track = Track.objects.get(id=track_id)
     Week().shortlist(track).delete()
-    return redirect('/')
+    return redirect(request.GET['from'])
