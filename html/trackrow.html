@@ -42,7 +42,7 @@
     <a target="_blank" class="voter" href="http://twitter.com/{{ vote.screen_name }}/status/{{ vote.tweet_id }}/">
       <img src="{{ vote.user_image }}" alt="{{ vote.screen_name }}">
         <div class="tweet_deets">
-          <p class="tweet_attrib"><span class="full_name">{{ vote.name }}</span> | <span class="screen_name">@{{ vote.screen_name }}</span></p>
+          <p class="full_name">{{ vote.name }}</p><p class="screen_name">@{{ vote.screen_name }}</p>
           {% if vote.content %}<p class="text">{{ vote.content|safe }}</p>{% endif %}
         </div>
     </a>
