@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}new vote{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<h2 class=message>new vote</h2>
+<h2 class=message>{{ title }}</h2>
+{% if track %}
 <p class="aside">{{ track.canonical_string }}</p>
+{% endif %}
 
 {% if form.errors %}
 <p class="aside problems">problems!</p>

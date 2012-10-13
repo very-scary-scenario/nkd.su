@@ -3,7 +3,7 @@
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
-from vote.models import Track, Vote, ManualVote, Play, Week, split_id3_title, is_on_air
+from vote.models import Track, Vote, ManualVote, Play, Block, Week, split_id3_title, is_on_air
 from vote.update_library import update_library
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
@@ -42,8 +42,9 @@ def summary(request):
     # only consider votes from before the end of the current show, so we can work in the past
     [trackset.add(v.track) for v in week.votes()]
 
-    tracklist = sorted(trackset, reverse=True, key=lambda t: len(t.votes()))
-    tracklist = [t for t in tracklist if t.ineligible() != 'played this week']
+    unfiltered_tracklist = sorted(trackset, reverse=True, key=lambda t: len(t.votes()))
+    tracklist = [t for t in unfiltered_tracklist if t.eligible()]
+    tracklist.extend([t for t in unfiltered_tracklist if t.ineligible() and (t.ineligible() != 'played this week')])
 
     # ditto plays
     playlist = week.plays(invert=True)
@@ -229,6 +230,7 @@ def make_vote(request, track_id):
     context = {
             'track': track,
             'form': form,
+            'title': 'new vote',
             }
 
     return render_to_response('vote.html', RequestContext(request, context))
@@ -404,3 +406,31 @@ def request_addition(request):
             }
 
     return render_to_response('request.html', RequestContext(request, context))
+
+
+class BlockForm(forms.ModelForm):
+    """ Block something """
+    class Meta:
+        model = Block
+
+@login_required
+def make_block(request, track_id):
+    track = Track.objects.get(id=track_id)
+
+    if request.method == 'POST':
+        block = Block(track=track)
+        form = BlockForm(request.POST, instance=block)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    else:
+        form = BlockForm()
+        form.initial={'track': track}
+
+    context = {
+            'track': track,
+            'form': form,
+            'title': 'new block',
+            }
+
+    return render_to_response('vote.html', RequestContext(request, context))

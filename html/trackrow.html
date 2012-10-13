@@ -34,6 +34,7 @@
     {% if user.is_authenticated and track.eligible %}
       <p class="peter"><a href="/played/{{ track.id }}/">now playing&hellip;</a></p>
       <p class="peter"><a href="/vote/{{ track.id }}/">add vote&hellip;</a></p>
+      <p class="peter"><a href="/block/{{ track.id }}/">block track&hellip;</a></p>
     {% endif %}
     {% if user.is_authenticated and not track.eligible and track.undoable %}
       <p class="peter"><a href="/unplay/{{ track.id }}/">i didn't mean to play this</a></p>

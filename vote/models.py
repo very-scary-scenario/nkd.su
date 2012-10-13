@@ -88,7 +88,15 @@ class Week(object):
 
         return plays
 
+    def block(self, track):
+        """ Get any block from this week """
+        try:
+            return Block.objects.get(date__range=[self.start, self.finish], track=track)
+        except Block.DoesNotExist:
+            return None
+
     def votes(self, track=None):
+        """ Get all votes of any kind (for a particular track) from this week """
         votes, manual_votes = self.votes_in_a_tuple(track=track)
         return list(votes) + list(manual_votes)
 
@@ -217,6 +225,9 @@ class Track(models.Model):
         elif week.prev().plays().filter(track=self):
             self.reason = 'played last week'
 
+        elif week.block(self):
+            self.reason = week.block(self).reason
+
         else:
             self.reason = False
 
@@ -282,6 +293,16 @@ KINDS = (
         ('text', 'text'),
         ('tweet', 'tweet'),
         )
+
+class Block(models.Model):
+    track = models.ForeignKey(Track)
+    reason = models.CharField(max_length=256)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        if self.track.ineligible:
+            raise ValidationError('track is already blocked')
+
 
 class ManualVote(models.Model):
     track = models.ForeignKey(Track, editable=False)

@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     url(r'^played/(?P<track_id>.+)/$', 'vote.views.mark_as_played', name='mark_as_played'),
     url(r'^unplay/(?P<track_id>.+)/$', 'vote.views.unmark_as_played', name='unmark_as_played'),
     url(r'^vote/(?P<track_id>.+)/$', 'vote.views.make_vote', name='make_vote'),
+    url(r'^block/(?P<track_id>.+)/$', 'vote.views.make_block', name='make_block'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
