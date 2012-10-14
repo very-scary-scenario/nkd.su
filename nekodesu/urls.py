@@ -7,7 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'vote.views.summary', name='summary'),
-    url(r'^everything/$', 'vote.views.everything', name='everything'),
+    #url(r'^everything/$', 'vote.views.everything', name='everything'),
     url(r'^artist/(?P<artist>.+)/$', 'vote.views.artist', name='artist'),
     url(r'^info/$', 'vote.views.info', name='info'),
     url(r'^roulette/$', 'vote.views.roulette', name='roulette'),
