@@ -41,6 +41,7 @@ $(document).ready(function(){
       var all_selectable = [];
       $('div.track.selectable').each(function() {
         all_selectable.push(this.id);
+        $(this).addClass('pending');
       });
       var id_map = { track_id: all_selectable }
       $.post($(this).attr('href'), id_map, function(data) {
