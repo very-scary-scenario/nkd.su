@@ -43,6 +43,10 @@ div.track.pending, div.track.selected {
   box-shadow: inset #caa 0 .2em 2em, #ddd 0 0 2em;
 }
 
+div.track.selected.pending {
+  background: none;
+}
+
 div.track.selected {
   background-color: #fee;
   background-image: url('/noise.png');
