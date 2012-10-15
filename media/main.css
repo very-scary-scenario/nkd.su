@@ -1,7 +1,3 @@
-a#select_all {
-  color: #66d;
-}
-
 html {
   height: 100%;
 }
@@ -596,7 +592,7 @@ a#stamp:hover {
   }
 
   div.track div.metadata {
-    padding-right: 1em;
+    padding-right: 1.5em;
   }
 
   .track span.plusone {
