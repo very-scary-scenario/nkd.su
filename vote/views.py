@@ -142,9 +142,11 @@ def search_redirect(request):
         return redirect('/search/%s' % query)
 
 def search(request, query):
-    """ Selected tracks """
-    keyword_list = split_query_into_keywords(query)
-    trackset = search_for_tracks(keyword_list)
+    try:
+        trackset = (Track.objects.get(id=query),)
+    except Track.DoesNotExist:
+        keyword_list = split_query_into_keywords(query)
+        trackset = search_for_tracks(keyword_list)
 
     context = {
             'session': request.session,
