@@ -1,3 +1,7 @@
+a#select_all {
+  color: #66d;
+}
+
 html {
   height: 100%;
 }
@@ -10,7 +14,7 @@ html {
 body {
   font-family: "Bitter", serif;
   background-color: #fff;
-  background-image: url('http://m.nkd.su/noise.png');
+  background-image: url('/noise.png');
   color: #444;
   text-shadow: #fff 0 .1em 0;
   height: 100%;
@@ -33,6 +37,53 @@ body {
 h2.message {
   text-align: center;
 }
+
+/* selections */
+div.track.pending, div.track.selected {
+  box-shadow: inset #caa 0 .2em 2em, #ddd 0 0 2em;
+}
+
+div.track.selected {
+  background-color: #fee;
+  background-image: url('/noise.png');
+  inner-shadow: #fff 0 0 1em;
+}
+
+/* selection list */
+div.minitrack {
+  text-align: center;
+  margin-bottom: .5em;
+}
+
+div#selection h3 {
+  text-align: center;
+}
+
+div.minitrack p.title {
+  font-size: 1.2em;
+}
+
+div.minitrack p.role {
+  font-size: .8em;
+}
+
+div.minitrack p.id {
+  display: none;
+}
+
+div#selection {
+  clear: both;
+  text-align: center;
+  padding-top: 4em;
+}
+
+p.actions.small, p.deselect {
+  font-size: .8em;
+  margin-top: .3em;
+  clear: both;
+}
+
+/* header and stamps */
 
 #disclaimer {
   font-size: .8em;
@@ -143,8 +194,8 @@ div.endof {
 
 div.track {
   clear: both;
-  margin: 2em 0;
-  padding: 0 .5em;
+  margin-bottom: 1.5em;
+  padding: .5em .5em;
 }
 
 div.track:hover {
@@ -156,17 +207,17 @@ div.track.ineligible {
   border-color: #666;
 }
 
-p.title {
+div.track p.title {
   clear: both;
   padding-right: -4%;
 }
 
-span.title {
+div.track span.title {
   font-size: 1.4em;
   font-weight: bold;
 }
 
-p.role, p.last_played, p.peter, p.refusal {
+div.track p.role, div.track p.last_played, div.track p.peter, div.track p.refusal {
   font-size: .8em;
   clear: both;
   margin-top: .2em;
@@ -226,7 +277,7 @@ a.voter:hover div.tweet_deets {
   position: absolute;
   display: block;
   background-color: #eee;
-  background-image: url('http://nkdsm.bldm.us/noise.png');
+  background-image: url('/noise.png');
   border: 1px solid #aaa;
   text-align: center;
   padding: .2em .5em;
@@ -247,6 +298,16 @@ div.tweet_deets div.tweet_deets, .full_name {
 
 p.refusal {
   color: #aaa;
+}
+
+/* shrunken track tables */
+div.shortlist div.track {
+    font-size: .7em;
+}
+
+div.shortlist .voter img {
+  height: 20px;
+  width: 20px;
 }
 
 /* login form */
@@ -290,7 +351,7 @@ form ul.errorlist li {
 #submit {
   border-radius: 0;
   background-color: #eee;
-  background-image: url('http://nkdsm.bldm.us/noise.png');
+  background-image: url('/noise.png');
   color: #d66;
   z-index: -4;
   font-family: 'Bitter', sans-serif;
@@ -313,7 +374,7 @@ form ul.errorlist li {
   width: 100%;
   margin-top: .3em;
   background-color: #eee;
-  background-image: url('http://nkdsm.bldm.us/noise.png');
+  background-image: url('/noise.png');
   color: #444;
   border: 1px solid #999;
   font-size: 1.3em;
@@ -365,16 +426,18 @@ div.playlist.today div.track .voters {
   width: 100%;
 }
 
-div.playlist .metadata {
+div.playlist div.metadata {
   width: 100%;
 }
 
-div.playlist .metadata {
+div.playlist div.metadata {
   text-align: left;
 }
 
-h2 {
+h2, h3 {
   text-align: right;
+  margin-bottom: .4em;
+  margin-top: 2em;
 }
 
 div.playlist h2 {
@@ -402,7 +465,7 @@ a#stamp:hover {
     height: 7em;
   }
 
-  h2.heading {
+  h2.heading, h3.heading {
     width: 57%;
     text-align: right;
   }
@@ -435,7 +498,7 @@ a#stamp:hover {
     max-width: 40%;
   }
 
-  div.metadata {
+  div.tracklist div.track div.metadata, div.shortlist div.track div.metadata {
     float: left;
     width: 57%;
     text-align: right;
@@ -528,7 +591,7 @@ a#stamp:hover {
     margin-bottom: 2em;
   }
 
-  .metadata {
+  div.track div.metadata {
     padding-right: 1em;
   }
 

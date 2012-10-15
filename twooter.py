@@ -31,7 +31,7 @@ def parse(tweet):
 
     if tweet['text'].startswith('@%s ' % settings.READING_USERNAME):
         # this is potentially a request
-        print tweet['text']
+        print '%s: %s' % (tweet['user']['screen_name'], tweet['text'])
         tasks.log_vote.delay(tweet)
 
 def react():

@@ -4,7 +4,7 @@
 
 {% if shortlist %}
 <div class="shortlist" id="shortlist">
-<h2 class="heading">shortlist</h2>
+<h3 class="heading">shortlist</h2>
     {% for track in shortlist %}
     {% include "trackrow.html" %}
     {% endfor %}
@@ -25,19 +25,23 @@
 </div>
 {% endif %}
 
+{% if not user.is_authenticated %}
+<p class="aside">Want to vote for something else?</p>
+{% endif %}
+{% else %}
+<h2 class="message">No requests yet</h2>
+{% endif %}
+{% if not user.is_authenticated %}
+<p class="aside">Search, browse the <a href="/show/">playlist archive</a> or just <a href="/roulette/">throw darts at the wall</a>.</p>
+{% endif %}
+
 {% if discard %}
 <div class="shortlist" id="discard">
-<h2 class="heading">discard</h2>
+<h3 class="heading">discard</h2>
     {% for track in discard %}
     {% include "trackrow.html" %}
     {% endfor %}
 </div>
 {% endif %}
-
-<p class="aside">Want to vote for something else?</p>
-{% else %}
-<h2 class="message">No requests yet</h2>
-{% endif %}
-<p class="aside">Search, browse the <a href="/show/">playlist archive</a> or just <a href="/roulette/">throw darts at the wall</a>.</p>
 
 {% endblock %}

@@ -62,21 +62,7 @@ def log_play(tweet):
 
 @task
 def log_vote(tweet):
-    # get song id
-    for word in tweet['text'].split():
-        try:
-            track = Track.objects.get(id=word)
-        except ValueError:
-            # is not a number
-            pass
-        except: # Vote.DoesNotExist: fukken celery doesn't let us be specific
-            # is not ours
-            pass
-        else:
-            break
-    else:
-        return # no appropriate track was found
-
+    # get song ids
     date = tweettime(tweet)
 
     # make Vote
@@ -85,7 +71,6 @@ def log_vote(tweet):
                 screen_name=tweet['user']['screen_name'],
                 user_id=tweet['user']['id'],
                 tweet_id=tweet['id'],
-                track=track,
                 date=date,
                 user_image=tweet['user']['profile_image_url'],
                 text=tweet['text'],
@@ -97,7 +82,6 @@ def log_vote(tweet):
                 screen_name=tweet['from_user'],
                 user_id=tweet['from_user_id'],
                 tweet_id=tweet['id'],
-                track=track,
                 date=date,
                 user_image=tweet['profile_image_url'],
                 text=tweet['text'],
@@ -107,6 +91,7 @@ def log_vote(tweet):
     try:
         the_vote.clean()
     except ValidationError:
+        the_vote.delete()
         print exc_info()
     else:
         the_vote.save()

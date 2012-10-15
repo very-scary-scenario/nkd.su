@@ -4,6 +4,7 @@ from django.conf import settings
 import datetime
 import re
 from django.core.exceptions import ValidationError
+from django.utils.http import urlquote
 
 def now_or_time(time):
     """ Returns datetime.now() if time is False, otherwise returns time """
@@ -105,7 +106,7 @@ class Week(object):
             except c.DoesNotExist:
                 return None
         else:
-            return [s.track for s in c.objects.filter(date__range=self.date_range)]
+            return [s.track for s in c.objects.filter(date__range=self.date_range) if s.track.eligible()]
 
 
     def shortlist(self, track=None):
@@ -118,8 +119,15 @@ class Week(object):
         return self._shortlist_or_discard(track, Discard)
 
     def shortlist_or_discard(self, track):
-        """ Return True if there are shortlists or discards on this track this week, otherwise return False """
-        return self.discard(track) or self.shortlist(track)
+        """ Return a shortlist or discard if there are shortlists or discards on this track this week, otherwise return False """
+        discard = self.discard(track)
+        if discard:
+            return discard
+        shortlist = self.shortlist(track)
+        if shortlist:
+            return shortlist
+
+        return False
 
     def votes(self, track=None):
         """ Get all votes of any kind (for a particular track) from this week """
@@ -142,20 +150,38 @@ class Week(object):
     def _votes(self, track=None):
         votes = Vote.objects.filter(date__range=self.date_range).order_by('date')
         if track:
-            votes = votes.filter(track=track)
+            votes = votes.filter(tracks=track)
         return votes
 
 
+def vote_url(tracks):
+    url = 'https://twitter.com/intent/tweet?text=@%s' % settings.READING_USERNAME
+    for track in tracks:
+        url = url + urlquote(' %s' % track.id)
+
+    return url
+
 def split_id3_title(id3_title):
-    """ Split a Title (role) ID3 title up """
-    try:
-        role = re.findall('\(.*?\)', id3_title)[-1]
-    except IndexError:
-        role = None
-        title = id3_title
-    else:
+    """ Split a Title (role) ID3 title, return title, role """
+    role = None
+
+    bracket_depth = 0
+    for i in range(1, len(id3_title)+1):
+        char = id3_title[-i]
+        if char == ')':
+            bracket_depth += 1
+        elif char == '(':
+            bracket_depth -= 1
+
+        if bracket_depth == 0:
+            role = id3_title[len(id3_title)-i:]
+            break
+
+    if role:
         title = id3_title.replace(role, '').strip()
         role = role[1:-1] # strip brackets
+    else:
+        title = id3_title
 
     return title, role
 
@@ -273,33 +299,59 @@ class Track(models.Model):
         week = Week(time)
         return week.discard(self)
 
+    def vote_url(self):
+        tweet = '@%s %s' % (settings.READING_USERNAME, self.id)
+        url = 'https://twitter.com/intent/tweet?text=%s' % urlquote(tweet)
+        return url
+
 class Vote(models.Model):
     def __unicode__(self):
-        return '%s for %s at %s; "%s"' % (self.screen_name, self.track, self.date, self.content())
+        return '%s for %s at %s; "%s"' % (self.screen_name, self.tracks.all()[0], self.date, self.content())
 
     screen_name = models.CharField(max_length=100)
     text = models.CharField(max_length=140)
     user_id = models.IntegerField()
     tweet_id = models.IntegerField(primary_key=True)
-    track = models.ForeignKey(Track)
+    track = models.ForeignKey(Track, blank=True, null=True) # deprecated
+    tracks = models.ManyToManyField(Track, blank=True, related_name='multi+') # new, canonical
     date = models.DateTimeField()
     user_image = models.URLField()
     name = models.CharField(max_length=20)
 
     def content(self):
-        return self.text.replace(str(self.track.id), '').replace('@%s' % settings.READING_USERNAME, '').strip()
+        content = self.text.replace('@%s' % settings.READING_USERNAME, '').strip()
+        for word in content.split():
+            if Track.objects.filter(id=word).exists():
+                content = content.replace(word, '').strip()
+        return content
 
     def clean(self):
-        if not self.track.eligible(self.date):
-            raise ValidationError(self.track.ineligible())
-
         # every vote placed after the cutoff for this track by this person
         prior_votes = Week(self.date)._votes(track=self.track).filter(user_id=self.user_id)
-
-        # we still need to ensure that at least one of these requests happened before the one we're dealing with; we could be digging here
+        # all tracks requested by this person
+        prior_tracks = set()
         for vote in prior_votes:
-            if vote.date < self.date:
-                raise ValidationError('Already requested by this person.')
+            for track in vote.tracks.all():
+                prior_tracks.add(track)
+
+        self.save()
+        for word in self.text.split():
+            print word
+            try:
+                track = Track.objects.get(id=word)
+            except Track.DoesNotExist:
+                pass
+            else:
+                if track.eligible(self.date) and track not in prior_tracks:
+                    print track
+                    self.tracks.add(track)
+                else:
+                    # raise ValidationError(track.ineligible())
+                    # we can let this pass; we just won't count it
+                    pass
+
+        if not self.tracks:
+            raise ValidationError('no tracks in vote')
 
 
 class Play(models.Model):
@@ -309,7 +361,8 @@ class Play(models.Model):
 
     def clean(self):
         # we need to refuse to create a play if a track has already been marked as played today and if the show is not on air
-        if not is_on_air(self.datetime):
+        if (not is_on_air(self.datetime)) and (not settings.DEBUG):
+            # let me tweet whenever if i'm in debug mode, jesus
             raise ValidationError('It is not currently showtime.')
 
         for play in Play.objects.filter(track=self.track):
@@ -321,7 +374,6 @@ class Play(models.Model):
 
     def week(self):
         return Week(self.datetime)
-
 
 KINDS = (
         ('email', 'email'),
@@ -342,15 +394,17 @@ class Shortlist(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     track = models.ForeignKey(Track)
     def clean(self):
-        if Week(self.date).shortlist_or_discard(self.track):
-            raise ValidationError('track is already shortlisted or discarded')
+        conflict = Week(self.date).shortlist_or_discard(self.track)
+        if conflict:
+            conflict.delete()
 
 class Discard(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     track = models.ForeignKey(Track)
     def clean(self):
-        if Week(self.date).shortlist_or_discard(self.track):
-            raise ValidationError('track is already shortlisted or discarded')
+        conflict = Week(self.date).shortlist_or_discard(self.track)
+        if conflict:
+            conflict.delete()
 
 class ManualVote(models.Model):
     track = models.ForeignKey(Track, editable=False)

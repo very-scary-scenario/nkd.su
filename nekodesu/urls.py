@@ -27,10 +27,16 @@ urlpatterns = patterns('',
     url(r'^unplay/(?P<track_id>.+)/$', 'vote.views.unmark_as_played', name='unmark_as_played'),
     url(r'^vote/(?P<track_id>.+)/$', 'vote.views.make_vote', name='make_vote'),
     url(r'^block/(?P<track_id>.+)/$', 'vote.views.make_block', name='make_block'),
+    url(r'^unblock/(?P<track_id>.+)/$', 'vote.views.unblock', name='unblock'),
     url(r'^shortlist/(?P<track_id>.+)/$', 'vote.views.shortlist', name='shortlist'),
     url(r'^discard/(?P<track_id>.+)/$', 'vote.views.discard', name='discard'),
-    url(r'^unshortlist/(?P<track_id>.+)/$', 'vote.views.unshortlist', name='unshortlist'),
-    url(r'^undiscard/(?P<track_id>.+)/$', 'vote.views.undiscard', name='undiscard'),
+    url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'vote.views.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
+
+    # javascript responses
+    url(r'^do/select/$', 'vote.views.do_select', name='do_select'),
+    url(r'^do/deselect/$', 'vote.views.do_deselect', name='do_deselect'),
+    url(r'^do/selection/$', 'vote.views.do_selection', name='do_selection'),
+    url(r'^do/clear_selection/$', 'vote.views.do_clear_selection', name='do_clear_selection'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

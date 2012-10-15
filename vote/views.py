@@ -3,7 +3,7 @@
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
-from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard, Week, split_id3_title, is_on_air
+from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard, Week, split_id3_title, is_on_air, vote_url
 from vote.update_library import update_library
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
@@ -40,7 +40,7 @@ def summary(request):
     form = SearchForm()
 
     # only consider votes from before the end of the current show, so we can work in the past
-    [trackset.add(v.track) for v in week.votes()]
+    [trackset.add(t) for v in week.votes() for t in v.tracks.all()]
 
     unfiltered_tracklist = sorted(trackset, reverse=True, key=lambda t: len(t.votes()))
     if request.user.is_authenticated():
@@ -57,10 +57,11 @@ def summary(request):
     playlist = week.plays(invert=True)
 
     context = {
+            'session': request.session,
+            'path': request.path,
             'playlist': [p.track for p in playlist],
             'form': form,
             'tracks': tracklist,
-            'path': request.path,
             'shortlist': shortlist,
             'discard': discard,
             'show': week.showtime,
@@ -73,6 +74,8 @@ def summary(request):
 def everything(request):
     """ Every track """
     context = {
+            'session': request.session,
+            'path': request.path,
             'title': 'everything',
             'tracks': Track.objects.all(),
             'path': request.path,
@@ -94,9 +97,10 @@ def roulette(request):
         pos += 1
 
     context = {
+            'session': request.session,
+            'path': request.path,
             'title': 'roulette',
             'tracks': tracks,
-            'path': request.path,
             'show': Week().showtime,
             'on_air': is_on_air(),
             }
@@ -143,10 +147,11 @@ def search(request, query):
     trackset = search_for_tracks(keyword_list)
 
     context = {
+            'session': request.session,
+            'path': request.path,
             'title': query,
             'query': query,
             'tracks': trackset,
-            'path': request.path,
             'show': Week().showtime,
             'on_air': is_on_air(),
             }
@@ -161,20 +166,20 @@ def artist(request, artist):
         raise Http404
 
     context = {
+            'session': request.session,
+            'path': request.path,
             'title': artist.lower(),
             'tracks': artist_tracks,
-            'path': request.path,
             'show': Week().showtime,
             'on_air': is_on_air(),
             }
 
-    print RequestContext(request, context).__dict__
     return render_to_response('tracks.html', RequestContext(request, context))
 
 def latest_show(request):
     """ Redirect to the last week's show """
     last_week = Week().prev()
-    return(redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y')))
+    return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
 
 def show(request, showdate):
     """ All tracks from a particular Week's show. """
@@ -199,10 +204,11 @@ def show(request, showdate):
 
 
     context = {
+            'session': request.session,
+            'path': request.path,
             'title': showdate,
             'this_show': week.showtime,
             'tracks': [p.track for p in plays],
-            'path': request.path,
             'on_air': is_on_air(),
             'next_show': next_show,
             'prev_show': prev_show,
@@ -214,6 +220,8 @@ def show(request, showdate):
 def info(request):
     words = markdown(open(settings.SITE_ROOT + 'README.md').read())
     context = {
+            'session': request.session,
+            'path': request.path,
             'title': 'what?',
             'words': words,
             }
@@ -226,6 +234,8 @@ class ManualVoteForm(forms.ModelForm):
 
 def confirm(request, action, deets=None):
     context = {
+            'session': request.session,
+            'path': request.path,
             'action': action,
             'deets': deets,
             }
@@ -246,6 +256,8 @@ def make_vote(request, track_id):
         form = ManualVoteForm()
 
     context = {
+            'session': request.session,
+            'path': request.path,
             'track': track,
             'form': form,
             'title': 'new vote',
@@ -286,7 +298,7 @@ def mark_as_played(request, track_id):
             # and finally save the tweet
             play.save()
 
-    return(redirect('/'))
+    return redirect_nicely(request)
 
 @login_required
 def unmark_as_played(request, track_id):
@@ -310,7 +322,7 @@ def unmark_as_played(request, track_id):
         except tweepy.TweepError:
             pass
         latest_play.delete()
-        return(redirect('/'))
+        return redirect_nicely(request)
 
 
 class LibraryUploadForm(forms.Form):
@@ -342,12 +354,14 @@ def upload_library(request):
 
     elif (not ('confirm' in request.GET and request.GET['confirm'] == 'true')) or (request.method == 'POST' and not form.is_valid()):
         # this is an initial load OR an invalid submission
-        context = {
+            context = {
+                'session': request.session,
+                'path': request.path,
                 'form': form,
                 'title': 'library update',
                 }
 
-        return render_to_response('upload.html', RequestContext(request, context))
+            return render_to_response('upload.html', RequestContext(request, context))
 
     else:
         # act; this is a confirmation
@@ -419,6 +433,8 @@ def request_addition(request):
             return render_to_response('message.html', RequestContext(request, context))
 
     context = {
+            'session': request.session,
+            'path': request.path,
             'title': 'request an addition',
             'form': form,
             }
@@ -426,47 +442,106 @@ def request_addition(request):
     return render_to_response('request.html', RequestContext(request, context))
 
 
-class BlockForm(forms.ModelForm):
+def redirect_nicely(request):
+    """ Redirect to ?from=, if present, otherwise redirect to / """
+    if 'from' in request.GET:
+        return redirect(request.GET['from'])
+    else:
+        return redirect('/')
+
+
+def get_track_or_selection(request, track_id, wipe=True):
+    """ Returns an iterable of tracks.
+
+    If track_id is an actual track id, returns that track in a singleton tuple
+    If track_id is 'selection', returns a QuerySet of all selected tracks
+    If wipe is true, will clear the selection
+    """
+    if track_id == 'selection':
+        tracks = Track.objects.filter(id__in=request.session['selection'])
+        if wipe: request.session['selection'] = []
+    else:
+        tracks = (Track.objects.get(id=track_id),)
+
+
+    return tracks
+
+class BlockForm(forms.Form):
     """ Block something """
-    class Meta:
-        model = Block
+    reason = forms.CharField(max_length=256)
 
 @login_required
 def make_block(request, track_id):
-    track = Track.objects.get(id=track_id)
+    tracks = get_track_or_selection(request, track_id, wipe=False)
+
+    if not tracks:
+        context = {'message': 'nothing selected'}
+        return render_to_response('message.html', RequestContext(request, context))
 
     if request.method == 'POST':
-        block = Block(track=track)
-        form = BlockForm(request.POST, instance=block)
-        if form.is_valid():
-            form.save()
-            return redirect('/')
+        form = BlockForm(request.POST)
+        for track in tracks:
+            if form.is_valid():
+                block = Block(
+                        track=track,
+                        reason=form.cleaned_data['reason']
+                        )
+                block.save()
+
+        # now is the time to wipe the selection
+        if track_id == 'selection': request.session['selection'] = []
+        return redirect('/')
     else:
         form = BlockForm()
-        form.initial={'track': track}
 
     context = {
-            'track': track,
+            'session': request.session,
+            'path': request.path,
+            'tracks': tracks,
             'form': form,
             'title': 'new block',
             }
 
-    return render_to_response('vote.html', RequestContext(request, context))
+    return render_to_response('block.html', RequestContext(request, context))
+
+@login_required
+def unblock(request, track_id):
+    tracks = get_track_or_selection(request, track_id)
+    week = Week()
+
+    for track in tracks:
+        block = week.block(track)
+        if block:
+            block.delete()
+
+    return redirect_nicely(request)
 
 
-def shortlist_or_discard(request, track_id, c):
+def shortlist_or_discard(request, track_id, c=None):
     """ Shortlist or discard something, whichever class is passed to c """
-    track = Track.objects.get(id=track_id)
+    tracks = get_track_or_selection(request, track_id)
 
-    instance = c(track=track)
-    try:
-        instance.clean()
-    except ValidationError:
-        context = {'message': exc_info()[1].messages[0]}
-        return render_to_response('message.html', RequestContext(request, context))
-    else:
-        instance.save()
-        return redirect(request.GET['from'])
+    for track in tracks:
+        if c:
+            # we should create an instance of c
+            instance = c(track=track)
+            try:
+                instance.clean()
+            except ValidationError:
+                if len(tracks) == 1:
+                    # don't bother if this is a multi-track operation
+                    context = {'message': exc_info()[1].messages[0]}
+                    return render_to_response('message.html', RequestContext(request, context))
+            else:
+                instance.save()
+        else:
+            # no class has been handed to us, so we should wipe the status of this track
+            current = Week().shortlist_or_discard(track)
+            if current:
+                current.delete()
+
+    return redirect_nicely(request)
+
 
 @login_required
 def shortlist(request, track_id):
@@ -477,13 +552,72 @@ def discard(request, track_id):
     return shortlist_or_discard(request, track_id, Discard)
 
 @login_required
-def undiscard(request, track_id):
-    track = Track.objects.get(id=track_id)
-    Week().discard(track).delete()
-    return redirect(request.GET['from'])
+def unshortlist_or_undiscard(request, track_id):
+    return shortlist_or_discard(request, track_id, None)
 
-@login_required
-def unshortlist(request, track_id):
-    track = Track.objects.get(id=track_id)
-    Week().shortlist(track).delete()
-    return redirect(request.GET['from'])
+
+# javascript nonsense
+def do_selection(request, select=True):
+    """ Returns the current selection, optionally selects or deselects a track. """
+    tracks = []
+
+    if 'track_id[]' in request.POST:
+        track_ids = dict(request.POST)[u'track_id[]'] # dicting is necessary for some reason
+        tracks = Track.objects.filter(id__in=track_ids)
+
+    elif 'track_id' in request.POST:
+        track_id = request.POST['track_id']
+        tracks = (Track.objects.get(id=track_id),)
+
+    # take our current selection list and turn it into a set
+    if 'selection' in request.session:
+        selection = set(request.session['selection'])
+    else:
+        selection = set()
+
+    altered = False
+    for track in tracks:
+        # add or remove, as necessary
+        altered = True
+        if select:
+            selection.add(track.id)
+            print track
+        else:
+            selection.remove(track.id)
+
+    selection_queryset = Track.objects.filter(id__in=selection)
+
+    # if our person is not authenticated, we have to be deselect things for them when they stop being eligible
+    # or they might get pissed that their vote didn't work
+    redacted = False
+    if not request.user.is_authenticated():
+        for track in selection_queryset:
+            if track.ineligible():
+                selection.remove(track.id)
+                redacted = True
+
+    # only write if necessary
+    if redacted:
+        selection_queryset = Track.objects.filter(id__in=selection)
+    if redacted or altered:
+        request.session['selection'] = list(selection)
+
+    context = {
+            'selection': selection_queryset,
+            'vote_url': vote_url(selection_queryset),
+            }
+
+    if request.method == 'GET':
+        return redirect_nicely(request)
+    elif request.method == 'POST':
+        return render_to_response('minitracklist.html', RequestContext(request, context))
+
+def do_select(request):
+    return do_selection(request, True)
+
+def do_deselect(request):
+    return do_selection(request, False)
+
+def do_clear_selection(request):
+    request.session['selection'] = []
+    return do_selection(request)

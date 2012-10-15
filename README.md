@@ -38,8 +38,7 @@ text or something.
 
 ## How does it work?
 
-Short answer: [Django](https://www.djangoproject.com),
-[Celery](http://celeryproject.org) and [tweepy](http://tweepy.github.com).
+Short answer: [Django](https://www.djangoproject.com).
 
 Long answer: [GitHub](https://github.com/colons/nkdsu).
 [Suggestions](https://github.com/colons/nkdsu/issues/new) welcome.

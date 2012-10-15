@@ -1,5 +1,15 @@
 <!-- {{ track.id }} -->
-<div class="track {% if track.eligible %}eligible{% else %}ineligible{% endif %}" id="{{ track.id }}">
+<div class="track
+  {% if track.eligible %}
+    eligible
+  {% else %}
+    ineligible
+  {% endif %}
+  {% if user.is_authenticated or track.eligible %}
+    selectable
+  {% endif %}
+  "
+  id="{{ track.id }}">
   {% if track.ineligible %}
     <div class="disabled">
       [disabled]
@@ -9,7 +19,7 @@
     <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>
     <p class="title">
     {% if track.eligible %}
-      <a title="Vote for {{ track.derived_title }}" class="upvote" href="https://twitter.com/intent/tweet?text=@nkdsu%20{{ track.id }}">
+    <a title="Vote for {{ track.derived_title }}" class="upvote" href="{{ track.vote_url }}">
       <span class="plusone">+1</span>
       {% endif %}
       <span class="title">{{ track.derived_title }}</span>
@@ -38,9 +48,9 @@
     {% if not track.shortlist and not track.discard %}
     <p class="peter"><a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a> | <a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a></p>
     {% elif track.shortlist %}
-    <p class="peter"><a href="/unshortlist/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a></p>
+    <p class="peter"><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a></p>
     {% elif track.discard %}
-    <p class="peter"><a href="/undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-discard</a></p>
+    <p class="peter"><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-discard</a></p>
     {% endif %}
     {% endif %}
     {% if user.is_authenticated and not track.eligible and track.undoable %}
@@ -48,6 +58,9 @@
     {% endif %}
     {% if track.ineligible and track.ineligible != 'played last week' and track.ineligible != 'played this week' %}
       <p class="refusal">{{ track.ineligible }}</p>
+      {% if user.is_authenticated %}
+        <p class="peter"><a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>
+      {% endif %}
     {% endif %}
   </div>
   <div class="voters">

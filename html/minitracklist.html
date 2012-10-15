@@ -1,0 +1,32 @@
+{% if selection %}
+<h3 id="selection">selected songs</h3>
+{% endif %}
+{% for track in selection %}
+<div class="minitrack selected">
+  <p class="id">{{ track.id }}</p>
+  <div class="metadata">
+    <p class="title">
+      {{ track.derived_title }}
+    </p>
+    {% if track.derived_role %}
+    <p class="role">
+      {{ track.derived_role }}
+    </p>
+    {% endif %}
+  </div>
+  <p class="deselect"><a class="track_jspost" href="/do/deselect/">deselect</a></p>
+</div>
+{% endfor %}
+{% if selection %}
+{% if user.is_authenticated %}
+<p class="actions"><a href="/block/selection/">block&hellip;</a> | <a href="/unblock/selection/">unblock</a></p>
+<p class="actions"><a href="/discard/selection/">discard</a> | <a href="/shortlist/selection/">shortlist</a> | <a href="/unshortlist_or_undiscard/selection/">reset discard/shortlist status</a>
+{% else %}
+<p class="actions"><a href="{{ vote_url }}">vote for all</a></p>
+{% endif %}
+<p class="actions small"><a href="/do/clear_selection/" class="selection_jspost" name="clear_selection">clear selection</a> |
+{% endif %}
+{% if not selection %}
+<p class="actions small">
+{% endif %}
+<a class="select_all" href="/do/select/">select all</a></p>

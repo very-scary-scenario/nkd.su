@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h2 class=message>{{ title }}</h2>
+{% for track in tracks %}
+<p class="aside">{{ track.canonical_string }}</p>
+{% endfor %}
+
+{% if form.errors %}
+<p class="aside problems">problems!</p>
+{% endif %}
+
+<form class="login" method="post" action=".">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="submit">
+</form>
+
+{% endblock %}
