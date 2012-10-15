@@ -31,8 +31,8 @@ $(document).ready(function(){
       // if the selected_tracks doesn't match one of our selection statuses...
       if (($.inArray(this.id, selected_tracks) != -1) != $(this).hasClass('selected')) {
         $(this).toggleClass('selected');
-        $(this).removeClass('pending');
       }
+      $(this).removeClass('pending');
     });
 
     // enable select all button
