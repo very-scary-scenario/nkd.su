@@ -86,7 +86,7 @@ div.track.ineligible div.metacontainer div.metadata {
 }
 
 div.track.selected.pending {
-  -webkit-box-shadow: inset #ccc 0 .2em 2em, #ddd 0 0 2em;
+  -webkit-box-shadow: inset #eee 0 .2em 2em, #ddd 0 0 2em;
 }
 
 div.track.selected {
@@ -584,6 +584,7 @@ a#stamp:hover {
   }
 
   div.votedata {
+    width: 100%;
     display: table-cell;
     vertical-align: middle;
   }

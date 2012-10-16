@@ -56,15 +56,9 @@
       </div>
     </div>
     <div class="votedata">
+    {% if track.votes %}
     <div class="voters">
-      <!-- fuck it 
-      {% if track.ineligible %}
-        <div class="disabled">
-          [disabled]
-        </div>
-      {% endif %} -->
-      {% if votes %}
-        <div class="votes">
+      <div class="votes">
       {% endif %}
       {% for vote in track.votes %}
         <a target="_blank" class="voter{% if vote.content %} commented{% endif %}" href="http://twitter.com/{{ vote.screen_name }}/status/{{ vote.tweet_id }}/">
@@ -89,8 +83,9 @@
               </div>
         </a>
       {% endfor %}
-      {% if votes %}
-        </div>
+        {% if track.votes %}
+      </div> <!-- votes -->
+    </div> <!-- voters -->
       {% endif %}
         {% if not user.is_authenticated and track.eligible %}
           <div{% if track.votes %} class="plusone"{% endif %}><a href="{{ track.vote_url }}">
@@ -99,9 +94,8 @@
             {% else %}
               request this track
             {% endif %}
-          </a></div>
+          </a></div> <!-- plusone -->
         {% endif %}
-    </div> <!-- voters -->
     </div> <!-- votedata -->
   <div class="endof"></div>
 </div>
