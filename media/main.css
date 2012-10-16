@@ -30,29 +30,73 @@ body {
   padding-bottom: 12em;
 }
 
-h2.message {
+h2, h3 {
   text-align: center;
+  margin: 1em 0 .5em;
 }
 
+p.subheading {
+  text-align: center;
+  margin: 1em 0 .5em;
+}
+
+
 /* selections */
+div.track.ineligible {
+  -webkit-box-shadow: inset #222 0 .2em 2em, #ccc 0 0 2em;
+  background-image: url('/noise.png');
+  background-color: #333;
+  color: #eee;
+}
+
+div.track.ineligible.selected {
+  -webkit-box-shadow: inset #933 0 .2em 2em, #ccc 0 0 2em;
+  background-image: url('/noise.png');
+  background-color: #422;
+  color: #eee;
+}
+
+div.track.ineligible .metadata {
+  text-shadow: #000 0 .1em 0;
+}
+
+div.track.ineligible a {
+  color: #f88;
+}
+
+div.track.ineligible a:hover {
+  color: #eee;
+}
+
 div.track.pending, div.track.selected {
-  box-shadow: inset #caa 0 .2em 2em, #ddd 0 0 2em;
+  -webkit-box-shadow: inset #dbb 0 .2em 2em, #ddd 0 0 2em;
+}
+
+div.track.eligible.selected {
+  border-color: #caa;
+}
+
+div.track.eligible.selected div.metacontainer div.metadata {
+  border-color: #ecc;
+}
+
+div.track.ineligible div.metacontainer div.metadata {
+  border-color: #555;
 }
 
 div.track.selected.pending {
-  background: none;
+  -webkit-box-shadow: inset #ccc 0 .2em 2em, #ddd 0 0 2em;
 }
 
 div.track.selected {
   background-color: #fee;
   background-image: url('/noise.png');
-  inner-shadow: #fff 0 0 1em;
 }
 
 /* selection list */
 div.minitrack {
   text-align: center;
-  margin-bottom: .5em;
+  margin-top: .5em;
 }
 
 div#selection h3 {
@@ -79,8 +123,32 @@ div#selection {
 
 p.actions.small, p.deselect {
   font-size: .8em;
-  margin-top: .3em;
+  margin-bottom: .3em;
   clear: both;
+}
+
+h3#selection {
+  margin: 0;
+}
+
+div#stick.invisible {
+  position: fixed;
+  bottom: -1em;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+
+div#stick.invisible div#stuck {
+  display: inline-block;
+  background-color: #fff;
+  background-image: url('/noise.png');
+  padding: .5em 1em 1.5em;
+  margin: 0 auto;
+  border-radius: 1em;
+  -webkit-box-shadow: inset #ddd 0 0 2em, #888 0 .5em 2em;
+  border: 1px solid #aaa;
 }
 
 /* header and stamps */
@@ -93,24 +161,30 @@ p.actions.small, p.deselect {
 }
 
 #beta {
-  padding-top: .7em;
+  color: #eaa;
   font-size: 2em;
   -webkit-transform: rotate(-15deg); 
   -ms-transform: rotate(-15deg); 
   -moz-transform: rotate(-15deg);
   -o-transform: rotate(-15deg);
-  left: .2em;
+  position: absolute;
 }
   
 
 .disabled, #beta {
   font-family: "IM Fell English SC", serif;
-  position: absolute;
-  padding-left: 1em;
+  height: 0;
   margin-top: -.1em;
-  z-index: -1;
   text-shadow: none;
+  z-index: 0;
+}
+
+div.selectable .disabled {
   color: #eaa;
+}
+
+div.unselectable .disabled {
+  color: #966;
 }
 
 /* random jaunty angles! */
@@ -145,19 +219,15 @@ div.track:nth-child(7n+5) .disabled {
 
 div.track:nth-child(3n+1) .disabled {
   font-size: 3.7em;
-  padding-left: 1.2em;
 }
 div.track:nth-child(5n) .disabled {
   font-size: 4.5em;
-  padding-left: 0.6em;
 }
 div.track:nth-child(7n) .disabled {
   font-size: 3.5em;
-  padding-left: 1.4em;
 }
 div.track:nth-child(11n+2) .disabled {
   font-size: 4.2em;
-  padding-left: 0.8em;
 }
 
 /* anyway... */
@@ -193,23 +263,33 @@ div.endof {
 }
 
 div.track {
+  -webkit-box-shadow: inset #eee 0 .2em 2em, #eee 0 0 2em;
+  background-image: url('/noise.png');
+  background-color: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 1em;
   clear: both;
   margin-bottom: 1.5em;
-  padding: .5em .5em;
+  padding: .5em 0;
+  display: table;
+  width: 100%;
 }
 
-div.track:hover {
-  border-left: 2px solid #d66;
-  margin-left: -2px;
+div.track div.metadata, div.track div.votedata {
+  margin: 0 .5em;
+}
+
+div.voters {
+  display: table;
+  width: 100%;
+}
+
+div.track.selectable:hover {
+  border-color: #d66;
 }
 
 div.track.ineligible {
   border-color: #666;
-}
-
-div.track p.title {
-  clear: both;
-  padding-right: -4%;
 }
 
 div.track span.title {
@@ -223,6 +303,22 @@ div.track p.role, div.track p.last_played, div.track p.peter, div.track p.refusa
   margin-top: .2em;
 }
 
+.voter {
+  line-height: .5em;
+}
+
+div.votes {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+div.plusone {
+  width: 1.5em;
+  text-align: left;
+  display: table-cell;
+  vertical-align: middle;
+}
+
 .voter img {
   display: inline-block;
   height: 32px;
@@ -231,42 +327,24 @@ div.track p.role, div.track p.last_played, div.track p.peter, div.track p.refusa
 }
 
 div.track:hover a.voter.commented img {
-  outline-color: #333;
-  border-color: #d66;
+  -webkit-box-shadow: #d66 0 0 .3em;
+  outline-color: #d66;
+  margin: 0;
 }
 
 div.track:hover a.voter img {
   border: 1px solid #eee;
-  outline: 1px solid #faa;
+  -webkit-box-shadow: #888 0 0 .3em;
+  outline: 1px solid #888;
   margin: 0;
 }
 
-div.track a.voter:hover img {
-  border: 1px solid #eee;
-  outline: 1px solid #aaa;
-  margin: 0;
+div.track.ineligible:hover a.voter img {
+  border-color: #333;
 }
 
 a.voter:hover {
   border-bottom: none;
-}
-
-.track span.plusone {
-  float: right;
-  color: #ccc;
-  position: relative;
-  padding-right: .7em;
-  top: .45em;
-  margin-bottom: -2em;
-  width: 0;
-}
-
-.track:hover span.plusone {
-  color: #d66;
-}
-
-a.upvote:hover span.plusone {
-  color: #444;
 }
 
 div.tweet_deets {
@@ -276,15 +354,20 @@ div.tweet_deets {
 a.voter:hover div.tweet_deets {
   position: absolute;
   display: block;
-  background-color: #eee;
+  background-color: #f8f8f8;
   background-image: url('/noise.png');
   border: 1px solid #aaa;
   text-align: center;
   padding: .2em .5em;
+  margin-left: -1px;
+  margin-top: 3px;
   color: #444;
-  max-width: 25%;
   font-size: .8em;
   overflow: hidden;
+  border-radius: .4em;
+  -webkit-box-shadow: inset #ddd 0 0 1em, #888 0 .1em .3em;
+  z-index: 4;
+  max-width: 100%;
 }
 
 div.tweet_deets div.tweet_deets, .full_name {
@@ -302,7 +385,9 @@ p.refusal {
 
 /* shrunken track tables */
 div.shortlist div.track {
-    font-size: .7em;
+  font-size: .7em;
+  width: 70%;
+  margin: 0 auto;
 }
 
 div.shortlist .voter img {
@@ -353,14 +438,13 @@ form ul.errorlist li {
   background-color: #eee;
   background-image: url('/noise.png');
   color: #d66;
-  z-index: -4;
+  z-index: 1;
   font-family: 'Bitter', sans-serif;
   border: 1px solid #999;
   border-top: none;
   font-size: 1em;
   position: relative;
   top: -1px;
-  z-index: 0;
   padding: 0 .3em .1em;
   margin: 0 auto;
 }
@@ -415,35 +499,27 @@ form ul.errorlist li {
 
 /* front-page divs */
 
-div.playlist .last_played, div.playlist .voters, div.playlist .refusal {
+div.playlist .last_played, div.playlist .refusal, div.playlist div.disabled {
   display: none;
 }
 
 div.playlist.today div.track .voters {
+  padding-top: .5em;
+}
+
+div.playlist div.track {
   display: block;
-  margin-top: .5em;
-  clear: both;
+}
+
+div.playlist div.voters {
+  display: block;
   width: 100%;
 }
 
-div.playlist div.metadata {
+div.playlist div.metacontainer {
+  display: block;
   width: 100%;
-}
-
-div.playlist div.metadata {
   text-align: left;
-}
-
-h2, h3 {
-  text-align: right;
-  margin-bottom: .4em;
-  margin-top: 2em;
-}
-
-div.playlist h2 {
-  text-align: right;
-  width: 100%;
-  padding: 0 .3em;
 }
 
 div.shortlist {
@@ -465,14 +541,10 @@ a#stamp:hover {
     height: 7em;
   }
 
-  h2.heading, h3.heading {
-    width: 57%;
-    text-align: right;
-  }
-
-  p.subheading {
-    width: 57%;
-    text-align: right;
+  #beta {
+    top: 1.5em;
+    margin-left: 1em;
+    margin-top: 1em;
   }
 
   div#title {
@@ -500,40 +572,37 @@ a#stamp:hover {
 
   div.tracklist div.track div.metadata, div.shortlist div.track div.metadata {
     float: left;
-    width: 57%;
     text-align: right;
+    border-right: #ddd solid 1px;
+    padding: 100em 4%;
+    margin: -100em 0;
+    width: 89%;
+  }
+  
+  div.track div.metacontainer {
+    display: table-cell;
+    vertical-align: middle;
+    overflow: hidden;
+    width: 63%;
   }
 
-  .track span.plusone {
-    left: 6%;
+  div.votedata {
+    display: table-cell;
+    vertical-align: middle;
   }
 
-
-  div.voters {
-    margin-top: 1.2em;
-    float: right;
-    width: 37%;
+  div.playlist div.votedata {
+    display: block;
   }
 
   div.playlist {
     float: right;
-    width: 28%;
-  }
-
-  div.playlist .track {
-    margin-top: 1.5em;
-    margin-bottom: 1.5em;
-  }
-
-  div.playlist div.track div.disabled {
-    font-size: 2em;
-    margin-top: .4em;
-    padding-left: 1em;
+    width: 32%;
   }
 
   div.current {
     float: left;
-    width: 68%;
+    width: 64%;
   }
 
   .disabled {
@@ -568,35 +637,13 @@ a#stamp:hover {
   }
 
   #beta {
-    margin-left: 4em;
-  }
-
-  p.subheading {
-    text-align: right;
-  }
-
-  div.current div.track.ineligible {
-    display: none;
-  }
-
-  div.voters {
-    margin-top: .5em;
-    clear: both;
-    width: 100%;
+    left: 5em;
   }
 
   .search_form {
     text-align: center;
     margin: 1em;
     margin-bottom: 2em;
-  }
-
-  div.track div.metadata {
-    padding-right: 1.5em;
-  }
-
-  .track span.plusone {
-    left: 1em;
   }
 
   .aligned, p.aside {
@@ -608,15 +655,19 @@ a#stamp:hover {
     margin-top: .5em;
   }
 
-  div.voters div.tweet_deets {
-    min-width: 70%;
-  }
-
   form p input, form p label, form p textarea {
     display: block;
   }
 
   form p label {
     margin-top: .5em;
+  }
+
+  div.voters {
+    padding-top: .5em;
+  }
+
+  div.track {
+    display: block;
   }
 }

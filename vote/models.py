@@ -132,6 +132,7 @@ class Week(object):
     def votes(self, track=None):
         """ Get all votes of any kind (for a particular track) from this week """
         votes, manual_votes = self.votes_in_a_tuple(track=track)
+        #return list(votes) + list(votes) + list(votes) + list(votes) + list(votes) + list(manual_votes)
         return list(votes) + list(manual_votes)
 
     def votes_in_a_tuple(self, track=None):

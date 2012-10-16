@@ -22,7 +22,7 @@
         <p id="disclaimer">This site is a work in progress. Things are <a href="https://github.com/colons/nkdsu/commits/master">changing</a>. If you have feedback, please do not hesitate to pester <a href="http://twitter.com/mftb">myself</a> or <a href="http://twitter.com/theshillito">Peter</a> on Twitter or, if you're on GitHub, <a href="https://github.com/colons/nkdsu/issues">submit a bug</a>.</p>
         <div id="header">
           <div id="title">
-            <span id="beta">[beta]</span>
+            <div id="beta">[beta]</div>
             <h1><a href="/">nkd.su</a></h1>
             {% if on_air %}
             <p class="subtitle">on air! listen live at <a target="_blank" href="http://thisisthecat.com">the cat</a>
@@ -45,7 +45,9 @@
           </div> <!-- search -->
         </div> <!-- header -->
         {% block content %}{% endblock %}
+        {% if show %}
         <div id="selection"></div>
+        {% endif %}
       </div>
       <div id="footer">
         {% if user.is_authenticated %}

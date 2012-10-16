@@ -15,10 +15,24 @@ $(document).ready(function(){
     }
   });
 
+  // stick to bottom of screen
+  function stick() {
+    if (($('div#selection').offset().top < ($(window).scrollTop() + $(window).height() - $('div#stuck').height())) == ($('div#stick').hasClass('invisible'))) {
+      $('div#stick').toggleClass('invisible');
+      // compensate to prevent document height changing
+      if ($('div#stick').hasClass('invisible')) {
+        $('div#selection').css('margin-top', $('div#stuck').height()+'px');
+      } else {
+        $('div#selection').css('margin-top', 0);
+      }
+    }
+  }
+
   // selection representation 
   function update_selection(data) {
     // update document
     $("div#selection").html(data);
+    stick();
 
     // build a list of IDs of selected tracks
     var selected_tracks = [];
@@ -63,6 +77,19 @@ $(document).ready(function(){
       $.post($(this).attr('href'), function(data) {
         update_selection(data);
       });
+    });
+
+    // make div#stick.invisible
+    $(window).scroll(function() {
+      stick();
+    });
+
+    // scroll to bottom when asked
+    $('div#stick.invisible div#stuck').on("click", function() {
+      window.scrollTo(0,$('div#selection').offset().top);
+    });
+    $('div#stick.invisible div#stuck a').click(function(event) {
+      event.stopPropagation();
     });
     
   };
