@@ -214,6 +214,7 @@ def show(request, showdate):
             'on_air': is_on_air(),
             'next_show': next_show,
             'prev_show': prev_show,
+            'show': Week().showtime,
             }
 
     return render_to_response('show.html', RequestContext(request, context))

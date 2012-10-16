@@ -144,11 +144,11 @@ div#stick.invisible div#stuck {
   display: inline-block;
   background-color: #fff;
   background-image: url('/noise.png');
+  -webkit-box-shadow: inset #ddd 0 0 2em, #888 0 .5em 2em;
+  border: 1px solid #aaa;
   padding: .5em 1em 1.5em;
   margin: 0 auto;
   border-radius: 1em;
-  -webkit-box-shadow: inset #ddd 0 0 2em, #888 0 .5em 2em;
-  border: 1px solid #aaa;
 }
 
 /* header and stamps */
