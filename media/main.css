@@ -379,7 +379,7 @@ a.voter:hover div.tweet_deets {
   border-radius: .4em;
   -webkit-box-shadow: inset #ddd 0 0 1em, #888 0 .1em .3em;
   z-index: 4;
-  max-width: 100%;
+  max-width: 17em;
 }
 
 div.tweet_deets div.tweet_deets, .full_name {
