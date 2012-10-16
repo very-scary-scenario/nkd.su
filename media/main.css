@@ -303,17 +303,13 @@ div.track p.role, div.track p.last_played, div.track p.peter, div.track p.refusa
   margin-top: .2em;
 }
 
-.voter {
-  line-height: .5em;
-}
-
 div.votes {
   display: table-cell;
   vertical-align: middle;
 }
 
 div.plusone {
-  width: 1.5em;
+  width: 2em;
   text-align: left;
   display: table-cell;
   vertical-align: middle;
