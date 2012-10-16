@@ -83,9 +83,8 @@
               </div>
         </a>
       {% endfor %}
-        {% if track.votes %}
+      {% if track.votes %}
       </div> <!-- votes -->
-    </div> <!-- voters -->
       {% endif %}
         {% if not user.is_authenticated and track.eligible %}
           <div{% if track.votes %} class="plusone"{% endif %}><a href="{{ track.vote_url }}">
@@ -96,6 +95,9 @@
             {% endif %}
           </a></div> <!-- plusone -->
         {% endif %}
+      {% if track.votes %}
+      </div> <!-- voters -->
+      {% endif %}
     </div> <!-- votedata -->
   <div class="endof"></div>
 </div>
