@@ -69,7 +69,21 @@ div.track.ineligible a:hover {
   color: #eee;
 }
 
-div.track.pending, div.track.selected {
+div.track.eligible.pending {
+  background-color: #fff;
+}
+
+div.track.ineligible.pending {
+  background-color: #222;
+  -webkit-box-shadow: inset #433 0 .2em 2em, #ddd 0 0 2em;
+}
+
+div.track.ineligible.selected.pending {
+  background-color: #311;
+  -webkit-box-shadow: inset #333 0 .2em 2em, #ddd 0 0 2em;
+}
+
+div.track.eligible.pending, div.track.selected {
   -webkit-box-shadow: inset #dbb 0 .2em 2em, #ddd 0 0 2em;
 }
 
@@ -85,7 +99,7 @@ div.track.ineligible div.metacontainer div.metadata {
   border-color: #555;
 }
 
-div.track.selected.pending {
+div.track.selected.eligible.pending {
   -webkit-box-shadow: inset #eee 0 .2em 2em, #ddd 0 0 2em;
 }
 
@@ -277,10 +291,11 @@ div.track {
 }
 
 div.track div.metadata, div.track div.votedata {
-  margin: 0 .5em;
+  margin: 0em .5em;
 }
 
 div.voters {
+  margin-left: .1em;
   display: table;
   width: 100%;
 }
@@ -571,7 +586,7 @@ a#stamp:hover {
     float: left;
     text-align: right;
     border-right: #ddd solid 1px;
-    padding: 100em 4%;
+    padding: 100em 3.8%;
     margin: -100em 0;
     width: 89%;
   }
