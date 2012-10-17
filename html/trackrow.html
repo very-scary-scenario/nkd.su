@@ -86,7 +86,7 @@
     {% if track.has_votes %}
       </div> <!-- votes -->
     {% endif %}
-    {% if not user.is_authenticated and track.eligible or track.week %}
+    {% if not user.is_authenticated and track.eligible %}
     <div class="invitation {% if track.has_votes %}plusone{% else %}request{% endif %}"><a href="{{ track.vote_url }}">
         {% if track.has_votes %}
           +1
