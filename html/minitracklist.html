@@ -7,7 +7,7 @@
         <p class="actions"><a href="/discard/selection/">discard</a> | <a href="/shortlist/selection/">shortlist</a> | <a href="/unshortlist_or_undiscard/selection/">reset discard/shortlist status</a>
         {% else %}
         {% if tweet_is_too_long %}
-        <p class="actions">too many tracks to vote</p>
+        <p class="refusal actions">too many tracks</p>
         {% else %}
         <p class="actions"><a href="{{ vote_url }}">vote for all</a></p>
         {% endif %}
