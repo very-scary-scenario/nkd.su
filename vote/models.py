@@ -70,32 +70,33 @@ class Week(object):
         return (time >= self.showtime) and (time < self.finish)
 
     def next(self):
-        return Week(self.finish)
+        try: return self.next_week
+        except AttributeError: pass
+        self.next_week = Week(self.finish)
+        return self.next_week
 
     def prev(self):
         """ Returns the previous Week. See next(). """
-        return Week(self.start - datetime.timedelta(seconds=1))
+        try: return self.prev_week
+        except AttributeError: pass
+        self.prev_week = Week(self.start - datetime.timedelta(seconds=1))
+        return self.prev_week
 
-    def plays(self, track=None, invert=False):
+    def has_plays(self):
+        """ True if this week has any plays  """
+        return Play.objects.filter(datetime__range=self.date_range).exists()
+
+    def plays(self, track=None, invert=False, select_related=True):
         """ Returns all plays, in chronological order, from this Week's show as a QuerySet """
-        if invert:
-            order = '-datetime'
-        else:
-            order = 'datetime'
+        if invert: order = '-datetime'
+        else: order = 'datetime'
 
         plays = Play.objects.filter(datetime__range=self.date_range).order_by(order)
 
-        if track:
-            plays.filter(track=track)
+        if track: plays = plays.filter(track=track)
+        if select_related: plays = plays.select_related()
 
         return plays
-
-    def block(self, track):
-        """ Get any block from this week """
-        try:
-            return Block.objects.get(date__range=self.date_range, track=track)
-        except Block.DoesNotExist:
-            return None
 
     def _shortlist_or_discard(self, track, c):
         """ Does the actual work for shortlist() and discard()
@@ -138,20 +139,23 @@ class Week(object):
     def votes_in_a_tuple(self, track=None):
         """ Returns all Votes and ManualVotes from this week in a tuple of QuerySets
         if track is specified, filters by track """
+        try: return self.vote_tuple_cache
+        except AttributeError: pass
         votes = self._votes(track)
         manual_votes = self._manual_votes(track)
-        return (votes, manual_votes)
+        self.vote_tuple_cache = (votes, manual_votes)
+        return self.vote_tuple_cache
 
     def _manual_votes(self, track=None):
         manual_votes = ManualVote.objects.filter(date__range=self.date_range).order_by('date')
-        if track:
-            manual_votes = manual_votes.filter(track=track)
+        if track: manual_votes = manual_votes.filter(track=track)
+        else: manual_votes.select_related()
         return manual_votes
 
     def _votes(self, track=None):
         votes = Vote.objects.filter(date__range=self.date_range).order_by('date')
-        if track:
-            votes = votes.filter(tracks=track)
+        if track: votes = votes.filter(tracks=track)
+        else: votes.select_related()
         return votes
 
 
@@ -210,17 +214,19 @@ class Track(models.Model):
 
     def last_played(self):
         """ Get the datetime of this track's most recent play """
-        try:
-            return self.last_play().datetime
-        except AttributeError:
-            return None
+        try: return self.last_play().datetime
+        except AttributeError: return None
 
     def last_play(self):
         """ Get the datetime this track's most recent Play """
-        try:
-            return Play.objects.filter(track=self).order_by('-datetime')[0]
-        except IndexError:
-            return None
+        try: return self.last_play_cache
+        except AttributeError: pass
+
+        try: last_play = Play.objects.filter(track=self).order_by('-datetime')[0]
+        except IndexError: last_play = None
+
+        self.last_play_cache = last_play
+        return self.last_play_cache
 
     def weeks_since_play(self, time=None):
         """ Get the number of shows that have ended since this track's most recent Play """
@@ -245,6 +251,23 @@ class Track(models.Model):
     def undoable(self):
         """ Right now, get True if this track is the source of the most recent Play. Criteria subject to change. """
         return Play.objects.all().order_by('-datetime')[0].track == self
+
+    def block(self, week=None):
+        """ Get any block from the week specified """
+        if not week:
+            week = self.week
+
+        try: return self.block_cache[week]
+        except AttributeError: self.block_cache = {}
+        except KeyError: pass
+
+        try: block = Block.objects.get(date__range=week.date_range, track=self)
+        except Block.DoesNotExist: block = None
+
+        self.block_cache[week] = block
+
+        return block
+
 
     def derived_title(self):
         return split_id3_title(self.id3_title)[0]
@@ -272,11 +295,9 @@ class Track(models.Model):
 
     def ineligible(self, time=None):
         """ Returns a string describing why a track is ineligible, or False if it is not """
-        try:
-            # if this Track instance has already been checked, just return what was returned before
-            return self.reason
-        except AttributeError:
-            pass
+        # if this Track instance has already been checked, just return what was returned before
+        try: return self.reason
+        except AttributeError: pass
 
         week = Week(time)
 
@@ -286,8 +307,8 @@ class Track(models.Model):
         elif week.prev().plays().filter(track=self):
             self.reason = 'played last week'
 
-        elif week.block(self):
-            self.reason = week.block(self).reason
+        elif self.block(week):
+            self.reason = self.block(week).reason
 
         else:
             self.reason = False
@@ -305,12 +326,20 @@ class Track(models.Model):
         return week
 
     def votes(self, time=None):
+        try: return self.vote_cache
+        except AttributeError: pass
+
         week = self.vote_week(time)
-        return week._votes(track=self)
+        self.vote_cache = week._votes(track=self)
+        return self.vote_cache
 
     def manual_votes(self, time=None):
+        try: return self.manual_vote_cache
+        except AttributeError: pass
+
         week = self.vote_week(time)
-        return week._manual_votes(track=self)
+        self.manual_vote_cache = week._manual_votes(track=self)
+        return self.manual_vote_cache
 
     def has_votes(self):
         """ Return True if Track has Votes or ManualVotes """
@@ -350,11 +379,15 @@ class Vote(models.Model):
     name = models.CharField(max_length=20)
 
     def content(self):
+        try: return self.content_cache
+        except AttributeError: pass
+
         content = self.text.replace('@%s' % settings.READING_USERNAME, '').strip()
         for word in content.split():
-            if Track.objects.filter(id=word).exists():
+            if len(word) == 16 and self.tracks.filter(id=word).exists():
                 content = content.replace(word, '').strip()
-        return content
+        self.content_cache = content
+        return self.content_cache
 
     def clean(self):
         # every vote placed after the cutoff for this track by this person
@@ -383,6 +416,12 @@ class Vote(models.Model):
 
         if not self.tracks:
             raise ValidationError('no tracks in vote')
+
+    def get_tracks(self):
+        try: return self.tracks_cache
+        except AttributeError: pass
+        self.tracks_cache = self.tracks.all()
+        return self.tracks_cache
 
 
 class Play(models.Model):
@@ -444,3 +483,11 @@ class ManualVote(models.Model):
     message = models.CharField(max_length=256, blank=True)
     anonymous = models.BooleanField()
     date = models.DateTimeField(auto_now_add=True)
+
+    def get_tracks(self):
+        """ For vague compatability with Vote """
+        try: return self.tracks_cache
+        except AttributeError: pass
+        self.tracks_cache = [self.track]
+        return self.tracks_cache
+

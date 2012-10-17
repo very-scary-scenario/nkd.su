@@ -41,11 +41,10 @@ def summary(request, week=None):
 
     form = SearchForm()
 
-    # only consider votes from before the end of the current show, so we can work in the past
-    [trackset.add(t) for v in week._votes() for t in v.tracks.all()]
-    [trackset.add(v.track) for v in week._manual_votes()] # ManualVote is not compatible; this should be fixed
+    [trackset.add(t) for v in week.votes() for t in v.get_tracks()]
 
-    unfiltered_tracklist = sorted(trackset, reverse=True, key=lambda t: len(t.votes()))
+    unfiltered_tracklist = sorted(trackset, reverse=True, key=lambda t: len(t.votes()) + len(t.manual_votes()))
+
     if request.user.is_authenticated():
         tracklist = [t for t in unfiltered_tracklist if t.eligible() and not week.shortlist_or_discard(t)]
         shortlist = week.shortlist()
@@ -54,6 +53,7 @@ def summary(request, week=None):
         shortlist = None
         discard = None
         tracklist = [t for t in unfiltered_tracklist if t.eligible()]
+
     tracklist.extend([t for t in unfiltered_tracklist if t.ineligible() and (t.ineligible() != 'played this week')])
 
     # ditto plays
@@ -198,26 +198,20 @@ def show(request, date):
 
     # the world is lady
 
-    if not plays:
-        raise Http404
+    if not plays: raise Http404
 
     next_week = week.next()
-    if next_week.plays():
-        next_show = next_week.showtime
-    else:
-        next_show = None
+    if next_week.has_plays(): next_show = next_week.showtime
+    else: next_show = None
 
     prev_week = week.prev()
-    if prev_week.plays():
-        prev_show = prev_week.showtime
-    else:
-        prev_show = None
+    if prev_week.has_plays(): prev_show = prev_week.showtime
+    else: prev_show = None
 
     tracks = [p.track for p in plays]
 
     denied = set()
-    [denied.add(t) for v in week._votes() for t in v.tracks.all() if t not in tracks]
-    [denied.add(v.track) for v in week._manual_votes() if v.track not in tracks]
+    [denied.add(t) for v in week.votes() for t in v.get_tracks() if t not in tracks]
 
     [t.set_week(week) for t in tracks]
     [t.set_week(week) for t in denied]
@@ -533,7 +527,7 @@ def unblock(request, track_id):
     week = Week()
 
     for track in tracks:
-        block = week.block(track)
+        block = track.block(week)
         if block:
             block.delete()
 

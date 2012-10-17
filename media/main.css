@@ -689,3 +689,7 @@ a#stamp:hover {
     margin-top: .3em;
   }
 }
+
+#djDebug {
+  text-shadow: none;
+}
