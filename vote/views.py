@@ -33,9 +33,10 @@ ak_api = akismet.Akismet(key=settings.AKISMET_API_KEY, blog_url=settings.AKISMET
 class SearchForm(forms.Form):
     q = forms.CharField()
 
-def summary(request):
+def summary(request, week=None):
     """ Our landing page """
-    week = Week()
+    if not week:
+        week = Week()
     trackset = set()
 
     form = SearchForm()
@@ -188,11 +189,14 @@ def latest_show(request):
     last_week = Week().prev()
     return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
 
-def show(request, showdate):
-    """ All tracks from a particular Week's show. """
-    day, month, year = (int(t) for t in showdate.split('-'))
+def show(request, date):
+    """ Playlist archive """
+    day, month, year = (int(t) for t in date.split('-'))
     week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc))
     plays = week.plays()
+
+    # return summary(request, week)
+    # the world is not ready
 
     if not plays:
         raise Http404
@@ -213,7 +217,7 @@ def show(request, showdate):
     context = {
             'session': request.session,
             'path': request.path,
-            'title': showdate,
+            'title': date,
             'this_show': week.showtime,
             'tracks': [p.track for p in plays],
             'on_air': is_on_air(),
