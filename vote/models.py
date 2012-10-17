@@ -204,19 +204,26 @@ class Track(models.Model):
     show_ka = models.CharField(max_length=500, blank=True)
     role = models.CharField(max_length=100, blank=True) # OP, ED, char
 
+    def __init__(self, *args):
+        models.Model.__init__(self, *args)
+        self.week = None
+
     def last_played(self):
+        """ Get the datetime of this track's most recent play """
         try:
             return self.last_play().datetime
         except AttributeError:
             return None
 
     def last_play(self):
+        """ Get the datetime this track's most recent Play """
         try:
             return Play.objects.filter(track=self).order_by('-datetime')[0]
         except IndexError:
             return None
 
     def weeks_since_play(self, time=None):
+        """ Get the number of shows that have ended since this track's most recent Play """
         time = now_or_time(time)
         this_week = Week(time)
         last_play = self.last_play()
@@ -236,6 +243,7 @@ class Track(models.Model):
         return weeks_ago
 
     def undoable(self):
+        """ Right now, get True if this track is the source of the most recent Play. Criteria subject to change. """
         return Play.objects.all().order_by('-datetime')[0].track == self
 
     def derived_title(self):
@@ -248,6 +256,7 @@ class Track(models.Model):
         return self.id3_artist
 
     def canonical_string(self):
+        """ Get the string that, for instance, would be tweeted """
         title, role = split_id3_title(self.id3_title)
         if role:
             return u'"%s" (%s) - %s' % (title, role, self.id3_artist)
@@ -285,10 +294,27 @@ class Track(models.Model):
 
         return self.reason
 
+    def vote_week(self, time):
+        """ Get whatever week we should be using to inspect votes """
+        if self.week and (not time):
+            week = self.week
+        else:
+            time = now_or_time(time)
+            week = Week(time)
+
+        return week
+
     def votes(self, time=None):
-        time = now_or_time(time)
-        week = Week(time)
-        return week.votes(track=self)
+        week = self.vote_week(time)
+        return week._votes(track=self)
+
+    def manual_votes(self, time=None):
+        week = self.vote_week(time)
+        return week._manual_votes(track=self)
+
+    def has_votes(self):
+        """ Return True if Track has Votes or ManualVotes """
+        return self.votes() or self.manual_votes()
 
     def shortlist(self, time=None):
         time = now_or_time(time)
@@ -304,6 +330,10 @@ class Track(models.Model):
         tweet = '@%s %s' % (settings.READING_USERNAME, self.id)
         url = 'https://twitter.com/intent/tweet?text=%s' % urlquote(tweet)
         return url
+
+    def set_week(self, week):
+        """ Make this track get the votes (but not eligibility or anything else) from a particular week. """
+        self.week = week
 
 class Vote(models.Model):
     def __unicode__(self):

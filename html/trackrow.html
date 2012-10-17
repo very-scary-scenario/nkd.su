@@ -56,48 +56,48 @@
       </div>
     </div>
     <div class="votedata">
-    {% if track.votes %}
+    {% if track.has_votes %}
     <div class="voters">
       <div class="votes">
       {% endif %}
       {% for vote in track.votes %}
         <a target="_blank" class="voter{% if vote.content %} commented{% endif %}" href="http://twitter.com/{{ vote.screen_name }}/status/{{ vote.tweet_id }}/">
-            <img src="{{ vote.user_image }}" alt="{{ vote.screen_name }}">
-              <div class="tweet_deets">
-                <p class="full_name">{{ vote.name }}</p><p class="screen_name">@{{ vote.screen_name }}</p>
-                {% if vote.content %}<p class="text">{{ vote.content|safe }}</p>{% endif %}
-              </div>
-          </a>
-        {% endfor %}
-        {% for vote in track.manual_votes %}
-          <a class="voter manual {{ vote.kind }}{% if vote.anonymous %} anonymous{% endif %}" href="{% if vote.kind == 'tweet' and not vote.anonymous %}http://twitter.com/{{ vote.name }}{% else %}#{% endif %}">
-            <img src="{{ STATIC_URL}}i/{{ vote.kind }}.png" alt="{{ vote.kind }}">
-              <div class="tweet_deets">
-              {% if not vote.anonymous or user.is_authenticated %}
-                <span class="screen_name">{% if vote.kind == 'tweet' %}@{% endif %}{{ vote.name }}{% if vote.anonymous %} (anonymous){% endif %}</span>{% if vote.message %}:
-                <span class="text">{{ vote.message }}</span>
-                {% endif %}
-              {% else %}
-                <span class="text">[anonymous request]</span>
-              {% endif %}
-              </div>
+          <img src="{{ vote.user_image }}" alt="{{ vote.screen_name }}">
+          <div class="tweet_deets">
+            <p class="full_name">{{ vote.name }}</p><p class="screen_name">@{{ vote.screen_name }}</p>
+            {% if vote.content %}<p class="text">{{ vote.content|safe }}</p>{% endif %}
+          </div>
         </a>
       {% endfor %}
-      {% if track.votes %}
-      </div> <!-- votes -->
-      {% endif %}
-        {% if not user.is_authenticated and track.eligible %}
-          <div{% if track.votes %} class="plusone"{% endif %}><a href="{{ track.vote_url }}">
-            {% if track.votes or track.manual_votes %}
-              +1
-            {% else %}
-              request this track
+      {% for vote in track.manual_votes %}
+        <a class="voter manual {{ vote.kind }}{% if vote.anonymous %} anonymous{% endif %}" href="{% if vote.kind == 'tweet' and not vote.anonymous %}http://twitter.com/{{ vote.name }}{% else %}#{% endif %}">
+          <img src="{{ STATIC_URL}}i/{{ vote.kind }}.png" alt="{{ vote.kind }}">
+          <div class="tweet_deets">
+            {% if not vote.anonymous or user.is_authenticated %}
+              <span class="screen_name">{% if vote.kind == 'tweet' %}@{% endif %}{{ vote.name }}{% if vote.anonymous %} (anonymous){% endif %}</span>{% if vote.message %}:
+              <span class="text">{{ vote.message }}</span>
             {% endif %}
-          </a></div> <!-- plusone -->
+          {% else %}
+            <span class="text">[anonymous request]</span>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+    {% if track.has_votes %}
+      </div> <!-- votes -->
+    {% endif %}
+    {% if not user.is_authenticated and track.eligible or track.week %}
+    <div class="invitation {% if track.has_votes %}plusone{% else %}request{% endif %}"><a href="{{ track.vote_url }}">
+        {% if track.has_votes %}
+          +1
+        {% else %}
+          request this track
         {% endif %}
-      {% if track.votes %}
-      </div> <!-- voters -->
-      {% endif %}
-    </div> <!-- votedata -->
-  <div class="endof"></div>
+      </a>
+    </div> <!-- plusone -->
+  {% endif %}
+  {% if track.has_votes %}
+    </div> <!-- voters -->
+  {% endif %}
+  </div> <!-- votedata -->
 </div>

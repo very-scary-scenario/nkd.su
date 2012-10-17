@@ -213,13 +213,15 @@ def show(request, date):
     else:
         prev_show = None
 
+    tracks = [p.track for p in plays]
+    [t.set_week(week) for t in tracks]
 
     context = {
             'session': request.session,
             'path': request.path,
             'title': date,
             'this_show': week.showtime,
-            'tracks': [p.track for p in plays],
+            'tracks': tracks,
             'on_air': is_on_air(),
             'next_show': next_show,
             'prev_show': prev_show,
