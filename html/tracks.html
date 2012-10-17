@@ -11,6 +11,19 @@
 <p class="aligned"><a href="/roulette/">show me something else</a></p>
 {% endif %}
 
+{% if query and page.has_other_pages %}
+<p class="aside">
+{% if page.has_previous %}
+<a href="{{ page.previous_page_number }}">&lt;</a>
+{% endif %}
+{{ page.number }}/{{ page.paginator.num_pages }}
+{% if page.has_next %}
+<a href="{{ page.next_page_number }}">&gt;</a>
+{% endif %}
+</p>
+<p class="aside">{{ page.start_index }}-{{ page.end_index }} / {{ page.paginator.count }}</p>
+{% endif %}
+
 {% if query %}
 <!-- this is a search and you may not have found what you're looking for -->
 <p class="aligned everything">can't find what you're looking for? <a href="/request?q={{ query|urlencode }}">get it added to the library</a></p>

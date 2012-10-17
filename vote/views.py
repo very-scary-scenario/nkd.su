@@ -12,6 +12,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
+from django.core.paginator import Paginator
 from sys import exc_info
 from cStringIO import StringIO
 from email.mime.text import MIMEText
@@ -130,7 +131,7 @@ def search_for_tracks(keywords):
     trackset = set(tracks)
     for keyword in keywords:
         trackset = {t for t in trackset if keyword.lower() in t.canonical_string().lower()}
-    return trackset
+    return list(trackset)
 
 def search_redirect(request):
     form = SearchForm(request.GET)
@@ -141,21 +142,25 @@ def search_redirect(request):
         query = form.cleaned_data['q']
         return redirect('/search/%s' % query)
 
-def search(request, query):
+def search(request, query, pageno=1):
     try:
         trackset = (Track.objects.get(id=query),)
     except Track.DoesNotExist:
         keyword_list = split_query_into_keywords(query)
         trackset = search_for_tracks(keyword_list)
 
+    paginator = Paginator(trackset, 20)
+    page = paginator.page(pageno)
+
     context = {
             'session': request.session,
             'path': request.path,
             'title': query,
             'query': query,
-            'tracks': trackset,
+            'tracks': page.object_list,
             'show': Week().showtime,
             'on_air': is_on_air(),
+            'page': page,
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
