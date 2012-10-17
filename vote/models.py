@@ -159,12 +159,14 @@ class Week(object):
         return votes
 
 
-def vote_url(tracks):
-    url = 'https://twitter.com/intent/tweet?text=@%s' % settings.READING_USERNAME
-    for track in tracks:
-        url = url + urlquote(' %s' % track.id)
+def vote_tweet(tracks):
+    return '@%s %s' % (settings.READING_USERNAME, ' '.join([t.id for t in tracks]))
 
-    return url
+def tweet_url(tweet):
+    return 'https://twitter.com/intent/tweet?text=@%s' % urlquote(tweet)
+
+def vote_url(tracks):
+    return tweet_url(vote_tweet(tracks))
 
 def split_id3_title(id3_title):
     """ Split a Title (role) ID3 title, return title, role """

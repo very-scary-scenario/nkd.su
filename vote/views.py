@@ -3,7 +3,7 @@
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
-from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard, Week, split_id3_title, is_on_air, vote_url
+from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard, Week, split_id3_title, is_on_air, tweet_url, vote_tweet
 from vote.update_library import update_library
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
@@ -619,9 +619,13 @@ def do_selection(request, select=True):
     if redacted or altered:
         request.session['selection'] = list(selection)
 
+    tweet = vote_tweet(selection_queryset)
+    vote_url = tweet_url(tweet)
+
     context = {
             'selection': selection_queryset,
-            'vote_url': vote_url(selection_queryset),
+            'vote_url': vote_url,
+            'tweet_is_too_long': len(tweet) > 140,
             }
 
     if request.method == 'GET':
