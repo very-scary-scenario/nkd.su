@@ -321,7 +321,7 @@ div.track p.role, div.track p.last_played, div.track p.peter, div.track p.refusa
 div.votes {
   display: table-cell;
   vertical-align: middle;
-  padding-top: .2em;
+  padding-top: .4em;
 }
 
 div.plusone {
