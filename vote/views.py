@@ -42,7 +42,8 @@ def summary(request, week=None):
     form = SearchForm()
 
     # only consider votes from before the end of the current show, so we can work in the past
-    [trackset.add(t) for v in week.votes() for t in v.tracks.all()]
+    [trackset.add(t) for v in week._votes() for t in v.tracks.all()]
+    [trackset.add(v.track) for v in week._manual_votes()] # ManualVote is not compatible; this should be fixed
 
     unfiltered_tracklist = sorted(trackset, reverse=True, key=lambda t: len(t.votes()))
     if request.user.is_authenticated():
@@ -215,7 +216,8 @@ def show(request, date):
     tracks = [p.track for p in plays]
 
     denied = set()
-    [denied.add(t) for v in week.votes() for t in v.tracks.all() if t not in tracks]
+    [denied.add(t) for v in week._votes() for t in v.tracks.all() if t not in tracks]
+    [denied.add(v.track) for v in week._manual_votes() if v.track not in tracks]
 
     [t.set_week(week) for t in tracks]
     [t.set_week(week) for t in denied]
