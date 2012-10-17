@@ -12,7 +12,7 @@ img {
 }
 
 body {
-  font-family: "Bitter", serif;
+  font-family: "Bitter", "Calibri", serif;
   background-color: #fff;
   background-image: url('/noise.png');
   color: #444;
@@ -190,7 +190,7 @@ div#stick.invisible div#stuck {
   
 
 .disabled, #beta {
-  font-family: "IM Fell English SC", serif;
+  font-family: "IM Fell English SC", "Calibri"; serif;
   height: 0;
   margin-top: -.1em;
   text-shadow: none;
@@ -475,7 +475,7 @@ form ul.errorlist li {
   color: #444;
   border: 1px solid #999;
   font-size: 1.3em;
-  font-family: "Gloria Hallelujah", cursive;
+  font-family: "Gloria Hallelujah", "Segoe WP", cursive;
   padding-left: .2em;
 }
 
