@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2 class="heading">playlist for {{ this_show|date:"d-m-Y" }}</h2>
+<h2 class="heading">playlist for {{ this_show|date:"F jS, Y"|lower }}</h2>
 <p class="subheading">
 {% if prev_show %}
 &lt; <a href="/show/{{ prev_show|date:"d-m-Y" }}/">{{ prev_show|date:"d-m-Y" }}</a>
