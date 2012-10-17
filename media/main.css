@@ -86,8 +86,8 @@ div.track.ineligible.selected.pending {
   -webkit-box-shadow: inset #333 0 .2em 2em, #ddd 0 0 2em;
 }
 
-div.track.eligible.pending, div.track.selected {
-  -webkit-box-shadow: inset #dbb 0 .2em 2em, #ddd 0 0 2em;
+div.track.eligible.pending, div.track.eligible.selected {
+  -webkit-box-shadow: inset #fdd 0 .2em 2em, #ddd 0 0 2em;
 }
 
 div.track.eligible.selected {
