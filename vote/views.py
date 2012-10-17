@@ -195,8 +195,7 @@ def show(request, date):
     week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc))
     plays = week.plays()
 
-    # return summary(request, week)
-    # the world is not ready
+    # the world is lady
 
     if not plays:
         raise Http404
@@ -214,7 +213,14 @@ def show(request, date):
         prev_show = None
 
     tracks = [p.track for p in plays]
+
+    denied = set()
+    [denied.add(t) for v in week.votes() for t in v.tracks.all() if t not in tracks]
+
     [t.set_week(week) for t in tracks]
+    [t.set_week(week) for t in denied]
+
+    denied = sorted(denied, reverse=True, key=lambda t: len(t.votes()))
 
     context = {
             'session': request.session,
@@ -222,6 +228,7 @@ def show(request, date):
             'title': date,
             'this_show': week.showtime,
             'tracks': tracks,
+            'denied': denied,
             'on_air': is_on_air(),
             'next_show': next_show,
             'prev_show': prev_show,
