@@ -14,11 +14,11 @@
 {% if query and page.has_other_pages %}
 <p class="aside">
 {% if page.has_previous %}
-<a href="{{ page.previous_page_number }}">&lt;</a>
+<a href="{{ page.previous_page_number }}">&lt;&lt;</a>
 {% endif %}
 {{ page.number }}/{{ page.paginator.num_pages }}
 {% if page.has_next %}
-<a href="{{ page.next_page_number }}">&gt;</a>
+<a href="{{ page.next_page_number }}">&gt;&gt;</a>
 {% endif %}
 </p>
 <p class="aside">{{ page.start_index }}-{{ page.end_index }} / {{ page.paginator.count }}</p>
