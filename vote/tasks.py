@@ -7,7 +7,7 @@ from celery import task
 from models import Play, Vote, Track
 
 from django.utils import timezone
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.conf import settings
 
 from sys import exc_info
@@ -98,4 +98,7 @@ def log_vote(tweet):
 
 @task
 def delete_vote(tweet_id):
-    Vote.objects.get(tweet_id=tweet_id).delete()
+    try:
+        Vote.objects.get(tweet_id=tweet_id).delete()
+    except ObjectDoesNotExist:
+        print 'ignoring lost tweet'
