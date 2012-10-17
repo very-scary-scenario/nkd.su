@@ -12,12 +12,17 @@
         <p class="actions"><a href="{{ vote_url }}">vote for all</a></p>
         {% endif %}
       {% endif %}
-        <p class="actions small"><a href="/do/clear_selection/" class="selection_jspost" name="clear_selection">clear selection</a> |
+        <p class="actions small"><a href="/do/clear_selection/" class="selection_jspost" name="clear_selection">clear selection</a>
     {% endif %}
     {% if not selection %}
       <p class="actions small">
     {% endif %}
-    <a class="select_all" href="/do/select/">select all</a></p>
+    {% if user.is_authenticated %}
+    {% if selection %}
+    |
+    {% endif %}
+      <a class="select_all" href="/do/select/">select all</a></p>
+    {% endif %}
     {% if selection %}
     </div> <!-- stuck -->
   </div> <!-- stick -->
