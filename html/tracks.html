@@ -7,6 +7,8 @@
 {% if query %}
 <h2 class="heading">search results</h2>
 <p class="subheading">— {{ query }} —</p>
+{% elif title %}
+<h2 class="heading">{{ title }}</h2>
 {% endif %}
 
 {% if tracks %}

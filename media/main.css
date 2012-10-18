@@ -66,7 +66,7 @@ div.track.ineligible .metadata, div.track.ineligible .invitation {
 }
 
 div.track.ineligible a, div#header a {
-  color: #f99;
+  color: #f88;
 }
 
 div.track.ineligible a:hover, div#header a:hover {
@@ -219,13 +219,11 @@ div#search_div {
 form#search {
   padding-top: .2em;
   display: block;
-  display: table;
   margin: 0 auto;
 }
 
 form#search input {
   font-family: "Bitter", "Calibri", serif;
-  display: table-cell;
   vertical-align: center;
 }
 
@@ -254,6 +252,7 @@ form#search input#submit {
   padding-left: .8em;
   position: relative;
   bottom: .3em;
+  right: .3em;
   color: #d66;
 }
 
@@ -604,8 +603,8 @@ a#stamp:hover {
   }
 
   div#titles {
+    width: 30%;
     float: left;
-    width: 10em;
   }
 
   div#title {
@@ -626,7 +625,13 @@ a#stamp:hover {
     padding-top: .5em;
     padding-bottom: 1.2em;
     padding-right: 2em;
+    width: 40%;
   }
+
+  form#search {
+    margin: 0 auto;
+  }
+
 
   div.tracklist div.track div.metadata, div.shortlist div.track div.metadata {
     float: left;
