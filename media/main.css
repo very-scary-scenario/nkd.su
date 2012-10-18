@@ -175,10 +175,13 @@ div#stick.invisible div#stuck {
 
 div#titles {
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 h1 {
   margin-bottom: -.1em;
+  text-shadow: #000 0 .05em .3em;
 }
 
 h1 a:hover {
@@ -192,6 +195,7 @@ div#header-background {
   color: #eee;
   text-shadow: #000 0 .1em 0;
   width: 100%;
+  overflow: hidden;
 }
 
 div#header-container {
@@ -203,7 +207,6 @@ div#header-container {
 div#header {
   width: 100%;
   margin: 0 auto;
-  overflow: hidden;
 }
 
 div#subtitle {
@@ -276,14 +279,12 @@ form#search input#submit:hover {
 #beta {
   width: 0;
   height: 0;
-  color: #eaa;
+  color: #955;
   font-size: 5em;
   -webkit-transform: rotate(-15deg); 
   -ms-transform: rotate(-15deg); 
   -moz-transform: rotate(-15deg);
   -o-transform: rotate(-15deg);
-  left: 0;
-  top: .3em;
   z-index: -1;
 }
   
