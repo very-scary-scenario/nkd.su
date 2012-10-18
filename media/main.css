@@ -47,14 +47,14 @@ p.subheading {
 
 /* selections */
 div.track.ineligible {
-  -webkit-box-shadow: inset #222 0 .2em 2em, #ccc 0 0 2em;
+  -webkit-box-shadow: inset #222 0 .2em 2em;;
   background-image: url('/noise.png');
   background-color: #333;
   color: #eee;
 }
 
 div.track.ineligible.selected {
-  -webkit-box-shadow: inset #933 0 .2em 2em, #ccc 0 0 2em;
+  -webkit-box-shadow: inset #933 0 .2em 2em;
   background-image: url('/noise.png');
   background-color: #422;
   border-color: #a44;
@@ -80,16 +80,16 @@ div.track.eligible.pending {
 
 div.track.ineligible.pending {
   background-color: #222;
-  -webkit-box-shadow: inset #433 0 .2em 2em, #ddd 0 0 2em;
+  -webkit-box-shadow: inset #433 0 .2em 2em;
 }
 
 div.track.ineligible.selected.pending {
   background-color: #311;
-  -webkit-box-shadow: inset #333 0 .2em 2em, #ddd 0 0 2em;
+  -webkit-box-shadow: inset #333 0 .2em 2em;
 }
 
 div.track.eligible.pending, div.track.eligible.selected {
-  -webkit-box-shadow: inset #fdd 0 .2em 2em, #ddd 0 0 2em;
+  -webkit-box-shadow: inset #fdd 0 .2em 2em;
 }
 
 div.track.eligible.selected {
@@ -105,7 +105,7 @@ div.track.ineligible div.metacontainer div.metadata {
 }
 
 div.track.selected.eligible.pending {
-  -webkit-box-shadow: inset #eee 0 .2em 2em, #ddd 0 0 2em;
+  -webkit-box-shadow: inset #eee 0 .2em 2em;
 }
 
 div.track.selected {
@@ -378,7 +378,7 @@ a:hover {
 /* track tables */
 
 div.track {
-  -webkit-box-shadow: inset #eee 0 .2em 2em, #eee 0 0 2em;
+  -webkit-box-shadow: inset #eee 0 .2em 2em;
   background-image: url('/noise.png');
   background-color: #fafafa;
   border: 1px solid #ccc;
