@@ -181,7 +181,7 @@ div#titles {
 
 h1 {
   margin-bottom: -.1em;
-  text-shadow: #000 0 .05em .3em;
+  text-shadow: #333 0 0 .2em;
 }
 
 h1 a:hover {
