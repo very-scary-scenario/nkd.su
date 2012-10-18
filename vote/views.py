@@ -190,7 +190,6 @@ def latest_show(request):
     last_week = Week().prev()
     return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
 
-@cache_page(60 * 30)
 def show(request, date):
     """ Playlist archive """
     day, month, year = (int(t) for t in date.split('-'))
