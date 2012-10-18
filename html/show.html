@@ -7,13 +7,13 @@
 {% if prev_show %}
 &lt; <a href="/show/{{ prev_show|date:"d-m-Y" }}/">{{ prev_show|date:"d-m-Y" }}</a>
 {% else %}
-&lt; -
+&lt; —
 {% endif %}
 |
 {% if next_show %}
 <a href="/show/{{ next_show|date:"d-m-Y" }}/">{{ next_show|date:"d-m-Y" }}</a> &gt;
 {% else %}
-- &gt;
+— &gt;
 {% endif %}
 
 </p>
