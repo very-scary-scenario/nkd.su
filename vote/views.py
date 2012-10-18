@@ -3,7 +3,7 @@
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
-from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard, Week, split_id3_title, is_on_air, vote_url
+from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard, Week, split_id3_title, is_on_air, tweet_url, vote_tweet
 from vote.update_library import update_library
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
@@ -13,8 +13,8 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_page
 from sys import exc_info
-from cStringIO import StringIO
 from email.mime.text import MIMEText
 
 from vote.mail import sendmail
@@ -190,6 +190,7 @@ def latest_show(request):
     last_week = Week().prev()
     return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
 
+@cache_page(60 * 30)
 def show(request, date):
     """ Playlist archive """
     day, month, year = (int(t) for t in date.split('-'))
@@ -619,9 +620,13 @@ def do_selection(request, select=True):
     if redacted or altered:
         request.session['selection'] = list(selection)
 
+    tweet = vote_tweet(selection_queryset)
+    vote_url = tweet_url(tweet)
+
     context = {
             'selection': selection_queryset,
-            'vote_url': vote_url(selection_queryset),
+            'vote_url': vote_url,
+            'tweet_is_too_long': len(tweet) > 140,
             }
 
     if request.method == 'GET':

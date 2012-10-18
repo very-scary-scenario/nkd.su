@@ -633,7 +633,7 @@ a#stamp:hover {
     text-align: right;
     border-right: #ddd solid 1px;
     padding: 100em 3.8%;
-    margin: -100em 0;
+    margin: -99.9em 0;
     width: 89%;
   }
   
