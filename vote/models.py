@@ -163,7 +163,7 @@ def vote_tweet(tracks):
     return '@%s %s' % (settings.READING_USERNAME, ' '.join([t.id for t in tracks]))
 
 def tweet_url(tweet):
-    return 'https://twitter.com/intent/tweet?text=@%s' % urlquote(tweet)
+    return 'https://twitter.com/intent/tweet?text=%s' % urlquote(tweet)
 
 def vote_url(tracks):
     return tweet_url(vote_tweet(tracks))
