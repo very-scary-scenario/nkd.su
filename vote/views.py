@@ -13,8 +13,8 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_page
 from sys import exc_info
-from cStringIO import StringIO
 from email.mime.text import MIMEText
 
 from vote.mail import sendmail
@@ -190,6 +190,7 @@ def latest_show(request):
     last_week = Week().prev()
     return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
 
+@cache_page(60 * 30)
 def show(request, date):
     """ Playlist archive """
     day, month, year = (int(t) for t in date.split('-'))
