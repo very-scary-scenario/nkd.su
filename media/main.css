@@ -41,7 +41,7 @@ h2, h3 {
 
 p.subheading {
   text-align: center;
-  margin: -.5em 0 .5em;
+  margin: -.8em 0 1em;
 }
 
 
@@ -57,6 +57,7 @@ div.track.ineligible.selected {
   -webkit-box-shadow: inset #933 0 .2em 2em, #ccc 0 0 2em;
   background-image: url('/noise.png');
   background-color: #422;
+  border-color: #a44;
   color: #eee;
 }
 
@@ -64,12 +65,13 @@ div.track.ineligible .metadata, div.track.ineligible .invitation {
   text-shadow: #000 0 .1em 0;
 }
 
-div.track.ineligible a {
-  color: #f88;
+div.track.ineligible a, div#header a {
+  color: #f99;
 }
 
-div.track.ineligible a:hover {
+div.track.ineligible a:hover, div#header a:hover {
   color: #eee;
+  border-color: #f99;
 }
 
 div.track.eligible.pending {
@@ -171,6 +173,99 @@ div#stick.invisible div#stuck {
 
 /* header and stamps */
 
+div#titles {
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: -.1em;
+}
+
+h1 a:hover {
+  border: none;
+}
+
+div#header-background {
+  -webkit-box-shadow: inset #222 0 .2em 2em, #ccc 0 0 2em;
+  background-image: url('/noise.png');
+  background-color: #333;
+  color: #eee;
+  text-shadow: #000 0 .1em 0;
+  width: 100%;
+}
+
+div#header-container {
+  margin: 0 auto;
+  max-width: 50em;
+}
+
+
+div#header {
+  width: 100%;
+  margin: 0 auto;
+}
+
+div#subtitle {
+  font-size: .8em;
+  text-align: center;
+}
+
+/* search form */
+
+div#search_div {
+  text-align: center;
+}
+
+form#search {
+  padding-top: .2em;
+  display: block;
+  display: table;
+  margin: 0 auto;
+}
+
+form#search input {
+  font-family: "Bitter", "Calibri", serif;
+  display: table-cell;
+  vertical-align: center;
+}
+
+form#search input#query {
+  padding-left: .2em;
+  background-color: #eee;
+  background-image: url('/noise.png');
+  border: 1px solid #333;
+  border-radius: .3em;
+  height: 1.5em;
+  font-size: 1.2em;
+  padding-right: 3em;
+  margin-right: -3em;
+  width: 70%;
+}
+
+form#search input#query:focus {
+  outline: none;
+}
+
+form#search input#submit {
+  border: none;
+  border-left: 1px solid #bbb;
+  text-shadow: #fff 0 .1em 0;
+  background: none;
+  padding-left: .8em;
+  position: relative;
+  bottom: .3em;
+  color: #d66;
+}
+
+form#search input#submit:hover {
+  color: #444;
+}
+
+.roulette {
+  font-size: .8em;
+}
+
+
 #disclaimer {
   font-size: .8em;
   color: #888;
@@ -186,6 +281,9 @@ div#stick.invisible div#stuck {
   -moz-transform: rotate(-15deg);
   -o-transform: rotate(-15deg);
   position: absolute;
+  left: 0;
+  top: .3em;
+  z-index: -1;
 }
   
 
@@ -398,14 +496,14 @@ p.refusal {
 
 /* shrunken track tables */
 div.shortlist div.track {
-  font-size: .7em;
-  width: 70%;
+  font-size: .8em;
+  width: 80%;
   margin: 1em auto;
 }
 
 div.shortlist .voter img {
-  height: 20px;
-  width: 20px;
+  height: 25px;
+  width: 25px;
 }
 
 /* login form */
@@ -437,54 +535,6 @@ form ul.errorlist li {
   color: #999;
   position: relative;
   top: .6em;
-}
-
-/* search form */
-
-.search_form p {
-  text-align: center;
-  margin: 0;
-}
-
-#submit {
-  border-radius: 0;
-  background-color: #eee;
-  background-image: url('/noise.png');
-  color: #d66;
-  z-index: 1;
-  font-family: 'Bitter', sans-serif;
-  border: 1px solid #999;
-  border-top: none;
-  font-size: 1em;
-  position: relative;
-  top: -1px;
-  padding: 0 .3em .1em;
-  margin: 0 auto;
-}
-
-#submit:hover {
-  color: #444;
-}
-
-#query {
-  border-radius: 0;
-  width: 100%;
-  margin-top: .3em;
-  background-color: #eee;
-  background-image: url('/noise.png');
-  color: #444;
-  border: 1px solid #999;
-  font-size: 1.3em;
-  font-family: "Gloria Hallelujah", "Segoe WP", cursive;
-  padding-left: .2em;
-}
-
-#query:focus {
-  outline: none;
-}
-
-.roulette {
-  font-size: .8em;
 }
 
 /* footer */
@@ -549,38 +599,33 @@ a#stamp:hover {
 }
 
 @media (min-width:551px) {
-  #header {
-    margin: 1em 0;
-    height: 7em;
+  div#header {
+    display: table;
   }
 
-  #beta {
-    top: 1.5em;
-    margin-left: 1em;
-    margin-top: 1em;
+  div#titles {
+    float: left;
+    width: 10em;
   }
 
   div#title {
-    float: left;
-    width: 50%;
-    text-align: right;
-    margin-top: .3em;
+    width: 120px;
+    float: right;
+    text-align: center;
   }
 
-  h1 {
-    font-size: 2.5em;
-    font-weight: bold;
-    z-index: 1;
-    margin-bottom: .15em;
+  div#subtitle {
+    clear: both;;
+    width: 120px;
+    float: right;
+    text-align: center;
   }
 
   div#search_div {
-    padding-left: .6em;
-    display: block;
-    float: left;
-    text-align: center;
-    margin-left: .7em;
-    max-width: 40%;
+    float: right;
+    padding-top: .5em;
+    padding-bottom: 1.2em;
+    padding-right: 2em;
   }
 
   div.tracklist div.track div.metadata, div.shortlist div.track div.metadata {
@@ -638,26 +683,16 @@ a#stamp:hover {
 }
 
 @media (max-width:550px) {
-  #header {
-    margin: 1em 0;
-    height: 12em;
+  div#header {
+    padding: .2em 0 1em;
   }
 
-  h1 {
-    font-size: 2.5em;
-    font-weight: bold;
-    z-index: 1;
-    margin-bottom: .15em;
+  div#search_div {
+    padding-top: .5em;
   }
 
-  #beta {
-    left: 5em;
-  }
-
-  .search_form {
-    text-align: center;
-    margin: 1em;
-    margin-bottom: 2em;
+  div#title, div#search_div {
+    display: block;
   }
 
   .aligned, p.aside {
