@@ -38,7 +38,6 @@ def update_library(plist, dry_run=False):
                 db_track.id3_album = t['Album']
                 db_track.msec = t['Total Time']
                 db_track.added = t['Date Added']
-                print db_track.added
 
         if new:
             changes.append('new: %s' % (db_track.canonical_string()))
