@@ -402,7 +402,6 @@ class Vote(models.Model):
 
         self.save()
         for word in self.text.split():
-            print word
             try:
                 track = Track.objects.get(id=word)
             except Track.DoesNotExist:
