@@ -21,7 +21,7 @@
 
 
       {% if track.derived_role %}
-        <p class="role">{{ track.derived_role }}</p>
+        <p class="role">{{ track.derived_role }} | {{ track.length_str }}</p>
       {% endif %}
 
       {% if track.last_played %}

@@ -3,7 +3,7 @@
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext, loader
-from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard, Week, split_id3_title, is_on_air, tweet_url, vote_tweet
+from vote.models import *
 from vote.update_library import update_library
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
@@ -48,13 +48,16 @@ def summary(request, week=None):
     if request.user.is_authenticated():
         tracklist = [t for t in unfiltered_tracklist if t.eligible() and not week.shortlist_or_discard(t)]
         shortlist = week.shortlist()
+        shortlist_len = length_str(total_length(shortlist))
         discard = week.discard()
     else:
         shortlist = None
         discard = None
+        shortlist_len = None
         tracklist = [t for t in unfiltered_tracklist if t.eligible()]
 
     tracklist.extend([t for t in unfiltered_tracklist if t.ineligible() and (t.ineligible() != 'played this week')])
+    tracklist_len = length_str(total_length(tracklist))
 
     # ditto plays
     playlist = week.plays(invert=True)
@@ -65,6 +68,8 @@ def summary(request, week=None):
             'playlist': [p.track for p in playlist],
             'form': form,
             'tracks': tracklist,
+            'tracks_len': tracklist_len,
+            'shortlist_len': shortlist_len,
             'shortlist': shortlist,
             'discard': discard,
             'show': week.showtime,
@@ -209,6 +214,7 @@ def show(request, date):
     else: prev_show = None
 
     tracks = [p.track for p in plays]
+    tracks_len = length_str(total_length(tracks))
 
     denied = set()
     [denied.add(t) for v in week.votes() for t in v.get_tracks() if t not in tracks]
@@ -224,6 +230,7 @@ def show(request, date):
             'title': date,
             'this_show': week.showtime,
             'tracks': tracks,
+            'tracks_len': tracks_len,
             'denied': denied,
             'on_air': is_on_air(),
             'next_show': next_show,
@@ -621,10 +628,12 @@ def do_selection(request, select=True):
 
     tweet = vote_tweet(selection_queryset)
     vote_url = tweet_url(tweet)
+    selection_len = length_str(total_length(selection_queryset))
 
     context = {
             'selection': selection_queryset,
             'vote_url': vote_url,
+            'selection_len': selection_len,
             'tweet_is_too_long': len(tweet) > 140,
             }
 

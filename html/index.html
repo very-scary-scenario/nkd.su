@@ -5,6 +5,7 @@
 {% if shortlist %}
 <div class="shortlist" id="shortlist">
 <h3 class="heading">shortlist</h3>
+<p class="minor subheading">&mdash; {{ shortlist_len }} &mdash;</p>
     {% for track in shortlist %}
     {% include "trackrow.html" %}
     {% endfor %}
@@ -16,6 +17,7 @@
 <div class="current">
 {% endif %}
 <h2 class="heading">current requests</h2>
+<p class="subheading">&mdash; {{ tracks_len }} &mdash;</p>
 {% include "tracklist.html" %}
 {% if playlist %}
 </div>
