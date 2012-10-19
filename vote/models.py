@@ -225,6 +225,7 @@ class Track(models.Model):
     show_ka = models.CharField(max_length=500, blank=True)
     role = models.CharField(max_length=100, blank=True) # OP, ED, char
     msec = models.IntegerField(blank=True, null=True)
+    added = models.DateTimeField(blank=True, null=True)
 
     def __init__(self, *args):
         models.Model.__init__(self, *args)

@@ -291,7 +291,6 @@ form#search input#submit:hover {
   -ms-transform: rotate(-15deg); 
   -moz-transform: rotate(-15deg);
   -o-transform: rotate(-15deg);
-  z-index: -1;
 }
   
 
