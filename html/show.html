@@ -3,6 +3,7 @@
 {% block content %}
 
 <h2 class="heading">playlist for {{ this_show|date:"F"|lower }}&nbsp;{{this_show|date:"jS, Y" }}</h2>
+<p class="subheading">&mdash; {{ tracks_len }} &mdash;</p>
 <p class="subheading">
 {% if prev_show %}
 &lt; <a href="/show/{{ prev_show|date:"d-m-Y" }}/">{{ prev_show|date:"d-m-Y" }}</a>
@@ -15,8 +16,8 @@
 {% else %}
 — &gt;
 {% endif %}
-
 </p>
+
 {% include "tracklist.html" %}
 
 {% if denied %}

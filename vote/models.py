@@ -6,6 +6,21 @@ import re
 from django.core.exceptions import ValidationError
 from django.utils.http import urlquote
 
+def total_length(tracks):
+    return sum([t.msec for t in tracks])
+
+def length_str(msec):
+    seconds = msec/1000
+    remainder_seconds = seconds % 60
+    minutes = (seconds - remainder_seconds) / 60
+
+    if minutes >= 60:
+        remainder_minutes = minutes % 60
+        hours = (minutes - remainder_minutes) / 60
+        return '%i:%02d:%02d' % (hours, remainder_minutes, remainder_seconds)
+    else:
+        return '%i:%02d' % (minutes, remainder_seconds)
+
 def now_or_time(time):
     """ Returns datetime.now() if time is False, otherwise returns time """
     if time:
@@ -209,10 +224,15 @@ class Track(models.Model):
     show_ro = models.CharField(max_length=500, blank=True)
     show_ka = models.CharField(max_length=500, blank=True)
     role = models.CharField(max_length=100, blank=True) # OP, ED, char
+    msec = models.IntegerField(blank=True, null=True)
+    added = models.DateTimeField(blank=True, null=True)
 
     def __init__(self, *args):
         models.Model.__init__(self, *args)
         self.week = None
+
+    def length_str(self):
+        return length_str(self.msec)
 
     def last_played(self):
         """ Get the datetime of this track's most recent play """

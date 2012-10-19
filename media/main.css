@@ -44,6 +44,10 @@ p.subheading {
   margin: -.8em 0 1em;
 }
 
+p.minor {
+  font-size: .8em;
+}
+
 
 /* selections */
 div.track.ineligible {
@@ -219,6 +223,7 @@ div#subtitle {
 
 div#search_div {
   text-align: center;
+  position: relative;
 }
 
 form#search {
@@ -281,12 +286,11 @@ form#search input#submit:hover {
   width: 0;
   height: 0;
   color: #955;
-  font-size: 5em;
+  font-size: 7em;
   -webkit-transform: rotate(-15deg); 
   -ms-transform: rotate(-15deg); 
   -moz-transform: rotate(-15deg);
   -o-transform: rotate(-15deg);
-  z-index: -1;
 }
   
 
