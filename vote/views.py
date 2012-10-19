@@ -605,7 +605,6 @@ def do_selection(request, select=True):
         altered = True
         if select:
             selection.add(track.id)
-            print track
         else:
             selection.remove(track.id)
 
