@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand, CommandError
 import plistlib
 from models import Track
 from time import strptime
+from django.utils.timezone import utc, make_aware
 
 def update_library(plist, dry_run=False):
     changes = []
@@ -17,6 +18,7 @@ def update_library(plist, dry_run=False):
         new = False
 
         t = tree['Tracks'][tid]
+        added = make_aware(t['Date Added'], utc)
 
         if 'Album' not in t:
             t['Album'] = '' # to prevent future KeyErrors
@@ -26,10 +28,10 @@ def update_library(plist, dry_run=False):
         except Track.DoesNotExist:
             # we need to make a new track
             new = True
-            db_track = Track(id=t['Persistent ID'], id3_title=t['Name'], id3_artist=t['Artist'], id3_album=t['Album'])
+            db_track = Track(id=t['Persistent ID'], id3_title=t['Name'], id3_album=t['Album'], id3_artist=t['Artist'], msec=t['Total Time'], added=added)
 
         else:
-            if (db_track.id3_title != t['Name']) or (db_track.id3_artist != t['Artist']) or (db_track.id3_album != t['Album']) or (db_track.msec != t['Total Time']) or (db_track.added != t['Date Added']):
+            if (db_track.id3_title != t['Name']) or (db_track.id3_artist != t['Artist']) or (db_track.id3_album != t['Album']) or (db_track.msec != t['Total Time']) or (db_track.added != added):
                 # we need to update an existing track
                 changed = True
                 pre_change = db_track.canonical_string()
@@ -37,7 +39,7 @@ def update_library(plist, dry_run=False):
                 db_track.id3_artist = t['Artist']
                 db_track.id3_album = t['Album']
                 db_track.msec = t['Total Time']
-                db_track.added = t['Date Added']
+                db_track.added = added
 
         if new:
             changes.append('new: %s' % (db_track.canonical_string()))

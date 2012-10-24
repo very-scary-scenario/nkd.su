@@ -73,11 +73,6 @@ div.track.ineligible a, div#header a {
   color: #f88;
 }
 
-div.track.ineligible a:hover, div#header a:hover {
-  color: #eee;
-  border-color: #f99;
-}
-
 div.track.eligible.pending {
   background-color: #fff;
 }
@@ -188,10 +183,6 @@ h1 {
   text-shadow: #333 0 0 .2em;
 }
 
-h1 a:hover {
-  border: none;
-}
-
 div#header-background {
   -webkit-box-shadow: inset #222 0 .2em 2em, #ccc 0 0 2em;
   background-image: url('/noise.png');
@@ -209,7 +200,7 @@ div#header-container {
 
 
 div#header {
-  padding-top: .4em;
+  padding-top: .6em;
   width: 100%;
   margin: 0 auto;
 }
@@ -257,6 +248,7 @@ form#search input#query:focus {
 form#search input#submit {
   border: none;
   border-left: 1px solid #bbb;
+  border-radius: 0;
   text-shadow: #fff 0 .1em 0;
   background: none;
   padding-left: .8em;
@@ -264,10 +256,6 @@ form#search input#submit {
   bottom: .3em;
   right: .3em;
   color: #d66;
-}
-
-form#search input#submit:hover {
-  color: #444;
 }
 
 .roulette {
@@ -285,7 +273,7 @@ form#search input#submit:hover {
 #beta {
   width: 0;
   height: 0;
-  color: #955;
+  color: #644;
   font-size: 7em;
   -webkit-transform: rotate(-15deg); 
   -ms-transform: rotate(-15deg); 
@@ -374,11 +362,6 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  color: #444;
-  border-bottom: 1px dotted #d66;
-}
-
 /* track tables */
 
 div.track {
@@ -402,10 +385,6 @@ div.voters {
   margin-left: .1em;
   display: table;
   width: 100%;
-}
-
-div.track.selectable:hover {
-  border-color: #d66;
 }
 
 div.track.ineligible {
@@ -442,27 +421,6 @@ div.plusone {
   height: 32px;
   width: 32px;
   margin: 1px;
-}
-
-div.track:hover a.voter.commented img {
-  -webkit-box-shadow: #d66 0 0 .3em;
-  outline-color: #d66;
-  margin: 0;
-}
-
-div.track:hover a.voter img {
-  border: 1px solid #eee;
-  -webkit-box-shadow: #888 0 0 .3em;
-  outline: 1px solid #888;
-  margin: 0;
-}
-
-div.track.ineligible:hover a.voter img {
-  border-color: #333;
-}
-
-a.voter:hover {
-  border-bottom: none;
 }
 
 div.tweet_deets {
@@ -693,11 +651,56 @@ a#stamp:hover {
     text-align: right;
     padding-right: .5em;
   }
+
+  /* hover effects are desktop only */
+  form#search input#submit:hover {
+    color: #444;
+  }
+
+  div.track.ineligible a:hover, div#header a:hover {
+    color: #eee;
+    border-color: #f99;
+  }
+
+  h1 a:hover {
+    border: none;
+  }
+
+  a:hover {
+    color: #444;
+    border-bottom: 1px dotted #d66;
+  }
+
+  div.track.selectable:hover {
+    border-color: #d66;
+  }
+
+  div.track:hover a.voter.commented img {
+    -webkit-box-shadow: #d66 0 0 .3em;
+    outline-color: #d66;
+    margin: 0;
+  }
+
+  div.track:hover a.voter img {
+    border: 1px solid #eee;
+    -webkit-box-shadow: #888 0 0 .3em;
+    outline: 1px solid #888;
+    margin: 0;
+  }
+
+  div.track.ineligible:hover a.voter img {
+    border-color: #333;
+  }
+
+  a.voter:hover {
+    border-bottom: none;
+  }
+
 }
 
 @media (max-width:550px) {
   div#header {
-    padding: .2em 0 1em;
+    padding: .6em 0 1em;
   }
 
   div#search_div {

@@ -227,8 +227,8 @@ class Track(models.Model):
     msec = models.IntegerField(blank=True, null=True)
     added = models.DateTimeField(blank=True, null=True)
 
-    def __init__(self, *args):
-        models.Model.__init__(self, *args)
+    def __init__(self, *args, **kwargs):
+        models.Model.__init__(self, *args, **kwargs)
         self.week = None
 
     def length_str(self):
@@ -408,6 +408,8 @@ class Vote(models.Model):
         for word in content.split():
             if len(word) == 16 and self.tracks.filter(id=word).exists():
                 content = content.replace(word, '').strip()
+            if word in ['-']:
+                content = content.replace(word, '').strip()
         self.content_cache = content
         return self.content_cache
 
@@ -422,7 +424,6 @@ class Vote(models.Model):
 
         self.save()
         for word in self.text.split():
-            print word
             try:
                 track = Track.objects.get(id=word)
             except Track.DoesNotExist:
