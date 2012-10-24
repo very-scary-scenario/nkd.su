@@ -20,6 +20,7 @@ from email.mime.text import MIMEText
 from vote.mail import sendmail
 from datetime import date, timedelta, datetime
 
+import codecs
 from markdown import markdown
 import tweepy
 import akismet
@@ -242,7 +243,7 @@ def show(request, date):
 
 
 def info(request):
-    words = markdown(open(settings.SITE_ROOT + 'README.md').read())
+    words = markdown(codecs.open(settings.SITE_ROOT + 'README.md', encoding='utf-8').read())
     context = {
             'session': request.session,
             'path': request.path,
