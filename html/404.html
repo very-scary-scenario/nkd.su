@@ -1,8 +1,59 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>ｗｈａｔ　ｄｉｄ　ｙｏｕ　ｄｏ</title>
+        <style>
+            html {
+              height: 100%;
+              width: 100%;
+              display: table;
+            }
 
-{% block title %}404{% endblock %}
-{% block content %}
+            body {
+                background-color: #fcfcfc;
+                font-family: 'Lucida Grande', sans-serif;
+                text-align: center;
+                width: 100%;
+                overflow: hidden;
+                display: table-cell;
+                vertical-align: middle;
+            }
 
-<h2 class="aligned">404</h2>
+            div {
+                margin-top: 5em;
+                white-space: nowrap;
+                margin-bottom: 15em;
+            }
 
-{% endblock %}
+            #caption {
+                color: #666;
+                font-size: 2em;
+            }
+
+            #kyubey {
+                color: black;
+                font-size: 4em;
+            }
+
+            .eye {
+                color: red;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: inherit;
+            }
+
+            a:hover {
+                color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <p id="kyubey">／人<span class="eye">◕</span> ‿‿ <span class="eye">◕</span>人＼</p>
+            <p id="caption">ｅｒｒｏｒ　４０４</p>
+        </div>
+    </body>
+</html>
