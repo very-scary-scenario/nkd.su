@@ -168,7 +168,7 @@ def search_redirect(request):
 def search(request, query, pageno=1):
     try:
         trackset = (Track.objects.get(id=query),)
-        if trackset[0].hidden:
+        if (not request.user.is_authenticated()) and trackset[0].hidden:
             trackset = []
     except Track.DoesNotExist:
         keyword_list = split_query_into_keywords(query)
