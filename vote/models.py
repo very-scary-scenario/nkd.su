@@ -229,7 +229,7 @@ class Track(models.Model):
         return self.canonical_string()
 
     def __eq__(self, other):
-        return self.id == other.id
+        return type(self) == type(other) and self.id == other.id
 
     id = models.CharField(max_length=16, primary_key=True)
 
