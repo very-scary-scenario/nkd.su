@@ -60,6 +60,13 @@ def parse_dir(directory):
         parse(json.loads(tf.read()))
         tf.close()
 
+def refresh():
+    t = twitter.Twitter(auth=twitter.OAuth(access_token, access_token_secret, consumer_key, consumer_secret))
+    tweets = t.statuses.mentions()
+
+    for tweet in tweets:
+        parse(tweet)
+    
 def peruse():
     #np_dir = settings.TWITTER_ARCHIVE + '/users/nekodesuradio/'
     #parse_dir(np_dir)
