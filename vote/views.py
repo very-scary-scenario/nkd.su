@@ -68,12 +68,15 @@ def summary(request, week=None):
     tracklist_len = length_str(total_length(tracklist))
 
     # ditto plays
-    playlist = week.plays(invert=True)
+    playlist = [p.track for p in week.plays(invert=True)]
+
+    if playlist:
+        playlist_len = length_str(total_length(playlist))
 
     context = {
             'session': request.session,
             'path': request.path,
-            'playlist': [p.track for p in playlist],
+            'playlist': playlist,
             'form': form,
             'tracks': tracklist,
             'tracks_len': tracklist_len,
@@ -83,6 +86,7 @@ def summary(request, week=None):
             'new_tracks': len(week.added()),
             'show': week.showtime,
             'on_air': is_on_air(),
+            'playlist_len': playlist_len,
             }
 
     return render_to_response('index.html', RequestContext(request, context))
