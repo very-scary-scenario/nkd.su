@@ -196,7 +196,7 @@ def split_id3_title(id3_title):
     role = None
 
     bracket_depth = 0
-    for i in range(1, len(id3_title)):
+    for i in range(1, len(id3_title)+1):
         char = id3_title[-i]
         if char == ')':
             bracket_depth += 1
@@ -204,7 +204,8 @@ def split_id3_title(id3_title):
             bracket_depth -= 1
 
         if bracket_depth == 0:
-            role = id3_title[len(id3_title)-i:]
+            if i != 1:
+                role = id3_title[len(id3_title)-i:]
             break
 
     if role:
