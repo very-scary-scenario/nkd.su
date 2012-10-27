@@ -72,6 +72,8 @@ def summary(request, week=None):
 
     if playlist:
         playlist_len = length_str(total_length(playlist))
+    else:
+        playlist_len = None
 
     context = {
             'session': request.session,
