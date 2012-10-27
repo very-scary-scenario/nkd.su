@@ -406,11 +406,11 @@ div.votes {
   display: table-cell;
   vertical-align: middle;
   padding-top: .4em;
+  padding-right: .5em;
 }
 
 div.plusone {
   width: 2em;
-  padding-left: .5em;
   text-align: left;
   display: table-cell;
   vertical-align: middle;
