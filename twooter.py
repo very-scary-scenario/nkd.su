@@ -31,10 +31,12 @@ def parse(tweet):
 
     if tweet['text'].startswith('@%s ' % settings.READING_USERNAME):
         # this is potentially a request
-        try:
-            print '%s: %s' % (tweet['user']['screen_name'], tweet['text'])
-        except KeyError:
-            pass # not a streamed tweet
+        if 'Dango' in tweet['text']:
+            try:
+                print '%s: %s' % (tweet['user']['screen_name'], tweet['text'])
+            except KeyError:
+                print '%s: %s' % (tweet['from_user'], tweet['text'])
+
         tasks.log_vote.delay(tweet)
 
 def react():
@@ -59,13 +61,15 @@ def parse_dir(directory):
         tf.close()
 
 def peruse():
-    np_dir = settings.TWITTER_ARCHIVE + '/users/nekodesuradio/'
-    parse_dir(np_dir)
+    #np_dir = settings.TWITTER_ARCHIVE + '/users/nekodesuradio/'
+    #parse_dir(np_dir)
 
     request_dir = settings.TWITTER_ARCHIVE + '/searches/%40nkdsu/'
     parse_dir(request_dir)
 
 if 'peruse' in argv:
     peruse()
+elif 'refresh' in argv:
+    refresh()
 else:
     react()
