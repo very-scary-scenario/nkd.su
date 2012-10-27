@@ -34,24 +34,36 @@
           {{ track.weeks_since_play }} weeks ago</p>
         {% endif %}
       {% endif %}
-      {% if user.is_authenticated and track.eligible %}
-      <p class="peter"><a href="/played/{{ track.id }}/">now playing&hellip;</a> | <a href="/vote/{{ track.id }}/">add vote&hellip;</a> | <a href="/block/{{ track.id }}/">block&hellip;</a></p>
-      {% if not track.shortlist and not track.discard %}
-      <p class="peter"><a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a> | <a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a></p>
-      {% elif track.shortlist %}
-      <p class="peter"><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a></p>
-      {% elif track.discard %}
-      <p class="peter"><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-discard</a></p>
-      {% endif %}
+      {% if user.is_authenticated %}
+        <p class="peter">
+          <a href="/played/{{ track.id }}/">now playing&hellip;</a> | <a href="/vote/{{ track.id }}/">add vote&hellip;</a>
+          {% if track.ineligible and track.ineligible == 'blocked' %}
+            | <a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>
+          {% elif track.eligible %}
+            | <a href="/block/{{ track.id }}/">block&hellip;</a>
+          {% endif %}
+        </p>
+        <p class="peter">
+          {% if track.hidden %}
+            <a href="/unhide/{{ track.id }}/?from={{ path|urlencode }}">unhide</a>
+          {% else %}
+            <a href="/hide/{{ track.id }}/?from={{ path|urlencode }}">hide</a>
+          {% endif %}
+          |
+          {% if not track.shortlist and not track.discard %}
+            <a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a> | <a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a>
+          {% elif track.shortlist %}
+            <a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a>
+          {% elif track.discard %}
+            <a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-discard</a>
+          {% endif %}
+        </p>
       {% endif %}
       {% if user.is_authenticated and not track.eligible and track.undoable %}
         <p class="peter"><a href="/unplay/{{ track.id }}/">i didn't mean to play this</a></p>
       {% endif %}
       {% if track.ineligible and track.ineligible != 'played last week' and track.ineligible != 'played this week' %}
         <p class="refusal">{{ track.ineligible }}</p>
-        {% if user.is_authenticated %}
-          <p class="peter"><a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>
-        {% endif %}
       {% endif %}
       </div>
     </div>

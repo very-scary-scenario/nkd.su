@@ -6,6 +6,15 @@ import re
 from django.core.exceptions import ValidationError
 from django.utils.http import urlquote
 
+def latest_play(track=None):
+    """ Get the latest play (for a particular track). """
+    plays = Play.objects.all()
+
+    if track:
+        plays = plays.filter(track=track)
+
+    return plays.order_by('-datetime')[0]
+
 def total_length(tracks):
     return sum([t.msec for t in tracks])
 
@@ -122,8 +131,7 @@ class Week(object):
             except c.DoesNotExist:
                 return None
         else:
-            return [s.track for s in c.objects.filter(date__range=self.date_range) if s.track.eligible()]
-
+            return [s.track for s in c.objects.filter(date__range=self.date_range)]
 
     def shortlist(self, track=None):
         """ Return a list of shortlisted tracks
@@ -188,7 +196,7 @@ def split_id3_title(id3_title):
     role = None
 
     bracket_depth = 0
-    for i in range(1, len(id3_title)+1):
+    for i in range(1, len(id3_title)):
         char = id3_title[-i]
         if char == ')':
             bracket_depth += 1
@@ -212,6 +220,9 @@ class Track(models.Model):
     def __unicode__(self):
         return self.canonical_string()
 
+    def __eq__(self, other):
+        return self.id == other.id
+
     id = models.CharField(max_length=16, primary_key=True)
 
     id3_title = models.CharField(max_length=500)
@@ -226,6 +237,7 @@ class Track(models.Model):
     role = models.CharField(max_length=100, blank=True) # OP, ED, char
     msec = models.IntegerField(blank=True, null=True)
     added = models.DateTimeField(blank=True, null=True)
+    hidden = models.BooleanField()
 
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
@@ -322,8 +334,11 @@ class Track(models.Model):
         except AttributeError: pass
 
         week = Week(time)
+        
+        if self.hidden:
+            self.reason = 'hidden'
 
-        if week.plays().filter(track=self):
+        elif week.plays().filter(track=self):
             self.reason = 'played this week'
 
         elif week.prev().plays().filter(track=self):
@@ -462,8 +477,8 @@ class Play(models.Model):
             if play.datetime.date() == self.datetime.date():
                 raise ValidationError('This has been played today already.')
 
-        if not self.track.eligible(self.datetime):
-            raise ValidationError('This track was played last week.')
+        self.track.hidden=False
+        self.track.save()
 
     def week(self):
         return Week(self.datetime)

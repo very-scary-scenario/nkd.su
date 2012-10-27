@@ -26,9 +26,16 @@ urlpatterns = patterns('',
     # peter functions
     url(r'^played/(?P<track_id>.+)/$', 'vote.views.mark_as_played', name='mark_as_played'),
     url(r'^unplay/(?P<track_id>.+)/$', 'vote.views.unmark_as_played', name='unmark_as_played'),
+
     url(r'^vote/(?P<track_id>.+)/$', 'vote.views.make_vote', name='make_vote'),
+
     url(r'^block/(?P<track_id>.+)/$', 'vote.views.make_block', name='make_block'),
     url(r'^unblock/(?P<track_id>.+)/$', 'vote.views.unblock', name='unblock'),
+
+    url(r'^hidden/$', 'vote.views.hidden', name='hidden'),
+    url(r'^hide/(?P<track_id>.+)/$', 'vote.views.hide', name='hide'),
+    url(r'^unhide/(?P<track_id>.+)/$', 'vote.views.unhide', name='unhide'),
+
     url(r'^shortlist/(?P<track_id>.+)/$', 'vote.views.shortlist', name='shortlist'),
     url(r'^discard/(?P<track_id>.+)/$', 'vote.views.discard', name='discard'),
     url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'vote.views.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),

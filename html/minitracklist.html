@@ -5,6 +5,7 @@
       <p class="minor">&mdash; {{ selection_len }} &mdash;</p>
       {% if user.is_authenticated %}
         <p class="actions"><a href="/block/selection/">block&hellip;</a> | <a href="/unblock/selection/">unblock</a></p>
+        <p class="actions"><a href="/hide/selection/">hide</a> | <a href="/unhide/selection/">unhide</a></p>
         <p class="actions"><a href="/discard/selection/">discard</a> | <a href="/shortlist/selection/">shortlist</a> | <a href="/unshortlist_or_undiscard/selection/">reset discard/shortlist status</a>
         {% else %}
         {% if tweet_is_too_long %}

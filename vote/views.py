@@ -22,14 +22,21 @@ from datetime import date, timedelta, datetime
 
 import codecs
 from markdown import markdown
-import tweepy
+
+#import tweepy
+import twitter
 import akismet
 
-post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET)
-tw_api = tweepy.API(post_tw_auth)
+# with tweepy
+#post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
+#post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET)
+#tw_api = tweepy.API(post_tw_auth)
+
+# with twitter
+tw_api = twitter.Twitter(auth=twitter.OAuth(settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET, settings.CONSUMER_KEY, settings.CONSUMER_SECRET))
 
 ak_api = akismet.Akismet(key=settings.AKISMET_API_KEY, blog_url=settings.AKISMET_BLOG_URL, agent='nkdsu/0.0')
+
 
 class SearchForm(forms.Form):
     q = forms.CharField()
@@ -97,6 +104,10 @@ def everything(request):
 def roulette(request):
     """ Five random tracks """
     any_tracks = Track.objects.filter().order_by('?')
+
+    if not request.user.is_authenticated():
+        any_tracks = any_tracks.filter(hidden=False)
+
     tracks = []
     pos = 0
     while len(tracks) < 5 and pos < len(any_tracks):
@@ -133,9 +144,13 @@ def split_query_into_keywords(query):
     keywords.extend(query.split())
     return keywords
 
-def search_for_tracks(keywords):
+def search_for_tracks(keywords, show_hidden=False):
     """Make a search that contains all of the keywords."""
     tracks = Track.objects.all()
+
+    if not show_hidden:
+        tracks = tracks.filter(hidden=False)
+
     trackset = set(tracks)
     for keyword in keywords:
         trackset = {t for t in trackset if keyword.lower() in t.canonical_string().lower()}
@@ -153,9 +168,11 @@ def search_redirect(request):
 def search(request, query, pageno=1):
     try:
         trackset = (Track.objects.get(id=query),)
+        if trackset[0].hidden:
+            trackset = []
     except Track.DoesNotExist:
         keyword_list = split_query_into_keywords(query)
-        trackset = search_for_tracks(keyword_list)
+        trackset = search_for_tracks(keyword_list, show_hidden=request.user.is_authenticated())
 
     paginator = Paginator(trackset, 20)
     page = paginator.page(pageno)
@@ -177,6 +194,10 @@ def search(request, query, pageno=1):
 def artist(request, artist):
     """ All tracks by a particular artist """
     artist_tracks = Track.objects.filter(id3_artist=artist).order_by('id3_title')
+
+    if not request.user.is_authenticated():
+        artist_tracks = artist_tracks.filter(hidden=False)
+
     if not artist_tracks:
         raise Http404
 
@@ -193,7 +214,7 @@ def artist(request, artist):
 
 def latest_show(request):
     """ Redirect to the last week's show """
-    last_week = Week().prev()
+    last_week = Week(latest_play().datetime)
     return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
 
 def show(request, date):
@@ -316,12 +337,21 @@ def mark_as_played(request, track_id):
             if len(canon) > 140 - (len(settings.HASHTAG) + 1):
                 canon = canon[0:140-(len(settings.HASHTAG)+2)]+u'…'
             status = u'%s %s' % (canon, settings.HASHTAG)
-            tweet = tw_api.update_status(status)
 
-            play.tweet_id = tweet.id
+            # with tweepy
+            #tweet = tw_api.update_status(status)
 
-            # and finally save the tweet
+            # with twitter
+            tweet = tw_api.statuses.update(status=status)
+            print tweet
+
+            play.tweet_id = tweet['id']
+            
+            # save the play
             play.save()
+
+            # and unshortlist (or undiscard) the track...
+            shortlist_or_discard(request, track.id)
 
     return redirect_nicely(request)
 
@@ -330,12 +360,11 @@ def unmark_as_played(request, track_id):
     """ Deletes the latest Play for a track """
     try:
         track = Track.objects.get(id=track_id)
-        latest_play = Play.objects.filter(track=track).order_by('-datetime')[0]
     except Track.DoesNotExist:
         raise Http404
 
     try:
-        latest_play = Play.objects.filter(track=track).order_by('-datetime')[0]
+        play = latest_play(track)
     except IndexError:
         raise Http404
 
@@ -343,10 +372,10 @@ def unmark_as_played(request, track_id):
         return confirm(request, 'unmark %s as played' % track.derived_title())
     else:
         try:
-            tw_api.destroy_status(id=latest_play.tweet_id)
+            tw_api.statuses.destroy(id=play.tweet_id)
         except tweepy.TweepError:
             pass
-        latest_play.delete()
+        play.delete()
         return redirect_nicely(request)
 
 
@@ -394,7 +423,7 @@ def upload_library(request):
         update_library(plist, dry_run=False)
         plist.close()
 
-        return redirect('/')
+        return redirect('/hidden/')
 
 
 class RequestForm(forms.Form):
@@ -580,6 +609,36 @@ def discard(request, track_id):
 def unshortlist_or_undiscard(request, track_id):
     return shortlist_or_discard(request, track_id, None)
 
+
+def hide_or_unhide(request, track_id, hidden):
+    tracks = get_track_or_selection(request, track_id)
+    for track in tracks:
+        track.hidden = hidden
+        track.save()
+    return redirect_nicely(request)
+
+@login_required
+def hide(request, track_id):
+    return hide_or_unhide(request, track_id, True)
+
+@login_required
+def unhide(request, track_id):
+    return hide_or_unhide(request, track_id, False)
+
+@login_required
+def hidden(request):
+    """ A view of all currently hidden tracks """
+    context = {
+            'session': request.session,
+            'path': request.path,
+            'title': 'hidden tracks',
+            'tracks': Track.objects.filter(hidden=True),
+            'path': request.path,
+            'show': Week().showtime,
+            'on_air': is_on_air(),
+            }
+
+    return render_to_response('tracks.html', RequestContext(request, context))
 
 # javascript nonsense
 def do_selection(request, select=True):
