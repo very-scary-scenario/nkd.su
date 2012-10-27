@@ -31,11 +31,10 @@ def parse(tweet):
 
     if tweet['text'].startswith('@%s ' % settings.READING_USERNAME):
         # this is potentially a request
-        if 'Dango' in tweet['text']:
-            try:
-                print '%s: %s' % (tweet['user']['screen_name'], tweet['text'])
-            except KeyError:
-                print '%s: %s' % (tweet['from_user'], tweet['text'])
+        try:
+            print '%s: %s' % (tweet['user']['screen_name'], tweet['text'])
+        except KeyError:
+            print '%s: %s' % (tweet['from_user'], tweet['text'])
 
         tasks.log_vote.delay(tweet)
 
