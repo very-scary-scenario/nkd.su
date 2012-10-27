@@ -181,6 +181,14 @@ class Week(object):
         else: votes.select_related()
         return votes
 
+    def added(self, show_hidden=False):
+        """ Return a QuerySet of all (unhidden) tracks added to the library this week """
+        tracks = Track.objects.filter(added__range=self.date_range)
+
+        if not show_hidden:
+            tracks = tracks.filter(hidden=False)
+
+        return tracks
 
 def vote_tweet(tracks):
     return '@%s %s' % (settings.READING_USERNAME, ' '.join([t.id for t in tracks]))
@@ -215,7 +223,6 @@ def split_id3_title(id3_title):
         title = id3_title
 
     return title, role
-
 
 class Track(models.Model):
     def __unicode__(self):

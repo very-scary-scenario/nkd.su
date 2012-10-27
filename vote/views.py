@@ -80,6 +80,7 @@ def summary(request, week=None):
             'shortlist_len': shortlist_len,
             'shortlist': shortlist,
             'discard': discard,
+            'new_tracks': len(week.added()),
             'show': week.showtime,
             'on_air': is_on_air(),
             }
@@ -246,6 +247,8 @@ def show(request, date):
 
     denied = sorted(denied, reverse=True, key=lambda t: len(t.votes()))
 
+    tracks_added_this_week = len(week.added())
+    
     context = {
             'session': request.session,
             'path': request.path,
@@ -257,11 +260,46 @@ def show(request, date):
             'on_air': is_on_air(),
             'next_show': next_show,
             'prev_show': prev_show,
+            'tracks_added_this_week': tracks_added_this_week,
             'show': Week().showtime,
             }
 
     return render_to_response('show.html', RequestContext(request, context))
 
+def added(request, date=None):
+    if date:
+        day, month, year = (int(t) for t in date.split('-'))
+        week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc))
+    else:
+        week = Week(Track.objects.all().order_by('-added')[0].added)
+
+    tracks = week.added(show_hidden=request.user.is_authenticated())
+
+    # set up prev/next buttons
+    next_week_with_additions = prev_week_with_additions = None
+    
+    older_tracks = Track.objects.filter(added__lt=week.start, hidden=False).order_by('-added')
+    newer_tracks = Track.objects.filter(added__gt=week.finish, hidden=False).order_by('added')
+
+    if older_tracks: prev_week_with_additions = Week(older_tracks[0].added).showtime
+    if newer_tracks: next_week_with_additions = Week(newer_tracks[0].added).showtime
+
+    plays_this_week = bool(week.plays())
+
+    context = {
+            'session': request.session,
+            'path': request.path,
+            'additions_from': week.showtime,
+            'tracks': tracks,
+            'path': request.path,
+            'show': Week().showtime,
+            'on_air': is_on_air(),
+            'next_week_with_additions': next_week_with_additions,
+            'prev_week_with_additions': prev_week_with_additions,
+            'plays_this_week': plays_this_week,
+            }
+
+    return render_to_response('tracks.html', RequestContext(request, context))
 
 def info(request):
     words = markdown(codecs.open(settings.SITE_ROOT + 'README.md', encoding='utf-8').read())

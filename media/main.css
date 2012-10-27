@@ -344,6 +344,10 @@ div.track:nth-child(11n+2) .disabled {
 
 /* anyway... */
 
+p.new_tracks {
+  padding-top: 1.5em;
+}
+
 .aligned, p.aside {
   text-align: center;
   clear: both;
