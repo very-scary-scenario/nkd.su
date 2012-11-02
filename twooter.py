@@ -61,7 +61,7 @@ def parse_dir(directory):
 
 def refresh():
     t = twitter.Twitter(auth=twitter.OAuth(access_token, access_token_secret, consumer_key, consumer_secret))
-    tweets = t.statuses.mentions()
+    tweets = t.statuses.mentions(count='50')
 
     for tweet in tweets:
         parse(tweet)
