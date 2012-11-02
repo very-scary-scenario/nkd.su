@@ -34,7 +34,7 @@ def update_library(plist, dry_run=False):
             if (db_track.id3_title != t['Name']) or (db_track.id3_artist != t['Artist']) or (db_track.id3_album != t['Album']) or (db_track.msec != t['Total Time']) or (db_track.added != added):
                 # we need to update an existing track
                 changed = True
-                pre_change = db_track.canonical_string()
+                pre_change = db_track.deets()
 
         if new or changed:
             db_track.id = t['Persistent ID']
@@ -46,11 +46,11 @@ def update_library(plist, dry_run=False):
 
         if new:
             db_track.hidden = True
-            changes.append('new: %s' % (db_track.canonical_string()))
+            changes.append('new:\n%s' % (db_track.deets()))
 
         if changed:
-            changes.append('change: %s' % pre_change)
-            changes.append('to: %s' % db_track.canonical_string())
+            changes.append('change:\n%s' % pre_change)
+            changes.append('to:\n%s' % db_track.deets())
 
         if (new or changed) and (not dry_run):
             db_track.save()
@@ -58,7 +58,7 @@ def update_library(plist, dry_run=False):
         tracks_kept.append(db_track)
 
     for track in [t for t in Track.objects.all() if t not in tracks_kept and not t.hidden]:
-        changes.append('hide: %s' % track.canonical_string())
+        changes.append('hide:\n%s' % track.deets())
         if not dry_run:
             track.hidden = True
             track.save()

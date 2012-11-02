@@ -328,6 +328,9 @@ class Track(models.Model):
         else:
             return u'"%s" - %s' % (title, self.id3_artist)
 
+    def deets(self):
+        return '%s: %s - %s - %s - %i msec - %s' % (self.id, self.id3_title, self.id3_artist, self.id3_album, self.msec, self.added)
+
     def eligible(self, time=None):
         """ Returns True if self can be requested at time """
         if self.ineligible():
