@@ -85,11 +85,8 @@ $(document).ready(function(){
     });
 
     // scroll to bottom when asked
-    $('div#stick.invisible div#stuck').on("click", function() {
+    $('div#stick.invisible div#stuck h3').on("click", function() {
       window.scrollTo(0,$('div#selection').offset().top);
-    });
-    $('div#stick.invisible div#stuck a').click(function(event) {
-      event.stopPropagation();
     });
     
   };
