@@ -1,10 +1,13 @@
 # Create your views here.
 # -*- coding: utf-8 -*-
 
-from django.core.exceptions import ValidationError
-from django.template import RequestContext, loader
 from vote.models import *
 from vote.update_library import update_library
+from vote.tasks import refresh
+# we'll call refresh.delay() on pages that people might be looking for their votes on
+
+from django.core.exceptions import ValidationError
+from django.template import RequestContext, loader
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
@@ -45,6 +48,9 @@ def summary(request, week=None):
     """ Our landing page """
     if not week:
         week = Week()
+
+    refresh.delay()
+
     trackset = set()
 
     form = SearchForm()
@@ -180,6 +186,8 @@ def search(request, query, pageno=1):
     except Track.DoesNotExist:
         keyword_list = split_query_into_keywords(query)
         trackset = search_for_tracks(keyword_list, show_hidden=request.user.is_authenticated())
+
+    refresh.delay()
 
     paginator = Paginator(trackset, 20)
     page = paginator.page(pageno)

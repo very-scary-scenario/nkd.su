@@ -3,6 +3,7 @@ from datetime import datetime
 import Levenshtein
 
 from celery import task
+from commands import getoutput
 
 from models import Play, Vote, Track
 
@@ -11,6 +12,8 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.conf import settings
 
 from sys import exc_info
+
+import twitter
 
 def tweettime(tweet):
     try:
@@ -61,9 +64,18 @@ def log_play(tweet):
             play.save()
 
 @task
-def log_vote(tweet):
+def log_vote(tweet, should_not_be_new=False):
     # get song ids
     date = tweettime(tweet)
+
+    if should_not_be_new and not Vote.objects.filter(tweet_id=tweet['id']).exists():
+        print 'this vote did not exist, killing stream...'
+        # we should kill the streaming process to force it to reconnect
+        pid = getoutput("ps aux | awk '/ python... twooter/ && !/awk/ { print $2 }'")
+        getoutput('kill %s' % pid)
+    elif Vote.objects.filter(tweet_id=tweet['id']).exists():
+        # this vote exists already, we can ignore it
+        return
 
     # make Vote
     if 'user' in tweet: # this is from the streaming api
@@ -91,7 +103,6 @@ def log_vote(tweet):
     try:
         the_vote.clean()
     except ValidationError:
-        the_vote.delete()
         print exc_info()
     else:
         the_vote.save()
@@ -102,3 +113,42 @@ def delete_vote(tweet_id):
         Vote.objects.get(tweet_id=tweet_id).delete()
     except ObjectDoesNotExist:
         print 'ignoring lost tweet'
+
+@task
+def refresh():
+    consumer_key = settings.CONSUMER_KEY
+    consumer_secret = settings.CONSUMER_SECRET
+    access_token = settings.READING_ACCESS_TOKEN
+    access_token_secret = settings.READING_ACCESS_TOKEN_SECRET
+
+    t = twitter.Twitter(auth=twitter.OAuth(access_token, access_token_secret, consumer_key, consumer_secret))
+    tweets = t.statuses.mentions(count='50')
+
+    for tweet in tweets:
+        parse(tweet, should_not_be_new=True)
+
+@task
+def parse(tweet, should_not_be_new=False):
+    """ Deal with a tweet, post-json conversion.
+
+    If should_not_be_new is True and we come across a new vote, the streaming
+    process is probably borked and we should do something about it. """
+
+    if 'text' not in tweet:
+        # this could be a deletion or some shit
+        print tweet
+        if 'delete' in tweet:
+            print 'deleting tweet %s' % tweet['delete']['status']['id']
+            delete_vote(tweet['delete']['status']['id'])
+
+        return
+
+    if tweet['text'].startswith('@%s ' % settings.READING_USERNAME):
+        # this is potentially a request
+        try:
+            print '%s: %s' % (tweet['user']['screen_name'], tweet['text'])
+        except KeyError:
+            print '%s: %s' % (tweet['from_user'], tweet['text'])
+
+        log_vote(tweet, should_not_be_new=should_not_be_new)
+
