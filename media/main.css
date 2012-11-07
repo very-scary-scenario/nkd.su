@@ -263,12 +263,10 @@ form#search input#submit {
 }
 
 
-#disclaimer {
+#protip {
   font-size: .8em;
   color: #888;
-  text-align: center
-  padding-bottom: 1em;
-  margin-bottom: 1em;
+  text-align: center;
 }
 
 #beta {

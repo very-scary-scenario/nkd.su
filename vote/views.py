@@ -25,6 +25,7 @@ from datetime import date, timedelta, datetime
 
 import codecs
 from markdown import markdown
+from random import choice
 
 #import tweepy
 import twitter
@@ -40,6 +41,11 @@ tw_api = twitter.Twitter(auth=twitter.OAuth(settings.POSTING_ACCESS_TOKEN, setti
 
 ak_api = akismet.Akismet(key=settings.AKISMET_API_KEY, blog_url=settings.AKISMET_BLOG_URL, agent='nkdsu/0.0')
 
+protips = [
+        'Pro tip: the tracks look like buttons because they <em>are</em> buttons.',
+        'Come idle with us in <a href="irc://irc.rizon.net/NekoDesu">#NekoDesu</a> on <a href="http://www.rizon.net/">Rizon</a>; we are so very alone ( ´· _ ·`)',
+        'Something broken? Add it to <a href="http://github.com/colons/nkdsu/issues">the pile</a>! It\'ll make you feel better, I promise.',
+        ]
 
 class SearchForm(forms.Form):
     q = forms.CharField()
@@ -82,6 +88,7 @@ def summary(request, week=None):
         playlist_len = None
 
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'playlist': playlist,
@@ -103,6 +110,7 @@ def summary(request, week=None):
 def everything(request):
     """ Every track """
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'title': 'everything',
@@ -130,6 +138,7 @@ def roulette(request):
         pos += 1
 
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'title': 'roulette',
@@ -193,6 +202,7 @@ def search(request, query, pageno=1):
     page = paginator.page(pageno)
 
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'title': query,
@@ -217,6 +227,7 @@ def artist(request, artist):
         raise Http404
 
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'title': artist.lower(),
@@ -264,6 +275,7 @@ def show(request, date):
     tracks_added_this_week = len(week.added())
     
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'title': date,
@@ -301,6 +313,7 @@ def added(request, date=None):
     plays_this_week = bool(week.plays())
 
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'additions_from': week.showtime,
@@ -318,6 +331,7 @@ def added(request, date=None):
 def info(request):
     words = markdown(codecs.open(settings.SITE_ROOT + 'README.md', encoding='utf-8').read())
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'title': 'what?',
@@ -332,6 +346,7 @@ class ManualVoteForm(forms.ModelForm):
 
 def confirm(request, action, deets=None):
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'action': action,
@@ -354,6 +369,7 @@ def make_vote(request, track_id):
         form = ManualVoteForm()
 
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'track': track,
@@ -461,6 +477,7 @@ def upload_library(request):
     elif (not ('confirm' in request.GET and request.GET['confirm'] == 'true')) or (request.method == 'POST' and not form.is_valid()):
         # this is an initial load OR an invalid submission
             context = {
+                'protip': choice(protips),
                 'session': request.session,
                 'path': request.path,
                 'form': form,
@@ -539,6 +556,7 @@ def request_addition(request):
             return render_to_response('message.html', RequestContext(request, context))
 
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'title': 'request an addition',
@@ -601,6 +619,7 @@ def make_block(request, track_id):
         form = BlockForm()
 
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'tracks': tracks,
@@ -681,6 +700,7 @@ def unhide(request, track_id):
 def hidden(request):
     """ A view of all currently hidden tracks """
     context = {
+            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'title': 'hidden tracks',
@@ -742,6 +762,7 @@ def do_selection(request, select=True):
     selection_len = length_str(total_length(selection_queryset))
 
     context = {
+            'protip': choice(protips),
             'selection': selection_queryset,
             'vote_url': vote_url,
             'selection_len': selection_len,
