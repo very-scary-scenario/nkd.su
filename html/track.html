@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}{{ track.derived_title|lower }}{% endblock %}
+
+{% block content %}
+
+<h2 class=heading>{{ track.derived_title }}</h2>
+<div class="tracklist">
+  {% include "trackrow.html" %}
+</div>
+
+{% endblock %}

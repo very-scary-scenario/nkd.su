@@ -187,6 +187,23 @@ def search_redirect(request):
         query = form.cleaned_data['q']
         return redirect('/search/%s' % query)
 
+def track(request, track_id):
+    """ A view of a single track """
+    track = get_track_or_selection(request, track_id)[0]
+
+    context = {
+            'protip': choice(protips),
+            'session': request.session,
+            'path': request.path,
+            'title': track.derived_title(),
+            'show': Week().showtime,
+            'on_air': is_on_air(),
+            'track': track,
+            }
+
+    return render_to_response('track.html', RequestContext(request, context))
+
+
 def search(request, query, pageno=1):
     try:
         trackset = (Track.objects.get(id=query),)
@@ -195,6 +212,9 @@ def search(request, query, pageno=1):
     except Track.DoesNotExist:
         keyword_list = split_query_into_keywords(query)
         trackset = search_for_tracks(keyword_list, show_hidden=request.user.is_authenticated())
+
+    if len(trackset) == 1:
+        return redirect('/%s/' % trackset[0].id)
 
     refresh.delay()
 
