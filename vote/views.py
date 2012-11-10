@@ -48,10 +48,6 @@ protips = [
         'Something broken? Add it to <a href="http://github.com/colons/nkdsu/issues">the pile</a>! It\'ll make you feel better, I promise.',
         ]
 
-import time
-def print_timing(name, t1, t2):
-    print '%s took %0.3f ms' % (name, (t2-t1)*1000.0)
-
 class SearchForm(forms.Form):
     q = forms.CharField()
 
@@ -187,7 +183,7 @@ def search_redirect(request):
         return redirect('/')
     else:
         query = form.cleaned_data['q']
-        return redirect('/search/%s' % query)
+        return redirect('/search/%s' % urlquote(query))
 
 def track(request, track_id):
     """ A view of a single track """

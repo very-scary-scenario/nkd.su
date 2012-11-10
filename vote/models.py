@@ -5,6 +5,10 @@ import datetime
 import re
 from django.core.exceptions import ValidationError
 from django.utils.http import urlquote
+from time import time
+
+def print_timing(name, t1, t2):
+    print '%s took %0.3f ms' % (name, (t2-t1)*1000.0)
 
 def latest_play(track=None):
     """ Get the latest play (for a particular track). """
@@ -447,7 +451,7 @@ class Track(models.Model):
 class Vote(models.Model):
     def __unicode__(self):
         return '%s for %s at %s; "%s"' % (self.screen_name, self.tracks.all()[0], self.date, self.content())
-
+    
     screen_name = models.CharField(max_length=100)
     text = models.CharField(max_length=140)
     user_id = models.IntegerField()
@@ -464,10 +468,11 @@ class Vote(models.Model):
 
         content = self.text.replace('@%s' % settings.READING_USERNAME, '').strip()
         for word in content.split():
-            if len(word) == 16 and self.tracks.filter(id=word).exists():
+            if len(word) == 16 and re.match('[0-9A-F]{16}', word):
                 content = content.replace(word, '').strip()
             if word in ['-']:
                 content = content.replace(word, '').strip()
+
         self.content_cache = content
         return self.content_cache
 
