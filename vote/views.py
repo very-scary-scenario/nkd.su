@@ -105,10 +105,7 @@ def summary(request, week=None):
             'playlist_len': playlist_len,
             }
 
-    t1 = time.time()
     render = render_to_response('index.html', RequestContext(request, context))
-    t2 = time.time()
-    print_timing('rendering', t1, t2)
     return render
 
 def everything(request):
