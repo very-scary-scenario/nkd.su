@@ -153,6 +153,28 @@ class Week(object):
 
         return False
 
+    
+
+    def tracks_sorted_by_votes(self):
+        votes = self.votes()
+        track_dict = {}
+        
+        # we need the track dict to be persistent so that stuff that is cacheable stays cached
+        
+        [track_dict.__setitem__(t.id, t) for v in votes for t in v.get_tracks()]
+
+        vote_dict = {}
+        for vote in votes:
+            for track in vote.get_tracks():
+                if track.id not in vote_dict:
+                    vote_dict[track.id] = 1
+                    track_dict[track.id].vote_cache = [vote] # we'll be examining this later, may as well force it in now
+                else:
+                    vote_dict[track.id] += 1
+                    track_dict[track.id].vote_cache.append(vote) # see above
+
+        return sorted(track_dict.values(), reverse=True, key=lambda t: vote_dict[t.id])
+
     def votes(self, track=None):
         """ Get all votes of any kind (for a particular track) from this week """
         votes, manual_votes = self.votes_in_a_tuple(track=track)
@@ -272,6 +294,9 @@ class Track(models.Model):
 
     def weeks_since_play(self, time=None):
         """ Get the number of shows that have ended since this track's most recent Play """
+        try: return self.weeks_since_play_cache
+        except AttributeError: pass
+
         time = now_or_time(time)
         this_week = Week(time)
         last_play = self.last_play()
@@ -287,7 +312,8 @@ class Track(models.Model):
         while this_week != week:
             week = week.next()
             weeks_ago += 1
-
+        
+        self.weeks_since_play_cache = weeks_ago
         return weeks_ago
 
     def undoable(self):
@@ -312,10 +338,16 @@ class Track(models.Model):
 
 
     def derived_title(self):
-        return split_id3_title(self.id3_title)[0]
+        return self.split_id3_title()[0]
 
     def derived_role(self):
-        return split_id3_title(self.id3_title)[1]
+        return self.split_id3_title()[1]
+
+    def split_id3_title(self):
+        try: return self.split_id3_title_cache
+        except AttributeError: pass
+        self.split_id3_title_cache = split_id3_title(self.id3_title)
+        return self.split_id3_title_cache
 
     def artist(self):
         return self.id3_artist

@@ -47,6 +47,10 @@ protips = [
         'Something broken? Add it to <a href="http://github.com/colons/nkdsu/issues">the pile</a>! It\'ll make you feel better, I promise.',
         ]
 
+import time
+def print_timing(name, t1, t2):
+    print '%s took %0.3f ms' % (name, (t2-t1)*1000.0)
+
 class SearchForm(forms.Form):
     q = forms.CharField()
 
@@ -57,13 +61,9 @@ def summary(request, week=None):
 
     refresh.delay()
 
-    trackset = set()
-
     form = SearchForm()
 
-    [trackset.add(t) for v in week.votes() for t in v.get_tracks()]
-
-    unfiltered_tracklist = sorted(trackset, reverse=True, key=lambda t: len(t.votes()) + len(t.manual_votes()))
+    unfiltered_tracklist = week.tracks_sorted_by_votes()
 
     if request.user.is_authenticated():
         tracklist = [t for t in unfiltered_tracklist if t.eligible() and not week.shortlist_or_discard(t)]
@@ -104,8 +104,11 @@ def summary(request, week=None):
             'playlist_len': playlist_len,
             }
 
-    return render_to_response('index.html', RequestContext(request, context))
-
+    t1 = time.time()
+    render = render_to_response('index.html', RequestContext(request, context))
+    t2 = time.time()
+    print_timing('rendering', t1, t2)
+    return render
 
 def everything(request):
     """ Every track """
@@ -284,13 +287,7 @@ def show(request, date):
     tracks = [p.track for p in plays]
     tracks_len = length_str(total_length(tracks))
 
-    denied = set()
-    [denied.add(t) for v in week.votes() for t in v.get_tracks() if t not in tracks]
-
-    [t.set_week(week) for t in tracks]
-    [t.set_week(week) for t in denied]
-
-    denied = sorted(denied, reverse=True, key=lambda t: len(t.votes()))
+    denied = week.tracks_sorted_by_votes()
 
     tracks_added_this_week = len(week.added())
     
