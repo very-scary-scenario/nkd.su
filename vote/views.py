@@ -71,13 +71,14 @@ def summary(request, week=None):
         shortlist = week.shortlist()
         shortlist_len = length_str(total_length(shortlist))
         discard = week.discard()
+        tracklist.extend([t for t in unfiltered_tracklist if t.ineligible() and (t.ineligible() != 'played this week') and not week.shortlist_or_discard(t)])
     else:
         shortlist = None
         discard = None
         shortlist_len = None
         tracklist = [t for t in unfiltered_tracklist if t.eligible()]
+        tracklist.extend([t for t in unfiltered_tracklist if t.ineligible() and (t.ineligible() != 'played this week')])
 
-    tracklist.extend([t for t in unfiltered_tracklist if t.ineligible() and (t.ineligible() != 'played this week')])
     tracklist_len = length_str(total_length(tracklist))
 
     # ditto plays
