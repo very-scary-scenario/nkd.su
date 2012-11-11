@@ -191,6 +191,8 @@ def search_redirect(request):
 
 def track(request, track_id):
     """ A view of a single track """
+    refresh.delay()
+
     track = get_track_or_selection(request, track_id)[0]
 
     context = {
