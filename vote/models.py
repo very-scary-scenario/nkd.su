@@ -5,7 +5,7 @@ import datetime
 import re
 from django.core.exceptions import ValidationError
 from django.utils.http import urlquote
-from time import time
+from time import time as timer
 
 def print_timing(name, t1, t2):
     print '%s took %0.3f ms' % (name, (t2-t1)*1000.0)
@@ -57,29 +57,74 @@ class Week(object):
     target_tuple = (end_hour, 0, 0, showtime_day)
     target_showtime_tuple = (start_hour, 0, 0, showtime_day)
     show_locale = timezone.get_current_timezone()
+    
+    def _approach(self, time, target_tuple, forwards):
+        """ Approach a given time one hour at a time until the time matches the
+        target_tuple in hours """
 
-    def __init__(self, time=None):
-        """ Create the Week in which time (or now) resides """
+        one_hour = datetime.timedelta(hours=1)
+
+        while time.astimezone(self.show_locale).timetuple()[3:7] != target_tuple:
+            if forwards:
+                time = time + one_hour
+            else:
+                time = time - one_hour
+        return time
+
+    def __init__(self, time=None, correct=True):
+        """ Create the Week in which time (or now) resides.
+        
+        If correct is True, (which it is by default), we'll correct for
+        overridden times by choosing the next or previous week"""
+
         time = now_or_time(time)
 
         one_hour = datetime.timedelta(hours=1)
 
+        # set up default values
         start = self._round_down_to_hour(time)
-        while start.astimezone(self.show_locale).timetuple()[3:7] != self.target_tuple:
-            start = start - one_hour
+        start = self._approach(start, self.target_tuple, False)
+        finish = self._approach(start + one_hour, self.target_tuple, True)
+        showtime = self._approach(finish - one_hour, self.target_showtime_tuple, False)
+        
+        # necessary to do now for self.prev() to work
+        self.start = start
+        self._prev_week_default_showtime = self._approach(start, self.target_showtime_tuple, False)
+        self._next_week_default_showtime = self._approach(finish, self.target_showtime_tuple, True)
 
-        finish = start + one_hour
-        while finish.astimezone(self.show_locale).timetuple()[3:7] != self.target_tuple:
-            finish = finish + one_hour
+        # is this week's start time to be overridden? (ie. was last week's shwotime modified)
+        try: prev_override = ScheduleOverride.objects.get(overridden_showdate=self._prev_week_default_showtime)
+        except ScheduleOverride.DoesNotExist:
+            # nope
+            pass
+        else:
+            # yep
+            start = self.prev().finish
 
-        showtime = finish - one_hour
-        while showtime.astimezone(self.show_locale).timetuple()[3:7] != self.target_showtime_tuple:
-            showtime = showtime - one_hour
-
+        # are this week's showtime and finish to be overridden?
+        try: this_override = ScheduleOverride.objects.get(overridden_showdate=showtime.date())
+        except ScheduleOverride.DoesNotExist:
+            # nope
+            pass
+        else:
+            # yep
+            finish = this_override.finish
+            showtime = this_override.start
+        
         self.start = start
         self.finish = finish
         self.showtime = showtime
+
         self.date_range = [self.start, self.finish]
+
+        # do we actually fall into this range? if not, we should try again
+        if correct:
+            if time > self.finish:
+                del self._next
+                self = self.__init__(self.next().showtime)
+            elif time < self.start:
+                del self._prev
+                self = self.__init__(self.prev().showtime)
 
     def __eq__(self, other):
         return self.showtime == other.showtime
@@ -98,32 +143,35 @@ class Week(object):
         return (time >= self.showtime) and (time < self.finish)
 
     def next(self):
-        try: return self.next_week
+        try: return self._next
         except AttributeError: pass
-        self.next_week = Week(self.finish)
-        return self.next_week
+        self._next = Week(self._next_week_default_showtime, correct=False)
+        self._next._prev = self
+        return self._next
 
     def prev(self):
-        """ Returns the previous Week. See next(). """
-        try: return self.prev_week
+        """ Returns the previous Week. See also: next(). """
+        try: return self._prev
         except AttributeError: pass
-        self.prev_week = Week(self.start - datetime.timedelta(seconds=1))
-        return self.prev_week
+        self._prev = Week(self._prev_week_default_showtime, correct=False)
+        self._prev._next = self
+        return self._prev
 
     def has_plays(self):
         """ True if this week has any plays  """
         return Play.objects.filter(datetime__range=self.date_range).exists()
 
-    def plays(self, track=None, invert=False, select_related=True):
-        """ Returns all plays, in chronological order, from this Week's show as a QuerySet """
+    def plays(self, track=None, invert=False, select_related=False):
+        """ Returns all plays, in chronological order, from this Week's show as a QuerySet.
+        If track is specified, gets plays of that track """
         if invert: order = '-datetime'
         else: order = 'datetime'
-
+        
         plays = Play.objects.filter(datetime__range=self.date_range).order_by(order)
-
+        
         if track: plays = plays.filter(track=track)
         if select_related: plays = plays.select_related()
-
+        
         return plays
 
     def _shortlist_or_discard(self, track, c):
@@ -135,7 +183,11 @@ class Week(object):
             except c.DoesNotExist:
                 return None
         else:
-            return [s.track for s in c.objects.filter(date__range=self.date_range)]
+            tracks = [s.track for s in c.objects.filter(date__range=self.date_range)]
+            # to prevent redundant Week creation
+            [setattr(t, '_vote_week', self) for t in tracks]
+            [setattr(t, '_current_week', self) for t in tracks]
+            return tracks
 
     def shortlist(self, track=None):
         """ Return a list of shortlisted tracks
@@ -157,8 +209,6 @@ class Week(object):
 
         return False
 
-    
-
     def tracks_sorted_by_votes(self):
         votes = self.votes()
         track_dict = {}
@@ -170,6 +220,9 @@ class Week(object):
         vote_dict = {}
         for vote in votes:
             for track in vote.get_tracks():
+                # to prevent redundant Week creation
+                track._vote_week = self
+                track._current_week = self
                 if track.id not in vote_dict:
                     vote_dict[track.id] = 1
                     track_dict[track.id].vote_cache = [vote] # we'll be examining this later, may as well force it in now
@@ -273,10 +326,6 @@ class Track(models.Model):
     added = models.DateTimeField(blank=True, null=True)
     hidden = models.BooleanField()
 
-    def __init__(self, *args, **kwargs):
-        models.Model.__init__(self, *args, **kwargs)
-        self.week = None
-
     def length_str(self):
         return length_str(self.msec)
 
@@ -298,26 +347,26 @@ class Track(models.Model):
 
     def weeks_since_play(self, time=None):
         """ Get the number of shows that have ended since this track's most recent Play """
-        try: return self.weeks_since_play_cache
+        try: return self._weeks_since_play
         except AttributeError: pass
-
+        
         time = now_or_time(time)
-        this_week = Week(time)
+        this_week = self.current_week(time)
         last_play = self.last_play()
         if last_play == None:
             return None
 
         # prevent infinite loops, just in case
         assert time > last_play.datetime
-
-        week = last_play.week()
+        
         weeks_ago = 0
+        working_week = this_week
 
-        while this_week != week:
-            week = week.next()
+        while last_play.datetime < working_week.showtime:
+            working_week = working_week.prev()
             weeks_ago += 1
         
-        self.weeks_since_play_cache = weeks_ago
+        self._weeks_since_play = weeks_ago
         return weeks_ago
 
     def undoable(self):
@@ -326,17 +375,16 @@ class Track(models.Model):
 
     def block(self, week=None):
         """ Get any block from the week specified """
-        if not week:
-            week = self.week
+        week = self.current_week()
 
-        try: return self.block_cache[week]
-        except AttributeError: self.block_cache = {}
+        try: return self._block[week]
+        except AttributeError: self._block = {}
         except KeyError: pass
 
         try: block = Block.objects.get(date__range=week.date_range, track=self)
         except Block.DoesNotExist: block = None
 
-        self.block_cache[week] = block
+        self._block[week] = block
 
         return block
 
@@ -367,6 +415,13 @@ class Track(models.Model):
     def deets(self):
         return '%s: %s - %s - %s - %i msec - %s' % (self.id, self.id3_title, self.id3_artist, self.id3_album, self.msec, self.added)
 
+    def current_week(self, time=None):
+        try: week = self._current_week
+        except AttributeError:
+            week = Week(time)
+            self._current_week = week
+        return week
+
     def eligible(self, time=None):
         """ Returns True if self can be requested at time """
         if self.ineligible():
@@ -379,16 +434,16 @@ class Track(models.Model):
         # if this Track instance has already been checked, just return what was returned before
         try: return self.reason
         except AttributeError: pass
-
-        week = Week(time)
+        
+        week = self.current_week()
         
         if self.hidden:
             self.reason = 'hidden'
 
-        elif week.plays().filter(track=self):
+        elif week.plays(self, select_related=False).exists():
             self.reason = 'played this week'
 
-        elif week.prev().plays().filter(track=self):
+        elif week.prev().plays(self).filter(track=self):
             self.reason = 'played last week'
 
         elif self.block(week):
@@ -399,14 +454,12 @@ class Track(models.Model):
 
         return self.reason
 
-    def vote_week(self, time):
+    def vote_week(self, time=None):
         """ Get whatever week we should be using to inspect votes """
-        if self.week and (not time):
-            week = self.week
-        else:
-            time = now_or_time(time)
+        try: week = self._vote_week
+        except AttributeError:
             week = Week(time)
-
+            self._vote_week = week
         return week
 
     def votes(self, time=None):
@@ -431,12 +484,12 @@ class Track(models.Model):
 
     def shortlist(self, time=None):
         time = now_or_time(time)
-        week = Week(time)
+        week = self.current_week(time)
         return week.shortlist(self)
 
     def discard(self, time=None):
         time = now_or_time(time)
-        week = Week(time)
+        week = self.current_week(time)
         return week.discard(self)
 
     def vote_url(self):
@@ -446,7 +499,7 @@ class Track(models.Model):
 
     def set_week(self, week):
         """ Make this track get the votes (but not eligibility or anything else) from a particular week. """
-        self.week = week
+        self._vote_week = week
 
 class Vote(models.Model):
     def __unicode__(self):
@@ -577,3 +630,14 @@ class ManualVote(models.Model):
         self.tracks_cache = [self.track]
         return self.tracks_cache
 
+class ScheduleOverride(models.Model):
+    overridden_showdate = models.DateField(unique=True)
+    start = models.DateTimeField()
+    finish = models.DateTimeField()
+
+    def clean(self):
+        if self.overridden_showdate.weekday() != Week.showtime_day:
+            raise ValidationError("I'm not convinced there would normally be a show on that day")
+
+        if self.start > self.finish:
+            raise ValidationError("The start time should not be after the end time")

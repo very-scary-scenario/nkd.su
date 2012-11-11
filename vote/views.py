@@ -59,9 +59,9 @@ def summary(request, week=None):
     refresh.delay()
 
     form = SearchForm()
-
+    
     unfiltered_tracklist = week.tracks_sorted_by_votes()
-
+    
     if request.user.is_authenticated():
         tracklist = [t for t in unfiltered_tracklist if t.eligible() and not week.shortlist_or_discard(t)]
         shortlist = week.shortlist()
@@ -79,6 +79,10 @@ def summary(request, week=None):
 
     # ditto plays
     playlist = [p.track for p in week.plays(invert=True)]
+    this_week = Week()
+    for track in playlist:
+        track._vote_week = week
+        track._current_week = this_week
 
     if playlist:
         playlist_len = length_str(total_length(playlist))
@@ -264,7 +268,7 @@ def latest_show(request):
 def show(request, date):
     """ Playlist archive """
     day, month, year = (int(t) for t in date.split('-'))
-    week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc))
+    week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc), correct=False)
     plays = week.plays()
 
     # the world is lady
@@ -278,15 +282,22 @@ def show(request, date):
     prev_week = week.prev()
     if prev_week.has_plays(): prev_show = prev_week.showtime
     else: prev_show = None
-
+    
     tracks = [p.track for p in plays]
-    [setattr(t, 'week', week) for t in tracks]
+    this_week = Week()
+    [setattr(t, '_vote_week', week) for t in tracks]
+    [setattr(t, '_current_week', this_week) for t in tracks]
     tracks_len = length_str(total_length(tracks))
 
-    denied = week.tracks_sorted_by_votes()
+    voted = week.tracks_sorted_by_votes()
+    denied = []
+    for track in voted:
+        if track not in tracks:
+            track._vote_week = week
+            track._current_week = this_week
+            denied.append(track)
 
     tracks_added_this_week = len(week.added())
-
     context = {
             'protip': choice(protips),
             'session': request.session,
@@ -300,7 +311,7 @@ def show(request, date):
             'next_show': next_show,
             'prev_show': prev_show,
             'tracks_added_this_week': tracks_added_this_week,
-            'show': Week().showtime,
+            'show': this_week.showtime,
             }
 
     return render_to_response('show.html', RequestContext(request, context))

@@ -1,4 +1,4 @@
-from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard
+from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard, ScheduleOverride
 from django.contrib import admin
 
 class VoteAdmin(admin.ModelAdmin):
@@ -19,6 +19,9 @@ class BlockAdmin(admin.ModelAdmin):
 class DiscardShortlistAdmin(admin.ModelAdmin):
     list_display=('track', 'date')
 
+class ScheduleOverrideAdmin(admin.ModelAdmin):
+    list_display=('overridden_showdate', 'start', 'finish')
+
 admin.site.register(Track, TrackAdmin)
 admin.site.register(Vote, VoteAdmin)
 admin.site.register(ManualVote, ManualVoteAdmin)
@@ -26,3 +29,4 @@ admin.site.register(Play, PlayAdmin)
 admin.site.register(Block, BlockAdmin)
 admin.site.register(Shortlist, DiscardShortlistAdmin)
 admin.site.register(Discard, DiscardShortlistAdmin)
+admin.site.register(ScheduleOverride, ScheduleOverrideAdmin)
