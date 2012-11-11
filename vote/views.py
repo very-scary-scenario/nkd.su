@@ -280,12 +280,13 @@ def show(request, date):
     else: prev_show = None
 
     tracks = [p.track for p in plays]
+    [setattr(t, 'week', week) for t in tracks]
     tracks_len = length_str(total_length(tracks))
 
     denied = week.tracks_sorted_by_votes()
 
     tracks_added_this_week = len(week.added())
-    
+
     context = {
             'protip': choice(protips),
             'session': request.session,
