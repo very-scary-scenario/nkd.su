@@ -434,16 +434,31 @@ def mark_as_played(request, track_id):
             #tweet = tw_api.update_status(status)
 
             # with twitter
-            tweet = tw_api.statuses.update(status=status)
-            print tweet
+            try:
+                tweet = tw_api.statuses.update(status=status)
+            except:
+                tweet_sent = False
+            else:
+                tweet_sent = True
 
-            play.tweet_id = tweet['id']
-            
-            # save the play
+
+            if tweet_sent:
+                play.tweet_id = tweet['id']
+            else:
+                context = {
+                        'message': 'the tweet failed to send',
+                        'deets': '<p>the play has been added anyway</p><p>you should <a href="https://twitter.com/intent/tweet?text=%s">send the now playing tweet manually</a></p>' % urlquote(status),
+                        'safe': True
+                        }
+
             play.save()
-
-            # and unshortlist (or undiscard) the track...
+            # unshortlist/discard
             shortlist_or_discard(request, track.id)
+
+            if not tweet_sent:
+                return render_to_response('message.html', RequestContext(request, context))
+            
+
 
     return redirect_nicely(request)
 

@@ -5,7 +5,11 @@
 <h2 class="aligned">{{ message }}</h2>
 
 {% if deets %}
+{% if safe %}
+{{ deets|safe }}
+{% else %}
 {{ deets|linebreaks }}
+{% endif %}
 {% endif %}
 
 {% endblock %}
