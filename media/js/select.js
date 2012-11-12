@@ -15,6 +15,11 @@ $(document).ready(function(){
     }
   });
 
+  // prevent clicking on a voter from selecting a track 
+  $("a.voter").click(function(event) {
+    event.stopPropagation();
+  });
+
   // stick to bottom of screen
   function stick(time) {
     if (($('div#selhead').offset().top < ($(window).scrollTop() + $(window).height() - $('div#selhead').height())) == ($('div#stick div.stuck').css('display') != 'none')) {
