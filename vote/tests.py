@@ -39,10 +39,8 @@ class WeekTest(unittest.TestCase):
         self.assertNotEqual(id(weeks[0].next()), id(weeks[1]))
     
     def test_week_correction(self):
-        """ Make sure that Week properly corrects if the defined time falls into an overlap
-        
-        Since we specified self.weeks[1] by asking for a time during the allnighter, we can just use that
-        """
+        """ Make sure that Week properly corrects if the defined time falls
+        into an overlap """
         week = Week(self.allnighter.finish - datetime.timedelta(seconds=1))
         self.assertEqual(week.showtime.date(), self.allnighter_date)
         self.assertLess(week.prev().showtime.date(), self.allnighter_date)
