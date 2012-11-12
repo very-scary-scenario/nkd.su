@@ -195,6 +195,7 @@ def track(request, track_id):
     track = get_track_or_selection(request, track_id)[0]
 
     context = {
+            'added': Week(track.added).showtime,
             'protip': choice(protips),
             'session': request.session,
             'path': request.path,
