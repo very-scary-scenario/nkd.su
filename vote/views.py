@@ -52,7 +52,7 @@ class SearchForm(forms.Form):
     q = forms.CharField()
 
 def summary(request, week=None):
-    """ Our landing page """
+    """ Our landing page (as it looked at the end of week; manual weeks mostly for testing) """
     if not week:
         week = Week()
 
@@ -79,10 +79,9 @@ def summary(request, week=None):
 
     # ditto plays
     playlist = [p.track for p in week.plays(invert=True)]
-    this_week = Week()
     for track in playlist:
         track._vote_week = week
-        track._current_week = this_week
+        track._current_week = week
 
     if playlist:
         playlist_len = length_str(total_length(playlist))

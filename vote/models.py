@@ -51,6 +51,9 @@ class Week(object):
     def __str__(self):
         return '%s - %s via %s' % (self.start, self.finish, self.showtime)
 
+    def __repr__(self):
+        return str(self)
+
     showtime_day = 5 # saturday
     start_hour = 21
     end_hour = 23
@@ -88,7 +91,6 @@ class Week(object):
         showtime = self._approach(finish - one_hour, self.target_showtime_tuple, False)
         
         # necessary to do now for self.prev() to work
-        self.start = start
         self._prev_week_default_showtime = self._approach(start, self.target_showtime_tuple, False)
         self._next_week_default_showtime = self._approach(finish, self.target_showtime_tuple, True)
 
@@ -118,13 +120,14 @@ class Week(object):
         self.date_range = [self.start, self.finish]
 
         # do we actually fall into this range? if not, we should try again
+        # we del self._prev because we set it when we realised the time had to be overridden
         if correct:
             if time > self.finish:
-                del self._next
-                self = self.__init__(self.next().showtime)
+                del self._prev
+                self = self.__init__(self._next_week_default_showtime, correct=False)
             elif time < self.start:
                 del self._prev
-                self = self.__init__(self.prev().showtime)
+                self = self.__init__(self._prev_week_default_showtime, correct=False)
 
     def __eq__(self, other):
         return self.showtime == other.showtime
