@@ -346,7 +346,7 @@ class Track(models.Model):
         try: return self.last_play().datetime
         except AttributeError: return None
 
-    def last_played_showdate(self):
+    def last_played_showtime(self):
         return Week(self.last_play().datetime).showtime
 
     def last_play(self):
