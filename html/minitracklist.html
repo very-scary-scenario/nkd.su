@@ -1,5 +1,5 @@
-{% if selection %}
-  <div id="selhead">
+<div id="selhead">
+  {% if selection %}
     <div class="stuck">
       <h3 id="selection">{{ selection|length }} song{{ selection|pluralize }} selected</h3>
       <p class="minor">&mdash; {{ selection_len }} &mdash;</p>
@@ -27,8 +27,8 @@
     {% endif %}
     {% if selection %}
     </div> <!-- stuck -->
-  </div> <!-- selhead -->
-{% endif %}
+  {% endif %}
+</div> <!-- selhead -->
 
 {% for track in selection %}
 <div class="minitrack selected">
