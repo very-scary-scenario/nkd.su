@@ -273,13 +273,22 @@ class Week(object):
         return tracks
 
 def vote_tweet(tracks):
-    return '@%s %s' % (settings.READING_USERNAME, ' '.join([t.id for t in tracks]))
+    return '@%s %s' % (settings.READING_USERNAME, ' '.join([t.url() for t in tracks]))
 
 def tweet_url(tweet):
     return 'https://twitter.com/intent/tweet?text=%s' % urlquote(tweet)
 
 def vote_url(tracks):
     return tweet_url(vote_tweet(tracks))
+
+def tweet_len(tweet):
+    placeholder_url = ''
+    while len(placeholder_url) < settings.TWITTER_SHORT_URL_LENGTH:
+        placeholder_url = placeholder_url + 'x'
+
+    shortened = re.sub('https?://[^\s]+', placeholder_url, tweet)
+    print shortened
+    return len(shortened)
 
 def split_id3_title(id3_title):
     """ Split a Title (role) ID3 title, return title, role """
@@ -391,7 +400,6 @@ class Track(models.Model):
 
         return block
 
-
     def derived_title(self):
         return self.split_id3_title()[0]
 
@@ -494,9 +502,12 @@ class Track(models.Model):
         time = now_or_time(time)
         week = self.current_week(time)
         return week.discard(self)
+    
+    def url(self):
+        return 'http://nkd.su/%s/' % self.id
 
     def vote_url(self):
-        tweet = '@%s %s' % (settings.READING_USERNAME, self.id)
+        tweet = '@%s %s' % (settings.READING_USERNAME, self.url())
         url = 'https://twitter.com/intent/tweet?text=%s' % urlquote(tweet)
         return url
 
@@ -506,7 +517,10 @@ class Track(models.Model):
 
 class Vote(models.Model):
     def __unicode__(self):
-        return '%s for %s at %s; "%s"' % (self.screen_name, self.tracks.all()[0], self.date, self.content())
+        try:
+            return '%s for %s at %s; "%s"' % (self.screen_name, self.tracks.all()[0], self.date, self.content())
+        except IndexError:
+            return '%s at %s: "%s"' % (self.screen_name, self.date, self.content())
     
     screen_name = models.CharField(max_length=100)
     text = models.CharField(max_length=140)
@@ -518,21 +532,34 @@ class Vote(models.Model):
     user_image = models.URLField()
     name = models.CharField(max_length=20)
 
+    def derive_tracks_from_url_list(self, url_list):
+        tracks = []
+        for url in url_list:
+            print url
+            track_id = url.strip('/')[-16:]
+            print track_id
+            track = Track.objects.get(id=track_id)
+            tracks.append(track)
+            print 'added %s' % track
+
+        return tracks
+
     def content(self):
         try: return self.content_cache
         except AttributeError: pass
 
-        content = self.text.replace('@%s' % settings.READING_USERNAME, '').strip()
+        content = self.text.replace('@%s' % settings.READING_USERNAME, '').strip('- ')
         for word in content.split():
-            if len(word) == 16 and re.match('[0-9A-F]{16}', word):
+            if re.match('https?://[^\s]+', word):
                 content = content.replace(word, '').strip()
-            if word in ['-']:
+            elif len(word) == 16 and re.match('[0-9A-F]{16}', word):
                 content = content.replace(word, '').strip()
 
         self.content_cache = content
         return self.content_cache
-
-    def clean(self):
+    
+    def relevant_prior_voted_tracks(self):
+        """ Return a list of tracks that this vote's issuer has already voted for this Week """
         # every vote placed after the cutoff for this track by this person
         prior_votes = Week(self.date)._votes(track=self.track).filter(user_id=self.user_id)
         # all tracks requested by this person
@@ -541,21 +568,9 @@ class Vote(models.Model):
             for track in vote.tracks.all():
                 prior_tracks.add(track)
 
-        self.save()
-        for word in self.text.split():
-            try:
-                track = Track.objects.get(id=word)
-            except Track.DoesNotExist:
-                pass
-            else:
-                if track.eligible(self.date) and track not in prior_tracks:
-                    print track
-                    self.tracks.add(track)
-                else:
-                    # raise ValidationError(track.ineligible())
-                    # we can let this pass; we just won't count it
-                    pass
+        return prior_tracks
 
+    def clean(self):
         if not self.tracks:
             raise ValidationError('no tracks in vote')
 

@@ -77,6 +77,7 @@ def log_vote(tweet, should_not_be_new=False):
         # this vote exists already, we can ignore it
         return
 
+
     # make Vote
     if 'user' in tweet: # this is from the streaming api
         the_vote = Vote(
@@ -101,11 +102,24 @@ def log_vote(tweet, should_not_be_new=False):
                 )
 
     try:
-        the_vote.clean()
-    except ValidationError:
-        print exc_info()
+        urls = [url['expanded_url'] for url in tweet['entities']['urls']]
+    except KeyError:
+        tracks = False
+        # no tracks; abandon ship!
     else:
-        the_vote.save()
+        tracks = [t for t in the_vote.derive_tracks_from_url_list(urls) if t not in the_vote.relevant_prior_voted_tracks()]
+    
+    if tracks:
+        try:
+            the_vote.clean()
+        except ValidationError:
+            print exc_info()
+        else:
+            the_vote.save()
+            the_vote.tracks = tracks
+            the_vote.save()
+    else:
+        print 'not saving'
 
 @task
 def delete_vote(tweet_id):
@@ -122,7 +136,7 @@ def refresh():
     access_token_secret = settings.READING_ACCESS_TOKEN_SECRET
 
     t = twitter.Twitter(auth=twitter.OAuth(access_token, access_token_secret, consumer_key, consumer_secret))
-    tweets = t.statuses.mentions(count='50')
+    tweets = t.statuses.mentions(count='50', include_entities=True)
 
     for tweet in tweets:
         parse(tweet, should_not_be_new=True)

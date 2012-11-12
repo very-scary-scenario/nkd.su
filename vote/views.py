@@ -806,7 +806,7 @@ def do_selection(request, select=True):
             'selection': selection_queryset,
             'vote_url': vote_url,
             'selection_len': selection_len,
-            'tweet_is_too_long': len(tweet) > 140,
+            'tweet_is_too_long': tweet_len(tweet) > 140,
             }
 
     if request.method == 'GET':
