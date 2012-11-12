@@ -553,6 +553,7 @@ class Vote(models.Model):
             if re.match('https?://[^\s]+', word):
                 content = content.replace(word, '').strip()
             elif len(word) == 16 and re.match('[0-9A-F]{16}', word):
+                # for the sake of old pre-url votes
                 content = content.replace(word, '').strip()
 
         self.content_cache = content

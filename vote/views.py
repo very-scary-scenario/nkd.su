@@ -56,8 +56,6 @@ def summary(request, week=None):
     if not week:
         week = Week()
 
-    refresh.delay()
-
     form = SearchForm()
     
     unfiltered_tracklist = week.tracks_sorted_by_votes()
@@ -219,8 +217,6 @@ def search(request, query, pageno=1):
 
     if len(trackset) == 1:
         return redirect('/%s/' % trackset[0].id)
-
-    refresh.delay()
 
     paginator = Paginator(trackset, 20)
     page = paginator.page(pageno)
