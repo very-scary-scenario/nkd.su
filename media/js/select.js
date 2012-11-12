@@ -17,14 +17,13 @@ $(document).ready(function(){
 
   // stick to bottom of screen
   function stick() {
-    if (($('div#selection').offset().top < ($(window).scrollTop() + $(window).height() - $('div#stuck').height())) == ($('div#stick').hasClass('invisible'))) {
-      $('div#stick').toggleClass('invisible');
-      // compensate to prevent document height changing
-      if ($('div#stick').hasClass('invisible')) {
-        $('div#selection').css('margin-top', $('div#stuck').height()+'px');
+    if (($('div#selhead').offset().top < ($(window).scrollTop() + $(window).height() - $('div#selhead').height())) == ($('div#stick').hasClass('visible'))) {
+      if ($('div#stick').hasClass('visible')) {
+        $('div#stick div.stuck').slideUp(200);
       } else {
-        $('div#selection').css('margin-top', 0);
+        $('div#stick div.stuck').slideDown(200);
       }
+      $('div#stick').toggleClass('visible');
     }
   }
 
@@ -32,6 +31,7 @@ $(document).ready(function(){
   function update_selection(data) {
     // update document
     $("div#selection").html(data);
+    $("div#stick").html($("div#selhead").html());
     stick();
 
     // build a list of IDs of selected tracks
@@ -85,7 +85,7 @@ $(document).ready(function(){
     });
 
     // scroll to bottom when asked
-    $('div#stick.invisible div#stuck h3').on("click", function() {
+    $('div#stick div.stuck h3').on("click", function() {
       window.scrollTo(0,$('div#selection').offset().top);
     });
     

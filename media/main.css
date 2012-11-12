@@ -150,7 +150,7 @@ h3#selection {
   margin: 0;
 }
 
-div#stick.invisible {
+div#stick {
   position: fixed;
   bottom: -1em;
   left: 0;
@@ -159,7 +159,7 @@ div#stick.invisible {
   z-index: 10;
 }
 
-div#stick.invisible div#stuck {
+div#stick div.stuck {
   display: inline-block;
   background-color: #fff;
   background-image: url('/noise.png');
