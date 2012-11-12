@@ -200,7 +200,6 @@ div#header-container {
 
 
 div#header {
-  padding-top: .6em;
   width: 100%;
   margin: 0 auto;
 }
@@ -268,79 +267,6 @@ form#search input#submit {
   color: #888;
   text-align: center;
 }
-
-#beta {
-  width: 0;
-  height: 0;
-  color: #644;
-  font-size: 7em;
-  -webkit-transform: rotate(-15deg); 
-  -ms-transform: rotate(-15deg); 
-  -moz-transform: rotate(-15deg);
-  -o-transform: rotate(-15deg);
-}
-  
-
-.disabled, #beta {
-  font-family: "IM Fell English SC", "Calibri"; serif;
-  height: 0;
-  margin-top: -.1em;
-  text-shadow: none;
-  z-index: 0;
-}
-
-div.selectable .disabled {
-  color: #eaa;
-}
-
-div.unselectable .disabled {
-  color: #966;
-}
-
-/* random jaunty angles! */
-
-div.track:nth-child(2n+1) .disabled {
-  -webkit-transform: rotate(3deg); 
-  -ms-transform: rotate(3deg); 
-  -moz-transform: rotate(3deg);
-  -o-transform: rotate(3deg);
-}
-
-div.track:nth-child(3n+2) .disabled {
-  -webkit-transform: rotate(-4deg); 
-  -ms-transform: rotate(-4deg); 
-  -moz-transform: rotate(-4deg);
-  -o-transform: rotate(-4deg);
-}
-
-div.track:nth-child(5n+3) .disabled {
-  -webkit-transform: rotate(5deg); 
-  -ms-transform: rotate(5deg); 
-  -moz-transform: rotate(5deg);
-  -o-transform: rotate(5deg);
-}
-
-div.track:nth-child(7n+5) .disabled {
-  -webkit-transform: rotate(-6deg); 
-  -ms-transform: rotate(-6deg); 
-  -moz-transform: rotate(-6deg);
-  -o-transform: rotate(-6deg);
-}
-
-div.track:nth-child(3n+1) .disabled {
-  font-size: 3.7em;
-}
-div.track:nth-child(5n) .disabled {
-  font-size: 4.5em;
-}
-div.track:nth-child(7n) .disabled {
-  font-size: 3.5em;
-}
-div.track:nth-child(11n+2) .disabled {
-  font-size: 4.2em;
-}
-
-/* anyway... */
 
 p.new_tracks {
   padding-top: 1.5em;
