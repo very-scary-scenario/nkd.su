@@ -322,6 +322,7 @@ def added(request, date=None):
         week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc))
     else:
         week = Week(Track.objects.all().order_by('-added')[0].added)
+        return redirect('/added/%s/' % week.showtime.strftime('%d-%m-%Y'))
 
     tracks = week.added(show_hidden=request.user.is_authenticated())
 
