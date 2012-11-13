@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}main.css?v=toppad">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}main.css?v=login">
     <link href="http://fonts.googleapis.com/css?family=Bitter:700,400" rel="stylesheet" type="text/css">
     <script src="{{ STATIC_URL }}js/jquery.min.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/jquery.cookie.js" type="text/javascript"></script>
@@ -65,13 +65,12 @@
         {% endif %}
       </div>
       <div id="footer">
-        {% if user.is_authenticated %}
-        <p class="credit"><a href="/admin/">admin</a> | <a href="/hidden/">hidden tracks</a> | <a href="/upload/">update library</a> | <a href="/logout/">log out</a></p>
-        {% else %}
         <a id="stamp" target="_blank" href="http://musicfortheblind.co.uk"><img alt="music for the blind" title="music for the blind" src="http://d.bldm.us/stamp.png"></a>
+        {% if user.is_authenticated %}
+          <p class="credit"><a href="/admin/">admin</a> | <a href="/hidden/">hidden tracks</a> | <a href="/upload/">update library</a> | <a href="/logout/?next={{ path|urlencode }}">log out</a></p>
+        {% else %}
+          <p class="credit"><a href="/info/">help</a> | <a target="_blank" href="https://github.com/colons/nkdsu">source</a> | <a href="/login/?next={{ path|urlencode }}">log in</a></p>
         {% endif %}
-        <p class="credit"><a href="/info/">help</a> | <a target="_blank" href="https://github.com/colons/nkdsu">source</a> | <a href="/recent/">newest tracks</a></p>
-        <p class="credit"><a target="_blank" href="http://thisisthecat.com/">the cat</a> | <a target="_blank" href="http://thisisthecat.com/index.php/neko-desu">neko desu</a></p>
       </div>
     </div>
     <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
