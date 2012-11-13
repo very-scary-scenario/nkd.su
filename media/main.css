@@ -36,6 +36,7 @@ body {
   padding: 1em;
   position: relative;
   padding-bottom: 12em;
+  padding-top: 1.5em;
 }
 
 h2, h3 {
@@ -298,7 +299,7 @@ form#search input#submit {
 }
 
 p.new_tracks {
-  padding-top: 1.5em;
+  padding-top: .5em;
 }
 
 .aligned, p.aside {
