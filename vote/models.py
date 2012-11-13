@@ -345,6 +345,13 @@ class Track(models.Model):
         try: return self.last_play().datetime
         except AttributeError: return None
 
+    def last_played_showtime(self):
+        current_week = self.current_week()
+        last_played = self.last_played()
+        while current_week.start > last_played:
+            current_week = current_week.prev()
+        return current_week.showtime
+
     def last_play(self):
         """ Get the datetime this track's most recent Play """
         try: return self.last_play_cache

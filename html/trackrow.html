@@ -25,7 +25,7 @@
       {% endif %}
 
       {% if track.last_played %}
-        <p class="last_played">last played <a href="/show/{{ track.last_played|date:"d-m-Y" }}/">{{ track.last_played|date:"d-m-Y" }}</a>,
+      <p class="last_played">last played <a href="/show/{{ track.last_played_showtime|date:"d-m-Y" }}/">{{ track.last_played|date:"d-m-Y" }}</a>,
         {% if track.weeks_since_play == 0 %}
           this week
         {% elif track.weeks_since_play == 1 %}
