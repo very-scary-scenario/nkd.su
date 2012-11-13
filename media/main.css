@@ -188,6 +188,7 @@ h1 {
 }
 
 ul#nav {
+  height: 2em;
   line-height: 2em;
   margin: 0 auto;
   clear: both;
@@ -683,10 +684,6 @@ a#stamp:hover {
 
   ul#nav li a {
     padding: .4em .6em;
-  }
-
-  ul#nav li.desktop {
-    display: none;
   }
 
   .aligned, p.aside {
