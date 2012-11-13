@@ -196,7 +196,7 @@ ul#nav {
   list-style: none;
   text-align: center;
   border: 0 solid #333;
-  border-bottom-width: 2px;
+  border-bottom-width: 3px;
   -webkit-box-shadow: inset #eee 0 .2em 1em;
   width: 100%;
   overflow: hidden;
