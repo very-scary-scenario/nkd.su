@@ -287,7 +287,6 @@ def tweet_len(tweet):
         placeholder_url = placeholder_url + 'x'
 
     shortened = re.sub('https?://[^\s]+', placeholder_url, tweet)
-    print shortened
     return len(shortened)
 
 def split_id3_title(id3_title):

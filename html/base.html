@@ -37,7 +37,6 @@
               </div> <!-- subtitle -->
             </div> <!-- titles -->
             <div id="search_div">
-              <a class="roulette" href="/roulette/">surprise me</a>
               <form id="search" class="search_form" name="search" action="/search" method="get">
                 <input id="query" type="text" name="q" value="{% block query %}{% endblock %}">
                 <input id="submit" type="submit" value="search">
@@ -46,6 +45,15 @@
           </div> <!-- header -->
         </div> <!-- header-container -->
       </div> <!-- header-background -->
+      <ul id="nav">
+        <li{% if section == 'home' %} class="active"{% endif %}><a href="/">home</a></li>
+        <li{% if section == 'archive' %} class="active"{% endif %}><a href="/show/">archive</a></li>
+        <li{% if section == 'added' %} class="active"{% endif %}><a href="/recent/">new tracks</a></li>
+        <li{% if section == 'roulette' %} class="active"{% endif %}><a href="/roulette/">surprise me</a></li>
+        <li class="desktop"><a href="irc://irc.rizon.net/NekoDesu">irc</a></li>
+        <li class="desktop"><a target="_blank" href="https://qchat.rizon.net/?channels=NekoDesu&amp;uio=Mj10cnVlJjk9MAde">webchat</a></li>
+        <li class="desktop"><a target="_blank" href="http://thisisthecat.com/index.php/neko-desu">neko desu</a></li>
+      </ul> <!-- nav -->
       <div id="content">
         {% if protip %}
           <p id="protip">{{ protip|safe }}</p>

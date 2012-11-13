@@ -174,7 +174,6 @@ div#stick div.stuck {
 
 div#titles {
   text-align: center;
-  position: relative;
   z-index: 1;
 }
 
@@ -183,19 +182,49 @@ h1 {
   text-shadow: #333 0 0 .2em;
 }
 
-div#header-background {
-  -webkit-box-shadow: inset #222 0 .2em 2em, #ccc 0 0 2em;
+ul#nav {
+  line-height: 2em;
+  margin: 0 auto;
+  clear: both;
+  font-size: .8em;
+  list-style: none;
+  text-align: center;
+  border: 0 solid #333;
+  border-bottom-width: 2px;
+  -webkit-box-shadow: inset #eee 0 .2em 1em;
+  width: 100%;
+  overflow: hidden;
+}
+
+ul#nav li {
+  display: inline-block;
+}
+
+ul#nav li.active a {
+  background-color: #ddd;
+  text-shadow: none;
+  color: #666;
   background-image: url('/noise.png');
-  background-color: #333;
+}
+
+
+ul#nav li a {
+  padding: .4em .8em;
+}
+
+div#header-background {
+  width: 100%;
+  background-image: url('/noise.png');
   color: #eee;
   text-shadow: #000 0 .1em 0;
-  width: 100%;
+  -webkit-box-shadow: inset #222 0 .2em 2em;
+  background-color: #333;
   overflow: hidden;
 }
 
 div#header-container {
   margin: 0 auto;
-  max-width: 50em;
+  max-width: 30em;
 }
 
 
@@ -217,27 +246,27 @@ div#search_div {
 }
 
 form#search {
-  padding-top: .2em;
-  display: block;
+  background-color: #eee;
+  background-image: url('/noise.png');
+  border-radius: .3em;
+  display: table;
   margin: 0 auto;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 form#search input {
+  background: none;
+  border: none;
+  outline: none;
+  height: 1.5em;
   font-family: "Bitter", "Calibri", serif;
-  vertical-align: center;
+  display: table-cell;
+  font-size: 1.1em;
 }
 
 form#search input#query {
-  padding-left: .2em;
-  background-color: #eee;
-  background-image: url('/noise.png');
-  border: 1px solid #333;
-  border-radius: .3em;
-  height: 1.5em;
-  font-size: 1.2em;
-  padding-right: 3em;
-  margin-right: -3em;
-  width: 70%;
+  width: 75%;
 }
 
 form#search input#query:focus {
@@ -245,22 +274,18 @@ form#search input#query:focus {
 }
 
 form#search input#submit {
+  color: #d66;
   border: none;
-  border-left: 1px solid #bbb;
+  border-left: 1px solid #ccc;
   border-radius: 0;
   text-shadow: #fff 0 .1em 0;
-  background: none;
-  padding-left: .8em;
+  font-size: .7em;
+  height: 4em;
+  margin: -1em 0;
   position: relative;
-  bottom: .3em;
-  right: .3em;
-  color: #d66;
+  bottom: .1em;
+  padding: .4em .8em;
 }
-
-.roulette {
-  font-size: .8em;
-}
-
 
 #protip {
   font-size: .8em;
@@ -498,8 +523,9 @@ a#stamp:hover {
   }
 
   div#titles {
-    width: 35%;
     float: left;
+    margin-left: 1em;
+    margin-bottom: .5em;
   }
 
   div#title {
@@ -517,16 +543,26 @@ a#stamp:hover {
 
   div#search_div {
     float: right;
-    padding-top: .5em;
-    padding-bottom: 1.2em;
-    padding-right: 2em;
-    width: 40%;
+    padding-top: 1.7em;
+    padding-bottom: .8em;
+    padding-right: 1em;
   }
 
   form#search {
     margin: 0 auto;
   }
 
+  form#search input#query {
+    width: 10em;
+  }
+
+  ul#nav li a:hover {
+    border: none;
+    background-color: #d66;
+    background-image: url('/noise.png');
+    color: #fff;
+    text-shadow: none;
+  }
 
   div.tracklist div.track div.metadata, div.shortlist div.track div.metadata {
     float: left;
@@ -629,15 +665,23 @@ a#stamp:hover {
 
 @media (max-width:550px) {
   div#header {
-    padding: .6em 0 1em;
+    padding-bottom: .4em;
   }
 
   div#search_div {
-    padding-top: .5em;
+    padding: .5em;
   }
 
   div#title, div#search_div {
     display: block;
+  }
+
+  ul#nav li a {
+    padding: .4em .6em;
+  }
+
+  ul#nav li.desktop {
+    display: none;
   }
 
   .aligned, p.aside {

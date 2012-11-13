@@ -44,7 +44,6 @@ ak_api = akismet.Akismet(key=settings.AKISMET_API_KEY, blog_url=settings.AKISMET
 protips = [
         'Pro tip: the tracks look like buttons because they <em>are</em> buttons.',
         "Pro tip: you can add whatever text you like to the end of your vote tweet, and it'll show up when you hover over your vote.",
-        'Come idle with us in <a href="irc://irc.rizon.net/NekoDesu">#NekoDesu</a> on <a target="_blank" href="http://www.rizon.net/">Rizon</a> (<a target="_blank" href="https://qchat.rizon.net/?channels=NekoDesu&amp;uio=Mj10cnVlJjk9MAde">webchat</a>); we are so very alone ( ´· _ ·`)',
         'Something broken? Add it to <a href="http://github.com/colons/nkdsu/issues">the pile</a>! It\'ll make you feel better, I promise.',
         ]
 
@@ -87,6 +86,7 @@ def summary(request, week=None):
         playlist_len = None
 
     context = {
+            'section': 'home',
             'protip': choice(protips),
             'session': request.session,
             'path': request.path,
@@ -137,6 +137,7 @@ def roulette(request):
         pos += 1
 
     context = {
+            'section': 'roulette',
             'protip': choice(protips),
             'session': request.session,
             'path': request.path,
@@ -297,6 +298,7 @@ def show(request, date):
 
     tracks_added_this_week = len(week.added())
     context = {
+            'section': 'archive',
             'protip': choice(protips),
             'session': request.session,
             'path': request.path,
@@ -335,6 +337,7 @@ def added(request, date=None):
     plays_this_week = bool(week.plays())
 
     context = {
+            'section': 'added',
             'protip': choice(protips),
             'session': request.session,
             'path': request.path,
