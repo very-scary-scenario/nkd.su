@@ -294,6 +294,7 @@ form#search input#submit {
 }
 
 #protip {
+  padding-top: 1em;
   font-size: .8em;
   color: #888;
   text-align: center;

@@ -87,7 +87,6 @@ def summary(request, week=None):
 
     context = {
             'section': 'home',
-            'protip': choice(protips),
             'session': request.session,
             'path': request.path,
             'playlist': playlist,
