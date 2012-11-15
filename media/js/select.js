@@ -93,7 +93,7 @@ $(document).ready(function(){
     // make div#stick.invisible if necessary
     // ...but don't check too often, thanks stackoverflow question 8915376
     var scroll_ok = true;
-    setInterval(function() { scroll_ok = true; }, 200);
+    setInterval(function() { scroll_ok = true; }, 50);
     $(window).scroll(function() {
       if (scroll_ok === true) {
         scroll_ok = false;
