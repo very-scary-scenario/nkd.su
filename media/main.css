@@ -168,7 +168,7 @@ div#stick div.stuck {
   display: inline-block;
   background-color: #fff;
   background-image: url('/noise.png');
-  -webkit-box-shadow: inset #ddd 0 0 2em, #888 0 .5em 2em;
+  box-shadow: #888 0 .5em 2em; /*,inset #ddd 0 0 2em;*/
   border: 1px solid #aaa;
   padding: .5em 1em 1.5em;
   margin: 0 auto;
@@ -197,7 +197,7 @@ ul#nav {
   text-align: center;
   border: 0 solid #333;
   border-bottom-width: 3px;
-  -webkit-box-shadow: inset #eee 0 .2em 1em;
+  /*-webkit-box-shadow: inset #eee 0 .2em 1em;*/
   width: 100%;
   overflow: hidden;
 }
@@ -223,7 +223,7 @@ div#header-background {
   background-image: url('/noise.png');
   color: #eee;
   text-shadow: #000 0 .1em 0;
-  -webkit-box-shadow: inset #222 0 .2em 2em;
+  /*-webkit-box-shadow: inset #222 0 .2em 2em;*/
   background-color: #333;
   overflow: hidden;
 }
@@ -326,7 +326,7 @@ a {
 /* track tables */
 
 div.track {
-  -webkit-box-shadow: inset #eee 0 .2em 2em;
+  /* -webkit-box-shadow: inset #eee 0 .2em 2em; */
   background-image: url('/noise.png');
   background-color: #fafafa;
   border: 1px solid #ccc;

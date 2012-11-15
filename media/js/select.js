@@ -90,9 +90,15 @@ $(document).ready(function(){
       });
     });
 
-    // make div#stick.invisible
+    // make div#stick.invisible if necessary
+    // ...but don't check too often, thanks stackoverflow question 8915376
+    var scroll_ok = true;
+    setInterval(function() { scroll_ok = true; }, 200);
     $(window).scroll(function() {
-      stick(200);
+      if (scroll_ok) {
+        scroll_ok = false;
+        stick(200);
+      }
     });
 
     // scroll to bottom when asked
