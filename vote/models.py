@@ -49,7 +49,7 @@ def is_on_air(time=None):
 class Week(object):
     """ A week. Cut off at the end of each broadcast """
     def __str__(self):
-        return '%s - %s via %s' % (self.start, self.finish, self.showtime)
+        return '<week of %s>' % (self.showtime.date())
 
     def __repr__(self):
         return str(self)
@@ -589,6 +589,9 @@ class Vote(models.Model):
 
 
 class Play(models.Model):
+    def __str__(self):
+        return '<played %s at %s>' % (self.track, self.datetime)
+
     datetime = models.DateTimeField()
     track = models.ForeignKey(Track)
     tweet_id = models.IntegerField(blank=True)

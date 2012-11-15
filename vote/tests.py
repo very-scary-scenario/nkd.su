@@ -1,6 +1,30 @@
 from django.utils import unittest, timezone
 from models import *
 import datetime
+from random import choice
+
+def make_tracks(the_time=None, save=False):
+    if not the_time:
+        the_time = datetime.datetime.utcnow()
+
+    tracks = []
+    for i in xrange(0, 40):
+        track = Track(
+                id = '0123456789ABCDEF',
+                id3_title = "Test Song %i (a test song)" % i,
+                id3_artist = "Test Artist %i" % (i%5),
+                id3_album = "Test Album %i" % (i%7),
+                msec = 10000 + 100*i,
+                added = the_time - datetime.timedelta(i),
+                )
+
+        track.clean()
+        tracks.append(track)
+
+        if save:
+            track.save()
+
+    return tracks
 
 class WeekTest(unittest.TestCase):
     def setUp(self):
@@ -46,7 +70,26 @@ class WeekTest(unittest.TestCase):
         self.assertLess(week.prev().showtime.date(), self.allnighter_date)
         self.assertGreater(week.next().showtime.date(), self.allnighter_date)
 
-    def test_week_overlaps(self):
-        print self.weeks
+    def test_week_coincidence(self):
         self.assertEqual(self.weeks[0].finish, self.weeks[1].start)
         self.assertEqual(self.weeks[1].finish, self.weeks[2].start)
+
+    def test_play_pooling(self):
+        tracks = make_tracks()
+        onesec = datetime.timedelta(seconds = 1)
+
+        # build a dict of week: playlist
+        plays = {
+                week: [
+                    Play(datetime=week.start + onesec, track=choice(tracks)),
+                    Play(datetime=week.finish - onesec, track=choice(tracks)),
+                    ]
+                    for week in self.weeks
+                }
+        
+        # and make sure all our Plays think they're in the right week
+        for week in plays:
+            for play in plays[week]:
+                self.assertEqual(week, play.week())
+
+        print plays
