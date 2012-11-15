@@ -95,7 +95,7 @@ $(document).ready(function(){
     var scroll_ok = true;
     setInterval(function() { scroll_ok = true; }, 200);
     $(window).scroll(function() {
-      if (scroll_ok) {
+      if (scroll_ok === true) {
         scroll_ok = false;
         stick(200);
       }
