@@ -778,7 +778,11 @@ def do_selection(request, select=True):
         if select:
             selection.add(track.id)
         else:
-            selection.remove(track.id)
+            try:
+                selection.remove(track.id)
+            except KeyError:
+                # already not selected
+                pass
 
     selection_queryset = Track.objects.filter(id__in=selection)
 

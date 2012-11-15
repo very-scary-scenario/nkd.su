@@ -11,7 +11,7 @@
         {% if tweet_is_too_long %}
         <p class="refusal actions">too many tracks</p>
         {% else %}
-        <p class="actions"><a href="{{ vote_url }}">vote for all</a></p>
+        <p class="actions"><a class="mass_vote" href="{{ vote_url }}">vote for all</a></p>
         {% endif %}
       {% endif %}
         <p class="actions small"><a href="/do/clear_selection/" class="selection_jspost" name="clear_selection">clear selection</a>

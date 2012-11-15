@@ -67,6 +67,13 @@ $(document).ready(function(){
       });
     });
 
+    // explicitly clear selection when user mass-votes
+    $('a.mass_vote').click(function(event) {
+      $.post('/do/clear_selection/'), function(data) {
+        update_selection(data);
+      }
+    });
+
     // do js-friendly actions without reloading if possible
     $("a.track_jspost").click(function(event) {
       event.preventDefault();
