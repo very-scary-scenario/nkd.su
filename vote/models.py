@@ -338,7 +338,7 @@ class Track(models.Model):
     hidden = models.BooleanField()
 
     def is_new(self, time=None):
-        return self.added > self.current_week(time).start
+        return self.added > self.current_week(time).start and (not self.last_played())
 
     def length_str(self):
         return length_str(self.msec)

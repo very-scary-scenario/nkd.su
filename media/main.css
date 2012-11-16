@@ -140,12 +140,8 @@ div.minitrack p.id {
 }
 
 /* NEW RECIPE! */
-div.playlist.today div.track.new div.stamp {
-  display: none;
-}
-
 div.track.new div.stamp {
-  background-color: #fe9;
+  background-color: #feb;
   border: 1px solid #ca6;
   padding: .2em .5em .3em .2em;
   border-radius: .3em;
@@ -154,8 +150,15 @@ div.track.new div.stamp {
   position: absolute;
   top: -.4em;
   font-size: 1.2em;
-  color: #555;
-  text-shadow: #fff 0 .1em .1em;
+}
+
+div.track.new div.stamp a {
+  color: #c55;
+}
+
+div.track.new div.stamp a:hover {
+  color: #444;
+  border: none;
 }
 
 div#selection {
