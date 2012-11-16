@@ -337,6 +337,9 @@ class Track(models.Model):
     added = models.DateTimeField(blank=True, null=True)
     hidden = models.BooleanField()
 
+    def is_new(self, time=None):
+        return self.added > self.current_week(time).start
+
     def length_str(self):
         return length_str(self.msec)
 

@@ -10,8 +10,16 @@
   {% else %}
     unselectable
   {% endif %}
+  {% if track.is_new %}
+    new
+  {% endif %}
   "
   id="{{ track.id }}">
+  {% if track.is_new %}
+    <div class="stamp new">
+      New!
+    </div>
+  {% endif %}
   <div class="metacontainer">
     <div class="metadata">
       <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>

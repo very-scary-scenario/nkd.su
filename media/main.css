@@ -139,6 +139,21 @@ div.minitrack p.id {
   display: none;
 }
 
+/* NEW RECIPE! */
+div.track.new div.stamp {
+  background-color: #fe9;
+  border: 1px solid #ca6;
+  padding: .2em .5em .4em .2em;
+  border-radius: .3em;
+  line-height: 1em;
+  font-family: 'Kaushan Script', cursive;
+  position: absolute;
+  top: -.4em;
+  font-size: 1.2em;
+  color: #fff;
+  text-shadow: #333 0 .1em .2em;
+}
+
 div#selection {
   clear: both;
   text-align: center;
@@ -326,6 +341,7 @@ a {
 /* track tables */
 
 div.track {
+  position: relative; /* so that our stamps work */
   -webkit-box-shadow: inset #eee 0 .2em 2em;
   background-image: url('/noise.png');
   background-color: #fafafa;
@@ -587,6 +603,10 @@ a#stamp:hover {
     width: 63%;
   }
 
+  div.track.new div.stamp {
+    left: -.4em;
+  }
+
   div.votedata {
     width: 100%;
     display: table-cell;
@@ -605,10 +625,6 @@ a#stamp:hover {
   div.current {
     float: left;
     width: 64%;
-  }
-
-  .disabled {
-    font-size: 4em;
   }
 
   .markdown {
@@ -714,6 +730,10 @@ a#stamp:hover {
 
   div.request {
     margin-top: .3em;
+  }
+
+  div.track.new div.stamp {
+    right: -.4em;
   }
 }
 
