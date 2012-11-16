@@ -143,15 +143,15 @@ div.minitrack p.id {
 div.track.new div.stamp {
   background-color: #fe9;
   border: 1px solid #ca6;
-  padding: .2em .5em .4em .2em;
+  padding: .2em .5em .3em .2em;
   border-radius: .3em;
   line-height: 1em;
   font-family: 'Kaushan Script', cursive;
   position: absolute;
   top: -.4em;
   font-size: 1.2em;
-  color: #fff;
-  text-shadow: #333 0 .1em .2em;
+  color: #555;
+  text-shadow: #fff 0 .1em .1em;
 }
 
 div#selection {
