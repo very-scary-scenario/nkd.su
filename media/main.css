@@ -140,6 +140,10 @@ div.minitrack p.id {
 }
 
 /* NEW RECIPE! */
+div.playlist.today div.track.new div.stamp {
+  display: none;
+}
+
 div.track.new div.stamp {
   background-color: #fe9;
   border: 1px solid #ca6;
