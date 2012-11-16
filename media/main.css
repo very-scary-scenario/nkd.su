@@ -611,6 +611,11 @@ a#stamp:hover {
     left: -.4em;
   }
 
+  div.track.new p.artist {
+    /* wrap against new stamp */
+    padding-left: 3em;
+  }
+
   div.votedata {
     width: 100%;
     display: table-cell;
@@ -738,6 +743,11 @@ a#stamp:hover {
 
   div.track.new div.stamp {
     right: -.4em;
+  }
+
+  div.track.new p.artist {
+    /* wrap against new stamp */
+    padding-right: 3em;
   }
 }
 
