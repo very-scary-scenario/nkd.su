@@ -29,21 +29,28 @@
       <span class="title">{{ track.derived_title }}</span>
       </p>
 
-
+      <p class="metameta">
       {% if track.derived_role %}
-        <p class="role">{{ track.derived_role }} | {{ track.length_str }}</p>
+        <span class="role">{{ track.derived_role }}</span>
+        <span class="separator">|</span>
       {% endif %}
 
       {% if track.last_played %}
-      <p class="last_played">last played <a href="/show/{{ track.last_played_showtime|date:"d-m-Y" }}/">{{ track.last_played|date:"d-m-Y" }}</a>,
-        {% if track.weeks_since_play == 0 %}
-          this week
-        {% elif track.weeks_since_play == 1 %}
-          last week
-        {% else %}
-          {{ track.weeks_since_play }} weeks ago</p>
-        {% endif %}
+        <span class="last_played">played <a href="/show/{{ track.last_played_showtime|date:"d-m-Y" }}/">
+          {% if track.weeks_since_play == 0 %}
+            this week
+          {% elif track.weeks_since_play == 1 %}
+            last week
+          {% else %}
+            {{ track.weeks_since_play }} weeks ago
+          {% endif %}
+        </a></span>
+        <span class="separator">|</span>
       {% endif %}
+
+      <span class="length">{{ track.length_str }}</span>
+
+      </p>
       {% if user.is_authenticated %}
         <p class="peter">
           <a href="/played/{{ track.id }}/">now playing&hellip;</a> | <a href="/vote/{{ track.id }}/">add vote&hellip;</a>

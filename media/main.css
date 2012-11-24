@@ -131,7 +131,7 @@ div.minitrack p.title {
   font-size: 1.2em;
 }
 
-div.minitrack p.role {
+div.minitrack, p.metameta {
   font-size: .8em;
 }
 
@@ -380,7 +380,7 @@ div.track span.title {
   font-weight: bold;
 }
 
-div.track p.role, div.track p.last_played, div.track p.peter, div.track p.refusal {
+div.track p.metameta, div.track p.last_played, div.track p.peter, div.track p.refusal {
   font-size: .8em;
   clear: both;
   margin-top: .2em;
