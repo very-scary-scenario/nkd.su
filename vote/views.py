@@ -183,7 +183,7 @@ def search_redirect(request):
         return redirect('/')
     else:
         query = form.cleaned_data['q']
-        return redirect('/search/%s' % urlquote(query))
+        return redirect('/search/%s' % urlquote(query, safe=''))
 
 def track(request, track_id):
     """ A view of a single track """
@@ -206,6 +206,8 @@ def track(request, track_id):
 
 
 def search(request, query, pageno=1):
+    query = query.replace('%2F', '/')
+
     try:
         trackset = (Track.objects.get(id=query),)
         if (not request.user.is_authenticated()) and trackset[0].hidden:
