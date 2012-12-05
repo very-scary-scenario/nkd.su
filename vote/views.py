@@ -17,10 +17,9 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_page
-from sys import exc_info
-from email.mime.text import MIMEText
+from django.core.mail import send_mail
 
-from vote.mail import sendmail
+from sys import exc_info
 from datetime import date, timedelta, datetime
 
 import codecs
@@ -582,12 +581,13 @@ def request_addition(request):
 
             if not spam:
                 fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
-                msg = MIMEText('\n\n'.join(fields), _charset="UTF-8")
-                msg['Subject'] = '[nkd.su] %s' % f['title']
-                msg['From'] = '"nkd.su" <nkdsu@bldm.us>'
-                msg['To'] = settings.REQUEST_CURATOR
 
-                sendmail(settings.REQUEST_CURATOR, msg.as_string())
+                send_mail(
+                        '[nkd.su] %s' % f['title'],
+                        '\n\n'.join(fields),
+                        '"nkd.su" <nkdsu@bldm.us>',
+                        [settings.REQUEST_CURATOR],
+                        )
 
                 context = {'message': 'thank you for your request'}
             else:
