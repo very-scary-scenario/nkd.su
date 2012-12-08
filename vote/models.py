@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
@@ -428,9 +430,9 @@ class Track(models.Model):
         """ Get the string that, for instance, would be tweeted """
         title, role = split_id3_title(self.id3_title)
         if role:
-            return u'"%s" (%s) - %s' % (title, role, self.id3_artist)
+            return u'‘%s’ (%s) - %s' % (title, role, self.id3_artist)
         else:
-            return u'"%s" - %s' % (title, self.id3_artist)
+            return u'‘%s’ - %s' % (title, self.id3_artist)
 
     def deets(self):
         return '%s: %s - %s - %s - %i msec - %s' % (self.id, self.id3_title, self.id3_artist, self.id3_album, self.msec, self.added)
