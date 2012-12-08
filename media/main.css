@@ -295,6 +295,7 @@ form#search input {
 
 form#search input#query {
   width: 75%;
+  margin-left: .2em;
 }
 
 form#search input#query:focus {
