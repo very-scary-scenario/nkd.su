@@ -45,7 +45,6 @@ def is_on_air(time=None):
     """ Returns True if there's a broadcast on"""
     return Week(now_or_time(time)).is_on_air(time)
 
-
 class Week(object):
     """ A week. Cut off at the end of each broadcast """
     def __str__(self):
@@ -162,7 +161,13 @@ class Week(object):
 
     def has_plays(self):
         """ True if this week has any plays  """
-        return Play.objects.filter(datetime__range=self.date_range).exists()
+        return self.plays().exists()
+
+    def tracks_played(self):
+        try: return self._tracks_played
+        except AttributeError:
+            self._tracks_played = [p.track for p in self.plays()]
+            return self._tracks_played
 
     def plays(self, track=None, invert=False, select_related=False):
         """ Returns all plays, in chronological order, from this Week's show as a QuerySet.
@@ -271,6 +276,30 @@ class Week(object):
             tracks = tracks.filter(hidden=False)
 
         return tracks
+
+class User(object):
+    """ A twitter user """
+    def __unicode__(self): return self.screen_name()
+    def __repr__(self): return self.screen_name()
+
+    def __init__(self, user_id):
+        self.id = user_id
+    
+    def most_recent_vote(self): return self.votes().order_by('-date')[0]
+
+    def screen_name(self): return self.most_recent_vote().screen_name
+    def name(self): return self.most_recent_vote().name
+    def user_image(self): return self.most_recent_vote().user_image
+
+    def votes(self, week=None):
+        if week:
+            return week._votes().filter(user_id=self.id)
+        else:
+            try: return self._votes
+            except AttributeError:
+                self._votes = Vote.objects.filter(user_id=self.id)
+                return self._votes
+
 
 def vote_tweet(tracks):
     return '@%s %s' % (settings.READING_USERNAME, ' '.join([t.url() for t in tracks]))
@@ -589,7 +618,6 @@ class Vote(models.Model):
         except AttributeError: pass
         self.tracks_cache = self.tracks.all()
         return self.tracks_cache
-
 
 class Play(models.Model):
     def __str__(self):

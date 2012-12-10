@@ -752,6 +752,150 @@ def hidden(request):
 
     return render_to_response('tracks.html', RequestContext(request, context))
 
+def increment(dictionary, key):
+    """ Increment by one or create a value of 1 in a dictionary. """
+    try:
+        dictionary[key] += 1
+    except KeyError:
+        dictionary[key] = 1
+
+def top(dictionary):
+    """ Return a sorted tuple of (key, value) for the top values in a dictionary """
+    l = sorted(dictionary, key=lambda t: dictionary[t], reverse=True)
+    return [(t, dictionary[t]) for t in l]
+
+def make_relative(absolute, reference):
+    """ Return a dictionary of ratios of absolute[x]:reference[x] """
+    ratios = {}
+    for key in absolute:
+        ratios[key] = float(absolute[key]) / float(reference[key])
+
+    for key in [k for k in absolute if k not in reference]:
+        ratios[key] = 0
+
+    return ratios
+
+def useful(the_list, convert_to_percent=False):
+    """ Convert a list of (user_id, key) tuples into (<User>, key) tuples.
+    If convert_to_percent is True, multiply all keys by 100 """ 
+    new_list = []
+    for user_id, value in the_list:
+        if convert_to_percent:
+            value *= 100
+            value = '%i%%' % value
+
+        new_list.append((User(user_id), value))
+
+    return new_list
+        
+def get_stats():
+    # how big should our top lists be?
+    top_count = 5
+
+    # create our stat dictionaries using tracks as keys...
+    track_plays = {}
+    track_denials = {}
+    track_votes = {}
+    
+    # and using twitter user IDs as keys...
+    user_denials = {}
+    user_successes = {}
+    user_votes = {}
+    user_weeks = {} # the number of weeks a user has participated
+
+
+    week = Week()
+    # roll back until we're at a week that there was a show on
+    while not week.has_plays(): week = week.prev()
+    
+    weeks = []
+    # iterate through weeks, getting information on each
+    while week.has_plays():
+        weeks.append(week)
+
+        users = set()
+        
+        for track in week.tracks_played():
+            increment(track_plays, track)
+
+        # in this case, we don't care about manual votes, so we use week._votes()
+        for vote in week._votes():
+            if vote.get_tracks().exists():
+                users.add(vote.user_id)
+            for track in  vote.get_tracks():
+                increment(track_votes, track)
+                increment(user_votes, vote.user_id)
+
+                if track in week.tracks_played():
+                    increment(user_successes, vote.user_id)
+                else:
+                    increment(track_denials, track)
+                    increment(user_denials, vote.user_id)
+        
+        for user in users:
+            increment(user_weeks, user)
+
+        week = week.prev()
+    
+    unfiltered_user_success_ratios = top(make_relative(user_successes, user_votes))
+    
+    #if a person hasn't voted on at least three seperate weeks, they're not worth considering
+    user_success_ratios = [u for u in unfiltered_user_success_ratios if user_weeks[u[0]] >= 3]
+
+    most_successful_users = useful(user_success_ratios[:top_count], convert_to_percent=True)
+    least_successful_users = useful(list(reversed(user_success_ratios))[:top_count], convert_to_percent=True)
+
+
+    return (
+            {'type': 'user_stats', 'items': (
+                {
+                    'name': 'most successful users',
+                    'stats': most_successful_users,
+                    'heading': 'batting average',
+                    },
+                {
+                    'name': 'least successful users', 
+                    'stats': least_successful_users,
+                    'heading': 'batting average',
+                    },
+                {
+                    'name': 'most faithful users',
+                    'stats': useful(top(user_weeks)[:top_count]),
+                    'heading': 'weeks voted',
+                    },
+                    ),
+                },
+
+            {'type': 'track_stats', 'items': (
+                {
+                    'name': 'most denied tracks',
+                    'stats': top(track_denials)[:top_count],
+                    'heading': 'votes denied',
+                    },
+                {
+                    'name': 'most popular tracks',
+                    'stats': top(track_votes)[:top_count],
+                    'heading': 'votes',
+                    },
+                {
+                    'name': 'most played tracks',
+                    'stats': top(track_plays)[:top_count],
+                    'heading': 'plays',
+                    },
+                ),
+            },
+    )
+
+def stats(request):
+    context = {
+            'stats': get_stats,
+            'week': Week(),
+            'section': 'stats',
+            'title': 'stats',
+            }
+
+    return render_to_response('stats.html', RequestContext(request, context))
+
 # javascript nonsense
 def do_selection(request, select=True):
     """ Returns the current selection, optionally selects or deselects a track. """

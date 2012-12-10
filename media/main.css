@@ -380,6 +380,19 @@ div.track span.title {
   font-weight: bold;
 }
 
+.title a {
+  color: #222;
+}
+
+.track:hover a {
+  color: #d66;
+}
+
+.track:hover a:hover {
+  color: #222;
+}
+
+
 div.track p.metameta, div.track p.last_played, div.track p.peter, div.track p.refusal {
   font-size: .8em;
   clear: both;
@@ -434,7 +447,7 @@ div.tweet_deets div.tweet_deets, .full_name {
   color: #d66;
 }
 
-.screen_name {
+p.screen_name {
   color: #999;
   font-size: .8em;
 }
@@ -545,6 +558,57 @@ a#stamp img {
 
 a#stamp:hover {
   border: none;
+}
+
+/* stats */
+
+table.stats {
+  margin: 0 auto;
+  position: relative;
+  min-width: 80%;
+}
+
+table.stats td, table.stats th {
+  padding: .3em .5em;
+}
+
+table.stats td {
+  position: relative;
+}
+
+table.stats .summary {
+  text-align: right;
+}
+
+table.stats tr.user td.summary img {
+  float: right;
+  margin-left: 1em;
+}
+
+table.stats tr.user td.summary p.name, table.stats tr.track td.summary p.title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+table.stats td.summary p {
+  font-size: .9em
+}
+
+table.stats .summary {
+  width: 67%;
+}
+
+table.stats .value {
+  text-align: left;
+  width: 33%;
+}
+
+table.stats th.summary span {
+  display: none;
+}
+
+table.stats.tracks td.summary {
+  padding: .5em;
 }
 
 @media (min-width:551px) {
@@ -675,7 +739,7 @@ a#stamp:hover {
     border-color: #d66;
   }
 
-  div.track:hover a.voter.commented img {
+  div.track:hover a.voter.commented /mg {
     -webkit-box-shadow: #d66 0 0 .3em;
     outline-color: #d66;
     margin: 0;

@@ -5,7 +5,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
     url(r'^$', 'vote.views.summary', name='summary'),
     #url(r'^everything/$', 'vote.views.everything', name='everything'),
     url(r'^artist/(?P<artist>.+)/$', 'vote.views.artist', name='artist'),
@@ -21,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track'),
     url(r'^upload/$', 'vote.views.upload_library', name='upload_library'),
     url(r'^request/$', 'vote.views.request_addition', name='request_addition'),
+    url(r'^stats/$', 'vote.views.stats', name='stats'),
 
     # registration
     url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}),
