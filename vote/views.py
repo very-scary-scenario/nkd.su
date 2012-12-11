@@ -792,7 +792,7 @@ def useful(the_list, convert_to_percent=False):
         
 def get_stats():
     # how big should our top lists be?
-    top_count = 5
+    top_count = 10
 
     # create our stat dictionaries using tracks as keys...
     track_plays = {}
