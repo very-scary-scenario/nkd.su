@@ -2,7 +2,7 @@ from vote.models import Track, Vote, ManualVote, Play, Block, Shortlist, Discard
 from django.contrib import admin
 
 class VoteAdmin(admin.ModelAdmin):
-    list_display=('screen_name',)
+    list_display=('screen_name', 'date', 'name')
 
 class TrackAdmin(admin.ModelAdmin):
     list_display=('id3_title', 'id3_artist')
