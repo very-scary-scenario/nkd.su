@@ -216,9 +216,6 @@ def search(request, query, pageno=1):
         keyword_list = split_query_into_keywords(query)
         trackset = search_for_tracks(keyword_list, show_hidden=request.user.is_authenticated())
 
-    if len(trackset) == 1:
-        return redirect('/%s/' % trackset[0].id)
-
     paginator = Paginator(trackset, 20)
     page = paginator.page(pageno)
 
