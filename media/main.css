@@ -595,13 +595,8 @@ table.stats td.summary p {
   font-size: .9em
 }
 
-table.stats .summary {
-  width: 67%;
-}
-
 table.stats .value {
   text-align: left;
-  width: 33%;
 }
 
 table.stats th.summary span {
@@ -761,6 +756,14 @@ table.stats.tracks td.summary {
     border-bottom: none;
   }
 
+
+  table.stats .summary {
+    width: 67%;
+  }
+
+  table.stats .value {
+    width: 33%;
+  }
 }
 
 @media (max-width:550px) {
@@ -816,6 +819,14 @@ table.stats.tracks td.summary {
   div.track.new p.artist {
     /* wrap against new stamp */
     padding-right: 3em;
+  }
+
+  table.stats .summary {
+    width: 80%;
+  }
+
+  table.stats .value {
+    width: 20%;
   }
 }
 
