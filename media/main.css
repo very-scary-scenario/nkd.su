@@ -564,7 +564,7 @@ a#stamp:hover {
 /* stats */
 
 table.stats {
-  margin: 0 auto;
+  margin: 0 auto 4em;
   position: relative;
   min-width: 80%;
 }
