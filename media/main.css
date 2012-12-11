@@ -74,7 +74,9 @@ div.track.ineligible .metadata, div.track.ineligible .invitation {
   text-shadow: #000 0 .1em 0;
 }
 
-div.track.ineligible a, div#header a {
+div.track.ineligible a,
+div#header a,
+.track.ineligible:hover .title a {
   color: #f88;
 }
 
@@ -387,6 +389,10 @@ div.track span.title {
 
 .title a {
   color: #444;
+}
+
+.track:hover .title a {
+  color: #d66;
 }
 
 div.track p.metameta, div.track p.last_played, div.track p.peter, div.track p.refusal {
