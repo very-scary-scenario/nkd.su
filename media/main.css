@@ -382,17 +382,8 @@ div.track span.title {
 }
 
 .title a {
-  color: #222;
+  color: #444;
 }
-
-.track:hover a {
-  color: #d66;
-}
-
-.track:hover a:hover {
-  color: #222;
-}
-
 
 div.track p.metameta, div.track p.last_played, div.track p.peter, div.track p.refusal {
   font-size: .8em;
