@@ -78,6 +78,10 @@ div.track.ineligible a, div#header a {
   color: #f88;
 }
 
+div.track.ineligible .title a {
+  color: #eee;
+}
+
 div.track.eligible.pending {
   background-color: #fff;
 }
