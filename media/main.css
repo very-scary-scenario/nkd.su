@@ -726,7 +726,7 @@ table.stats.tracks td.summary {
     border-color: #d66;
   }
 
-  div.track:hover a.voter.commented {
+  div.track:hover a.voter.commented img {
     -webkit-box-shadow: #d66 0 0 .3em;
     outline-color: #d66;
     margin: 0;
