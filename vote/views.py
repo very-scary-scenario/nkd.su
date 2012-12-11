@@ -853,12 +853,12 @@ def get_stats():
                     'heading': 'batting average',
                     },
                 {
-                    'name': 'least successful users', 
+                    'name': 'least successful users',
                     'stats': least_successful_users,
                     'heading': 'batting average',
                     },
                 {
-                    'name': 'most faithful users',
+                    'name': 'most obsessive users',
                     'stats': useful(top(user_weeks)[:top_count]),
                     'heading': 'weeks voted',
                     },
