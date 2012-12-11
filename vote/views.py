@@ -893,7 +893,7 @@ def stats(request):
     context = {
             'stats': get_stats,
             'week': current_week,
-            'show': current_week.showtime,
+            #'show': current_week.showtime,
             'section': 'stats',
             'title': 'stats',
             }
