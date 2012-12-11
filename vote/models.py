@@ -224,7 +224,6 @@ class Week(object):
         track_dict = {}
         
         # we need the track dict to be persistent so that stuff that is cacheable stays cached
-        
         [track_dict.__setitem__(t.id, t) for v in votes for t in v.get_tracks()]
 
         vote_dict = {}
@@ -235,10 +234,8 @@ class Week(object):
                 track._current_week = self
                 if track.id not in vote_dict:
                     vote_dict[track.id] = 1
-                    track_dict[track.id].vote_cache = [vote] # we'll be examining this later, may as well force it in now
                 else:
                     vote_dict[track.id] += 1
-                    track_dict[track.id].vote_cache.append(vote) # see above
 
         return sorted(track_dict.values(), reverse=True, key=lambda t: vote_dict[t.id])
 
