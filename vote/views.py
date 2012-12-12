@@ -258,7 +258,7 @@ def artist(request, artist):
 
 def latest_show(request):
     """ Redirect to the last week's show """
-    last_week = Week(latest_play().datetime)
+    last_week = Week().prev()
     return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
 
 def show(request, date):
@@ -269,10 +269,11 @@ def show(request, date):
 
     # the world is lady
 
-    if not plays: raise Http404
+    if not plays or week.finish > timezone.now(): raise Http404
 
     next_week = week.next()
-    if next_week.has_plays(): next_show = next_week.showtime
+    if next_week.finish < timezone.now():
+        next_show = next_week.showtime
     else: next_show = None
 
     prev_week = week.prev()
