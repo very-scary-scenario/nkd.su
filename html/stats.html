@@ -9,7 +9,7 @@
     {% if stat.type == 'user_stats' %}
 
       {% for stat in stat.items %}
-        <h2>{{ stat.name }}</h2>
+        <h2 id="{{ stat.name }}">{{ stat.name }}</h2>
         <table class="stats users">
           <tr>
             <th class="summary"><span>user</span></th>
@@ -35,7 +35,7 @@
     {% else %}
 
       {% for stat in stat.items %}
-        <h2>{{ stat.name }}</h2>
+        <h2 id="{{ stat.name }}">{{ stat.name }}</h2>
         <table class="stats tracks">
           <tr>
             <th class="summary"><span>track</span></th>
