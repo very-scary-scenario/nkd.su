@@ -52,7 +52,11 @@ class SearchForm(forms.Form):
 def summary(request, week=None):
     """ Our landing page (as it looked at the end of week; manual weeks mostly for testing) """
     if not week:
-        week = Week()
+        week = Week(ignore_apocalypse=False)
+
+    print week
+    print week.has_robot_apocalypse()
+    print week.showtime
 
     form = SearchForm()
     
@@ -99,25 +103,11 @@ def summary(request, week=None):
             'show': week.showtime,
             'on_air': is_on_air(),
             'playlist_len': playlist_len,
+            'robot_apocalypse': week.prev().has_robot_apocalypse(),
             }
 
     render = render_to_response('index.html', RequestContext(request, context))
     return render
-
-def everything(request):
-    """ Every track """
-    context = {
-            'protip': choice(protips),
-            'session': request.session,
-            'path': request.path,
-            'title': 'everything',
-            'tracks': Track.objects.all(),
-            'path': request.path,
-            'show': Week().showtime,
-            'on_air': is_on_air(),
-            }
-
-    return render_to_response('tracks.html', RequestContext(request, context))
 
 def roulette(request):
     """ Five random tracks """
@@ -258,7 +248,7 @@ def artist(request, artist):
 
 def latest_show(request):
     """ Redirect to the last week's show """
-    last_week = Week().prev()
+    last_week = Week(Play.objects.all().order_by('-datetime')[0].datetime)
     return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
 
 def show(request, date):
@@ -272,7 +262,7 @@ def show(request, date):
     if not plays or week.finish > timezone.now(): raise Http404
 
     next_week = week.next()
-    if next_week.finish < timezone.now():
+    if next_week.finish < timezone.now() and next_week.has_plays():
         next_show = next_week.showtime
     else: next_show = None
 
@@ -294,7 +284,11 @@ def show(request, date):
             track._current_week = this_week
             denied.append(track)
 
+    for track in denied:
+        print track.weeks_since_play()
+
     tracks_added_this_week = len(week.added())
+
     context = {
             'section': 'archive',
             'protip': choice(protips),
@@ -317,7 +311,7 @@ def show(request, date):
 def added(request, date=None):
     if date:
         day, month, year = (int(t) for t in date.split('-'))
-        week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc))
+        week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc), ignore_apocalypse=True)
     else:
         week = Week(Track.objects.all().order_by('-added')[0].added)
         return redirect('/added/%s/' % week.showtime.strftime('%d-%m-%Y'))

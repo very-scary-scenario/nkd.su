@@ -45,7 +45,7 @@ def now_or_time(time):
 
 def is_on_air(time=None):
     """ Returns True if there's a broadcast on"""
-    return Week(now_or_time(time)).is_on_air(time)
+    return Week(now_or_time(time), ignore_apocalypse=True).is_on_air(time)
 
 class Week(object):
     """ A week. Cut off at the end of each broadcast """
@@ -75,11 +75,16 @@ class Week(object):
                 time = time - one_hour
         return time
 
-    def __init__(self, time=None, correct=True):
+    def __init__(self, time=None, correct=True, ignore_apocalypse=True, ideal=False):
         """ Create the Week in which time (or now) resides.
         
         If correct is True, (which it is by default), we'll correct for
-        overridden times by choosing the next or previous week"""
+        overridden times by choosing the next or previous week.
+        
+        If ignore_apocalypse is False, this week will become next week if the
+        apocalypse happened.
+
+        If ideal is True, the database is totally ignored. """
 
         time = now_or_time(time)
 
@@ -91,44 +96,72 @@ class Week(object):
         finish = self._approach(start + one_hour, self.target_tuple, True)
         showtime = self._approach(finish - one_hour, self.target_showtime_tuple, False)
         
+
         # necessary to do now for self.prev() to work
         self._prev_week_default_showtime = self._approach(start, self.target_showtime_tuple, False)
         self._next_week_default_showtime = self._approach(finish, self.target_showtime_tuple, True)
-
-        # is this week's start time to be overridden? (ie. was last week's shwotime modified)
-        try: prev_override = ScheduleOverride.objects.get(overridden_showdate=self._prev_week_default_showtime)
-        except ScheduleOverride.DoesNotExist:
-            # nope
-            pass
-        else:
-            # yep
-            start = self.prev().finish
-
-        # are this week's showtime and finish to be overridden?
-        try: this_override = ScheduleOverride.objects.get(overridden_showdate=showtime.date())
-        except ScheduleOverride.DoesNotExist:
-            # nope
-            pass
-        else:
-            # yep
-            finish = this_override.finish
-            showtime = this_override.start
         
+        if not ideal:
+            # is this week's start time to be overridden? (ie. was last week's shwotime modified)
+            try: prev_override = ScheduleOverride.objects.get(overridden_showdate=self._prev_week_default_showtime)
+            except ScheduleOverride.DoesNotExist:
+                # nope
+                pass
+            else:
+                # yep
+                start = self.prev().finish
+
+            # are this week's showtime and finish to be overridden?
+            try: this_override = ScheduleOverride.objects.get(overridden_showdate=showtime.date())
+            except ScheduleOverride.DoesNotExist:
+                # nope
+                pass
+            else:
+                # yep
+                finish = this_override.finish
+                showtime = this_override.start
+
         self.start = start
         self.finish = finish
         self.showtime = showtime
 
         self.date_range = [self.start, self.finish]
+        self.vote_date_range = [self.start, self.finish]
 
         # do we actually fall into this range? if not, we should try again
         # we del self._prev because we set it when we realised the time had to be overridden
-        if correct:
+        if (not ideal) and correct: # 'correct' here is a verb, an instruction; not an adjective
             if time > self.finish:
                 del self._prev
                 self = self.__init__(self._next_week_default_showtime, correct=False)
+                return
             elif time < self.start:
                 del self._prev
                 self = self.__init__(self._prev_week_default_showtime, correct=False)
+                return
+            # and don't do anything else; the rest of this function will be handled in the  __init__ we just called
+            
+        if not ideal:
+            # is there a robot apocalypse this week?
+            if self.has_robot_apocalypse():
+                # we care about this week for archives, but not for most of the rest of the time
+                if not ignore_apocalypse:
+                    self = self.__init__(self._next_week_default_showtime)
+                    return # we're done here
+            
+            # how about last week?
+            elif self.last_week_has_robot_apocalypse():
+                # there was there a robot apocalypse last week. was there one the week before that?
+                # if this is a legit week, we always care; vote gathered are important regardless of context
+                showdate_rollback = self._prev_week_default_showtime
+                while RobotApocalypse.objects.filter(overridden_showdate=showdate_rollback).exists():
+                    showdate_rollback -= datetime.timedelta(days=7)
+                else:
+                    # okay, so the one we want was the last one
+                    showdate_rollback += datetime.timedelta(days=7)
+                
+                self.vote_date_range = [Week(showdate_rollback, ideal=True).start, self.finish]
+
 
     def __eq__(self, other):
         return self.showtime == other.showtime
@@ -146,20 +179,38 @@ class Week(object):
         time = now_or_time(time)
         return (time >= self.showtime) and (time < self.finish)
 
-    def next(self):
-        try: return self._next
-        except AttributeError: pass
-        self._next = Week(self._next_week_default_showtime, correct=False)
-        self._next._prev = self
-        return self._next
+    def next(self, ideal=False):
+        if ideal:
+            return Week(self._next_week_default_showtime, correct=False, ideal=True)
+        else:
+            try: return self._next
+            except AttributeError: pass
+            self._next = Week(self._next_week_default_showtime, correct=False)
+            self._next._prev = self
+            return self._next
 
-    def prev(self):
+    def prev(self, ideal=False):
         """ Returns the previous Week. See also: next(). """
-        try: return self._prev
-        except AttributeError: pass
-        self._prev = Week(self._prev_week_default_showtime, correct=False)
-        self._prev._next = self
-        return self._prev
+        if ideal:
+            return Week(self._prev_week_default_showtime, correct=False, ideal=True)
+        else:
+            try: return self._prev
+            except AttributeError: pass
+            self._prev = Week(self._prev_week_default_showtime, correct=False)
+            self._prev._next = self
+            return self._prev
+
+    def has_robot_apocalypse(self, cache=True):
+        if RobotApocalypse.objects.filter(overridden_showdate=self.showtime.date()).exists():
+            return True
+        else:
+            return False
+
+    def last_week_has_robot_apocalypse(self):
+        if RobotApocalypse.objects.filter(overridden_showdate=self._prev_week_default_showtime.date()).exists():
+            return True
+        else:
+            return False
 
     def has_plays(self):
         """ True if this week has any plays  """
@@ -256,13 +307,17 @@ class Week(object):
         return self.vote_tuple_cache
 
     def _manual_votes(self, track=None):
-        manual_votes = ManualVote.objects.filter(date__range=self.date_range).order_by('date')
+        if self.has_robot_apocalypse():
+            return []
+        manual_votes = ManualVote.objects.filter(date__range=self.vote_date_range).order_by('date')
         if track: manual_votes = manual_votes.filter(track=track)
         else: manual_votes.select_related()
         return manual_votes
 
     def _votes(self, track=None):
-        votes = Vote.objects.filter(date__range=self.date_range).order_by('date')
+        if self.has_robot_apocalypse():
+            return []
+        votes = Vote.objects.filter(date__range=self.vote_date_range).order_by('date')
         if track: votes = votes.filter(tracks=track)
         else: votes.select_related()
         return votes
@@ -430,7 +485,7 @@ class Track(models.Model):
         except AttributeError: self._block = {}
         except KeyError: pass
 
-        try: block = Block.objects.get(date__range=week.date_range, track=self)
+        try: block = Block.objects.get(date__range=week.vote_date_range, track=self)
         except Block.DoesNotExist: block = None
 
         self._block[week] = block
@@ -572,12 +627,9 @@ class Vote(models.Model):
     def derive_tracks_from_url_list(self, url_list):
         tracks = []
         for url in url_list:
-            print url
             track_id = url.strip('/')[-16:]
-            print track_id
             track = Track.objects.get(id=track_id)
             tracks.append(track)
-            print 'added %s' % track
 
         return tracks
 
@@ -688,7 +740,19 @@ class ManualVote(models.Model):
         self.tracks_cache = [self.track]
         return self.tracks_cache
 
+class RobotApocalypse(models.Model):
+    """ We have no control over the show this week. Many apologies. """
+    overridden_showdate = models.DateField(unique=True)
+
+    def clean(self):
+        if self.overridden_showdate.weekday() != Week.showtime_day:
+            raise ValidationError("I'm not convinced there would normally be a show on that day")
+
+        if ScheduleOverride.objects.filter(overridden_showdate=self.overridden_showdate).exists():
+            raise ValidationError("There is already a schedule override on that week")
+
 class ScheduleOverride(models.Model):
+    """ The show will be at a different time this week. """
     overridden_showdate = models.DateField(unique=True)
     start = models.DateTimeField()
     finish = models.DateTimeField()
@@ -696,6 +760,9 @@ class ScheduleOverride(models.Model):
     def clean(self):
         if self.overridden_showdate.weekday() != Week.showtime_day:
             raise ValidationError("I'm not convinced there would normally be a show on that day")
+
+        if RobotApocalypse.objects.filter(overridden_showdate=self.overridden_showdate).exists():
+            raise ValidationError("There is already a robot apocalypse on that week")
 
         if self.start > self.finish:
             raise ValidationError("The start time should not be after the end time")
