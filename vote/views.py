@@ -43,7 +43,7 @@ ak_api = akismet.Akismet(key=settings.AKISMET_API_KEY, blog_url=settings.AKISMET
 protips = [
         'Pro tip: the tracks look like buttons because they <em>are</em> buttons.',
         "Pro tip: you can add whatever text you like to the end of your vote tweet, and it'll show up when you hover over your vote.",
-        'Something broken? Add it to <a href="http://github.com/colons/nkdsu/issues">the pile</a>! It\'ll make you feel better, I promise.',
+        'Something broken? <a href="https://twitter.com/intent/tweet?text=%s">Pester me</a> about it! It\'ll make you feel better, I promise.' % urlquote('@mftb @nkdsu YER SITE IS BERKED DARNIT'),
         ]
 
 class SearchForm(forms.Form):
