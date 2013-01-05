@@ -248,7 +248,7 @@ def artist(request, artist):
 
 def latest_show(request):
     """ Redirect to the last week's show """
-    last_week = Week(Play.objects.all().order_by('-datetime')[0].datetime)
+    last_week = Week().prev()
     return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
 
 def show(request, date):
