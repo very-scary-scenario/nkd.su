@@ -277,16 +277,6 @@ def show(request, date):
     tracks_len = length_str(total_length(tracks))
 
     voted = week.tracks_sorted_by_votes()
-    denied = []
-    for track in voted:
-        if track not in tracks:
-            track._vote_week = week
-            track._current_week = this_week
-            denied.append(track)
-
-    for track in denied:
-        print track.weeks_since_play()
-
     tracks_added_this_week = len(week.added())
 
     context = {
@@ -298,7 +288,6 @@ def show(request, date):
             'this_show': week.showtime,
             'tracks': tracks,
             'tracks_len': tracks_len,
-            'denied': denied,
             'on_air': is_on_air(),
             'next_show': next_show,
             'prev_show': prev_show,
