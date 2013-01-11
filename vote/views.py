@@ -270,8 +270,23 @@ def show(request, date):
     if prev_week.has_plays(): prev_show = prev_week.showtime
     else: prev_show = None
     
-    tracks = [p.track for p in plays]
+    hours = []
+    for play in plays:
+        hour = play.datetime.hour
+        if len(hours) == 0 or hours[-1].datetime.hour != hour:
+            hours.append(play)
+    
+    playlist = []
+    hour = 1
+    for play in plays:
+        if play in hours:
+            playlist.append(hour)
+            hour += 1
+        playlist.append(play.track)
+
     this_week = Week()
+
+    tracks = [t for t in playlist if type(t) != int]
     [setattr(t, '_vote_week', week) for t in tracks]
     [setattr(t, '_current_week', this_week) for t in tracks]
     tracks_len = length_str(total_length(tracks))
@@ -286,7 +301,7 @@ def show(request, date):
             'path': request.path,
             'title': date,
             'this_show': week.showtime,
-            'tracks': tracks,
+            'tracks': playlist,
             'tracks_len': tracks_len,
             'on_air': is_on_air(),
             'next_show': next_show,

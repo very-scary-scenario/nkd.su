@@ -1,5 +1,9 @@
 <div class="tracklist">
-{% for track in tracks %}
-{% include "trackrow.html" %}
-{% endfor %}
+  {% for track in tracks %}
+    {% if track.id %}
+      {% include "trackrow.html" %}
+    {% else %}
+      <h4 class="hour">hour {{ track }}</h4>
+    {% endif %}
+  {% endfor %}
 </div>
