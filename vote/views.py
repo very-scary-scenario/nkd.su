@@ -291,7 +291,6 @@ def show(request, date):
     [setattr(t, '_current_week', this_week) for t in tracks]
     tracks_len = length_str(total_length(tracks))
 
-    voted = week.tracks_sorted_by_votes()
     tracks_added_this_week = len(week.added())
 
     context = {
