@@ -1,7 +1,8 @@
 # Create your views here.
 # -*- coding: utf-8 -*-
 
-from vote.models import *
+from vote.models import User, Track, Play, Block, Shortlist, ManualVote, Week, latest_play, length_str, total_length, is_on_air, tweet_len, tweet_url, Discard, vote_tweet
+from vote.forms import RequestForm, SearchForm, LibraryUploadForm, ManualVoteForm, BlockForm
 from vote.update_library import update_library
 from vote.tasks import refresh
 # we'll call refresh.delay() on pages that people might be looking for their votes on
@@ -11,7 +12,6 @@ from django.template import RequestContext
 from django.http import Http404
 from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
-from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
@@ -25,9 +25,10 @@ import codecs
 from markdown import markdown
 from random import choice
 
+import akismet
+
 #import tweepy
 import twitter
-import akismet
 
 # with tweepy
 #post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
@@ -44,9 +45,6 @@ protips = [
         "Pro tip: you can add whatever text you like to the end of your vote tweet, and it'll show up when you hover over your vote.",
         'Something broken? <a href="https://twitter.com/intent/tweet?text=%s">Pester me</a> about it! It\'ll make you feel better, I promise.' % urlquote('@mftb @nkdsu YER SITE IS BERKED DARNIT'),
         ]
-
-class SearchForm(forms.Form):
-    q = forms.CharField()
 
 def summary(request, week=None):
     """ Our landing page (as it looked at the end of week; manual weeks mostly for testing) """
@@ -361,11 +359,6 @@ def docs(request, title, filename):
             }
     return render_to_response('markdown.html', RequestContext(request, context))
 
-class ManualVoteForm(forms.ModelForm):
-    """ Make a manual vote! """
-    class Meta:
-        model = ManualVote
-
 def confirm(request, action, deets=None):
     context = {
             'protip': choice(protips),
@@ -478,14 +471,12 @@ def unmark_as_played(request, track_id):
     else:
         try:
             tw_api.statuses.destroy(id=play.tweet_id)
-        except tweepy.TweepError:
+        except:
             pass
+
         play.delete()
         return redirect_nicely(request)
 
-
-class LibraryUploadForm(forms.Form):
-    library_xml = forms.FileField(label='Library XML')
 
 @login_required
 def upload_library(request):
@@ -530,25 +521,6 @@ def upload_library(request):
         plist.close()
 
         return redirect('/hidden/')
-
-
-class RequestForm(forms.Form):
-    title = forms.CharField(required=False)
-    artist = forms.CharField(required=False)
-    show = forms.CharField(label="Source Anime", required=False)
-    role = forms.CharField(label="Role (OP/ED/Insert/Character/etc.)", required=False)
-    details = forms.CharField(widget=forms.Textarea, label="Additional Details", required=False)
-    contact = forms.EmailField(label="Email Address", required=True)
-
-    def clean(self):
-        cleaned_data = super(RequestForm, self).clean()
-
-        filled = [cleaned_data[f] for f in cleaned_data if f != 'contact' and cleaned_data[f]]
-
-        if len(filled) < 3:
-            raise forms.ValidationError("I'm sure you can give us more information than that.")
-
-        return cleaned_data
 
 def request_addition(request):
     if 'q' in request.GET:
@@ -602,7 +574,6 @@ def request_addition(request):
 
     return render_to_response('request.html', RequestContext(request, context))
 
-
 def redirect_nicely(request):
     """ Redirect to ?from=, if present, otherwise redirect to / """
     if 'from' in request.GET:
@@ -626,10 +597,6 @@ def get_track_or_selection(request, track_id, wipe=True):
 
 
     return tracks
-
-class BlockForm(forms.Form):
-    """ Block something """
-    reason = forms.CharField(max_length=256)
 
 @login_required
 def make_block(request, track_id):
