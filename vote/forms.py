@@ -13,7 +13,6 @@ def email_or_twitter(address):
         try:
             # ISSUE #1
             response = urllib2.urlopen('http://api.twitter.com/1/users/show.xml?screen_name=%s' % urllib2.quote(address.lstrip('@')))
-            print response.read()
         except urllib2.HTTPError:
             raise forms.ValidationError('Enter a valid email address or twitter username')
 
