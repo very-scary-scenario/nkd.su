@@ -36,10 +36,12 @@ A redirect to the week containing the most recent complete show.
 ## More things
 
 If there is something else you want added or changed, or if you find something
-that's broken, [let me know][new_issue].
+that's broken, [let me know][new_issue]. If you just have a question,
+[tweet][pester] at me.
 
 [new_issue]: https://github.com/colons/nkdsu/issues/new
 [api_root]: http://nkd.su/api/
 [eg_track]: http://nkd.su/api/track/7C4D7B4B394E0E59/
 [eg_latest_week]: http://nkd.su/api/week/
 [eg_week]: http://nkd.su/api/week/12-01-2013/
+[pester]: https://twitter.com/intent/tweet?text=%40mftb
