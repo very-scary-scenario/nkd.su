@@ -43,4 +43,4 @@ that's broken, [let me know][new_issue].
 [api_root]: http://nkd.su/api/
 [eg_track]: http://nkd.su/api/track/7C4D7B4B394E0E59/
 [eg_latest_week]: http://nkd.su/api/week/
-[eg_week]: http://nkd.su/api/week/12-01-2013/
+[eg_week]: http://nkd.su/api/week/05-01-2013/
