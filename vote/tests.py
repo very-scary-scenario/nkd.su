@@ -91,5 +91,3 @@ class WeekTest(unittest.TestCase):
         for week in plays:
             for play in plays[week]:
                 self.assertEqual(week, play.week())
-
-        print plays

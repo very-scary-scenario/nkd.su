@@ -7,10 +7,7 @@ import datetime
 import re
 from django.core.exceptions import ValidationError
 from django.utils.http import urlquote
-from time import time as timer
 
-def print_timing(name, t1, t2):
-    print '%s took %0.3f ms' % (name, (t2-t1)*1000.0)
 
 def latest_play(track=None):
     """ Get the latest play (for a particular track). """
@@ -50,7 +47,7 @@ def is_on_air(time=None):
 class Week(object):
     """ A week. Cut off at the end of each broadcast """
     def __str__(self):
-        return '<week of %s>' % (self.showtime.date())
+        return '<week of %r>' % (self.showtime.date())
 
     def __repr__(self):
         return str(self)
@@ -607,6 +604,22 @@ class Track(models.Model):
         """ Make this track get the votes (but not eligibility or anything else) from a particular week. """
         self._vote_week = week
 
+    def api_dict(self, verbose=False):
+        the_track = {
+            'id': self.id,
+            'title': self.derived_title(),
+            'role': self.derived_role(),
+            'artist': self.id3_artist,
+            }
+
+        if verbose:
+            the_track.update({
+                'plays': [p.datetime for p in Play.objects.filter(track=self)]
+                })
+
+        return the_track
+
+
 class Vote(models.Model):
     def __unicode__(self):
         try:
@@ -669,6 +682,21 @@ class Vote(models.Model):
         except AttributeError: pass
         self.tracks_cache = self.tracks.all()
         return self.tracks_cache
+
+    def api_dict(self):
+        the_vote = {
+            'user_name': self.name,
+            'user_screen_name': self.screen_name,
+            'user_image': self.user_image,
+            'user_id': self.user_id,
+            'tweet_id': self.tweet_id,
+            'comment': self.content() if self.content() != '' else None,
+            'time': self.date,
+            'track_ids': [t.id for t in self.get_tracks()],
+            }
+
+        return the_vote
+
 
 class Play(models.Model):
     def __str__(self):

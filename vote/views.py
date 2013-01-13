@@ -7,8 +7,8 @@ from vote.tasks import refresh
 # we'll call refresh.delay() on pages that people might be looking for their votes on
 
 from django.core.exceptions import ValidationError
-from django.template import RequestContext, loader
-from django.http import HttpResponse, Http404
+from django.template import RequestContext
+from django.http import Http404
 from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
 from django import forms
@@ -16,11 +16,10 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from django.core.paginator import Paginator
-from django.views.decorators.cache import cache_page
 from django.core.mail import send_mail
 
 from sys import exc_info
-from datetime import date, timedelta, datetime
+from datetime import datetime
 
 import codecs
 from markdown import markdown
@@ -53,10 +52,6 @@ def summary(request, week=None):
     """ Our landing page (as it looked at the end of week; manual weeks mostly for testing) """
     if not week:
         week = Week(ignore_apocalypse=False)
-
-    print week
-    print week.has_robot_apocalypse()
-    print week.showtime
 
     form = SearchForm()
     
