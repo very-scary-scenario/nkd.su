@@ -3,9 +3,12 @@
 The root of the API is [nkd.su/api/][api_root]. The following endpoints are
 available:
 
-### [`/`][api_root]
+### [`/week/<dd>-<mm>-<yyyy>/`][eg_week]
 
-Information about the week in progress. Includes:
+Information from a particular week. The week returned will be the week that was
+in progress at midnight on the morning of the day specified.
+
+Includes:
 
 - `votes`: a list of votes placed
 - `playlist`: a list of tracks played and the times at which they were played
@@ -13,6 +16,14 @@ Information about the week in progress. Includes:
 - `start`: the date and time at which this week started
 - `finish`: the date and time at which this week ended 
 - `showtime`: the date and time at which this week's show began
+
+### [`/week/`][eg_latest_week]
+
+A redirect to the week containing the most recent complete show.
+
+### [`/`][api_root]
+
+Information about the week in progress.
 
 ### [`/track/<track_id>/`][eg_track]
 
@@ -22,16 +33,6 @@ play on record.
 Note that the `plays` list is only included for tracks in calls to
 `/track/<track_id>`; tracks returned as part of other endpojnts will not have
 `plays` listed.
-
-### [`/week/<dd>-<mm>-<yyyy>/`][eg_week]
-
-Information from a particular week, in the same format as that returned by
-[`/`][api_root]. The week returned will be the week that was in progress at
-midnight on the morning of the day specified.
-
-### [`/week/`][eg_latest_week]
-
-A redirect to the week containing the most recent complete show.
 
 ## More things
 
@@ -43,5 +44,5 @@ that's broken, [let me know][new_issue]. If you just have a question,
 [api_root]: http://nkd.su/api/
 [eg_track]: http://nkd.su/api/track/7C4D7B4B394E0E59/
 [eg_latest_week]: http://nkd.su/api/week/
-[eg_week]: http://nkd.su/api/week/12-01-2013/
+[eg_week]: http://nkd.su/api/week/05-01-2013/
 [pester]: https://twitter.com/intent/tweet?text=%40mftb
