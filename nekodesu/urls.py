@@ -44,6 +44,8 @@ urlpatterns = patterns('',
     url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'vote.views.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
     
     # API
+    url(r'^info/api/$', 'vote.views.api_docs', name='api_docs'),
+
     url(r'^api/$', 'vote.api.week', name='api'),
     url(r'^api/week/(?P<date>[\d-]+)/$', 'vote.api.week', name='api_week'),
     url(r'^api/week/$', 'vote.api.last_week', name='api_last_week'),

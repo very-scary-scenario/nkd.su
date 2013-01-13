@@ -73,7 +73,7 @@
         {% if user.is_authenticated %}
           <p class="credit"><a href="/admin/">admin</a> | <a href="/hidden/">hidden tracks</a> | <a href="/upload/">update library</a> | <a href="/logout/?next={{ path|urlencode }}">log out</a></p>
         {% else %}
-          <p class="credit"><a href="/info/">help</a> | <a target="_blank" href="https://github.com/colons/nkdsu">source</a> | <a href="/login/?next={{ path|urlencode }}">log in</a></p>
+          <p class="credit"><a href="/info/">help</a> | <a href="/info/api/">api</a> | <a target="_blank" href="https://github.com/colons/nkdsu">source</a> | <a href="/login/?next={{ path|urlencode }}">log in</a></p>
         {% endif %}
       </div>
     </div>

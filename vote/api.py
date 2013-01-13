@@ -3,7 +3,7 @@
 
 from vote.models import Week, Track
 
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 from django.utils import timezone
 from datetime import datetime
@@ -12,7 +12,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 
 def last_week(request):
-    """ Redirect to the show containing the latest play """
+    """ Redirect to last week """
     week = Week().prev()
     return redirect('/api/week/%s' % week.showtime.strftime('%d-%m-%Y'))
 
@@ -51,7 +51,11 @@ def week(request, date=None):
     return HttpResponse(json, mimetype='application/json')
 
 def track(response, track_id):
-    the_track = Track.objects.get(id=track_id)
+    try:
+        the_track = Track.objects.get(id=track_id)
+    except Track.DoesNotExist:
+        raise Http404
+
     json = jsonify(the_track.api_dict(verbose=True))
     return HttpResponse(json, mimetype='application/json')
 

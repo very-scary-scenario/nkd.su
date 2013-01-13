@@ -345,12 +345,18 @@ def added(request, date=None):
     return render_to_response('tracks.html', RequestContext(request, context))
 
 def info(request):
-    words = markdown(codecs.open(settings.SITE_ROOT + 'README.md', encoding='utf-8').read())
+    return docs(request, 'what?', 'README.md')
+
+def api_docs(request):
+    return docs(request, 'api', 'API.md')
+
+def docs(request, title, filename):
+    words = markdown(codecs.open(settings.SITE_ROOT + filename, encoding='utf-8').read())
     context = {
             'protip': choice(protips),
             'session': request.session,
             'path': request.path,
-            'title': 'what?',
+            'title': title,
             'words': words,
             }
     return render_to_response('markdown.html', RequestContext(request, context))

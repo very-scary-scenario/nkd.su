@@ -36,7 +36,13 @@ text or something.
 Short answer: [Django](https://www.djangoproject.com).
 
 Long answer: [GitHub](https://github.com/colons/nkdsu).
-[Suggestions](https://github.com/colons/nkdsu/issues/new) welcome.
+[Suggestions][new_issue] welcome.
+
+## Can I build things with this data?
+
+Totally! There's a JSON API documented [here](http://nkd.su/info/api/). If
+there's some data you want that isn't currently surfaced in that API, [let me
+know][new_issue].
 
 ## Who's to blame?
 
@@ -45,3 +51,5 @@ Long answer: [GitHub](https://github.com/colons/nkdsu).
 [Chris Walden](http://www.chriswalden.co.uk)
 ([@EuricaeriS](http://twitter.com/EuricaeriS)) and
 [Peter Shillito](http://twitter.com/theshillito) himself.
+
+[new_issue]: https://github.com/colons/nkdsu/issues/new
