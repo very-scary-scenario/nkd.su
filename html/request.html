@@ -4,7 +4,7 @@
 {% block content %}
 <h2 class=message>{{ title }}</h2>
 
-<p class="aside">Please include as much information about the song you want as possible. None of these fields are <em>required</em>, but all of them make it easier to find and include a new song.</p>
+<p class="aside">Please include as much information about the song you want as possible. Any information you can provide will make it easier to find and include your song.</p>
 <form class="reqeust" method="post" enctype="multipart/form-data" action=".">
 {% csrf_token %}
 {{ form.as_p }}

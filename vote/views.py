@@ -538,18 +538,14 @@ class RequestForm(forms.Form):
     show = forms.CharField(label="Source Anime", required=False)
     role = forms.CharField(label="Role (OP/ED/Insert/Character/etc.)", required=False)
     details = forms.CharField(widget=forms.Textarea, label="Additional Details", required=False)
-    contact = forms.CharField(label="Twitter/Email/Whatever", required=False)
+    contact = forms.EmailField(label="Email Address", required=True)
 
     def clean(self):
         cleaned_data = super(RequestForm, self).clean()
 
-        passable = False
-        for t in [cleaned_data[f] for f in cleaned_data]:
-            if t:
-                passable = True
-                break
+        filled = [cleaned_data[f] for f in cleaned_data if f != 'contact' and cleaned_data[f]]
 
-        if not passable:
+        if len(filled) < 3:
             raise forms.ValidationError("I'm sure you can give us more information than that.")
 
         return cleaned_data
@@ -564,7 +560,9 @@ def request_addition(request):
 
     if request.method == 'POST':
         form = RequestForm(request.POST)
+
         if form.is_valid():
+            # akismet check
             f = form.cleaned_data
             ak_data = {
                     'user_ip': request.META['REMOTE_ADDR'],
@@ -574,7 +572,8 @@ def request_addition(request):
                     }
 
             ascii_message = f['details'].encode('ascii', errors='ignore')
-
+            
+            # get the boolean response from akismet
             spam = ak_api.comment_check(ascii_message, data=ak_data)
 
             if not spam:
