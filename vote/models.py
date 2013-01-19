@@ -100,7 +100,7 @@ class Week(object):
         
         if not ideal:
             # is this week's start time to be overridden? (ie. was last week's shwotime modified)
-            try: prev_override = ScheduleOverride.objects.get(overridden_showdate=self._prev_week_default_showtime)
+            try: ScheduleOverride.objects.get(overridden_showdate=self._prev_week_default_showtime)
             except ScheduleOverride.DoesNotExist:
                 # nope
                 pass
