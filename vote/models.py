@@ -610,6 +610,7 @@ class Track(models.Model):
             'title': self.derived_title(),
             'role': self.derived_role(),
             'artist': self.id3_artist,
+            'length': self.msec,
             }
 
         if verbose:
