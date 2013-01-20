@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
-from django.core.management.base import BaseCommand, CommandError
 import plistlib
 from models import Track
-from time import strptime
 from django.utils.timezone import utc, make_aware
 
-def update_library(plist, dry_run=False):
+def update_library(plist, dry_run=False, is_inudesu=False):
     changes = []
-    alltracks = Track.objects.all()
+    alltracks = Track.objects.filter(inudesu=is_inudesu)
     tracks_kept = []
 
     tree = plistlib.readPlist(plist)
@@ -43,9 +41,14 @@ def update_library(plist, dry_run=False):
             db_track.id3_album = t['Album']
             db_track.msec = t['Total Time']
             db_track.added = added
+            db_track.inudesu = is_inudesu
 
         if new:
-            db_track.hidden = True
+            if not is_inudesu:
+                db_track.hidden = True
+            else:
+                db_track.hidden = False
+
             changes.append('new:\n%s' % (db_track.deets()))
 
         if changed:
@@ -57,7 +60,7 @@ def update_library(plist, dry_run=False):
 
         tracks_kept.append(db_track)
 
-    for track in [t for t in Track.objects.all() if t not in tracks_kept and not t.hidden]:
+    for track in [t for t in alltracks if t not in tracks_kept and not t.hidden]:
         changes.append('hide:\n%s' % track.deets())
         if not dry_run:
             track.hidden = True

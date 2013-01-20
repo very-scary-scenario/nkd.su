@@ -39,6 +39,8 @@ urlpatterns = patterns('',
     url(r'^hide/(?P<track_id>.+)/$', 'vote.views.hide', name='hide'),
     url(r'^unhide/(?P<track_id>.+)/$', 'vote.views.unhide', name='unhide'),
 
+    url(r'^inudesu/$', 'vote.views.inudesu', name='inudesu'),
+
     url(r'^shortlist/(?P<track_id>.+)/$', 'vote.views.shortlist', name='shortlist'),
     url(r'^discard/(?P<track_id>.+)/$', 'vote.views.discard', name='discard'),
     url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'vote.views.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),

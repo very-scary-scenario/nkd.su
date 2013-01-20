@@ -36,7 +36,12 @@ import twitter
 #tw_api = tweepy.API(post_tw_auth)
 
 # with twitter
-tw_api = twitter.Twitter(auth=twitter.OAuth(settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET, settings.CONSUMER_KEY, settings.CONSUMER_SECRET))
+tw_api = twitter.Twitter(
+    auth=twitter.OAuth(
+        settings.POSTING_ACCESS_TOKEN,
+        settings.POSTING_ACCESS_TOKEN_SECRET,
+        settings.CONSUMER_KEY,
+        settings.CONSUMER_SECRET))
 
 ak_api = akismet.Akismet(key=settings.AKISMET_API_KEY, blog_url=settings.AKISMET_BLOG_URL, agent='nkdsu/0.0')
 
@@ -49,7 +54,7 @@ protips = [
 def summary(request, week=None):
     """ Our landing page (as it looked at the end of week; manual weeks mostly for testing) """
     if not week:
-        week = Week(ignore_apocalypse=False)
+        week = Week()
 
     form = SearchForm()
     
@@ -107,7 +112,7 @@ def roulette(request):
     any_tracks = Track.objects.filter().order_by('?')
 
     if not request.user.is_authenticated():
-        any_tracks = any_tracks.filter(hidden=False)
+        any_tracks = any_tracks.filter(hidden=False, inudesu=False)
 
     tracks = []
     pos = 0
@@ -152,7 +157,7 @@ def search_for_tracks(keywords, show_hidden=False):
     tracks = Track.objects.all()
 
     if not show_hidden:
-        tracks = tracks.filter(hidden=False)
+        tracks = tracks.filter(hidden=False, inudesu=False)
 
     trackset = set(tracks)
     for keyword in keywords:
@@ -241,13 +246,13 @@ def artist(request, artist):
 
 def latest_show(request):
     """ Redirect to the last week's show """
-    last_week = Week().prev()
+    last_week = Week(ignore_apocalypse=True).prev()
     return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
 
 def show(request, date):
     """ Playlist archive """
     day, month, year = (int(t) for t in date.split('-'))
-    week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc), correct=False)
+    week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc), correct=False, ignore_apocalypse=True)
     plays = week.plays()
 
     # the world is lady
@@ -307,7 +312,7 @@ def show(request, date):
 def added(request, date=None):
     if date:
         day, month, year = (int(t) for t in date.split('-'))
-        week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc), ignore_apocalypse=True)
+        week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc))
     else:
         week = Week(Track.objects.all().order_by('-added')[0].added)
         return redirect('/added/%s/' % week.showtime.strftime('%d-%m-%Y'))
@@ -491,7 +496,11 @@ def upload_library(request):
             f.close()
 
             f = open(settings.TMP_XML_PATH, 'r')
-            changes = update_library(f, dry_run=True)
+            changes = update_library(
+                f, dry_run=True, 
+                is_inudesu=form.cleaned_data['inudesu'])
+
+            request.session['inudesu'] = form.cleaned_data['inudesu']
 
             if changes:
                 summary = '\n'.join(changes)
@@ -504,23 +513,30 @@ def upload_library(request):
 
     elif (not ('confirm' in request.GET and request.GET['confirm'] == 'true')) or (request.method == 'POST' and not form.is_valid()):
         # this is an initial load OR an invalid submission
-            context = {
-                'protip': choice(protips),
-                'session': request.session,
-                'path': request.path,
-                'form': form,
-                'title': 'library update',
-                }
+        context = {
+            'protip': choice(protips),
+            'session': request.session,
+            'path': request.path,
+            'form': form,
+            'title': 'library update',
+            }
 
-            return render_to_response('upload.html', RequestContext(request, context))
+        return render_to_response('upload.html', RequestContext(request, context))
 
     else:
         # act; this is a confirmation
         plist = open(settings.TMP_XML_PATH)
-        update_library(plist, dry_run=False)
-        plist.close()
+        print request.session['inudesu']
+        update_library(
+            plist, dry_run=False,
+            is_inudesu=request.session['inudesu'])
 
-        return redirect('/hidden/')
+        plist.close()
+        
+        if request.session['inudesu']:
+            return redirect('/inudesu/')
+        else:
+            return redirect('/hidden/')
 
 def request_addition(request):
     if 'q' in request.GET:
@@ -611,9 +627,9 @@ def make_block(request, track_id):
         for track in tracks:
             if form.is_valid():
                 block = Block(
-                        track=track,
-                        reason=form.cleaned_data['reason']
-                        )
+                    track=track,
+                    reason=form.cleaned_data['reason']
+                    )
                 block.save()
 
         # now is the time to wipe the selection
@@ -708,7 +724,23 @@ def hidden(request):
             'session': request.session,
             'path': request.path,
             'title': 'hidden tracks',
-            'tracks': Track.objects.filter(hidden=True),
+            'tracks': Track.objects.filter(hidden=True, inudesu=False),
+            'path': request.path,
+            'show': Week().showtime,
+            'on_air': is_on_air(),
+            }
+
+    return render_to_response('tracks.html', RequestContext(request, context))
+
+@login_required
+def inudesu(request):
+    """ A view of unhidden inudesu tracks """
+    context = {
+            'protip': choice(protips),
+            'session': request.session,
+            'path': request.path,
+            'title': 'inu desu',
+            'tracks': Track.objects.filter(hidden=False, inudesu=True),
             'path': request.path,
             'show': Week().showtime,
             'on_air': is_on_air(),

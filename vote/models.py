@@ -416,6 +416,7 @@ class Track(models.Model):
     msec = models.IntegerField(blank=True, null=True)
     added = models.DateTimeField(blank=True, null=True)
     hidden = models.BooleanField()
+    inudesu = models.BooleanField()
 
     def is_new(self, time=None):
         return self.added > self.current_week(time).start and (not self.last_played())
@@ -539,6 +540,9 @@ class Track(models.Model):
         
         if self.hidden:
             self.reason = 'hidden'
+
+        elif self.inudesu:
+            self.reason = 'inu desu'
 
         elif week.plays(self, select_related=False).exists():
             self.reason = 'played this week'

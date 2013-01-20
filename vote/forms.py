@@ -12,7 +12,7 @@ def email_or_twitter(address):
     except forms.ValidationError:
         try:
             # ISSUE #1
-            response = urllib2.urlopen('http://api.twitter.com/1/users/show.xml?screen_name=%s' % urllib2.quote(address.lstrip('@')))
+            urllib2.urlopen('http://api.twitter.com/1/users/show.xml?screen_name=%s' % urllib2.quote(address.lstrip('@')))
         except urllib2.HTTPError:
             raise forms.ValidationError('Enter a valid email address or twitter username')
 
@@ -45,6 +45,7 @@ class RequestForm(forms.Form):
 
 class LibraryUploadForm(forms.Form):
     library_xml = forms.FileField(label='Library XML')
+    inudesu = forms.BooleanField(label='Inu Desu', required=False)
 
 class ManualVoteForm(forms.ModelForm):
     """ Make a manual vote! """

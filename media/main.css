@@ -54,7 +54,7 @@ p.minor {
 }
 
 
-/* selections */
+/* alt tracks */
 div.track.ineligible {
   -webkit-box-shadow: inset #222 0 .2em 2em;;
   background-image: url('/noise.png');
@@ -70,6 +70,12 @@ div.track.ineligible.selected {
   color: #eee;
 }
 
+div.track.inudesu.ineligible.selected {
+  -webkit-box-shadow: inset #336 0 .2em 2em;
+  background-color: #224;
+  border-color: #44a;
+}
+
 div.track.ineligible .metadata, div.track.ineligible .invitation {
   text-shadow: #000 0 .1em 0;
 }
@@ -78,6 +84,11 @@ div.track.ineligible a,
 div#header a,
 .track.ineligible:hover .title a {
   color: #f88;
+}
+
+div.track.inudesu.ineligible a,
+.track.ineligible.inudesu:hover .title a {
+  color: #88f;
 }
 
 div.track.ineligible .title a {
@@ -95,6 +106,11 @@ div.track.ineligible.pending {
 
 div.track.ineligible.selected.pending {
   background-color: #311;
+  -webkit-box-shadow: inset #333 0 .2em 2em;
+}
+
+div.track.inudesu.ineligible.selected.pending {
+  background-color: #113;
   -webkit-box-shadow: inset #333 0 .2em 2em;
 }
 
@@ -723,6 +739,10 @@ table.stats.tracks td.summary {
     border-color: #f99;
   }
 
+  div.track.ineligible.inudesu a:hover {
+    border-color: #99f;
+  }
+
   h1 a:hover {
     border: none;
   }
@@ -734,6 +754,10 @@ table.stats.tracks td.summary {
 
   div.track.selectable:hover {
     border-color: #d66;
+  }
+
+  div.track.inudesu.selectable:hover {
+    border-color: #66d;
   }
 
   div.track:hover a.voter.commented img {

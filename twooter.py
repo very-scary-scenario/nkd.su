@@ -4,15 +4,12 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nekodesu.settings")
 import twitter
 
 from vote import tasks
-from vote.models import Vote, Play
 
 import json
 
 from django.conf import settings
 
 from sys import argv
-from pprint import pprint
-from urllib2 import HTTPError
 
 
 consumer_key = settings.CONSUMER_KEY
@@ -21,7 +18,12 @@ access_token = settings.READING_ACCESS_TOKEN
 access_token_secret = settings.READING_ACCESS_TOKEN_SECRET
 
 def react():
-    stream = twitter.TwitterStream(auth=twitter.OAuth(access_token, access_token_secret, consumer_key, consumer_secret))
+    stream = twitter.TwitterStream(
+        auth=twitter.OAuth(
+            access_token,
+            access_token_secret,
+            consumer_key,
+            consumer_secret))
 
     # override twitter.py's falsities
     stream.domain = 'userstream.twitter.com'
