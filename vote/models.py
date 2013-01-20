@@ -615,6 +615,7 @@ class Track(models.Model):
             'role': self.derived_role(),
             'artist': self.id3_artist,
             'length': self.msec,
+            'inu desu': self.inudesu,
             }
 
         if verbose:
