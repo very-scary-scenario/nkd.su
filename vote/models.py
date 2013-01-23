@@ -538,11 +538,11 @@ class Track(models.Model):
         
         week = self.current_week()
         
-        if self.hidden:
-            self.reason = 'hidden'
-
-        elif self.inudesu:
+        if self.inudesu:
             self.reason = 'inu desu'
+
+        elif self.hidden:
+            self.reason = 'hidden'
 
         elif week.plays(self, select_related=False).exists():
             self.reason = 'played this week'
