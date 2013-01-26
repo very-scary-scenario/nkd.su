@@ -343,6 +343,7 @@ def added(request, date=None):
             'next_week_with_additions': next_week_with_additions,
             'prev_week_with_additions': prev_week_with_additions,
             'plays_this_week': plays_this_week,
+            'is_current_week': week == Week(),
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
