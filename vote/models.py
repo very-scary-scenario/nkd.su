@@ -320,8 +320,12 @@ class Week(object):
         return votes
 
     def added(self, show_hidden=False):
-        """ Return a QuerySet of all (unhidden) tracks added to the library this week """
-        tracks = Track.objects.filter(added__range=self.date_range)
+        """
+        Return a QuerySet of all (unhidden, non-inudesu) tracks added to the
+        library this week.
+        """
+
+        tracks = Track.objects.filter(added__range=self.date_range, inudesu=False)
 
         if not show_hidden:
             tracks = tracks.filter(hidden=False)
