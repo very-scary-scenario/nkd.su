@@ -252,7 +252,12 @@ def latest_show(request):
 def show(request, date):
     """ Playlist archive """
     day, month, year = (int(t) for t in date.split('-'))
-    week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc), correct=False, ignore_apocalypse=True)
+
+    try:
+        week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc), correct=False, ignore_apocalypse=True)
+    except ValueError:
+        raise Http404
+
     plays = week.plays()
 
     # the world is lady
@@ -267,13 +272,13 @@ def show(request, date):
     prev_week = week.prev()
     if prev_week.has_plays(): prev_show = prev_week.showtime
     else: prev_show = None
-    
+
     hours = []
     for play in plays:
         hour = play.datetime.hour
         if len(hours) == 0 or hours[-1].datetime.hour != hour:
             hours.append(play)
-    
+
     playlist = []
     hour = 1
     for play in plays:
@@ -312,7 +317,10 @@ def show(request, date):
 def added(request, date=None):
     if date:
         day, month, year = (int(t) for t in date.split('-'))
-        week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc))
+        try:
+            week = Week(timezone.make_aware(datetime(year, month, day), timezone.utc))
+        except ValueError:
+            raise Http404
     else:
         week = Week(Track.objects.all().order_by('-added')[0].added)
         return redirect('/added/%s/' % week.showtime.strftime('%d-%m-%Y'))
