@@ -806,28 +806,33 @@ def get_stats():
     user_denials = {}
     user_successes = {}
     user_votes = {}
-    user_weeks = {} # the number of weeks a user has participated
-
+    user_weeks = {}  # the number of weeks a user has participated
+    weeks_since_user_voted = {}
 
     week = Week()
     # roll back until we're at a week that there was a show on
-    while not week.has_plays(): week = week.prev()
-    
+    while not week.has_plays():
+        week = week.prev()
+
     weeks = []
+
+    weeks_before_now = 1
+
     # iterate through weeks, getting information on each
     while week.has_plays():
         weeks.append(week)
 
         users = set()
-        
+
         for track in week.tracks_played():
             increment(track_plays, track)
 
-        # in this case, we don't care about manual votes, so we use week._votes()
+        # in this case, we don't care about manual votes, so we use
+        # week._votes()
         for vote in week._votes():
             if vote.get_tracks().exists():
                 users.add(vote.user_id)
-            for track in  vote.get_tracks():
+            for track in vote.get_tracks():
                 increment(track_votes, track)
                 increment(user_votes, vote.user_id)
 
@@ -836,59 +841,68 @@ def get_stats():
                 else:
                     increment(track_denials, track)
                     increment(user_denials, vote.user_id)
-        
+
         for user in users:
             increment(user_weeks, user)
 
+            if user not in weeks_since_user_voted:
+                weeks_since_user_voted[user] = weeks_before_now
+
         week = week.prev()
-    
-    unfiltered_user_success_ratios = top(make_relative(user_successes, user_votes))
-    
-    #if a person hasn't voted on at least three seperate weeks, they're not worth considering
-    user_success_ratios = [u for u in unfiltered_user_success_ratios if user_weeks[u[0]] >= 3]
+        weeks_before_now += 1
 
-    most_successful_users = useful(user_success_ratios[:top_count], convert_to_percent=True)
-    least_successful_users = useful(list(reversed(user_success_ratios))[:top_count], convert_to_percent=True)
+    unfiltered_user_success_ratios = top(
+        make_relative(user_successes, user_votes))
 
+    # if a person hasn't voted on at least three seperate weeks and at some
+    # point in the last month, they're not worth considering
+    user_success_ratios = [u for u in unfiltered_user_success_ratios
+                           if user_weeks[u[0]] >= 3
+                           and weeks_since_user_voted[u[0]] <= 4]
+
+    most_successful_users = useful(user_success_ratios[:top_count],
+                                   convert_to_percent=True)
+    least_successful_users = useful(list(reversed(
+        user_success_ratios))[:top_count], convert_to_percent=True)
 
     return (
-            {'type': 'user_stats', 'items': (
-                {
-                    'name': 'most successful users',
-                    'stats': most_successful_users,
-                    'heading': 'batting average',
-                    },
-                {
-                    'name': 'least successful users',
-                    'stats': least_successful_users,
-                    'heading': 'batting average',
-                    },
-                {
-                    'name': 'most obsessive users',
-                    'stats': useful(top(user_weeks)[:top_count]),
-                    'heading': 'weeks voted',
-                    },
-                    ),
-                },
-
-            {'type': 'track_stats', 'items': (
-                {
-                    'name': 'most denied tracks',
-                    'stats': top(track_denials)[:top_count],
-                    'heading': 'votes denied',
-                    },
-                {
-                    'name': 'most popular tracks',
-                    'stats': top(track_votes)[:top_count],
-                    'heading': 'votes',
-                    },
-                {
-                    'name': 'most played tracks',
-                    'stats': top(track_plays)[:top_count],
-                    'heading': 'plays',
-                    },
-                ),
+        {'type': 'user_stats', 'items': (
+            {
+                'name': 'most successful users',
+                'stats': most_successful_users,
+                'heading': 'batting average',
             },
+            {
+                'name': 'least successful users',
+                'stats': least_successful_users,
+                'heading': 'batting average',
+            },
+            {
+                'name': 'most obsessive users',
+                'stats': useful(top(user_weeks)[:top_count]),
+                'heading': 'weeks voted',
+            },
+        ),
+        },
+
+        {'type': 'track_stats', 'items': (
+            {
+                'name': 'most denied tracks',
+                'stats': top(track_denials)[:top_count],
+                'heading': 'votes denied',
+            },
+            {
+                'name': 'most popular tracks',
+                'stats': top(track_votes)[:top_count],
+                'heading': 'votes',
+            },
+            {
+                'name': 'most played tracks',
+                'stats': top(track_plays)[:top_count],
+                'heading': 'plays',
+            },
+        ),
+        },
     )
 
 def stats(request):
