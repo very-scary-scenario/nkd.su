@@ -22,7 +22,7 @@
     &mdash;
   {% endif %}
     &gt;
-  {% if plays_this_week and not is_this_week %}
+  {% if plays_this_week and not is_current_week %}
     <p class="subheading"><a href="/show/{{ additions_from|date:"d-m-Y" }}">this week's playlist</a></p>
   {% endif %}
 {% elif title %}
