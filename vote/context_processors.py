@@ -7,6 +7,7 @@ def nkdsu_context_processor(request):
     """
 
     this_week = Week()
+    new_tracks = len(this_week.added())
     
     section_list = [
         ('home', '/'),
@@ -29,6 +30,9 @@ def nkdsu_context_processor(request):
             'classes': '',
         }
         
+        if section[0] == 'new tracks' and new_tracks > 0:
+            section_dict['classes'] = 'lookatme'
+        
         sections.append(section_dict)
 
     return {
@@ -37,6 +41,6 @@ def nkdsu_context_processor(request):
         'path': request.path,
         'session': request.session,
         'show': this_week.showtime,
-        'new_tracks': len(this_week.added()),
+        'new_tracks': new_tracks,
         'sections': sections,
     }
