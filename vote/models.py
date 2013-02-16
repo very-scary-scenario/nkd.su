@@ -159,7 +159,6 @@ class Week(object):
                 
                 self.vote_date_range = [Week(showdate_rollback, ideal=True).start, self.finish]
 
-
     def __eq__(self, other):
         return self.showtime == other.showtime
 
@@ -331,6 +330,23 @@ class Week(object):
             tracks = tracks.filter(hidden=False)
 
         return tracks
+
+    def count_votes(self):
+        """
+        Return the number of votes, counting a vote for n tracks as n votes.
+        """
+
+        return len([t for v in self.votes() for t in v.get_tracks()])
+
+    def count_voters(self):
+        """
+        Return the number of unique voters this week.
+        """
+        
+        twitter_voters = [v.user_id for v in self._votes()]
+        manual_voters = [v.name for v in self._manual_votes()]
+        return len(set(twitter_voters + manual_voters))
+        
 
 class User(object):
     """ A twitter user """

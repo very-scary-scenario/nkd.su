@@ -23,7 +23,6 @@ from datetime import datetime
 
 import codecs
 from markdown import markdown
-from random import choice
 
 import akismet
 
@@ -82,6 +81,7 @@ def summary(request, week=None):
         playlist_len = None
 
     context = {
+            'week': week,
             'section': 'home',
             'session': request.session,
             'path': request.path,
@@ -288,6 +288,7 @@ def show(request, date):
     tracks_added_this_week = len(week.added())
 
     context = {
+            'week': week,
             'section': 'archive',
             'session': request.session,
             'path': request.path,
