@@ -338,13 +338,6 @@ form#search input#submit {
   padding: .4em .8em;
 }
 
-#protip {
-  padding-top: 1em;
-  font-size: .8em;
-  color: #888;
-  text-align: center;
-}
-
 p.new_tracks {
   padding-top: .5em;
 }

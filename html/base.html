@@ -59,9 +59,6 @@
         
       </ul> <!-- nav -->
       <div id="content">
-        {% if protip %}
-          <p id="protip">{{ protip|safe }}</p>
-        {% endif %}
         {% block content %}{% endblock %}
         {% if show %}
         <div id="selection"></div>
