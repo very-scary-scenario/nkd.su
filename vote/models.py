@@ -703,6 +703,7 @@ class Vote(models.Model):
             'comment': self.content() if self.content() != '' else None,
             'time': self.date,
             'track_ids': [t.id for t in self.get_tracks()],
+            'tracks': [t.api_dict() for t in self.get_tracks()]
             }
 
         return the_vote
