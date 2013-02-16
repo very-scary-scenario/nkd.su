@@ -248,6 +248,7 @@ ul#nav {
 
 ul#nav li {
   display: inline-block;
+  position: relative;
 }
 
 ul#nav li.active a {
@@ -257,6 +258,9 @@ ul#nav li.active a {
   background-image: url('/noise.png');
 }
 
+ul#nav li span.new_tracks {
+  display: none;
+}
 
 ul#nav li a {
   padding: 1em .8em;
