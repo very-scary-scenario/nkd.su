@@ -329,6 +329,7 @@ def added(request, date=None):
     plays_this_week = bool(week.plays())
 
     context = {
+            'title': 'new tracks from %s' % date,
             'section': 'added',
             'session': request.session,
             'path': request.path,
