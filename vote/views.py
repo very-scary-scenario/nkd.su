@@ -1,7 +1,7 @@
 # Create your views here.
 # -*- coding: utf-8 -*-
 
-from vote.models import User, Track, Play, Block, Shortlist, ManualVote, Week, latest_play, length_str, total_length, is_on_air, tweet_len, tweet_url, Discard, vote_tweet
+from vote.models import User, Track, Play, Block, Shortlist, ManualVote, Week, latest_play, length_str, total_length, tweet_len, tweet_url, Discard, vote_tweet
 from vote.forms import RequestForm, SearchForm, LibraryUploadForm, ManualVoteForm, BlockForm
 from vote.update_library import update_library
 from vote.tasks import refresh
@@ -84,7 +84,6 @@ def summary(request, week=None):
             'week': week,
             'section': 'home',
             'session': request.session,
-            'path': request.path,
             'playlist': playlist,
             'form': form,
             'tracks': tracklist,
@@ -92,9 +91,6 @@ def summary(request, week=None):
             'shortlist_len': shortlist_len,
             'shortlist': shortlist,
             'discard': discard,
-            'new_tracks': len(week.added()),
-            'show': week.showtime,
-            'on_air': is_on_air(),
             'playlist_len': playlist_len,
             'robot_apocalypse': week.prev().has_robot_apocalypse(),
             }
@@ -118,13 +114,9 @@ def roulette(request):
         pos += 1
 
     context = {
-            'section': 'roulette',
-            'session': request.session,
-            'path': request.path,
-            'title': 'roulette',
+            'section': 'surprise me',
+            'title': 'surprise me',
             'tracks': tracks,
-            'show': Week().showtime,
-            'on_air': is_on_air(),
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
@@ -175,11 +167,8 @@ def track(request, track_id):
 
     context = {
             'added': Week(track.added).showtime,
-            'session': request.session,
             'path': request.path,
             'title': track.derived_title(),
-            'show': Week().showtime,
-            'on_air': is_on_air(),
             'track': track,
             }
 
@@ -201,13 +190,9 @@ def search(request, query, pageno=1):
     page = paginator.page(pageno)
 
     context = {
-            'session': request.session,
-            'path': request.path,
             'title': query,
             'query': query,
             'tracks': page.object_list,
-            'show': Week().showtime,
-            'on_air': is_on_air(),
             'page': page,
             }
 
@@ -225,12 +210,8 @@ def artist(request, artist):
         raise Http404
 
     context = {
-            'session': request.session,
-            'path': request.path,
             'title': artist.lower(),
             'tracks': artist_tracks,
-            'show': Week().showtime,
-            'on_air': is_on_air(),
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
@@ -290,17 +271,13 @@ def show(request, date):
     context = {
             'week': week,
             'section': 'archive',
-            'session': request.session,
-            'path': request.path,
             'title': date,
             'this_show': week.showtime,
             'tracks': playlist,
             'tracks_len': tracks_len,
-            'on_air': is_on_air(),
             'next_show': next_show,
             'prev_show': prev_show,
             'tracks_added_this_week': tracks_added_this_week,
-            'show': this_week.showtime,
             }
 
     return render_to_response('show.html', RequestContext(request, context))
@@ -331,14 +308,9 @@ def added(request, date=None):
 
     context = {
             'title': 'new tracks from %s' % date,
-            'section': 'added',
-            'session': request.session,
-            'path': request.path,
+            'section': 'new tracks',
             'additions_from': week.showtime,
             'tracks': tracks,
-            'path': request.path,
-            'show': Week().showtime,
-            'on_air': is_on_air(),
             'next_week_with_additions': next_week_with_additions,
             'prev_week_with_additions': prev_week_with_additions,
             'plays_this_week': plays_this_week,
@@ -356,8 +328,6 @@ def api_docs(request):
 def docs(request, title, filename):
     words = markdown(codecs.open(settings.SITE_ROOT + filename, encoding='utf-8').read())
     context = {
-            'session': request.session,
-            'path': request.path,
             'title': title,
             'words': words,
             }
@@ -365,8 +335,6 @@ def docs(request, title, filename):
 
 def confirm(request, action, deets=None):
     context = {
-            'session': request.session,
-            'path': request.path,
             'action': action,
             'deets': deets,
             }
@@ -387,8 +355,6 @@ def make_vote(request, track_id):
         form = ManualVoteForm()
 
     context = {
-            'session': request.session,
-            'path': request.path,
             'track': track,
             'form': form,
             'title': 'new vote',
@@ -511,8 +477,6 @@ def upload_library(request):
     elif (not ('confirm' in request.GET and request.GET['confirm'] == 'true')) or (request.method == 'POST' and not form.is_valid()):
         # this is an initial load OR an invalid submission
         context = {
-            'session': request.session,
-            'path': request.path,
             'form': form,
             'title': 'library update',
             }
@@ -577,8 +541,6 @@ def request_addition(request):
             return render_to_response('message.html', RequestContext(request, context))
 
     context = {
-            'session': request.session,
-            'path': request.path,
             'title': 'request an addition',
             'form': form,
             }
@@ -719,8 +681,6 @@ def hidden(request):
             'title': 'hidden tracks',
             'tracks': Track.objects.filter(hidden=True, inudesu=False),
             'path': request.path,
-            'show': Week().showtime,
-            'on_air': is_on_air(),
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
@@ -734,8 +694,6 @@ def inudesu(request):
             'title': 'inu desu',
             'tracks': Track.objects.filter(hidden=False, inudesu=True),
             'path': request.path,
-            'show': Week().showtime,
-            'on_air': is_on_air(),
             }
 
     return render_to_response('tracks.html', RequestContext(request, context))
@@ -893,7 +851,6 @@ def stats(request):
     context = {
             'stats': get_stats,
             'week': current_week,
-            #'show': current_week.showtime,
             'section': 'stats',
             'title': 'stats',
             }

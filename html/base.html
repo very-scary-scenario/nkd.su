@@ -47,15 +47,9 @@
         </div> <!-- header-container -->
       </div> <!-- header-background -->
       <ul id="nav">
-        <li{% if section == 'home' %} class="active"{% endif %}><a href="/">home</a></li>
-        <li{% if section == 'archive' %} class="active"{% endif %}><a href="/show/">archive</a></li>
-        <li{% if section == 'added' %} class="active"{% endif %}><a href="/added/">new tracks</a></li>
-        <li{% if section == 'roulette' %} class="active"{% endif %}><a href="/roulette/">surprise me</a></li>
-        <li{% if section == 'stats' %} class="active"{% endif %}><a href="/stats/">stats</a></li>
-        <li><a href="irc://irc.rizon.net/NekoDesu">irc</a></li>
-        <li><a target="_blank" href="https://qchat.rizon.net/?channels=NekoDesu&amp;uio=Mj10cnVlJjk9MAde">webchat</a></li>
-        <li><a target="_blank" href="http://twitter.com/search/realtime?q=%23NekoDesu">twitter</a></li>
-        <li><a target="_blank" href="http://thisisthecat.com/index.php/neko-desu">neko desu</a></li>
+        {% for s in sections %}
+          <li class="{{ s.classes }} {% if s.name == section %}active{% endif %}"><a href="{{ s.url }}">{{ s.name }}</a></li>
+        {% endfor %}
         
       </ul> <!-- nav -->
       <div id="content">
