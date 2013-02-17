@@ -256,10 +256,28 @@ ul#nav li.active a {
   text-shadow: none;
   color: #666;
   background-image: url('/noise.png');
+  overflow: hidden;
 }
 
-ul#nav li span.new_tracks {
+ul#nav li.lookatme {
+  font-weight: bold;
+}
+
+ul#nav li a span.new_tracks {
   display: none;
+}
+
+ul#nav li a:hover span.new_tracks {
+  display: block;
+  font-weight: bold;
+  line-height: 1em;
+  opacity: .7;
+  color: #444;
+  position: absolute;
+  font-size: 2em;
+  z-index: 4;
+  right: .2em;
+  top: .1em;
 }
 
 ul#nav li a {
