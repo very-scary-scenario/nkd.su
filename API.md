@@ -34,6 +34,14 @@ Note that the `plays` list is only included for tracks in calls to
 `/track/<track_id>`; tracks returned as part of other endpojnts will not have
 `plays` listed.
 
+### [`/search/?q=query[&page=page]`][eg_search]
+
+Return a list of `track` objects matching `q`, using the same machinery as the search box on the website. Accepts the optional argument `page`.
+
+Along with `results`, the response also includes `result_count` (the total number of results), and `page_count` (the total number of available pages for that query). Results are limited to 100 results per page, and the default page number is 1. There is no page 0.
+
+Note that, like the website, there is no specific order to the results and the order is subject to change between queries. If your user is providing broad enough searches to match more than 100 tracks, you may want to encourage them to be more specific.
+
 ## More things
 
 If there is something else you want added or changed, or if you find something
@@ -45,4 +53,5 @@ that's broken, [let me know][new_issue]. If you just have a question,
 [eg_track]: http://nkd.su/api/track/7C4D7B4B394E0E59/
 [eg_latest_week]: http://nkd.su/api/week/
 [eg_week]: http://nkd.su/api/week/05-01-2013/
+[eg_search]: http://nkd.su/api/search/?q=character%20song&page=2
 [pester]: https://twitter.com/intent/tweet?text=%40mftb

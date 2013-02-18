@@ -53,6 +53,7 @@ urlpatterns = patterns('',
     url(r'^api/week/(?P<date>[\d-]+)/$', 'vote.api.week', name='api_week'),
     url(r'^api/week/$', 'vote.api.last_week', name='api_last_week'),
     url(r'^api/track/(?P<track_id>[0-9A-F]{16})/$', 'vote.api.track', name='api_track'),
+    url(r'^api/search/$', 'vote.api.search', name='api_track'),
 
     # javascript responses
     url(r'^do/select/$', 'vote.views.do_select', name='do_select'),

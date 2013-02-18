@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from vote.models import Week, Track
+from vote.views import split_query_into_keywords, search_for_tracks
 
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
@@ -9,7 +10,7 @@ from django.utils import timezone
 from datetime import datetime
 from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
-
+from django.core.paginator import Paginator, EmptyPage
 
 def last_week(request):
     """ Redirect to last week """
@@ -50,13 +51,41 @@ def week(request, date=None):
 
     return HttpResponse(json, mimetype='application/json')
 
-def track(response, track_id):
+def track(request, track_id):
     try:
         the_track = Track.objects.get(id=track_id)
     except Track.DoesNotExist:
         raise Http404
 
     json = jsonify(the_track.api_dict(verbose=True))
+    return HttpResponse(json, mimetype='application/json')
+
+def search(request):
+    query = request.GET['q']
+    if not 'page' in request.GET:
+        pageno = 1
+    else:
+        try:
+            pageno = int(request.GET['page'])
+        except ValueError:
+            raise Http404
+
+    keyword_list = split_query_into_keywords(query)
+    trackset = search_for_tracks(keyword_list, show_hidden=request.user.is_authenticated())
+
+    paginator = Paginator(trackset, 100)
+    try:
+        page = paginator.page(pageno)
+    except EmptyPage:
+        raise Http404
+
+    struc = {
+        'results': [t.api_dict() for t in page.object_list],
+        'page_count': paginator.num_pages,
+        'results_count': paginator.count,
+    }
+
+    json = jsonify(struc)
     return HttpResponse(json, mimetype='application/json')
 
 def jsonify(tree):
