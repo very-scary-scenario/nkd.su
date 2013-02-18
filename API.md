@@ -36,11 +36,18 @@ Note that the `plays` list is only included for tracks in calls to
 
 ### [`/search/?q=query[&page=page]`][eg_search]
 
-Return a list of `track` objects matching `q`, using the same machinery as the search box on the website. Accepts the optional argument `page`.
+Return a list of `track` objects matching `q`, using the same machinery as the
+search box on the website. Accepts the optional argument `page`.
 
-Along with `results`, the response also includes `result_count` (the total number of results), and `page_count` (the total number of available pages for that query). Results are limited to 100 results per page, and the default page number is 1. There is no page 0.
+Along with `results`, the response also includes `result_count` (the total
+number of results), and `page_count` (the total number of available pages for
+that query). Results are limited to 100 results per page, and the default page
+number is 1. There is no page 0.
 
-Note that, like the website, there is no specific order to the results and the order is subject to change between queries. If your user is providing broad enough searches to match more than 100 tracks, you may want to encourage them to be more specific.
+Note that, like the website, there is no specific order to the results and the
+order is subject to change between queries. If your user is providing broad
+enough searches to match more than 100 tracks, you may want to encourage them
+to be more specific.
 
 ## More things
 
