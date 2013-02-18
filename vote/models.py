@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from django.db import models
-from django.utils import timezone
-from django.conf import settings
 import datetime
 import re
+
+from django.db import models
+from django.utils import timezone
+from django.template.defaultfilters import slugify
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.http import urlquote
 
@@ -616,8 +618,14 @@ class Track(models.Model):
         week = self.current_week(time)
         return week.discard(self)
     
+    def slug(self):
+        return slugify(self.canonical_string())
+
+    def rel_url(self):
+        return '/%s/%s/' % (self.slug(), self.id)
+
     def url(self):
-        return 'http://nkd.su/%s/' % self.id
+        return 'http://nkd.su' + self.rel_url()
 
     def vote_url(self):
         tweet = '@%s %s' % (settings.READING_USERNAME, self.url())
@@ -666,9 +674,16 @@ class Vote(models.Model):
     def derive_tracks_from_url_list(self, url_list):
         tracks = []
         for url in url_list:
-            track_id = url.strip('/')[-16:]
-            track = Track.objects.get(id=track_id)
-            tracks.append(track)
+            chunks = url.strip('/').split('/')
+            track_id = chunks[-1]
+            slug = chunks[-2]
+            try:
+                track = Track.objects.get(id=track_id)
+            except Track.DoesNotExist:
+                pass
+            else:
+                if track.slug() == slug:
+                    tracks.append(track)
 
         return tracks
 

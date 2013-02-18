@@ -45,7 +45,7 @@
             <tr class="track">
               <td class="summary">
                 <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>
-                <p class="title"><a href="/{{ track.id }}/">{{ track.derived_title }}</a></p>
+                <p class="title"><a href="{{ track.rel_url }}">{{ track.derived_title }}</a></p>
                 <p class="role">{{ track.derived_role }}</p>
               </td>
               <td class="value">{{ value }}</td>

@@ -159,18 +159,21 @@ def search_redirect(request):
         query = form.cleaned_data['q']
         return redirect('/search/%s' % urlquote(query, safe=''))
 
-def track(request, track_id):
+def track(request, track_id, slug=None):
     """ A view of a single track """
     refresh.delay()
 
     track = get_track_or_selection(request, track_id)[0]
 
+    if slug and slug != track.slug():
+        raise Http404
+
     context = {
-            'added': Week(track.added).showtime,
-            'path': request.path,
-            'title': track.derived_title(),
-            'track': track,
-            }
+        'added': Week(track.added).showtime,
+        'path': request.path,
+        'title': track.derived_title(),
+        'track': track,
+    }
 
     return render_to_response('track.html', RequestContext(request, context))
 
