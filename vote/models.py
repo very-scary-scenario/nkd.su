@@ -644,12 +644,13 @@ class Track(models.Model):
             'artist': self.id3_artist,
             'length': self.msec,
             'inu desu': self.inudesu,
-            }
+            'url': self.url(),
+        }
 
         if verbose:
             the_track.update({
                 'plays': [p.datetime for p in Play.objects.filter(track=self)]
-                })
+            })
 
         return the_track
 
