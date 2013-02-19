@@ -35,8 +35,7 @@ body {
   min-width: 200px;
   padding: 1em;
   position: relative;
-  padding-bottom: 10em;
-  padding-top: 1.5em;
+  padding-bottom: 5em;
 }
 
 h2, h3, h4 {
@@ -257,31 +256,18 @@ ul#nav li.active a {
   text-shadow: none;
   color: #666;
   background-image: url('/noise.png');
-  overflow: hidden;
 }
 
 ul#nav li.lookatme {
   font-weight: bold;
 }
 
-ul#nav li a span.new_tracks {
+ul#nav span.new_tracks {
   display: none;
 }
 
-ul#nav li a:hover span.new_tracks {
-  display: block;
-  font-weight: bold;
-  line-height: 1em;
-  opacity: .7;
-  color: #444;
-  position: absolute;
-  font-size: 2em;
-  z-index: 4;
-  right: .2em;
-  top: .1em;
-}
-
 ul#nav li a {
+  overflow: hidden;
   padding: 1em .8em;
 }
 
@@ -685,6 +671,23 @@ table.stats.tracks td.summary {
     background-image: url('/noise.png');
     color: #fff;
     text-shadow: none;
+  }
+
+  ul#nav li a:hover span.new_tracks {
+    width: 100%;
+    display: block;
+    font-weight: bold;
+    line-height: 1em;
+    color: #fff;
+    text-shadow: #d66 0 0 .5em,
+                 #d66 0 0 1em,
+                 #d66 0 0 1.5em;
+    font-size: 2em;
+    z-index: 4;
+    position: absolute;
+    left: 0;
+    bottom: .05em;
+    text-align: center;
   }
 
   div.tracklist div.track div.metadata, div.shortlist div.track div.metadata {

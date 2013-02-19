@@ -8,7 +8,7 @@
   <h2 class="heading">search results</h2>
   <p class="subheading">&mdash; {{ query }} &mdash;</p>
 {% elif additions_from %}
-  <h2 class="heading">new tracks in the week of {{ additions_from|date:"F"|lower }}&nbsp;{{ additions_from|date:"jS, Y" }}</h2>
+<h2 class="heading">{{ tracks|length }} new track{{ tracks|pluralize }} in the week of {{ additions_from|date:"F"|lower }}&nbsp;{{ additions_from|date:"jS, Y" }}</h2>
   <p class="subheading">&lt;
   {% if prev_week_with_additions %}
   <a href="/added/{{ prev_week_with_additions|date:"d-m-Y" }}/">older</a>
