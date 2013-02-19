@@ -35,7 +35,7 @@ body {
   min-width: 200px;
   padding: 1em;
   position: relative;
-  padding-bottom: 5em;
+  padding-bottom: 10em;
 }
 
 h2, h3, h4 {
@@ -186,7 +186,7 @@ div.track.new div.stamp a:hover {
 div#selection {
   clear: both;
   text-align: center;
-  padding-top: 4em;
+  padding-top: 1em;
 }
 
 p.actions.small, p.deselect {
