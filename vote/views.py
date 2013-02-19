@@ -165,8 +165,8 @@ def track(request, track_id, slug=None):
 
     track = get_track_or_selection(request, track_id)[0]
 
-    if slug and slug != track.slug():
-        raise Http404
+    if not slug or slug != track.slug():
+        return redirect(track.rel_url())
 
     context = {
         'added': Week(track.added).showtime,
