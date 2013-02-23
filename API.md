@@ -58,8 +58,7 @@ To be safe, keep the URLs before any text and use the `url` value provided in
 track objects.
 
 If there is something else you want added or changed, or if you find something
-that's broken, [let me know][new_issue]. If you just have a question,
-[tweet][pester] at me.
+that's broken, [file a bug][new_issue] or just [yell at me][pester] on Twitter.
 
 [new_issue]: https://github.com/colons/nkdsu/issues/new
 [api_root]: http://nkd.su/api/
