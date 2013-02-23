@@ -742,8 +742,6 @@ def get_stats():
     top_count = 10
 
     # create our stat dictionaries using tracks as keys...
-    track_plays = {}
-    track_denials = {}
     track_votes = {}
     
     # and using twitter user IDs as keys...
@@ -768,9 +766,6 @@ def get_stats():
 
         users = set()
 
-        for track in week.tracks_played():
-            increment(track_plays, track)
-
         # in this case, we don't care about manual votes, so we use
         # week._votes()
         for vote in week._votes():
@@ -783,7 +778,6 @@ def get_stats():
                 if track in week.tracks_played():
                     increment(user_successes, vote.user_id)
                 else:
-                    increment(track_denials, track)
                     increment(user_denials, vote.user_id)
 
         for user in users:
@@ -831,19 +825,9 @@ def get_stats():
 
         {'type': 'track_stats', 'items': (
             {
-                'name': 'most denied tracks',
-                'stats': top(track_denials)[:top_count],
-                'heading': 'votes denied',
-            },
-            {
                 'name': 'most popular tracks',
                 'stats': top(track_votes)[:top_count],
                 'heading': 'votes',
-            },
-            {
-                'name': 'most played tracks',
-                'stats': top(track_plays)[:top_count],
-                'heading': 'plays',
             },
         ),
         },

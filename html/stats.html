@@ -3,7 +3,7 @@
 
 {% block content %}
 
-{% cache 3600 stats week %}
+{% cache 3600 stat week %}
   {% for stat in stats %}
 
     {% if stat.type == 'user_stats' %}
