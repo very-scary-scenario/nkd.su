@@ -18,8 +18,6 @@ urlpatterns = patterns('',
     url(r'^search/$', 'vote.views.search_redirect', name='search_redirect'),
     url(r'^search/(?P<query>[^/]+)/$', 'vote.views.search', name='search'),
     url(r'^search/(?P<query>[^/]+)/(?P<pageno>\d+)$', 'vote.views.search', name='search'),
-    url(r'^(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track'),
-    url(r'^(?P<slug>[^/]*)/(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track_by_slug'),
     url(r'^upload/$', 'vote.views.upload_library', name='upload_library'),
     url(r'^request/$', 'vote.views.request_addition', name='request_addition'),
     url(r'^stats/$', 'vote.views.stats', name='stats'),
@@ -67,4 +65,8 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+
+    # tracks
+    url(r'^(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track'),
+    url(r'^(?P<slug>[^/]*)/(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track_by_slug'),
 )
