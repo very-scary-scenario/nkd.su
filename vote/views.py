@@ -26,21 +26,11 @@ from markdown import markdown
 
 import akismet
 
-#import tweepy
-import twitter
+import tweepy
 
-# with tweepy
-#post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-#post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET)
-#tw_api = tweepy.API(post_tw_auth)
-
-# with twitter
-tw_api = twitter.Twitter(
-    auth=twitter.OAuth(
-        settings.POSTING_ACCESS_TOKEN,
-        settings.POSTING_ACCESS_TOKEN_SECRET,
-        settings.CONSUMER_KEY,
-        settings.CONSUMER_SECRET))
+post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
+post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET)
+tw_api = tweepy.API(post_tw_auth)
 
 ak_api = akismet.Akismet(key=settings.AKISMET_API_KEY, blog_url=settings.AKISMET_BLOG_URL, agent='nkdsu/0.0')
 
@@ -392,37 +382,34 @@ def mark_as_played(request, track_id):
                 canon = canon[0:140-(len(settings.HASHTAG)+2)]+u'…'
             status = u'%s %s' % (canon, settings.HASHTAG)
 
-            # with tweepy
-            #tweet = tw_api.update_status(status)
-
-            # with twitter
             try:
-                tweet = tw_api.statuses.update(status=status)
-            except:
+                tweet = tw_api.update_status(status)
+            except tweepy.TweepError as e:
                 tweet_sent = False
+                error = e
             else:
                 tweet_sent = True
 
-
             if tweet_sent:
-                play.tweet_id = tweet['id']
+                play.tweet_id = tweet.id
+                print play.tweet_id
             else:
                 context = {
-                        'message': 'the tweet failed to send',
-                        'deets': '<p>the play has been added anyway</p><p>you should <a href="https://twitter.com/intent/tweet?text=%s">send the now playing tweet manually</a></p>' % urlquote(status),
-                        'safe': True
-                        }
+                    'message': 'the tweet failed to send',
+                    'deets': '<p>the play has been added anyway</p><p>you should <a href="https://twitter.com/intent/tweet?text=%s">send the now playing tweet manually</a></p><p>error: %s</p>' % (urlquote(status), error),
+                    'safe': True
+                }
 
             play.save()
             # unshortlist/discard
             shortlist_or_discard(request, track.id)
 
             if not tweet_sent:
-                return render_to_response('message.html', RequestContext(request, context))
-            
-
+                return render_to_response('message.html',
+                                          RequestContext(request, context))
 
     return redirect_nicely(request)
+
 
 @login_required
 def unmark_as_played(request, track_id):
@@ -441,7 +428,7 @@ def unmark_as_played(request, track_id):
         return confirm(request, 'unmark %s as played' % track.derived_title())
     else:
         try:
-            tw_api.statuses.destroy(id=play.tweet_id)
+            tw_api.destroy_status(id=play.tweet_id)
         except:
             pass
 

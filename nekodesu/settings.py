@@ -1,9 +1,8 @@
 import djcelery
 
-from nekodesu.settings_local import *
-
 # note the sensitive settings blanked and commented out below; these must be
-# replicated in settings_local.py in any functional nkd.su instance.
+# replicated in settings_local.py in any functional nkd.su instance. Settings
+# defined there will override settings here.
 
 # unblanked but commented-out settings below are not sensitive but are
 # different in production and dev environments (and also required in
@@ -54,7 +53,7 @@ READING_USERNAME = "nkdsu"
 import os.path
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))+'/../'
 
-# DEBUG = False
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = ('Iain Dawson', 'i@bldm.us'),
@@ -164,3 +163,5 @@ LOGIN_URL = '/login'
 LOGOUT_URL = '/logout'
 LOGIN_REDIRECT_URL = '/'
 # TWITTER_ARCHIVE = '/home/nivi/code/hrldcpr/twitter-archive/tweets/'
+
+from nekodesu.settings_local import *
