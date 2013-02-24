@@ -16,11 +16,7 @@ djcelery.setup_loader()
 
 CELERY_TIMEZONE = 'Europe/London'
 
-BROKER_HOST = "127.0.0.1"
-BROKER_PORT = 5672
-BROKER_VHOST = "/"
-BROKER_USER = "guest"
-BROKER_PASSWORD = "guest"
+BROKER_URL = "amqp://guest:guest@127.0.0.1:5672//"
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

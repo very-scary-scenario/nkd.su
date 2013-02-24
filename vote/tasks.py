@@ -1,26 +1,27 @@
 from datetime import datetime
+from sys import exc_info
+import json
 
 import Levenshtein
-
 from celery import task
 from commands import getoutput
-
-from models import Play, Vote, Track
+import tweepy
 
 from django.utils import timezone
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.conf import settings
 
-from sys import exc_info
+from models import Play, Vote, Track
 
-import twitter
 
 def tweettime(tweet):
     try:
-        tweettime = datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')
+        tweettime = datetime.strptime(tweet['created_at'],
+                                      '%a %b %d %H:%M:%S +0000 %Y')
     except ValueError:
         #Thu, 20 Sep 2012 14:51:24 +0000
-        tweettime = datetime.strptime(tweet['created_at'], '%a, %d %b %Y %H:%M:%S +0000')
+        tweettime = datetime.strptime(tweet['created_at'],
+                                      '%a, %d %b %Y %H:%M:%S +0000')
 
     return timezone.make_aware(tweettime, timezone.utc)
 
@@ -28,7 +29,8 @@ def tweettime(tweet):
 def strip_after_hashtags(text):
     return text.split(' #')[0]
 
-@task
+
+@task()
 def log_play(tweet):
     text = strip_after_hashtags(tweet['text'])
     match = None
@@ -52,9 +54,9 @@ def log_play(tweet):
 
     if match:
         play = Play(
-                datetime=tweettime(tweet),
-                track=match
-                )
+            datetime=tweettime(tweet),
+            track=match
+        )
 
         try:
             play.clean()
@@ -63,43 +65,34 @@ def log_play(tweet):
         else:
             play.save()
 
-@task
+
+@task()
 def log_vote(tweet, should_not_be_new=False):
     # get song ids
     date = tweettime(tweet)
 
-    if should_not_be_new and not Vote.objects.filter(tweet_id=tweet['id']).exists():
+    if should_not_be_new and not Vote.objects.filter(
+            tweet_id=tweet['id']).exists():
         print 'this vote did not exist, killing stream...'
         # we should kill the streaming process to force it to reconnect
-        pid = getoutput("ps aux | awk '/ python... twooter/ && !/awk/ { print $2 }'")
+        pid = getoutput(
+            "ps aux | awk '/ python... twooter/ && !/awk/ { print $2 }'")
         getoutput('kill %s' % pid)
+
     elif Vote.objects.filter(tweet_id=tweet['id']).exists():
         # this vote exists already, we can ignore it
         return
 
-
     # make Vote
-    if 'user' in tweet: # this is from the streaming api
-        the_vote = Vote(
-                screen_name=tweet['user']['screen_name'],
-                user_id=tweet['user']['id'],
-                tweet_id=tweet['id'],
-                date=date,
-                user_image=tweet['user']['profile_image_url'],
-                text=tweet['text'],
-                name=tweet['user']['name'],
-                )
-
-    else: # this is from the archive
-        the_vote = Vote(
-                screen_name=tweet['from_user'],
-                user_id=tweet['from_user_id'],
-                tweet_id=tweet['id'],
-                date=date,
-                user_image=tweet['profile_image_url'],
-                text=tweet['text'],
-                name=tweet['from_user_name'],
-                )
+    the_vote = Vote(
+        screen_name=tweet['user']['screen_name'],
+        user_id=tweet['user']['id'],
+        tweet_id=tweet['id'],
+        date=date,
+        user_image=tweet['user']['profile_image_url'],
+        text=tweet['text'],
+        name=tweet['user']['name'],
+    )
 
     try:
         urls = [url['expanded_url'] for url in tweet['entities']['urls']]
@@ -107,8 +100,9 @@ def log_vote(tweet, should_not_be_new=False):
         tracks = False
         # no tracks; abandon ship!
     else:
-        tracks = [t for t in the_vote.derive_tracks_from_url_list(urls) if t not in the_vote.relevant_prior_voted_tracks()]
-    
+        tracks = [t for t in the_vote.derive_tracks_from_url_list(urls)
+                  if t not in the_vote.relevant_prior_voted_tracks()]
+
     if tracks:
         try:
             the_vote.clean()
@@ -121,27 +115,38 @@ def log_vote(tweet, should_not_be_new=False):
     else:
         print 'not saving'
 
-@task
+
+@task()
 def delete_vote(tweet_id):
     try:
         Vote.objects.get(tweet_id=tweet_id).delete()
     except ObjectDoesNotExist:
         print 'ignoring lost tweet'
 
-@task
+
+class JsonParser(tweepy.parsers.Parser):
+    def parse(self, method, payload):
+        return json.loads(payload)
+
+
+@task()
 def refresh():
     consumer_key = settings.CONSUMER_KEY
     consumer_secret = settings.CONSUMER_SECRET
     access_token = settings.READING_ACCESS_TOKEN
     access_token_secret = settings.READING_ACCESS_TOKEN_SECRET
 
-    t = twitter.Twitter(auth=twitter.OAuth(access_token, access_token_secret, consumer_key, consumer_secret))
-    tweets = t.statuses.mentions(count='50', include_entities=True)
+    read_tw_auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    read_tw_auth.set_access_token(access_token, access_token_secret)
+    t = tweepy.API(read_tw_auth, parser=JsonParser())
+
+    tweets = t.mentions_timeline(count='50', include_entities=True)
 
     for tweet in tweets:
         parse(tweet, should_not_be_new=True)
 
-@task
+
+@task()
 def parse(tweet, should_not_be_new=False):
     """ Deal with a tweet, post-json conversion.
 
@@ -150,7 +155,6 @@ def parse(tweet, should_not_be_new=False):
 
     if 'text' not in tweet:
         # this could be a deletion or some shit
-        print tweet
         if 'delete' in tweet:
             print 'deleting tweet %s' % tweet['delete']['status']['id']
             delete_vote(tweet['delete']['status']['id'])
@@ -165,4 +169,3 @@ def parse(tweet, should_not_be_new=False):
             print '%s: %s' % (tweet['from_user'], tweet['text'])
 
         log_vote(tweet, should_not_be_new=should_not_be_new)
-
