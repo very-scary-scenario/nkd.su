@@ -249,7 +249,6 @@ ul#nav {
 ul#nav li {
   display: inline-block;
   position: relative;
-  margin-bottom: 2em;
 }
 
 ul#nav li.active a {
