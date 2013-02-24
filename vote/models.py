@@ -619,7 +619,7 @@ class Track(models.Model):
         return week.discard(self)
     
     def slug(self):
-        return slugify(self.canonical_string())
+        return slugify(self.derived_title())
 
     def rel_url(self):
         return '/%s/%s/' % (self.slug(), self.id)
