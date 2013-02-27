@@ -20,8 +20,10 @@ def latest_play(track=None):
 
     return plays.order_by('-datetime')[0]
 
+
 def total_length(tracks):
     return sum([t.msec for t in tracks])
+
 
 def length_str(msec):
     seconds = msec/1000
@@ -35,6 +37,7 @@ def length_str(msec):
     else:
         return '%i:%02d' % (minutes, remainder_seconds)
 
+
 def now_or_time(time):
     """ Returns datetime.now() if time is False, otherwise returns time """
     if time:
@@ -42,9 +45,11 @@ def now_or_time(time):
     else:
         return datetime.datetime.utcnow().replace(tzinfo=timezone.utc)
 
+
 def is_on_air(time=None):
     """ Returns True if there's a broadcast on"""
     return Week(now_or_time(time), ignore_apocalypse=True).is_on_air(time)
+
 
 class Week(object):
     """ A week. Cut off at the end of each broadcast """
@@ -54,32 +59,37 @@ class Week(object):
     def __repr__(self):
         return str(self)
 
-    showtime_day = 5 # saturday
+    showtime_day = 5  # saturday
     start_hour = 21
     end_hour = 23
     target_tuple = (end_hour, 0, 0, showtime_day)
     target_showtime_tuple = (start_hour, 0, 0, showtime_day)
     show_locale = timezone.get_current_timezone()
-    
+
     def _approach(self, time, target_tuple, forwards):
-        """ Approach a given time one hour at a time until the time matches the
-        target_tuple in hours """
+        """
+        Approach a given time one hour at a time until the time matches the
+        target_tuple in hours
+        """
 
         one_hour = datetime.timedelta(hours=1)
 
-        while time.astimezone(self.show_locale).timetuple()[3:7] != target_tuple:
+        while time.astimezone(
+                self.show_locale).timetuple()[3:7] != target_tuple:
             if forwards:
                 time = time + one_hour
             else:
                 time = time - one_hour
+
         return time
 
-    def __init__(self, time=None, correct=True, ignore_apocalypse=True, ideal=False):
+    def __init__(self, time=None, correct=True, ignore_apocalypse=True,
+                 ideal=False):
         """ Create the Week in which time (or now) resides.
-        
+
         If correct is True, (which it is by default), we'll correct for
         overridden times by choosing the next or previous week.
-        
+
         If ignore_apocalypse is False, this week will become next week if the
         apocalypse happened.
 
@@ -93,16 +103,21 @@ class Week(object):
         start = self._round_down_to_hour(time)
         start = self._approach(start, self.target_tuple, False)
         finish = self._approach(start + one_hour, self.target_tuple, True)
-        showtime = self._approach(finish - one_hour, self.target_showtime_tuple, False)
-        
+        showtime = self._approach(finish - one_hour,
+                                  self.target_showtime_tuple, False)
 
         # necessary to do now for self.prev() to work
-        self._prev_week_default_showtime = self._approach(start, self.target_showtime_tuple, False)
-        self._next_week_default_showtime = self._approach(finish, self.target_showtime_tuple, True)
-        
+        self._prev_week_default_showtime = self._approach(
+            start, self.target_showtime_tuple, False)
+        self._next_week_default_showtime = self._approach(
+            finish, self.target_showtime_tuple, True)
+
         if not ideal:
-            # is this week's start time to be overridden? (ie. was last week's shwotime modified)
-            try: ScheduleOverride.objects.get(overridden_showdate=self._prev_week_default_showtime)
+            # is this week's start time to be overridden? (ie. was last week's
+            # finish time modified)
+            try:
+                ScheduleOverride.objects.get(
+                    overridden_showdate=self._prev_week_default_showtime)
             except ScheduleOverride.DoesNotExist:
                 # nope
                 pass
@@ -111,7 +126,9 @@ class Week(object):
                 start = self.prev().finish
 
             # are this week's showtime and finish to be overridden?
-            try: this_override = ScheduleOverride.objects.get(overridden_showdate=showtime.date())
+            try:
+                this_override = ScheduleOverride.objects.get(
+                    overridden_showdate=showtime.date())
             except ScheduleOverride.DoesNotExist:
                 # nope
                 pass
@@ -128,38 +145,48 @@ class Week(object):
         self.vote_date_range = [self.start, self.finish]
 
         # do we actually fall into this range? if not, we should try again
-        # we del self._prev because we set it when we realised the time had to be overridden
-        if (not ideal) and correct: # 'correct' here is a verb, an instruction; not an adjective
+        # we del self._prev because we set it when we realised the time had to
+        # be overridden
+        # note that 'correct' here is a verb, an instruction; not an adjective
+        if (not ideal) and correct:
             if time > self.finish:
                 del self._prev
-                self = self.__init__(self._next_week_default_showtime, correct=False)
+                self = self.__init__(self._next_week_default_showtime,
+                                     correct=False)
                 return
             elif time < self.start:
                 del self._prev
-                self = self.__init__(self._prev_week_default_showtime, correct=False)
+                self = self.__init__(self._prev_week_default_showtime,
+                                     correct=False)
                 return
-            # and don't do anything else; the rest of this function will be handled in the  __init__ we just called
-            
+                # and don't do anything else; the rest of this function will be
+                # handled in the  __init__ we just called
+
         if not ideal:
             # is there a robot apocalypse this week?
             if self.has_robot_apocalypse():
-                # we care about this week for archives, but not for most of the rest of the time
+                # we care about this week for archives, but not for most of the
+                # rest of the time
                 if not ignore_apocalypse:
                     self = self.__init__(self._next_week_default_showtime)
-                    return # we're done here
-            
+                    return  # we're done here
+
             # how about last week?
             elif self.last_week_has_robot_apocalypse():
-                # there was there a robot apocalypse last week. was there one the week before that?
-                # if this is a legit week, we always care; vote gathered are important regardless of context
+                # there was there a robot apocalypse last week. was there one
+                # the week before that?  if this is a legit week, we always
+                # care; votes gathered are important regardless of context
+
                 showdate_rollback = self._prev_week_default_showtime
-                while RobotApocalypse.objects.filter(overridden_showdate=showdate_rollback).exists():
+                while RobotApocalypse.objects.filter(
+                        overridden_showdate=showdate_rollback).exists():
                     showdate_rollback -= datetime.timedelta(days=7)
                 else:
                     # okay, so the one we want was the last one
                     showdate_rollback += datetime.timedelta(days=7)
-                
-                self.vote_date_range = [Week(showdate_rollback, ideal=True).start, self.finish]
+
+                self.vote_date_range = [Week(showdate_rollback,
+                                             ideal=True).start, self.finish]
 
     def __eq__(self, other):
         return self.showtime == other.showtime
@@ -169,20 +196,29 @@ class Week(object):
 
     def _round_down_to_hour(self, time):
         """ Rounds time down to the nearest hour """
-        delta = datetime.timedelta(minutes=time.minute, seconds=time.second, microseconds=time.microsecond)
+        delta = datetime.timedelta(minutes=time.minute, seconds=time.second,
+                                   microseconds=time.microsecond)
         return time - delta
 
     def is_on_air(self, time=None):
-        """ Returns True if the time specified (or now) is during this week's broadcast """
+        """
+        Returns True if the time specified (or now) is during this week's
+        broadcast
+        """
+
         time = now_or_time(time)
         return (time >= self.showtime) and (time < self.finish)
 
     def next(self, ideal=False):
         if ideal:
-            return Week(self._next_week_default_showtime, correct=False, ideal=True)
+            return Week(self._next_week_default_showtime, correct=False,
+                        ideal=True)
         else:
-            try: return self._next
-            except AttributeError: pass
+            try:
+                return self._next
+            except AttributeError:
+                pass
+
             self._next = Week(self._next_week_default_showtime, correct=False)
             self._next._prev = self
             return self._next
@@ -190,22 +226,29 @@ class Week(object):
     def prev(self, ideal=False):
         """ Returns the previous Week. See also: next(). """
         if ideal:
-            return Week(self._prev_week_default_showtime, correct=False, ideal=True)
+            return Week(self._prev_week_default_showtime, correct=False,
+                        ideal=True)
         else:
-            try: return self._prev
-            except AttributeError: pass
+            try:
+                return self._prev
+            except AttributeError:
+                pass
+
             self._prev = Week(self._prev_week_default_showtime, correct=False)
             self._prev._next = self
             return self._prev
 
     def has_robot_apocalypse(self, cache=True):
-        if RobotApocalypse.objects.filter(overridden_showdate=self.showtime.date()).exists():
+        if RobotApocalypse.objects.filter(
+                overridden_showdate=self.showtime.date()).exists():
             return True
         else:
             return False
 
     def last_week_has_robot_apocalypse(self):
-        if RobotApocalypse.objects.filter(overridden_showdate=self._prev_week_default_showtime.date()).exists():
+        if RobotApocalypse.objects.filter(
+            overridden_showdate=self._prev_week_default_showtime.date()
+        ).exists():
             return True
         else:
             return False
@@ -215,42 +258,63 @@ class Week(object):
         return self.plays().exists()
 
     def tracks_played(self):
-        try: return self._tracks_played
+        try:
+            return self._tracks_played
         except AttributeError:
             self._tracks_played = [p.track for p in self.plays()]
             return self._tracks_played
 
     def plays(self, track=None, invert=False, select_related=False):
-        """ Returns all plays, in chronological order, from this Week's show as a QuerySet.
-        If track is specified, gets plays of that track """
-        if invert: order = '-datetime'
-        else: order = 'datetime'
-        
-        plays = Play.objects.filter(datetime__range=self.date_range).order_by(order)
-        
-        if track: plays = plays.filter(track=track)
-        if select_related: plays = plays.select_related()
-        
+        """
+        Returns all plays, in chronological order, from this Week's show as a
+        QuerySet.
+
+        If track is specified, gets plays of that track
+        """
+
+        if invert:
+            order = '-datetime'
+        else:
+            order = 'datetime'
+
+        plays = Play.objects.filter(
+            datetime__range=self.date_range).order_by(order)
+
+        if track:
+            plays = plays.filter(track=track)
+        if select_related:
+            plays = plays.select_related()
+
         return plays
 
     def _shortlist_or_discard(self, track, c):
-        """ Does the actual work for shortlist() and discard()
-        c is the class to use """
+        """
+        Does the actual work for shortlist() and discard()
+
+        c is the class to use
+        """
+
         if track:
             try:
                 return c.objects.get(date__range=self.date_range, track=track)
             except c.DoesNotExist:
                 return None
         else:
-            tracks = [s.track for s in c.objects.filter(date__range=self.date_range)]
+            tracks = [s.track for s in c.objects.filter(
+                date__range=self.date_range)]
             # to prevent redundant Week creation
             [setattr(t, '_vote_week', self) for t in tracks]
             [setattr(t, '_current_week', self) for t in tracks]
             return tracks
 
     def shortlist(self, track=None):
-        """ Return a list of shortlisted tracks
-        if track is specified, return its Shortlist object for this week if present or None """
+        """
+        Return a list of shortlisted tracks
+
+        if track is specified, return its Shortlist object for this week if
+        present or None
+        """
+
         return self._shortlist_or_discard(track, Shortlist)
 
     def discard(self, track=None):
@@ -258,7 +322,11 @@ class Week(object):
         return self._shortlist_or_discard(track, Discard)
 
     def shortlist_or_discard(self, track):
-        """ Return a shortlist or discard if there are shortlists or discards on this track this week, otherwise return False """
+        """
+        Return a shortlist or discard if there are shortlists or discards on
+        this track this week, otherwise return False
+        """
+
         discard = self.discard(track)
         if discard:
             return discard
@@ -271,9 +339,11 @@ class Week(object):
     def tracks_sorted_by_votes(self):
         votes = self.votes()
         track_dict = {}
-        
-        # we need the track dict to be persistent so that stuff that is cacheable stays cached
-        [track_dict.__setitem__(t.id, t) for v in votes for t in v.get_tracks()]
+
+        # we need the track dict to be persistent so that stuff that is
+        # cacheable stays cached
+        [track_dict.__setitem__(t.id, t)
+         for v in votes for t in v.get_tracks()]
 
         vote_dict = {}
         for vote in votes:
@@ -286,38 +356,62 @@ class Week(object):
                 else:
                     vote_dict[track.id] += 1
 
-        return sorted(track_dict.values(), reverse=True, key=lambda t: vote_dict[t.id])
+        return sorted(track_dict.values(), reverse=True,
+                      key=lambda t: vote_dict[t.id])
 
     def votes(self, track=None):
-        """ Get all votes of any kind (for a particular track) from this week """
+        """
+        Get all votes of any kind (for a particular track) from this week
+        """
+
         votes, manual_votes = self.votes_in_a_tuple(track=track)
-        #return list(votes) + list(votes) + list(votes) + list(votes) + list(votes) + list(manual_votes)
         return list(votes) + list(manual_votes)
 
     def votes_in_a_tuple(self, track=None):
-        """ Returns all Votes and ManualVotes from this week in a tuple of QuerySets
-        if track is specified, filters by track """
-        try: return self.vote_tuple_cache
-        except AttributeError: pass
+        """
+        Returns all Votes and ManualVotes from this week in a tuple of
+        QuerySets
+
+        If track is specified, filters by track
+        """
+
+        try:
+            return self.vote_tuple_cache
+        except AttributeError:
+            pass
+
         votes = self._votes(track)
         manual_votes = self._manual_votes(track)
         self.vote_tuple_cache = (votes, manual_votes)
+
         return self.vote_tuple_cache
 
     def _manual_votes(self, track=None):
         if self.has_robot_apocalypse():
             return []
-        manual_votes = ManualVote.objects.filter(date__range=self.vote_date_range).order_by('date')
-        if track: manual_votes = manual_votes.filter(track=track)
-        else: manual_votes.select_related()
+
+        manual_votes = ManualVote.objects.filter(
+            date__range=self.vote_date_range).order_by('date')
+
+        if track:
+            manual_votes = manual_votes.filter(track=track)
+        else:
+            manual_votes.select_related()
+
         return manual_votes
 
     def _votes(self, track=None):
         if self.has_robot_apocalypse():
             return []
-        votes = Vote.objects.filter(date__range=self.vote_date_range).order_by('date')
-        if track: votes = votes.filter(tracks=track)
-        else: votes.select_related()
+
+        votes = Vote.objects.filter(
+            date__range=self.vote_date_range).order_by('date')
+
+        if track:
+            votes = votes.filter(tracks=track)
+        else:
+            votes.select_related()
+
         return votes
 
     def added(self, show_hidden=False):
@@ -326,7 +420,8 @@ class Week(object):
         library this week.
         """
 
-        tracks = Track.objects.filter(added__range=self.date_range, inudesu=False)
+        tracks = Track.objects.filter(added__range=self.date_range,
+                                      inudesu=False)
 
         if not show_hidden:
             tracks = tracks.filter(hidden=False)
@@ -344,44 +439,59 @@ class Week(object):
         """
         Return the number of unique voters this week.
         """
-        
+
         twitter_voters = [v.user_id for v in self._votes()]
         manual_voters = [v.name for v in self._manual_votes()]
+
         return len(set(twitter_voters + manual_voters))
-        
+
 
 class User(object):
     """ A twitter user """
-    def __unicode__(self): return self.screen_name()
-    def __repr__(self): return self.screen_name()
+    def __unicode__(self):
+        return self.screen_name()
+
+    def __repr__(self):
+        return self.screen_name()
 
     def __init__(self, user_id):
         self.id = user_id
-    
-    def most_recent_vote(self): return self.votes().order_by('-date')[0]
 
-    def screen_name(self): return self.most_recent_vote().screen_name
-    def name(self): return self.most_recent_vote().name
-    def user_image(self): return self.most_recent_vote().user_image
+    def most_recent_vote(self):
+        return self.votes().order_by('-date')[0]
+
+    def screen_name(self):
+        return self.most_recent_vote().screen_name
+
+    def name(self):
+        return self.most_recent_vote().name
+
+    def user_image(self):
+        return self.most_recent_vote().user_image
 
     def votes(self, week=None):
         if week:
             return week._votes().filter(user_id=self.id)
         else:
-            try: return self._votes
+            try:
+                return self._votes
             except AttributeError:
                 self._votes = Vote.objects.filter(user_id=self.id)
                 return self._votes
 
 
 def vote_tweet(tracks):
-    return '@%s %s' % (settings.READING_USERNAME, ' '.join([t.url() for t in tracks]))
+    return '@%s %s' % (settings.READING_USERNAME,
+                       ' '.join([t.url() for t in tracks]))
+
 
 def tweet_url(tweet):
     return 'https://twitter.com/intent/tweet?text=%s' % urlquote(tweet)
 
+
 def vote_url(tracks):
     return tweet_url(vote_tweet(tracks))
+
 
 def tweet_len(tweet):
     placeholder_url = ''
@@ -390,6 +500,7 @@ def tweet_len(tweet):
 
     shortened = re.sub('https?://[^\s]+', placeholder_url, tweet)
     return len(shortened)
+
 
 def split_id3_title(id3_title):
     """ Split a Title (role) ID3 title, return title, role """
@@ -410,11 +521,12 @@ def split_id3_title(id3_title):
 
     if role:
         title = id3_title.replace(role, '').strip()
-        role = role[1:-1] # strip brackets
+        role = role[1:-1]  # strip brackets
     else:
         title = id3_title
 
     return title, role
+
 
 class Track(models.Model):
     def __unicode__(self):
@@ -434,22 +546,25 @@ class Track(models.Model):
     show_en = models.CharField(max_length=500, blank=True)
     show_ro = models.CharField(max_length=500, blank=True)
     show_ka = models.CharField(max_length=500, blank=True)
-    role = models.CharField(max_length=100, blank=True) # OP, ED, char
+    role = models.CharField(max_length=100, blank=True)
     msec = models.IntegerField(blank=True, null=True)
     added = models.DateTimeField(blank=True, null=True)
     hidden = models.BooleanField()
     inudesu = models.BooleanField()
 
     def is_new(self, time=None):
-        return self.added > self.current_week(time).start and (not self.last_played())
+        return self.added > self.current_week(time).start and (
+            not self.last_played())
 
     def length_str(self):
         return length_str(self.msec)
 
     def last_played(self):
         """ Get the datetime of this track's most recent play """
-        try: return self.last_play().datetime
-        except AttributeError: return None
+        try:
+            return self.last_play().datetime
+        except AttributeError:
+            return None
 
     def last_played_showtime(self):
         current_week = self.current_week()
@@ -460,53 +575,74 @@ class Track(models.Model):
 
     def last_play(self):
         """ Get the datetime this track's most recent Play """
-        try: return self.last_play_cache
-        except AttributeError: pass
+        try:
+            return self.last_play_cache
+        except AttributeError:
+            pass
 
-        try: last_play = Play.objects.filter(track=self).order_by('-datetime')[0]
-        except IndexError: last_play = None
+        try:
+            last_play = Play.objects.filter(track=self).order_by(
+                '-datetime')[0]
+        except IndexError:
+            last_play = None
 
         self.last_play_cache = last_play
         return self.last_play_cache
 
     def weeks_since_play(self, time=None):
-        """ Get the number of shows that have ended since this track's most recent Play """
-        try: return self._weeks_since_play
-        except AttributeError: pass
-        
+        """
+        Get the number of shows that have ended since this track's most recent
+        Play.
+        """
+
+        try:
+            return self._weeks_since_play
+        except AttributeError:
+            pass
+
         time = now_or_time(time)
         this_week = self.current_week(time)
         last_play = self.last_play()
-        if last_play == None:
+        if last_play is None:
             return None
 
         # prevent infinite loops, just in case
         assert time > last_play.datetime
-        
+
         weeks_ago = 0
         working_week = this_week
 
         while last_play.datetime < working_week.showtime:
             working_week = working_week.prev()
             weeks_ago += 1
-        
+
         self._weeks_since_play = weeks_ago
         return weeks_ago
 
     def undoable(self):
-        """ Right now, get True if this track is the source of the most recent Play. Criteria subject to change. """
+        """
+        Return True if this track is the source of the most recent Play.
+        Criteria subject to change.
+        """
+
         return Play.objects.all().order_by('-datetime')[0].track == self
 
     def block(self, week=None):
         """ Get any block from the week specified """
         week = self.current_week()
 
-        try: return self._block[week]
-        except AttributeError: self._block = {}
-        except KeyError: pass
+        try:
+            return self._block[week]
+        except AttributeError:
+            self._block = {}
+        except KeyError:
+            pass
 
-        try: block = Block.objects.get(date__range=week.vote_date_range, track=self)
-        except Block.DoesNotExist: block = None
+        try:
+            block = Block.objects.get(date__range=week.vote_date_range,
+                                      track=self)
+        except Block.DoesNotExist:
+            block = None
 
         self._block[week] = block
 
@@ -519,8 +655,11 @@ class Track(models.Model):
         return self.split_id3_title()[1]
 
     def split_id3_title(self):
-        try: return self.split_id3_title_cache
-        except AttributeError: pass
+        try:
+            return self.split_id3_title_cache
+        except AttributeError:
+            pass
+
         self.split_id3_title_cache = split_id3_title(self.id3_title)
         return self.split_id3_title_cache
 
@@ -536,10 +675,13 @@ class Track(models.Model):
             return u'‘%s’ - %s' % (title, self.id3_artist)
 
     def deets(self):
-        return '%s: %s - %s - %s - %i msec - %s' % (self.id, self.id3_title, self.id3_artist, self.id3_album, self.msec, self.added)
+        return ('%s: %s - %s - %s - %i msec - %s'
+                % (self.id, self.id3_title, self.id3_artist, self.id3_album,
+                   self.msec, self.added))
 
     def current_week(self, time=None):
-        try: week = self._current_week
+        try:
+            week = self._current_week
         except AttributeError:
             week = Week(time)
             self._current_week = week
@@ -553,13 +695,18 @@ class Track(models.Model):
             return True
 
     def ineligible(self, time=None):
-        """ Returns a string describing why a track is ineligible, or False if it is not """
-        # if this Track instance has already been checked, just return what was returned before
-        try: return self.reason
-        except AttributeError: pass
-        
+        """
+        Returns a string describing why a track is ineligible, or False if it
+        is not
+        """
+
+        try:
+            return self.reason
+        except AttributeError:
+            pass
+
         week = self.current_week()
-        
+
         if self.inudesu:
             self.reason = 'inu desu'
 
@@ -582,23 +729,29 @@ class Track(models.Model):
 
     def vote_week(self, time=None):
         """ Get whatever week we should be using to inspect votes """
-        try: week = self._vote_week
+        try:
+            week = self._vote_week
         except AttributeError:
             week = Week(time)
             self._vote_week = week
         return week
 
     def votes(self, time=None):
-        try: return self.vote_cache
-        except AttributeError: pass
+        try:
+            return self.vote_cache
+        except AttributeError:
+            pass
 
         week = self.vote_week(time)
         self.vote_cache = week._votes(track=self)
+
         return self.vote_cache
 
     def manual_votes(self, time=None):
-        try: return self.manual_vote_cache
-        except AttributeError: pass
+        try:
+            return self.manual_vote_cache
+        except AttributeError:
+            pass
 
         week = self.vote_week(time)
         self.manual_vote_cache = week._manual_votes(track=self)
@@ -617,7 +770,7 @@ class Track(models.Model):
         time = now_or_time(time)
         week = self.current_week(time)
         return week.discard(self)
-    
+
     def slug(self):
         return slugify(self.canonical_string())
 
@@ -633,7 +786,11 @@ class Track(models.Model):
         return url
 
     def set_week(self, week):
-        """ Make this track get the votes (but not eligibility or anything else) from a particular week. """
+        """
+        Make this track get the votes (but not eligibility or anything else)
+        from a particular week.
+        """
+
         self._vote_week = week
 
     def api_dict(self, verbose=False):
@@ -658,16 +815,19 @@ class Track(models.Model):
 class Vote(models.Model):
     def __unicode__(self):
         try:
-            return '%s for %s at %s; "%s"' % (self.screen_name, self.tracks.all()[0], self.date, self.content())
+            return '%s for %s at %s; "%s"' % (self.screen_name,
+                                              self.tracks.all()[0],
+                                              self.date, self.content())
         except IndexError:
-            return '%s at %s: "%s"' % (self.screen_name, self.date, self.content())
-    
+            return '%s at %s: "%s"' % (self.screen_name, self.date,
+                                       self.content())
+
     screen_name = models.CharField(max_length=100)
     text = models.CharField(max_length=140)
     user_id = models.IntegerField()
     tweet_id = models.IntegerField(primary_key=True)
-    track = models.ForeignKey(Track, blank=True, null=True) # deprecated
-    tracks = models.ManyToManyField(Track, blank=True, related_name='multi+') # new, canonical
+    track = models.ForeignKey(Track, blank=True, null=True)  # deprecated
+    tracks = models.ManyToManyField(Track, blank=True, related_name='multi+')
     date = models.DateTimeField()
     user_image = models.URLField()
     name = models.CharField(max_length=20)
@@ -689,10 +849,13 @@ class Vote(models.Model):
         return tracks
 
     def content(self):
-        try: return self.content_cache
-        except AttributeError: pass
+        try:
+            return self.content_cache
+        except AttributeError:
+            pass
 
-        content = self.text.replace('@%s' % settings.READING_USERNAME, '').strip('- ')
+        content = self.text.replace('@%s' %
+                                    settings.READING_USERNAME, '').strip('- ')
         for word in content.split():
             if re.match('https?://[^\s]+', word):
                 content = content.replace(word, '').strip()
@@ -702,11 +865,16 @@ class Vote(models.Model):
 
         self.content_cache = content
         return self.content_cache
-    
+
     def relevant_prior_voted_tracks(self):
-        """ Return a list of tracks that this vote's issuer has already voted for this Week """
+        """
+        Return a list of tracks that this vote's issuer has already voted for
+        this Week
+        """
+
         # every vote placed after the cutoff for this track by this person
-        prior_votes = Week(self.date)._votes(track=self.track).filter(user_id=self.user_id)
+        prior_votes = Week(self.date)._votes(track=self.track).filter(
+            user_id=self.user_id)
         # all tracks requested by this person
         prior_tracks = set()
         for vote in prior_votes:
@@ -720,8 +888,10 @@ class Vote(models.Model):
             raise ValidationError('no tracks in vote')
 
     def get_tracks(self):
-        try: return self.tracks_cache
-        except AttributeError: pass
+        try:
+            return self.tracks_cache
+        except AttributeError:
+            pass
         self.tracks_cache = self.tracks.all()
         return self.tracks_cache
 
@@ -736,7 +906,7 @@ class Vote(models.Model):
             'time': self.date,
             'track_ids': [t.id for t in self.get_tracks()],
             'tracks': [t.api_dict() for t in self.get_tracks()]
-            }
+        }
 
         return the_vote
 
@@ -750,7 +920,6 @@ class Play(models.Model):
     tweet_id = models.IntegerField(blank=True)
 
     def clean(self):
-        # we need to refuse to create a play if a track has already been marked as played today and if the show is not on air
         if (not is_on_air(self.datetime)) and (not settings.DEBUG):
             # let me tweet whenever if i'm in debug mode, jesus
             raise ValidationError('It is not currently showtime.')
@@ -759,17 +928,19 @@ class Play(models.Model):
             if play.datetime.date() == self.datetime.date():
                 raise ValidationError('This has been played today already.')
 
-        self.track.hidden=False
+        self.track.hidden = False
         self.track.save()
 
     def week(self):
         return Week(self.datetime)
 
+
 KINDS = (
-        ('email', 'email'),
-        ('text', 'text'),
-        ('tweet', 'tweet'),
-        )
+    ('email', 'email'),
+    ('text', 'text'),
+    ('tweet', 'tweet'),
+)
+
 
 class Block(models.Model):
     track = models.ForeignKey(Track)
@@ -780,21 +951,26 @@ class Block(models.Model):
         if self.track.ineligible():
             raise ValidationError('track is already blocked')
 
+
 class Shortlist(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     track = models.ForeignKey(Track)
+
     def clean(self):
         conflict = Week(self.date).shortlist_or_discard(self.track)
         if conflict:
             conflict.delete()
 
+
 class Discard(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     track = models.ForeignKey(Track)
+
     def clean(self):
         conflict = Week(self.date).shortlist_or_discard(self.track)
         if conflict:
             conflict.delete()
+
 
 class ManualVote(models.Model):
     track = models.ForeignKey(Track, editable=False)
@@ -806,10 +982,13 @@ class ManualVote(models.Model):
 
     def get_tracks(self):
         """ For vague compatability with Vote """
-        try: return self.tracks_cache
-        except AttributeError: pass
+        try:
+            return self.tracks_cache
+        except AttributeError:
+            pass
         self.tracks_cache = [self.track]
         return self.tracks_cache
+
 
 class RobotApocalypse(models.Model):
     """ We have no control over the show this week. Many apologies. """
@@ -817,10 +996,9 @@ class RobotApocalypse(models.Model):
 
     def clean(self):
         if self.overridden_showdate.weekday() != Week.showtime_day:
-            raise ValidationError("I'm not convinced there would normally be a show on that day")
+            raise ValidationError(
+                "I'm not convinced there would normally be a show on that day")
 
-        if ScheduleOverride.objects.filter(overridden_showdate=self.overridden_showdate).exists():
-            raise ValidationError("There is already a schedule override on that week")
 
 class ScheduleOverride(models.Model):
     """ The show will be at a different time this week. """
@@ -830,10 +1008,9 @@ class ScheduleOverride(models.Model):
 
     def clean(self):
         if self.overridden_showdate.weekday() != Week.showtime_day:
-            raise ValidationError("I'm not convinced there would normally be a show on that day")
-
-        if RobotApocalypse.objects.filter(overridden_showdate=self.overridden_showdate).exists():
-            raise ValidationError("There is already a robot apocalypse on that week")
+            raise ValidationError(
+                "I'm not convinced there would normally be a show on that day")
 
         if self.start > self.finish:
-            raise ValidationError("The start time should not be after the end time")
+            raise ValidationError(
+                "The start time should not be after the end time")

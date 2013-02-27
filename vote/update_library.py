@@ -4,6 +4,7 @@ import plistlib
 from models import Track
 from django.utils.timezone import utc, make_aware
 
+
 def update_library(plist, dry_run=False, is_inudesu=False):
     changes = []
     alltracks = Track.objects.filter(inudesu=is_inudesu)
@@ -19,7 +20,7 @@ def update_library(plist, dry_run=False, is_inudesu=False):
         added = make_aware(t['Date Added'], utc)
 
         if 'Album' not in t:
-            t['Album'] = '' # to prevent future KeyErrors
+            t['Album'] = ''  # to prevent future KeyErrors
 
         try:
             db_track = Track.objects.get(id=t['Persistent ID'])
@@ -29,7 +30,11 @@ def update_library(plist, dry_run=False, is_inudesu=False):
             db_track = Track()
 
         else:
-            if (db_track.id3_title != t['Name']) or (db_track.id3_artist != t['Artist']) or (db_track.id3_album != t['Album']) or (db_track.msec != t['Total Time']) or (db_track.added != added):
+            if ((db_track.id3_title != t['Name'])
+                    or (db_track.id3_artist != t['Artist'])
+                    or (db_track.id3_album != t['Album'])
+                    or (db_track.msec != t['Total Time'])
+                    or (db_track.added != added)):
                 # we need to update an existing track
                 changed = True
                 pre_change = db_track.deets()
@@ -60,11 +65,11 @@ def update_library(plist, dry_run=False, is_inudesu=False):
 
         tracks_kept.append(db_track)
 
-    for track in [t for t in alltracks if t not in tracks_kept and not t.hidden]:
+    for track in [t for t in alltracks
+                  if t not in tracks_kept and not t.hidden]:
         changes.append('hide:\n%s' % track.deets())
         if not dry_run:
             track.hidden = True
             track.save()
 
     return changes
-

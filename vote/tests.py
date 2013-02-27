@@ -1,7 +1,8 @@
 from django.utils import unittest, timezone
-from models import *
+from models import Track, Week, ScheduleOverride, Play
 import datetime
 from random import choice
+
 
 def make_tracks(the_time=None, save=False):
     if not the_time:
@@ -10,13 +11,13 @@ def make_tracks(the_time=None, save=False):
     tracks = []
     for i in xrange(0, 40):
         track = Track(
-                id = '0123456789ABCDEF',
-                id3_title = "Test Song %i (a test song)" % i,
-                id3_artist = "Test Artist %i" % (i%5),
-                id3_album = "Test Album %i" % (i%7),
-                msec = 10000 + 100*i,
-                added = the_time - datetime.timedelta(i),
-                )
+            id='0123456789ABCDEF',
+            id3_title="Test Song %i (a test song)" % i,
+            id3_artist="Test Artist %i" % (i % 5),
+            id3_album="Test Album %i" % (i % 7),
+            msec=10000 + 100*i,
+            added=the_time - datetime.timedelta(i),
+        )
 
         track.clean()
         tracks.append(track)
@@ -25,6 +26,7 @@ def make_tracks(the_time=None, save=False):
             track.save()
 
     return tracks
+
 
 class WeekTest(unittest.TestCase):
     def setUp(self):
@@ -36,10 +38,10 @@ class WeekTest(unittest.TestCase):
         finish = locale.localize(datetime.datetime(2012, 11, 18, 8))
 
         self.allnighter = ScheduleOverride(
-                overridden_showdate = self.allnighter_date,
-                start = start,
-                finish = finish,
-                )
+            overridden_showdate=self.allnighter_date,
+            start=start,
+            finish=finish,
+        )
 
         self.allnighter.clean()
         self.allnighter.save()
@@ -49,7 +51,7 @@ class WeekTest(unittest.TestCase):
         self.weeks = [week.prev(), week, week.next()]
 
         self.addCleanup(ScheduleOverride.objects.all().delete)
-    
+
     def test_week_caching(self):
         """ Make sure weeks always return the same prev() and next() """
         weeks = self.weeks
@@ -61,7 +63,7 @@ class WeekTest(unittest.TestCase):
         del weeks[2]._prev
         self.assertNotEqual(id(weeks[2].prev()), id(weeks[1]))
         self.assertNotEqual(id(weeks[0].next()), id(weeks[1]))
-    
+
     def test_week_correction(self):
         """ Make sure that Week properly corrects if the defined time falls
         into an overlap """
@@ -76,17 +78,17 @@ class WeekTest(unittest.TestCase):
 
     def test_play_pooling(self):
         tracks = make_tracks()
-        onesec = datetime.timedelta(seconds = 1)
+        onesec = datetime.timedelta(seconds=1)
 
         # build a dict of week: playlist
         plays = {
-                week: [
-                    Play(datetime=week.start + onesec, track=choice(tracks)),
-                    Play(datetime=week.finish - onesec, track=choice(tracks)),
-                    ]
-                    for week in self.weeks
-                }
-        
+            week: [
+                Play(datetime=week.start + onesec, track=choice(tracks)),
+                Play(datetime=week.finish - onesec, track=choice(tracks)),
+            ]
+            for week in self.weeks
+        }
+
         # and make sure all our Plays think they're in the right week
         for week in plays:
             for play in plays[week]:

@@ -1,36 +1,47 @@
-from vote.models import *
+from vote import models
 from django.contrib import admin
 
+
 class VoteAdmin(admin.ModelAdmin):
-    list_display=('screen_name', 'date', 'name')
+    list_display = ('screen_name', 'date', 'name')
+
 
 class TrackAdmin(admin.ModelAdmin):
-    list_display=('id3_title', 'id3_artist')
+    list_display = ('id3_title', 'id3_artist')
+
 
 class ManualVoteAdmin(admin.ModelAdmin):
-    list_display=('name', 'message', 'track', 'date')
+    list_display = ('name', 'message', 'track', 'date')
+
 
 class PlayAdmin(admin.ModelAdmin):
-    list_display=('track', 'datetime')
+    list_display = ('track', 'datetime')
+
 
 class BlockAdmin(admin.ModelAdmin):
-    list_display=('track', 'reason', 'date')
+    list_display = ('track', 'reason', 'date')
+
 
 class DiscardShortlistAdmin(admin.ModelAdmin):
-    list_display=('track', 'date')
+    list_display = ('track', 'date')
+
 
 class ScheduleOverrideAdmin(admin.ModelAdmin):
-    list_display=('overridden_showdate', 'start', 'finish')
+    list_display = ('overridden_showdate', 'start', 'finish')
+
 
 class RobotApocalypseAdmin(admin.ModelAdmin):
-    list_display=('overridden_showdate',)
+    list_display = ('overridden_showdate',)
 
-admin.site.register(Track, TrackAdmin)
-admin.site.register(Vote, VoteAdmin)
-admin.site.register(ManualVote, ManualVoteAdmin)
-admin.site.register(Play, PlayAdmin)
-admin.site.register(Block, BlockAdmin)
-admin.site.register(Shortlist, DiscardShortlistAdmin)
-admin.site.register(Discard, DiscardShortlistAdmin)
-admin.site.register(ScheduleOverride, ScheduleOverrideAdmin)
-admin.site.register(RobotApocalypse, RobotApocalypseAdmin)
+
+for model, modeladmin in [
+        (models.Track, TrackAdmin),
+        (models.Vote, VoteAdmin),
+        (models.ManualVote, ManualVoteAdmin),
+        (models.Play, PlayAdmin),
+        (models.Block, BlockAdmin),
+        (models.Shortlist, DiscardShortlistAdmin),
+        (models.Discard, DiscardShortlistAdmin),
+        (models.ScheduleOverride, ScheduleOverrideAdmin),
+        (models.RobotApocalypse, RobotApocalypseAdmin)]:
+    admin.site.register(model, modeladmin)

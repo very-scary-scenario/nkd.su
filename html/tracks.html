@@ -9,6 +9,9 @@
   <p class="subheading">&mdash; {{ query }} &mdash;</p>
 {% elif additions_from %}
 <h2 class="heading">{{ tracks|length }} new track{{ tracks|pluralize }} in the week of {{ additions_from|date:"F"|lower }}&nbsp;{{ additions_from|date:"jS, Y" }}</h2>
+  {% if plays_this_week and not is_current_week %}
+    <p class="subheading"><a href="/show/{{ additions_from|date:"d-m-Y" }}">this week's playlist</a></p>
+  {% endif %}
   <p class="subheading">&lt;
   {% if prev_week_with_additions %}
   <a href="/added/{{ prev_week_with_additions|date:"d-m-Y" }}/">older</a>
@@ -22,9 +25,6 @@
     &mdash;
   {% endif %}
     &gt;
-  {% if plays_this_week and not is_current_week %}
-    <p class="subheading"><a href="/show/{{ additions_from|date:"d-m-Y" }}">this week's playlist</a></p>
-  {% endif %}
 {% elif title %}
   <h2 class="heading">{{ title }}</h2>
 {% endif %}
