@@ -1,17 +1,26 @@
-from django.utils import unittest, timezone
-from models import Track, Week, ScheduleOverride, Play
 import datetime
 from random import choice
+
+from django.utils import unittest, timezone
+from django.utils.http import urlencode
+from django.utils.timezone import now
+from django.core.urlresolvers import reverse
+from django.test.client import Client
+
+from models import Track, Week, ScheduleOverride, Play
+
+
+onesec = datetime.timedelta(seconds=1)
 
 
 def make_tracks(the_time=None, save=False):
     if not the_time:
-        the_time = datetime.datetime.utcnow()
+        the_time = now()
 
     tracks = []
     for i in xrange(0, 40):
         track = Track(
-            id='0123456789ABCDEF',
+            id='89ABCDEF%08i' % i,
             id3_title="Test Song %i (a test song)" % i,
             id3_artist="Test Artist %i" % (i % 5),
             id3_album="Test Album %i" % (i % 7),
@@ -78,7 +87,6 @@ class WeekTest(unittest.TestCase):
 
     def test_play_pooling(self):
         tracks = make_tracks()
-        onesec = datetime.timedelta(seconds=1)
 
         # build a dict of week: playlist
         plays = {
@@ -93,3 +101,59 @@ class WeekTest(unittest.TestCase):
         for week in plays:
             for play in plays[week]:
                 self.assertEqual(week, play.week())
+
+
+class ViewTests(unittest.TestCase):
+    def setUp(self):
+        tracks = make_tracks(save=True)
+
+        # make a play from last week
+        Play(datetime=Week().prev().showtime + onesec,
+             track=choice(tracks),
+             tweet_id=1
+             ).save()
+
+    def test_status_code(self):
+        """
+        Ensure that every page eventually redirects to something that returns
+        with HTTP 200
+        """
+
+        c = Client()
+
+        track_id = choice(Track.objects.all()).id
+
+        urls = [
+            reverse('summary'),
+            reverse('artist', kwargs={'artist': 'Test Artist 1'}),
+            reverse('info'),
+            reverse('roulette'),
+            reverse('latest_show'),
+            reverse('added'),
+            reverse('search_redirect') + '?' + urlencode(
+                {'query': 'faiofjdioafd'}),
+            reverse('search_redirect') + '?' + urlencode(
+                {'query': 'Test'}),
+            reverse('api_search') + '?' + urlencode({'q': 'faiofjdioafd'}),
+            reverse('api_search') + '?' + urlencode({'q': 'Test'}),
+            reverse('api_last_week'),
+            reverse('upload_library'),
+            reverse('request_addition'),
+            reverse('stats'),
+            reverse('api_docs'),
+            reverse('track', kwargs={'track_id': track_id}),
+            reverse('api_track', kwargs={'track_id': track_id}),
+        ]
+
+        for url in urls:
+            response = c.get(url)
+            status_code = response.status_code
+
+            while status_code in (302, 301):
+                url = response['Location']
+                response = c.get(url)
+                status_code = response.status_code
+
+            if status_code != 200:
+                raise self.failureException(
+                    '%s returned %i' % (url, status_code))

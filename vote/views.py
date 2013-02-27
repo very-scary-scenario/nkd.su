@@ -21,6 +21,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 
 from sys import exc_info
 from datetime import datetime
@@ -173,12 +174,14 @@ def search_redirect(request):
 
 def track(request, track_id, slug=None):
     """ A view of a single track """
-    refresh.delay()
 
     track = get_track_or_selection(request, track_id)[0]
 
     if not slug or slug != track.slug():
         return redirect(track.rel_url())
+
+    if not request.META['SERVER_NAME'] == 'testserver':
+        refresh.delay()
 
     context = {
         'added': Week(track.added).showtime,
@@ -237,7 +240,8 @@ def artist(request, artist):
 def latest_show(request):
     """ Redirect to the last week's show """
     last_week = Week(ignore_apocalypse=True).prev()
-    return redirect('/show/%s' % last_week.showtime.strftime('%d-%m-%Y'))
+    date_str = last_week.showtime.strftime('%d-%m-%Y')
+    return redirect(reverse('show', kwargs={'date': date_str}))
 
 
 def show(request, date):
