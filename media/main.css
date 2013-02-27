@@ -43,6 +43,10 @@ h2, h3, h4 {
   margin: 1em 0 .5em;
 }
 
+.noheading {
+  margin-top: 2em;
+}
+
 p.subheading {
   text-align: center;
   margin: -.8em 0 1em;
