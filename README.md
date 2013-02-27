@@ -3,7 +3,7 @@
 [nkd.su](http://nkd.su) is a request-gathering and voting service for [The
 Cat](http://thisisthecat.com)'s [Neko
 Desu](http://www.thisisthecat.com/index.php/neko-desu) radio show. Songs are
-sorted according to popularity on the front page.
+sorted according to which was voted for most recently on the front page.
 
 ### How do I vote?
 

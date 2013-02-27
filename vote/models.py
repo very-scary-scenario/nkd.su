@@ -351,10 +351,11 @@ class Week(object):
                 # to prevent redundant Week creation
                 track._vote_week = self
                 track._current_week = self
+
                 if track.id not in vote_dict:
-                    vote_dict[track.id] = 1
-                else:
-                    vote_dict[track.id] += 1
+                    vote_dict[track.id] = vote.date
+                elif vote.date > vote_dict[track.id]:
+                    vote_dict[track.id] = vote.date
 
         return sorted(track_dict.values(), reverse=True,
                       key=lambda t: vote_dict[t.id])
