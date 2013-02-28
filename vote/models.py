@@ -458,18 +458,6 @@ class User(object):
     def __init__(self, user_id):
         self.id = user_id
 
-    def most_recent_vote(self):
-        return self.votes().order_by('-date')[0]
-
-    def screen_name(self):
-        return self.most_recent_vote().screen_name
-
-    def name(self):
-        return self.most_recent_vote().name
-
-    def user_image(self):
-        return self.most_recent_vote().user_image
-
     def votes(self, week=None):
         if week:
             return week._votes().filter(user_id=self.id)
@@ -479,6 +467,18 @@ class User(object):
             except AttributeError:
                 self._votes = Vote.objects.filter(user_id=self.id)
                 return self._votes
+
+    def most_recent_vote(self):
+        return self.votes().order_by('-date')[0]
+
+    @classmethod
+    def create_alias(cls, attrib):
+        func = lambda self: getattr(self.most_recent_vote(), attrib)
+        setattr(cls, attrib, func)
+
+
+for attrib in ['screen_name', 'name', 'user_image']:
+    User.create_alias(attrib)
 
 
 def vote_tweet(tracks):
