@@ -561,7 +561,6 @@ div.playlist.today div.track .voters {
 }
 
 div.playlist div.track {
-  overflow: hidden;
   display: block;
 }
 
