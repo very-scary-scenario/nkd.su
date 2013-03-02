@@ -920,8 +920,10 @@ class Vote(models.Model):
         today = timezone.now().date()
         if our_day == today:
             return self.date.strftime('%I:%M %p').lower()
-        else:
+        elif today - our_day <= datetime.timedelta(days=6):
             return self.date.strftime('%A at %I:%M %p').lower()
+        else:
+            return self.date.strftime('%A %B %d at %I:%M %p').lower()
 
 
 class Play(models.Model):
