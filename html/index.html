@@ -17,7 +17,7 @@
 <div class="current">
 {% endif %}
 <h2 class="heading">current requests</h2>
-<p class="subheading">&mdash; {{ week.count_votes }} request{{ week.count_votes|pluralize }} from {{ week.count_voters }} {{ week.count_voters|pluralize:"person, people" }}; {{ tracks_len }} &mdash;</p>
+<p class="subheading">&mdash; {{ week.count_votes }} request{{ week.count_votes|pluralize }} - {{ tracks|length }} track{{ tracks|length|pluralize }} - {{ week.count_voters }} {{ week.count_voters|pluralize:"person, people" }} - {{ tracks_len }} &mdash;</p>
 {% include "tracklist.html" %}
 {% if playlist %}
 </div>
