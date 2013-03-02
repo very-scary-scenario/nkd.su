@@ -7,9 +7,6 @@ from vote.models import (User, Track, Play, Block, Shortlist, ManualVote, Week,
 from vote.forms import (RequestForm, SearchForm, LibraryUploadForm,
                         ManualVoteForm, BlockForm)
 from vote.update_library import update_library
-from vote.tasks import refresh
-# we'll call refresh.delay() on pages that people might be looking for their
-# votes on
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext
@@ -179,9 +176,6 @@ def track(request, track_id, slug=None):
 
     if not slug or slug != track.slug():
         return redirect(track.rel_url())
-
-    if not request.META['SERVER_NAME'] == 'testserver':
-        refresh.delay()
 
     context = {
         'added': Week(track.added).showtime,
