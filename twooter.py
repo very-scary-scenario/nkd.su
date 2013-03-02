@@ -26,7 +26,7 @@ class TweetListener(tweepy.StreamListener):
     def on_data(self, data):
         loaded = json.loads(data)
         print loaded.get('text', 'idk')
-        print vote.tasks.parse.delay(loaded)
+        vote.tasks.parse.delay(loaded)
         return True
 
     def on_error(self, status):
@@ -38,7 +38,8 @@ def react():
     l = TweetListener()
 
     stream = tweepy.Stream(auth, l)
-    stream.userstream()
+    track = ['@%s' % settings.READING_USERNAME]
+    stream.filter(track=track)
 
 
 def refresh():
