@@ -1,9 +1,16 @@
+import tweepy
 from django import forms
 from django.core.validators import validate_email
+from django.conf import settings
 
 from vote.models import ManualVote
 
-import urllib2
+
+post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
+                                   settings.CONSUMER_SECRET)
+post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
+                              settings.POSTING_ACCESS_TOKEN_SECRET)
+tw_api = tweepy.API(post_tw_auth)
 
 
 def email_or_twitter(address):
@@ -11,10 +18,8 @@ def email_or_twitter(address):
         validate_email(address)
     except forms.ValidationError:
         try:
-            urllib2.urlopen(
-                'http://api.twitter.com/1/users/show.xml?screen_name=%s'
-                % urllib2.quote(address.lstrip('@')))
-        except urllib2.HTTPError:
+            tw_api.get_user(screen_name=address.lstrip('@'))
+        except tweepy.TweepError:
             raise forms.ValidationError(
                 'Enter a valid email address or twitter username')
 
