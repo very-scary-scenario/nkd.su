@@ -557,8 +557,8 @@ def request_addition(request):
             f = form.cleaned_data
             ak_data = {
                 'user_ip': request.META['REMOTE_ADDR'],
-                'user_agent': request.META['HTTP_USER_AGENT'],
-                'referrer': request.META['HTTP_REFERER'],
+                'user_agent': request.META.get('HTTP_USER_AGENT', ''),
+                'referrer': request.META.get('HTTP_REFERER', ''),
                 'comment_author': f['contact'].encode('ascii',
                                                       errors='ignore'),
             }
