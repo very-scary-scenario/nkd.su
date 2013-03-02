@@ -911,6 +911,18 @@ class Vote(models.Model):
 
         return the_vote
 
+    def when(self):
+        """
+        Return a human-readable representation of when this vote was placed.
+        """
+
+        our_day = self.date.date()
+        today = timezone.now().date()
+        if our_day == today:
+            return self.date.strftime('%I:%M %p').lower()
+        else:
+            return self.date.strftime('%A at %I:%M %p').lower()
+
 
 class Play(models.Model):
     def __str__(self):

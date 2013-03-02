@@ -471,9 +471,13 @@ div.tweet_deets div.tweet_deets, .full_name {
   color: #d66;
 }
 
-p.screen_name {
+div.tweet_deets p.meta {
   color: #999;
   font-size: .8em;
+}
+
+div.tweet_deets p.meta.when {
+  color: #666;
 }
 
 p.refusal {
