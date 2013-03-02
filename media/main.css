@@ -685,6 +685,12 @@ table.stats.tracks td.summary {
     color: #fff;
     text-shadow: #d66 0 0 .5em,
                  #d66 0 0 1em,
+                 #d66 0 0 1.5em,
+                 #d66 0 0 .5em,
+                 #d66 0 0 1em,
+                 #d66 0 0 1.5em,
+                 #d66 0 0 .5em,
+                 #d66 0 0 1em,
                  #d66 0 0 1.5em;
     font-size: 2em;
     z-index: 4;
