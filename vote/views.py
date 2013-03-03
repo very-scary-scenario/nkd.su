@@ -187,6 +187,26 @@ def track(request, track_id, slug=None):
     return render_to_response('track.html', RequestContext(request, context))
 
 
+def user(request, screen_name):
+    """ Shrines """
+
+    user = User(screen_name)
+
+    try:
+        print user.name()
+    except IndexError:
+        raise Http404
+
+    print user.batting_average()
+
+    context = {
+        'voter': user,
+        'no_select': True,
+    }
+
+    return render_to_response('user.html', RequestContext(request, context))
+
+
 def search(request, query, pageno=1):
     query = query.replace('%2F', '/')
 
@@ -253,7 +273,7 @@ def show(request, date):
 
     if not plays:
         raise Http404
-    
+
     if week.finish > timezone.now():
         return redirect('/')
 
@@ -368,6 +388,7 @@ def docs(request, title, filename):
     context = {
         'title': title,
         'words': words,
+        'no_select': True,
     }
 
     return render_to_response('markdown.html', RequestContext(request,
@@ -903,6 +924,7 @@ def get_stats():
 def stats(request):
     current_week = Week()
     context = {
+        'no_select': True,
         'stats': get_stats,
         'week': current_week,
         'section': 'stats',

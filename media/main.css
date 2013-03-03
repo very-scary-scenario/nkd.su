@@ -413,7 +413,8 @@ div.track span.title {
   color: #444;
 }
 
-.track:hover .title a {
+.track:hover .title a,
+div.user_votes div.vote:hover p.title a {
   color: #d66;
 }
 
@@ -527,7 +528,39 @@ form ul.errorlist li {
   top: .6em;
 }
 
+/* user pages */
+
+div.user div.user_stats,
+div.user div.user_meta {
+  text-align: center;
+}
+
+div.user div.user_votes {
+  text-align: center;
+}
+
+div.user div.vote {
+  margin: .6em 0;
+  padding: .6em 0;
+  border-radius: .5em;
+}
+
+div.user div.vote p.when {
+  font-size: .8em;
+  color: #999;
+}
+
+div.user div.vote div.vote_track {
+  padding: .4em 0;
+}
+
+div.user div.vote div.vote_track p.title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
 /* footer */
+
 #footer {
   position: absolute;
   bottom: 1.5em;
@@ -584,7 +617,7 @@ a#stamp img {
   height: 65px;
 }
 
-a#stamp:hover {
+a#stamp:hover, a.avatar:hover {
   border: none;
 }
 

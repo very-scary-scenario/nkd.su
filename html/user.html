@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ voter.screen_name }}{% endblock %}
+
+{% block content %}
+
+<div class="user">
+  <div class="user_meta">
+    <h2>{{ voter.name }}</h2>
+    <p class="subheading">
+      <a href="{{ voter.twitter_url }}">
+        @{{ voter.screen_name }}
+      </a>
+    </p>
+    <p class="subheading">batting at {{ voter.batting_average }}</p>
+    <p class="subheading">
+      <a class="avatar" href="{{ voter.twitter_url }}">
+        <img class="avatar" src="{{ voter.user_image }}" alt="{{ voter.name }}"></img>
+      </a>
+    </p>
+  </div>
+
+  <div class="user_votes">
+    <h2>requests</h2>
+    {% for week, votes in voter.vote_weeks %}
+      <div class="vote_week">
+        <h3>requests for {{ week.showtime|date:"F"|lower }}&nbsp;{{ week.showtime|date:"jS, Y" }}</h3>
+        {% for vote in votes %}
+          <div class="vote">
+            {% if vote.content %}
+              <p class="content">{{ vote.content }}</p>
+            {% endif %}
+            {% for track in vote.get_tracks %}
+            <div class="vote_track">
+              <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>
+              <p class="title"><a href="{{ track.rel_url }}">{{ track.derived_title }}</a></p>
+              <p class="role">{{ track.derived_role }}</p>
+            </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div> <!-- vote_weeks -->
+    {% endfor %}
+  </div> <!-- user_votes -->
+</div>
+
+{% endblock %}

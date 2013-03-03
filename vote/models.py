@@ -9,6 +9,15 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.http import urlquote
+from django.http import Http404
+
+import tweepy
+
+post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
+                                   settings.CONSUMER_SECRET)
+post_tw_auth.set_access_token(settings.READING_ACCESS_TOKEN,
+                              settings.READING_ACCESS_TOKEN_SECRET)
+tw_api = tweepy.API(post_tw_auth)
 
 
 def latest_play(track=None):
@@ -456,6 +465,14 @@ class User(object):
         return self.screen_name()
 
     def __init__(self, user_id):
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            try:
+                user_id = tw_api.get_user(screen_name=user_id).id
+            except tweepy.TweepError:
+                raise Http404
+
         self.id = user_id
 
     def votes(self, week=None):
@@ -465,11 +482,54 @@ class User(object):
             try:
                 return self._votes
             except AttributeError:
-                self._votes = Vote.objects.filter(user_id=self.id)
+                self._votes = Vote.objects.filter(
+                    user_id=self.id).order_by('-date')
                 return self._votes
 
+    def vote_weeks(self, week=None):
+        votes = self.votes()
+
+        vote_weeks = []
+        for vote in votes:
+            if vote.get_tracks():
+                if not vote_weeks or vote.week() != vote_weeks[-1][0]:
+                    vote_weeks.append((vote.week(), []))
+
+                append = vote_weeks[-1][1].append
+
+                append(vote)
+
+        return vote_weeks
+
     def most_recent_vote(self):
-        return self.votes().order_by('-date')[0]
+        try:
+            return self._most_recent_vote
+        except AttributeError:
+            self._most_recent_vote = self.votes().order_by('-date')[0]
+            return self._most_recent_vote
+
+    def twitter_url(self):
+        return 'https://twitter.com/%s' % self.screen_name()
+
+    def batting_average(self):
+        successes = 0.
+        failures = 0.
+        this_week = Week()
+
+        for vote in self.votes():
+            if vote.week() != this_week:
+                for track in vote.get_tracks():
+                    if track in [p.track for p in vote.week().plays()]:
+                        successes += 1
+                    else:
+                        failures += 1
+
+        try:
+            avg = successes / (successes + failures)
+        except ZeroDivisionError:
+            return '[in flux]%'
+        avg *= 100
+        return '%i%%' % avg
 
     @classmethod
     def create_alias(cls, attrib):
@@ -924,6 +984,9 @@ class Vote(models.Model):
             return self.date.strftime('%A at %I:%M %p').lower()
         else:
             return self.date.strftime('%a %b %d at %I:%M %p').lower()
+
+    def week(self):
+        return Week(self.date)
 
 
 class Play(models.Model):
