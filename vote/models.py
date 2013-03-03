@@ -923,7 +923,7 @@ class Vote(models.Model):
         elif today - our_day <= datetime.timedelta(days=6):
             return self.date.strftime('%A at %I:%M %p').lower()
         else:
-            return self.date.strftime('%A %B %d at %I:%M %p').lower()
+            return self.date.strftime('%a %b %d at %I:%M %p').lower()
 
 
 class Play(models.Model):
