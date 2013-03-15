@@ -306,49 +306,28 @@ div#subtitle {
 div#search_div {
   text-align: center;
   position: relative;
-}
-
-form#search {
-  background-color: #eee;
-  background-image: url('/noise.png');
-  border-radius: .3em;
-  display: table;
-  margin: 0 auto;
-  overflow: hidden;
-  white-space: nowrap;
+  width: 13em;
 }
 
 form#search input {
-  background: none;
+  background-color: #eee;
+  background-image: url('/noise.png');
+  border-radius: .3em;
   border: none;
   outline: none;
   height: 1.5em;
   font-family: "Bitter", "Calibri", serif;
-  display: table-cell;
+  padding: .1em .3em;
   font-size: 1.1em;
-}
-
-form#search input#query {
-  width: 75%;
-  margin-left: .2em;
 }
 
 form#search input#query:focus {
   outline: none;
 }
 
-form#search input#submit {
-  color: #d66;
-  border: none;
-  border-left: 1px solid #ccc;
-  border-radius: 0;
-  text-shadow: #fff 0 .1em 0;
-  font-size: .7em;
-  height: 4em;
-  margin: -1em 0;
-  position: relative;
-  bottom: .1em;
-  padding: .4em .8em;
+form#search input.default {
+  color: #aaa;
+  text-align: right;
 }
 
 p.new_tracks {
@@ -700,11 +679,9 @@ table.stats.tracks td.summary {
 
   form#search {
     margin: 0 auto;
+    width: 13em;
   }
 
-  form#search input#query {
-    width: 10em;
-  }
 
   ul#nav li a:hover {
     border: none;
@@ -864,6 +841,8 @@ table.stats.tracks td.summary {
 
   div#search_div {
     padding: .5em;
+    max-width: 14em;
+    margin: 0 auto;
   }
 
   div#title, div#search_div {

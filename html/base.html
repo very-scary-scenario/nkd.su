@@ -3,13 +3,14 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}main.css?v=user">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}main.css?v=nakedsearch">
     <link href="http://fonts.googleapis.com/css?family=Bitter:700,400" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <script src="{{ STATIC_URL }}js/jquery.min.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/jquery.cookie.js" type="text/javascript"></script>
     {% if not no_select %}
       <script src="{{ STATIC_URL }}js/select.js?v=triple" type="text/javascript"></script>
+      <script src="{{ STATIC_URL }}js/search.js?v=init" type="text/javascript"></script>
     {% endif %}
     <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico" type="image/vnd.microsoft.icon">
     <title>
@@ -41,8 +42,7 @@
             </div> <!-- titles -->
             <div id="search_div">
               <form id="search" class="search_form" name="search" action="/search" method="get">
-                <input id="query" type="text" name="q" value="{% block query %}{% endblock %}">
-                <input id="submit" type="submit" value="search">
+                <input class="{% if not query %}default{% endif %}" default="search" id="query" type="text" name="q" value="{% if query %}{{ query }}{% else %}search{% endif %}">
               </form>
             </div> <!-- search -->
           </div> <!-- header -->
