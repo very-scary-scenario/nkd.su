@@ -306,7 +306,6 @@ div#subtitle {
 div#search_div {
   text-align: center;
   position: relative;
-  width: 13em;
 }
 
 form#search input {
@@ -675,6 +674,7 @@ table.stats.tracks td.summary {
     padding-top: 1.7em;
     padding-bottom: .8em;
     padding-right: 1em;
+    width: 14em;
   }
 
   form#search {
