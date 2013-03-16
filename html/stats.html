@@ -3,7 +3,7 @@
 
 {% block content %}
 
-{% cache 3600 stat week %}
+{% cache 3600 stat week "profiles" %}
   {% for stat in stats %}
 
     {% if stat.type == 'user_stats' %}
@@ -20,7 +20,7 @@
               <td class="summary">
                 <img alt="{{ user.screen_name }}" src="{{ user.user_image }}">
                 <p class="name">{{ user.name }}</p>
-                <p><a class="screen_name" href="http://twitter.com/{{ user.screen_name }}">
+                <p><a class="screen_name" href="{{ user.get_absolute_url }}">
                   @{{ user.screen_name }}
                 </a></p>
               </td>

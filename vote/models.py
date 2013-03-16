@@ -518,6 +518,9 @@ class User(object):
     def twitter_url(self):
         return 'https://twitter.com/%s' % self.screen_name()
 
+    def get_absolute_url(self):
+        return reverse('user', kwargs={'screen_name': self.screen_name()})
+
     def batting_average(self):
         successes = 0.
         failures = 0.
