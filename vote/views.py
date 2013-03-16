@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.views.decorators.cache import cache_page
 
 from sys import exc_info
 from datetime import datetime
@@ -187,17 +187,16 @@ def track(request, track_id, slug=None):
     return render_to_response('track.html', RequestContext(request, context))
 
 
+@cache_page(60 * 5)
 def user(request, screen_name):
     """ Shrines """
 
     user = User(screen_name)
 
     try:
-        print user.name()
+        user.name()
     except IndexError:
         raise Http404
-
-    print user.batting_average()
 
     context = {
         'voter': user,
@@ -254,13 +253,17 @@ def artist(request, artist):
 def latest_show(request):
     """ Redirect to the last week's show """
     last_week = Week(ignore_apocalypse=True).prev()
-    date_str = last_week.showtime.strftime('%d-%m-%Y')
-    return redirect(reverse('show', kwargs={'date': date_str}))
+    return redirect(last_week.get_absolute_url())
 
 
 def show(request, date):
     """ Playlist archive """
-    day, month, year = (int(d) for d in date.split('-'))
+    year, month, day = (int(d) for d in date.split('-'))
+    if day > 31:
+        old_date = True
+        day, month, year = (int(d) for d in date.split('-'))
+    else:
+        old_date = False
 
     try:
         dart = timezone.make_aware(datetime(year, month, day),
@@ -268,6 +271,9 @@ def show(request, date):
         week = Week(dart, correct=False, ignore_apocalypse=True)
     except ValueError:
         raise Http404
+
+    if old_date:
+        return redirect(week.get_absolute_url())
 
     plays = week.plays()
 
@@ -332,16 +338,25 @@ def show(request, date):
 
 def added(request, date=None):
     if date:
-        day, month, year = (int(d) for d in date.split('-'))
+        year, month, day = (int(d) for d in date.split('-'))
+        if day > 31:
+            old_date = True
+            day, month, year = (int(d) for d in date.split('-'))
+        else:
+            old_date = False
+
         try:
             dart = timezone.make_aware(datetime(year, month, day),
                                        timezone.utc)
             week = Week(dart)
         except ValueError:
             raise Http404
+
+        if old_date:
+            return redirect(week.get_added_url())
     else:
         week = Week(Track.objects.all().order_by('-added')[0].added)
-        return redirect('/added/%s/' % week.showtime.strftime('%d-%m-%Y'))
+        return redirect(week.get_added_url())
 
     tracks = week.added(show_hidden=request.user.is_authenticated())
 
@@ -463,7 +478,6 @@ def mark_as_played(request, track_id):
 
             if tweet_sent:
                 play.tweet_id = tweet.id
-                print play.tweet_id
             else:
                 context = {
                     'message': 'the tweet failed to send',
@@ -552,7 +566,6 @@ def upload_library(request):
     else:
         # act; this is a confirmation
         plist = open(settings.TMP_XML_PATH)
-        print request.session['inudesu']
         update_library(
             plist, dry_run=False,
             is_inudesu=request.session['inudesu'])

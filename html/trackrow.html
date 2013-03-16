@@ -94,7 +94,7 @@
         <div class="votes">
         {% endif %}
         {% for vote in track.votes %}
-          <a target="_blank" class="voter{% if vote.content %} commented{% endif %}" href="http://twitter.com/{{ vote.screen_name }}/status/{{ vote.tweet_id }}/">
+          <a class="voter{% if vote.content %} commented{% endif %}" href="{{ vote.user_url }}">
             <img src="{{ vote.user_image }}" alt="{{ vote.screen_name }}">
             <div class="tweet_deets">
               <p class="full_name">{{ vote.name }}</p>

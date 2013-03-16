@@ -143,7 +143,8 @@ class ViewTests(unittest.TestCase):
             reverse('api_docs'),
             reverse('track', kwargs={'track_id': track_id}),
             reverse('api_track', kwargs={'track_id': track_id}),
-            reverse('user', kwargs='mftb')
+            # needs fixtures :<
+            # reverse('user', kwargs={'screen_name': 'mftb'})
         ]
 
         for url in urls:

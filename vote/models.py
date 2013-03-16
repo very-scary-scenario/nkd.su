@@ -10,6 +10,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.http import urlquote
 from django.http import Http404
+from django.core.urlresolvers import reverse
 
 import tweepy
 
@@ -454,6 +455,12 @@ class Week(object):
         manual_voters = [v.name for v in self._manual_votes()]
 
         return len(set(twitter_voters + manual_voters))
+
+    def get_absolute_url(self):
+        return reverse('show', kwargs={'date': self.showtime.date()})
+
+    def get_added_url(self):
+        return reverse('added', kwargs={'date': self.showtime.date()})
 
 
 class User(object):
@@ -987,6 +994,13 @@ class Vote(models.Model):
 
     def week(self):
         return Week(self.date)
+
+    def twitter_url(self):
+        return 'http://twitter.com/%s/status/%s/' % (self.screen_name,
+                                                     self.tweet_id)
+
+    def user_url(self):
+        return reverse('user', kwargs={'screen_name': self.screen_name})
 
 
 class Play(models.Model):

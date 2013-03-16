@@ -24,11 +24,12 @@
     <h2>requests</h2>
     {% for week, votes in voter.vote_weeks %}
       <div class="vote_week">
-        <h3>requests for {{ week.showtime|date:"F"|lower }}&nbsp;{{ week.showtime|date:"jS, Y" }}</h3>
+        <h3>for <a href="{{ week.get_absolute_url }}">{{ week.showtime|date:"F"|lower }}&nbsp;{{ week.showtime|date:"jS, Y" }}</a></h3>
         {% for vote in votes %}
           <div class="vote">
+            <p class="when"><a href="{{ vote.twitter_url }}">{{ vote.when }}</a></p>
             {% if vote.content %}
-              <p class="content">{{ vote.content }}</p>
+              <p class="content">‘{{ vote.content }}’</p>
             {% endif %}
             {% for track in vote.get_tracks %}
             <div class="vote_track">

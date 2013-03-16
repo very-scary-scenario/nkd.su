@@ -508,24 +508,42 @@ form ul.errorlist li {
 
 /* user pages */
 
-div.user div.user_stats,
-div.user div.user_meta {
-  text-align: center;
+div.user div.user_votes h3 {
+  text-align: left;
 }
 
-div.user div.user_votes {
-  text-align: center;
+div.user p.subheading a.avatar img {
+  padding-top: .5em;
+}
+
+div.user div.vote_week {
+  margin: 0 0 2em;
 }
 
 div.user div.vote {
-  margin: .6em 0;
-  padding: .6em 0;
+  padding: 0 0 2em;
   border-radius: .5em;
 }
 
-div.user div.vote p.when {
+div.user div.vote div.vote_track {
+  margin: 0 3% .2em;
+}
+
+div.user p.when, div.user p.content {
+  padding: 0 1.5%;
   font-size: .8em;
+}
+
+div.user p.when a {
   color: #999;
+}
+
+div.user div.vote:hover p.when a {
+  color: #d66;
+}
+
+div.user p.content {
+  font-style: italic;
 }
 
 div.user div.vote div.vote_track {
