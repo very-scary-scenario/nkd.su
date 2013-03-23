@@ -25,6 +25,7 @@ EMAIL_HOST_USER = 'nivi@musicfortheblind.co.uk'
 EMAIL_USE_TLS = True
 
 HASHTAG = '#NekoDesu'
+INUDESU_HASHTAG = '#InuDesu'
 TMP_XML_PATH = '/tmp/songlibrary.xml'
 REQUEST_CURATOR = 'peter.shillito@thisisthecat.com'
 # AKISMET_API_KEY = ''

@@ -464,9 +464,15 @@ def mark_as_played(request, track_id):
         else:
             # tweet it
             canon = track.canonical_string()
-            if len(canon) > 140 - (len(settings.HASHTAG) + 1):
-                canon = canon[0:140-(len(settings.HASHTAG)+2)]+u'…'
-            status = u'%s %s' % (canon, settings.HASHTAG)
+            if track.inudesu:
+                hashtag = settings.INUDESU_HASHTAG
+            else:
+                hashtag = settings.HASHTAG
+
+            if len(canon) > 140 - (len(hashtag) + 1):
+                canon = canon[0:140-(len(hashtag)+2)]+u'…'
+
+            status = u'%s %s' % (canon, hashtag)
 
             try:
                 tweet = tw_api.update_status(status)
