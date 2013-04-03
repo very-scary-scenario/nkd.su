@@ -237,9 +237,9 @@ def artist(request, artist):
         id3_artist=artist).order_by('id3_title')
 
     if not request.user.is_authenticated():
-        artist_tracks = artist_tracks.filter(hidden=False)
+        artist_tracks = artist_tracks.filter(hidden=False, inudesu=False)
 
-    if not artist_tracks:
+    if not artist_tracks.exists():
         raise Http404
 
     context = {
