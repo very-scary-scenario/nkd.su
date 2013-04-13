@@ -867,7 +867,7 @@ def get_stats():
     weeks_before_now = 1
 
     # iterate through weeks, getting information on each
-    while week.has_plays():
+    while week.has_plays() and weeks_before_now <= 26:
         weeks.append(week)
 
         users = set()
