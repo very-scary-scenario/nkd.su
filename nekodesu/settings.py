@@ -31,7 +31,7 @@ REQUEST_CURATOR = 'peter.shillito@thisisthecat.com'
 # AKISMET_API_KEY = ''
 AKISMET_BLOG_URL = 'http://nkd.su'
 
-TWITTER_SHORT_URL_LENGTH = 20
+TWITTER_SHORT_URL_LENGTH = 22
 
 OPTIONS = {'timeout': 20}
 
