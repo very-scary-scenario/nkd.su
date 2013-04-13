@@ -2,8 +2,16 @@
 
 {% block content %}
 
+{% if playlist %}
+<div class="playlist today">
+<h2 class="heading">played</h2>
+<p class="subheading">&mdash; {{ playlist_len }} &mdash;</p>
+{% include "playlist.html" %}
+</div>
+{% endif %}
+
 {% if shortlist %}
-<div class="shortlist" id="shortlist">
+<div class="shortlist {% if playlist %}limited{% endif %}" id="shortlist">
 <h3 class="heading">shortlist</h3>
 <p class="minor subheading">&mdash; {{ shortlist_len }} &mdash;</p>
     {% for track in shortlist %}
@@ -20,11 +28,6 @@
 <p class="subheading">&mdash; {{ week.count_votes }} request{{ week.count_votes|pluralize }} - {{ tracks|length }} track{{ tracks|length|pluralize }} - {{ week.count_voters }} {{ week.count_voters|pluralize:"person, people" }} - {{ tracks_len }} &mdash;</p>
 {% include "tracklist.html" %}
 {% if playlist %}
-</div>
-<div class="playlist today">
-<h2 class="heading">played</h2>
-<p class="subheading">&mdash; {{ playlist_len }} &mdash;</p>
-{% include "playlist.html" %}
 </div>
 {% endif %}
 

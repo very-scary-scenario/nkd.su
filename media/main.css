@@ -604,8 +604,10 @@ div.playlist div.metacontainer {
   text-align: left;
 }
 
-div.shortlist {
-  clear: both;
+div.shortlist.limited {
+  margin-top: 1em;
+  float: left;
+  width: 68%;
 }
 
 a#stamp img {
