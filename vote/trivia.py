@@ -6,7 +6,7 @@ questions = {
     r'WO+',
 
     'Feel so ____':
-    r'moon',
+    r'moo+n',
 
     'Do you ____ online?':
     r'(shop)|(wub)',
@@ -15,5 +15,5 @@ questions = {
     r'[BADIYU !]+',
 
     'Does Peter have good taste in anime?':
-    '((ha)+)|(yes)|(no)',
+    r'((ha)+)|(yes)|(no)',
 }
