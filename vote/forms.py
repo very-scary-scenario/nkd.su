@@ -51,10 +51,12 @@ class RequestForm(forms.Form):
     def clean(self):
         cleaned_data = super(RequestForm, self).clean()
 
-        filled = [cleaned_data[f] for f in cleaned_data
-                  if f != 'contact' and cleaned_data[f]]
+        compulsory = ['trivia', 'trivia_question', 'contact']
 
-        if len(filled) < 3:
+        filled = [cleaned_data[f] for f in cleaned_data
+                  if f not in compulsory and cleaned_data[f]]
+
+        if len(filled) < 2:
             raise forms.ValidationError(
                 "I'm sure you can give us more information than that.")
 
