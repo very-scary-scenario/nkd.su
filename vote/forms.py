@@ -45,6 +45,8 @@ class RequestForm(forms.Form):
                               label="Additional Details", required=False)
     contact = EmailOrTwitterField(label="Email Address/Twitter name",
                                   required=True)
+    trivia_question = forms.CharField(widget=forms.HiddenInput)
+    trivia = forms.CharField(required=True)
 
     def clean(self):
         cleaned_data = super(RequestForm, self).clean()

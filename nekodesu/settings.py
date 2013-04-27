@@ -28,8 +28,6 @@ HASHTAG = '#NekoDesu'
 INUDESU_HASHTAG = '#InuDesu'
 TMP_XML_PATH = '/tmp/songlibrary.xml'
 REQUEST_CURATOR = 'peter.shillito@thisisthecat.com'
-# AKISMET_API_KEY = ''
-AKISMET_BLOG_URL = 'http://nkd.su'
 
 TWITTER_SHORT_URL_LENGTH = 22
 
@@ -38,7 +36,7 @@ OPTIONS = {'timeout': 20}
 # CONSUMER_KEY = ''
 # CONSUMER_SECRET = ''
 
-#@nkdsu                                                                
+#@nkdsu
 # READING_ACCESS_TOKEN = ''
 # READING_ACCESS_TOKEN_SECRET = ''
 READING_USERNAME = "nkdsu"

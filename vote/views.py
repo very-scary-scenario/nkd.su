@@ -1,12 +1,14 @@
 # Create your views here.
 # -*- coding: utf-8 -*-
 
-from vote.models import (User, Track, Play, Block, Shortlist, ManualVote, Week,
-                         latest_play, length_str, total_length, tweet_len,
-                         tweet_url, Discard, vote_tweet)
-from vote.forms import (RequestForm, SearchForm, LibraryUploadForm,
-                        ManualVoteForm, BlockForm)
-from vote.update_library import update_library
+import codecs
+import re
+from sys import exc_info
+from datetime import datetime
+from random import choice
+
+import tweepy
+from markdown import markdown
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext
@@ -20,25 +22,20 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.views.decorators.cache import cache_page
 
-from sys import exc_info
-from datetime import datetime
+from vote.models import (User, Track, Play, Block, Shortlist, ManualVote, Week,
+                         latest_play, length_str, total_length, tweet_len,
+                         tweet_url, Discard, vote_tweet)
+from vote.forms import (RequestForm, SearchForm, LibraryUploadForm,
+                        ManualVoteForm, BlockForm)
+from vote.update_library import update_library
+from vote import trivia
 
-import codecs
-from markdown import markdown
-
-import akismet
-
-import tweepy
 
 post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
                                    settings.CONSUMER_SECRET)
 post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
                               settings.POSTING_ACCESS_TOKEN_SECRET)
 tw_api = tweepy.API(post_tw_auth)
-
-ak_api = akismet.Akismet(key=settings.AKISMET_API_KEY,
-                         blog_url=settings.AKISMET_BLOG_URL,
-                         agent='nkdsu/0.0')
 
 
 def summary(request, week=None):
@@ -590,28 +587,25 @@ def request_addition(request):
     else:
         d = {}
 
-    form = RequestForm(initial=d)
-
     if request.method == 'POST':
         form = RequestForm(request.POST)
+    else:
+        form = RequestForm(initial=d)
 
+    question = choice(trivia.questions.keys())
+    d['trivia_question'] = question
+
+    form.fields['trivia'].label = question
+
+    if request.method == 'POST':
         if form.is_valid():
-            # akismet check
             f = form.cleaned_data
-            ak_data = {
-                'user_ip': request.META['REMOTE_ADDR'],
-                'user_agent': request.META.get('HTTP_USER_AGENT', ''),
-                'referrer': request.META.get('HTTP_REFERER', ''),
-                'comment_author': f['contact'].encode('ascii',
-                                                      errors='ignore'),
-            }
 
-            ascii_message = f['details'].encode('ascii', errors='ignore')
+            not_spam = re.match(trivia.questions[f['trivia_question']] + '$',
+                                f['trivia'],
+                                re.I)
 
-            # get the boolean response from akismet
-            spam = ak_api.comment_check(ascii_message, data=ak_data)
-
-            if not spam:
+            if not_spam:
                 fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
 
                 send_mail(
@@ -623,7 +617,15 @@ def request_addition(request):
 
                 context = {'message': 'thank you for your request'}
             else:
-                context = {'message': 'stop it with the spam'}
+                context = {
+                    'message': 'you got the captcha wrong :<',
+                    'deets': ("if you're struggling and you promise you're not"
+                              " a spambot, go have a look at the source of "
+                              "<a href='https://github.com/colons/nkdsu/blob/"
+                              "master/vote/trivia.py'>trivia.py</a> for some "
+                              "hints"),
+                    'safe': True,
+                }
 
             return render_to_response('message.html', RequestContext(request,
                                                                      context))
