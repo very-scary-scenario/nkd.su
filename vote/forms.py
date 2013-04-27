@@ -65,17 +65,18 @@ class RequestForm(forms.Form):
             raise forms.ValidationError(
                 "I'm sure you can give us more information than that.")
 
-        human = re.match(
-            trivia.questions[cleaned_data['trivia_question']] + '$',
-            cleaned_data['trivia'], re.I)
+        if 'trivia' in cleaned_data:
+            human = re.match(
+                trivia.questions[cleaned_data['trivia_question']] + '$',
+                cleaned_data['trivia'], re.I)
 
-        hint = (
-            "That's not right, sorry. There are hints <a href='https://github"
-            ".com/colons/nkdsu/blob/master/vote/trivia.py'>here</a>."
-        )
+            hint = (
+                "That's not right, sorry. There are hints <a href='https://"
+                "github.com/colons/nkdsu/blob/master/vote/trivia.py'>here</a>."
+            )
 
-        if not human:
-            self._errors['trivia'] = self.error_class([mark_safe(hint)])
+            if not human:
+                self._errors['trivia'] = self.error_class([mark_safe(hint)])
 
         return cleaned_data
 
