@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import codecs
-import re
 from sys import exc_info
 from datetime import datetime
 from random import choice
@@ -600,34 +599,21 @@ def request_addition(request):
         if form.is_valid():
             f = form.cleaned_data
 
-            not_spam = re.match(trivia.questions[f['trivia_question']] + '$',
-                                f['trivia'],
-                                re.I)
+            fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
 
-            if not_spam:
-                fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
+            send_mail(
+                '[nkd.su] %s' % f['title'],
+                '\n\n'.join(fields),
+                '"nkd.su" <nkdsu@bldm.us>',
+                [settings.REQUEST_CURATOR],
+            )
 
-                send_mail(
-                    '[nkd.su] %s' % f['title'],
-                    '\n\n'.join(fields),
-                    '"nkd.su" <nkdsu@bldm.us>',
-                    [settings.REQUEST_CURATOR],
-                )
+            context = {'message': 'thank you for your request'}
 
-                context = {'message': 'thank you for your request'}
-            else:
-                context = {
-                    'message': 'you got the captcha wrong :<',
-                    'deets': ("if you're struggling and you promise you're not"
-                              " a spambot, go have a look at the source of "
-                              "<a href='https://github.com/colons/nkdsu/blob/"
-                              "master/vote/trivia.py'>trivia.py</a> for some "
-                              "hints"),
-                    'safe': True,
-                }
+            return render_to_response('message.html',
+                                      RequestContext(request, context))
 
-            return render_to_response('message.html', RequestContext(request,
-                                                                     context))
+    form.data['trivia'] = ''
 
     context = {
         'title': 'request an addition',
