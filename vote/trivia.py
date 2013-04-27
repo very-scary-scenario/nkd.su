@@ -1,5 +1,5 @@
 questions = {
-    'We have always treaded ____?':
+    'We have always treaded ____':
     r'(the )?borderlands?',
 
     'JIBUN ____':
