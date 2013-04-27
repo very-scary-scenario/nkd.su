@@ -582,20 +582,19 @@ def upload_library(request):
 
 
 def request_addition(request):
+    d = {}
+    question = choice(trivia.questions.keys())
+    d = {'trivia_question': question}
+
     if 'q' in request.GET:
-        d = {'title': request.GET['q']}
-    else:
-        d = {}
+        d['title'] = request.GET['q']
 
     if request.method == 'POST':
         form = RequestForm(request.POST)
     else:
         form = RequestForm(initial=d)
 
-    question = choice(trivia.questions.keys())
-    d['trivia_question'] = question
-
-    form.fields['trivia'].label = question
+    form.fields['trivia'].label = 'Captcha: %s' % question
 
     if request.method == 'POST':
         if form.is_valid():
