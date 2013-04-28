@@ -2,7 +2,6 @@ from datetime import datetime
 from sys import exc_info
 import json
 
-import Levenshtein
 from celery import task
 from commands import getoutput
 import tweepy
@@ -28,42 +27,6 @@ def tweettime(tweet):
 
 def strip_after_hashtags(text):
     return text.split(' #')[0]
-
-
-@task()
-def log_play(tweet):
-    text = strip_after_hashtags(tweet['text'])
-    match = None
-    matches = []
-    tracks = Track.objects.all()
-
-    for track in tracks:
-        if track.canonical_string() in text:
-            matches.append(track)
-
-    if matches:
-        match = min(matches, key=lambda t: len(t.canonical_string()))
-    else:
-        for track in tracks:
-            leven = Levenshtein.ratio(text, track.canonical_string())
-            if leven > .7:
-                matches.append((leven, track))
-
-        if matches:
-            match = max(matches)[1]
-
-    if match:
-        play = Play(
-            datetime=tweettime(tweet),
-            track=match
-        )
-
-        try:
-            play.clean()
-        except ValidationError:
-            print exc_info()
-        else:
-            play.save()
 
 
 @task()

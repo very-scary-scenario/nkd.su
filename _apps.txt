@@ -1,0 +1,6 @@
+django<1.5
+django-celery
+python-memcached
+south
+tweepy
+markdown
