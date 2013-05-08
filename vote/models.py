@@ -2,6 +2,7 @@
 
 import datetime
 import re
+import json
 
 from django.db import models
 from django.utils import timezone
@@ -1109,3 +1110,15 @@ class ScheduleOverride(models.Model):
         if self.start > self.finish:
             raise ValidationError(
                 "The start time should not be after the end time")
+
+
+class Request(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    successful = models.BooleanField()
+    blob = models.TextField()
+
+    def serialise(self, struct):
+        self.blob = json.dumps(struct)
+
+    def struct(self):
+        return json.loads(self.blob)

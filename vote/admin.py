@@ -34,6 +34,10 @@ class RobotApocalypseAdmin(admin.ModelAdmin):
     list_display = ('overridden_showdate',)
 
 
+class RequestAdmin(admin.ModelAdmin):
+    list_display = ('created', 'successful')
+
+
 for model, modeladmin in [
         (models.Track, TrackAdmin),
         (models.Vote, VoteAdmin),
@@ -43,5 +47,6 @@ for model, modeladmin in [
         (models.Shortlist, DiscardShortlistAdmin),
         (models.Discard, DiscardShortlistAdmin),
         (models.ScheduleOverride, ScheduleOverrideAdmin),
-        (models.RobotApocalypse, RobotApocalypseAdmin)]:
+        (models.RobotApocalypse, RobotApocalypseAdmin),
+        (models.Request, RequestAdmin)]:
     admin.site.register(model, modeladmin)
