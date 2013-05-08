@@ -23,7 +23,7 @@ from django.views.decorators.cache import cache_page
 
 from vote.models import (User, Track, Play, Block, Shortlist, ManualVote, Week,
                          latest_play, length_str, total_length, tweet_len,
-                         tweet_url, Discard, vote_tweet)
+                         tweet_url, Discard, vote_tweet, Request)
 from vote.forms import (RequestForm, SearchForm, LibraryUploadForm,
                         ManualVoteForm, BlockForm)
 from vote.update_library import update_library
@@ -175,7 +175,6 @@ def track(request, track_id, slug=None):
 
     context = {
         'added': Week(track.added).showtime,
-        'path': request.path,
         'title': track.derived_title(),
         'track': track,
     }
@@ -676,7 +675,6 @@ def make_block(request, track_id):
 
     context = {
         'session': request.session,
-        'path': request.path,
         'tracks': tracks,
         'form': form,
         'title': 'new block',
@@ -764,10 +762,8 @@ def hidden(request):
     """ A view of all currently hidden tracks """
     context = {
         'session': request.session,
-        'path': request.path,
         'title': 'hidden tracks',
         'tracks': Track.objects.filter(hidden=True, inudesu=False),
-        'path': request.path,
     }
 
     return render_to_response('tracks.html', RequestContext(request, context))
@@ -778,13 +774,23 @@ def inudesu(request):
     """ A view of unhidden inudesu tracks """
     context = {
         'session': request.session,
-        'path': request.path,
         'title': 'inu desu',
         'tracks': Track.objects.filter(hidden=False, inudesu=True),
-        'path': request.path,
     }
 
     return render_to_response('tracks.html', RequestContext(request, context))
+
+
+@login_required
+def bad_trivia(request):
+    """ Incorrect trivia """
+    context = {
+        'title': 'the worst trivia',
+        'requests': Request.objects.filter(successful=False
+                                           ).order_by('-created'),
+    }
+
+    return render_to_response('trivia.html', RequestContext(request, context))
 
 
 def increment(dictionary, key):

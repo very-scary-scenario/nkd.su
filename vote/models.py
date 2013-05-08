@@ -62,6 +62,21 @@ def is_on_air(time=None):
     return Week(now_or_time(time), ignore_apocalypse=True).is_on_air(time)
 
 
+def when(date):
+    """
+    Return a nice, human-readable date.
+    """
+
+    our_day = date.date()
+    today = timezone.now().date()
+    if our_day == today:
+        return date.strftime('%I:%M %p').lower()
+    elif today - our_day <= datetime.timedelta(days=6):
+        return date.strftime('%A at %I:%M %p').lower()
+    else:
+        return date.strftime('%a %b %d at %I:%M %p').lower()
+
+
 class Week(object):
     """ A week. Cut off at the end of each broadcast """
     def __str__(self):
@@ -987,14 +1002,7 @@ class Vote(models.Model):
         Return a human-readable representation of when this vote was placed.
         """
 
-        our_day = self.date.date()
-        today = timezone.now().date()
-        if our_day == today:
-            return self.date.strftime('%I:%M %p').lower()
-        elif today - our_day <= datetime.timedelta(days=6):
-            return self.date.strftime('%A at %I:%M %p').lower()
-        else:
-            return self.date.strftime('%a %b %d at %I:%M %p').lower()
+        return when(self.date)
 
     def week(self):
         return Week(self.date)
@@ -1122,3 +1130,6 @@ class Request(models.Model):
 
     def struct(self):
         return json.loads(self.blob)
+
+    def when(self):
+        return when(self.created)

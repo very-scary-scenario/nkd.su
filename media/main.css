@@ -665,6 +665,48 @@ table.stats.tracks td.summary {
   padding: .5em;
 }
 
+
+/* trivia */
+
+#trivia {
+  margin: 0 0 3em;
+}
+
+  #trivia .created {
+    color: #999;
+    font-size: .8em;
+  }
+
+  #trivia .exchange {
+    margin: 0 0 1em;
+  }
+
+    #trivia .exchange p:before {
+      color: #999;
+      width: 1em;
+      margin-left: .3em;
+      display: inline-block;
+      text-align: center;
+      font-style: normal;
+    }
+
+    #trivia .trivia:hover p:before {
+      color: #d66;
+    }
+
+    #trivia .exchange .question {
+      font-style: italic;
+    }
+
+    #trivia .exchange .question:before {
+      content: '|'
+    }
+
+    #trivia .exchange .answer:before {
+      content: '>'
+    }
+
+
 @media (min-width:551px) {
   div#header {
     display: table;
@@ -851,6 +893,11 @@ table.stats.tracks td.summary {
 
   table.stats .value {
     width: 33%;
+  }
+  
+  #trivia {
+    margin: 0 auto 3em;
+    max-width: 25em;
   }
 }
 

@@ -24,8 +24,8 @@ urlpatterns = patterns('',
     url(r'^user/(?P<screen_name>[_0-9a-zA-Z]+)/$', 'vote.views.user', name='user'),
 
     # registration
-    url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}),
-    url(r'^login/', 'django.contrib.auth.views.login'),
+    url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
+    url(r'^login/', 'django.contrib.auth.views.login', name='login'),
 
     # peter functions
     url(r'^played/(?P<track_id>.+)/$', 'vote.views.mark_as_played', name='mark_as_played'),
@@ -41,6 +41,8 @@ urlpatterns = patterns('',
     url(r'^unhide/(?P<track_id>.+)/$', 'vote.views.unhide', name='unhide'),
 
     url(r'^inudesu/$', 'vote.views.inudesu', name='inudesu'),
+
+    url(r'^trivia/$', 'vote.views.bad_trivia', name='bad_trivia'),
 
     url(r'^shortlist/(?P<track_id>.+)/$', 'vote.views.shortlist', name='shortlist'),
     url(r'^discard/(?P<track_id>.+)/$', 'vote.views.discard', name='discard'),

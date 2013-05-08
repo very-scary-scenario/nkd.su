@@ -79,7 +79,7 @@ class RequestForm(forms.Form):
                 self._errors['trivia'] = self.error_class([mark_safe(hint)])
 
         request = Request()
-        request.successful = not self._errors
+        request.successful = 'trivia' not in self._errors.keys()
         request.serialise(cleaned_data)
         request.save()
 
