@@ -7,10 +7,10 @@
   {% for request in requests %}
     <div class="trivia">
       {% with request.struct as struct %}
-      <p class="created">{{ request.when }}, {{ struct.contact }}</p>
+        <p class="created">{{ request.when }}, {{ struct.contact }}</p>
         <div class="exchange">
-            <p class="question">{{ struct.trivia_question }}</p>
-            <p class="answer">{{ struct.trivia }}</p>
+          <p class="question">{{ struct.trivia_question }}</p>
+          <p class="answer">{{ struct.trivia }}</p>
         </div>
       {% endwith %}
     </div>
