@@ -675,7 +675,7 @@ table.stats.tracks td.summary {
   #trivia .successful {
     font-size: .6em;
     opacity: .8;
-    margin-left: .7em;
+    margin-left: 2em;
   }
 
   #trivia .successful .exchange .answer:after {
