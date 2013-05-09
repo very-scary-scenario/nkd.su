@@ -592,9 +592,6 @@ def request_addition(request):
     else:
         form = RequestForm(initial=d)
 
-    form.fields['trivia'].label = 'Captcha: %s' % question
-    form.data['trivia_question'] = question
-
     if request.method == 'POST':
         if form.is_valid():
             f = form.cleaned_data
@@ -613,7 +610,9 @@ def request_addition(request):
             return render_to_response('message.html',
                                       RequestContext(request, context))
 
+    form.fields['trivia'].label = 'Captcha: %s' % question
     form.data['trivia'] = ''
+    form.data['trivia_question'] = question
 
     context = {
         'title': 'request an addition',
