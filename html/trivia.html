@@ -5,7 +5,7 @@
 <h2>bad trivia</h2>
 <div id="trivia">
   {% for request in requests %}
-    <div class="trivia">
+    <div class="trivia{% if request.successful %} successful{% endif %}">
       {% with request.struct as struct %}
         <p class="created">{{ request.when }}, {{ struct.contact }}</p>
         <div class="exchange">

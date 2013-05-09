@@ -672,6 +672,18 @@ table.stats.tracks td.summary {
   margin: 0 0 3em;
 }
 
+  #trivia .successful {
+    font-size: .6em;
+    opacity: .8;
+    margin-left: .7em;
+  }
+
+  #trivia .successful .exchange .answer:after {
+    content: '[correct]';
+    color: #d66;
+    margin-left: .5em;
+  }
+
   #trivia .created {
     color: #999;
     font-size: .8em;
@@ -690,7 +702,8 @@ table.stats.tracks td.summary {
       font-style: normal;
     }
 
-    #trivia .trivia:hover p:before {
+    #trivia .trivia:hover p:before,
+    #trivia .trivia:hover .created {
       color: #d66;
     }
 

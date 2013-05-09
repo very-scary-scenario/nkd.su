@@ -593,6 +593,7 @@ def request_addition(request):
         form = RequestForm(initial=d)
 
     form.fields['trivia'].label = 'Captcha: %s' % question
+    form.data['trivia_question'] = question
 
     if request.method == 'POST':
         if form.is_valid():
@@ -786,8 +787,7 @@ def bad_trivia(request):
     """ Incorrect trivia """
     context = {
         'title': 'the worst trivia',
-        'requests': Request.objects.filter(successful=False
-                                           ).order_by('-created'),
+        'requests': Request.objects.all().order_by('-created'),
     }
 
     return render_to_response('trivia.html', RequestContext(request, context))
