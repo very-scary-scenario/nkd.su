@@ -515,7 +515,7 @@ class User(object):
         vote_weeks = []
         for vote in votes:
             if vote.get_tracks():
-                if not vote_weeks or vote.week() != vote_weeks[-1][0]:
+                if not vote_weeks or vote.date < vote_weeks[-1][0].start:
                     vote_weeks.append((vote.week(), []))
 
                 append = vote_weeks[-1][1].append
@@ -538,24 +538,41 @@ class User(object):
         return reverse('user', kwargs={'screen_name': self.screen_name()})
 
     def batting_average(self):
+        try:
+            return self._batting_average
+        except AttributeError:
+            pass
+
         successes = 0.
         failures = 0.
         this_week = Week()
+        week = this_week.prev()
 
-        for vote in self.votes():
-            if vote.week() != this_week:
-                for track in vote.get_tracks():
-                    if track in [p.track for p in vote.week().plays()]:
-                        successes += 1
-                    else:
-                        failures += 1
+        for vote in self.votes().filter(date__lt=this_week.start):
+            if vote.date < week.start:
+                # we're looking at votes for the previous week now
+                week = vote.week()
+
+            print vote.date
+            if vote.date > week.finish:
+                print '## clearly something went wrong here'
+
+            for track in vote.get_tracks():
+                if track in week.tracks_played():
+                    print 'SUCCESS %s' % track
+                    successes += 1
+                else:
+                    print 'failure %s' % track
+                    failures += 1
 
         try:
             avg = successes / (successes + failures)
         except ZeroDivisionError:
             return '[in flux]%'
         avg *= 100
-        return '%i%%' % avg
+
+        self._batting_average = '%i%%' % avg
+        return self._batting_average
 
     @classmethod
     def create_alias(cls, attrib):
