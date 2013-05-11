@@ -199,6 +199,7 @@ class CurrentWeekRedirectTest(TestCase):
         """
 
         response = self.client.get(
-            reverse('show', kwargs={'date': now().date().isoformat()}))
+            reverse('show', kwargs={'date':
+                                    Week().showtime.date().isoformat()}))
 
         self.assertRedirects(response, '/')
