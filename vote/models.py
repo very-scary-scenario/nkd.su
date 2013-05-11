@@ -553,16 +553,10 @@ class User(object):
                 # we're looking at votes for the previous week now
                 week = vote.week()
 
-            print vote.date
-            if vote.date > week.finish:
-                print '## clearly something went wrong here'
-
             for track in vote.get_tracks():
                 if track in week.tracks_played():
-                    print 'SUCCESS %s' % track
                     successes += 1
                 else:
-                    print 'failure %s' % track
                     failures += 1
 
         try:

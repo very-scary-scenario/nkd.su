@@ -1,11 +1,12 @@
 import datetime
 from random import choice
 
-from django.utils import unittest, timezone
+from django.utils import timezone
 from django.utils.http import urlencode
 from django.utils.timezone import now
 from django.core.urlresolvers import reverse
-from django.test.client import Client
+from django.contrib.auth.models import User
+from django.test import TestCase
 
 from models import Track, Week, ScheduleOverride, Play
 
@@ -37,7 +38,7 @@ def make_tracks(the_time=None, save=False):
     return tracks
 
 
-class WeekTest(unittest.TestCase):
+class WeekTest(TestCase):
     def setUp(self):
         self.allnighter_date = datetime.date(2012, 11, 17)
 
@@ -103,15 +104,18 @@ class WeekTest(unittest.TestCase):
                 self.assertEqual(week, play.week())
 
 
-class ViewTests(unittest.TestCase):
-    def setUp(self):
-        tracks = make_tracks(save=True)
+class TwoHundredTests(TestCase):
+    fixtures = ['fixtures.json']
 
-        # make a play from last week
-        Play(datetime=Week().prev().showtime + onesec,
-             track=choice(tracks),
-             tweet_id=1
+    def play_something_this_week(self):
+        track = Track.objects.all()[1]
+        Play(datetime=Week().start + datetime.timedelta(seconds=1),
+             track=track, tweet_id=298140932
              ).save()
+
+    def log_in(self):
+        User.objects.create_user('someone', 'someone@nkd.su', 'password')
+        self.client.login(username='someone', password='password')
 
     def test_status_code(self):
         """
@@ -119,13 +123,13 @@ class ViewTests(unittest.TestCase):
         with HTTP 200
         """
 
-        c = Client()
-
-        track_id = choice(Track.objects.all()).id
+        track = Track.objects.all()[0]
+        Play(datetime=Week().prev().showtime, track=track, tweet_id=298140931
+             ).save()
 
         urls = [
             reverse('summary'),
-            reverse('artist', kwargs={'artist': 'Test Artist 1'}),
+            reverse('artist', kwargs={'artist': track.id3_artist}),
             reverse('info'),
             reverse('roulette'),
             reverse('latest_show'),
@@ -142,21 +146,46 @@ class ViewTests(unittest.TestCase):
             reverse('stats'),
             reverse('api_docs'),
             reverse('bad_trivia'),
-            reverse('track', kwargs={'track_id': track_id}),
-            reverse('api_track', kwargs={'track_id': track_id}),
-            # needs fixtures :<
-            # reverse('user', kwargs={'screen_name': 'mftb'})
+            reverse('track', kwargs={'track_id': track.id}),
+            reverse('api_track', kwargs={'track_id': track.id}),
+            reverse('user', kwargs={'screen_name': 'mftb'})
         ]
 
         for url in urls:
-            response = c.get(url)
+            response = self.client.get(url)
             status_code = response.status_code
 
             while status_code in (302, 301):
                 url = response['Location']
-                response = c.get(url)
+                response = self.client.get(url)
                 status_code = response.status_code
 
             if status_code != 200:
                 raise self.failureException(
                     '%s returned %i' % (url, status_code))
+
+    def test_status_code_something_played_this_week(self):
+        """
+        Ensure everything 200s when something has been played this week
+        """
+
+        self.play_something_this_week()
+        self.test_status_code()
+
+    def test_status_code_logged_in(self):
+        """
+        Ensure every page eventually 200s if you're logged in.
+        """
+
+        self.log_in()
+        self.test_status_code()
+
+    def test_status_code_logged_in_and_something_played(self):
+        """
+        Ensure every page eventually 200s if you're logged in and something has
+        been played this week.
+        """
+
+        self.log_in()
+        self.play_something_this_week()
+        self.test_status_code_something_played_this_week()
