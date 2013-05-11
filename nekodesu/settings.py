@@ -1,3 +1,5 @@
+import os
+
 import djcelery
 
 # note the sensitive settings blanked and commented out below; these must be
@@ -13,6 +15,8 @@ import djcelery
 # were someone to set up some kind of fork.
 
 djcelery.setup_loader()
+
+PROJECT_DIR = os.path.realpath(os.path.join(__file__, '..', '..'))
 
 CELERY_TIMEZONE = 'Europe/London'
 
@@ -108,7 +112,7 @@ ROOT_URLCONF = 'nekodesu.urls'
 
 WSGI_APPLICATION = 'nekodesu.wsgi.application'
 
-# TEMPLATE_DIRS = ('/home/nivi/code/nkdsu/html/')
+TEMPLATE_DIRS = os.path.join(PROJECT_DIR, 'html')
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -161,4 +165,7 @@ LOGOUT_URL = '/logout'
 LOGIN_REDIRECT_URL = '/'
 # TWITTER_ARCHIVE = '/home/nivi/code/hrldcpr/twitter-archive/tweets/'
 
-from nekodesu.settings_local import *
+try:
+    from nekodesu.settings_local import *
+except ImportError:
+    pass
