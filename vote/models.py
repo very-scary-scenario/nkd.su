@@ -808,6 +808,8 @@ class Track(models.Model):
         is not
         """
 
+        return "it's his birthday and he'll do what he wants to"
+
         try:
             return self.reason
         except AttributeError:
