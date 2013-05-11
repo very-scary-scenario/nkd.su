@@ -273,10 +273,10 @@ def show(request, date):
     plays = week.plays()
 
     if not plays:
-        raise Http404
-
-    if week.finish > timezone.now():
-        return redirect('/')
+        if week.finish > timezone.now():
+            return redirect('/')
+        else:
+            raise Http404
 
     next_week = week.next()
 
