@@ -491,10 +491,20 @@ class User(object):
         try:
             user_id = int(user_id)
         except ValueError:
-            try:
-                user_id = tw_api.get_user(screen_name=user_id).id
-            except tweepy.TweepError:
-                raise Http404
+            # work out who this is locally
+            qs = Vote.objects.filter(screen_name=user_id)
+
+            if qs.exists():
+                user_id = qs.order_by('-date')[0].user_id
+
+            else:
+                # This person has either never voted or have not voted since
+                # they last changed their name. Just in case it's the latter,
+                # get their user ID from the Twitter API.
+                try:
+                    user_id = tw_api.get_user(screen_name=user_id).id
+                except tweepy.TweepError:
+                    raise Http404
 
         self.id = user_id
 
