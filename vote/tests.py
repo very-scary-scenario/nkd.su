@@ -189,3 +189,16 @@ class TwoHundredTests(TestCase):
         self.log_in()
         self.play_something_this_week()
         self.test_status_code_something_played_this_week()
+
+
+class CurrentWeekRedirectTest(TestCase):
+    def test_current_week_redirect(self):
+        """
+        Ensure that visiting /show/[current date] will redirect you to the
+        homepage
+        """
+
+        response = self.client.get(
+            reverse('show', kwargs={'date': now().date().isoformat()}))
+
+        self.assertRedirects(response, '/')
