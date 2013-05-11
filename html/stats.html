@@ -4,12 +4,14 @@
 {% block content %}
 
 {% cache 3600 stat week "profiles" %}
+  
   {% for stat in stats %}
 
     {% if stat.type == 'user_stats' %}
 
       {% for stat in stat.items %}
         <h2 id="{{ stat.name }}">{{ stat.name }}</h2>
+        <p class="subheading">in the last six months</p>
         <table class="stats users">
           <tr>
             <th class="summary"><span>user</span></th>
@@ -36,6 +38,7 @@
 
       {% for stat in stat.items %}
         <h2 id="{{ stat.name }}">{{ stat.name }}</h2>
+        <p class="subheading">in the last six months</p>
         <table class="stats tracks">
           <tr>
             <th class="summary"><span>track</span></th>

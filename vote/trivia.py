@@ -15,7 +15,7 @@ questions = {
     r'party',
 
     'BA BA BA BADIADIA BA BA ____':
-    r'[BADIYU !]+',
+    r'[BADIYUH !]+',
 
     'Does Peter have good taste in anime?':
     r'((ha)+)|(yes)|(no)',

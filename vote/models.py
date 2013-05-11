@@ -2,6 +2,7 @@
 
 import datetime
 import re
+import json
 
 from django.db import models
 from django.utils import timezone
@@ -59,6 +60,21 @@ def now_or_time(time):
 def is_on_air(time=None):
     """ Returns True if there's a broadcast on"""
     return Week(now_or_time(time), ignore_apocalypse=True).is_on_air(time)
+
+
+def when(date):
+    """
+    Return a nice, human-readable date.
+    """
+
+    our_day = date.date()
+    today = timezone.now().date()
+    if our_day == today:
+        return date.strftime('%I:%M %p').lower()
+    elif today - our_day <= datetime.timedelta(days=6):
+        return date.strftime('%A at %I:%M %p').lower()
+    else:
+        return date.strftime('%a %b %d at %I:%M %p').lower()
 
 
 class Week(object):
@@ -499,7 +515,7 @@ class User(object):
         vote_weeks = []
         for vote in votes:
             if vote.get_tracks():
-                if not vote_weeks or vote.week() != vote_weeks[-1][0]:
+                if not vote_weeks or vote.date < vote_weeks[-1][0].start:
                     vote_weeks.append((vote.week(), []))
 
                 append = vote_weeks[-1][1].append
@@ -522,24 +538,41 @@ class User(object):
         return reverse('user', kwargs={'screen_name': self.screen_name()})
 
     def batting_average(self):
+        try:
+            return self._batting_average
+        except AttributeError:
+            pass
+
         successes = 0.
         failures = 0.
         this_week = Week()
+        week = this_week.prev()
 
-        for vote in self.votes():
-            if vote.week() != this_week:
-                for track in vote.get_tracks():
-                    if track in [p.track for p in vote.week().plays()]:
-                        successes += 1
-                    else:
-                        failures += 1
+        for vote in self.votes().filter(date__lt=this_week.start):
+            if vote.date < week.start:
+                # we're looking at votes for the previous week now
+                week = vote.week()
+
+            print vote.date
+            if vote.date > week.finish:
+                print '## clearly something went wrong here'
+
+            for track in vote.get_tracks():
+                if track in week.tracks_played():
+                    print 'SUCCESS %s' % track
+                    successes += 1
+                else:
+                    print 'failure %s' % track
+                    failures += 1
 
         try:
             avg = successes / (successes + failures)
         except ZeroDivisionError:
             return '[in flux]%'
         avg *= 100
-        return '%i%%' % avg
+
+        self._batting_average = '%i%%' % avg
+        return self._batting_average
 
     @classmethod
     def create_alias(cls, attrib):
@@ -986,14 +1019,7 @@ class Vote(models.Model):
         Return a human-readable representation of when this vote was placed.
         """
 
-        our_day = self.date.date()
-        today = timezone.now().date()
-        if our_day == today:
-            return self.date.strftime('%I:%M %p').lower()
-        elif today - our_day <= datetime.timedelta(days=6):
-            return self.date.strftime('%A at %I:%M %p').lower()
-        else:
-            return self.date.strftime('%a %b %d at %I:%M %p').lower()
+        return when(self.date)
 
     def week(self):
         return Week(self.date)
@@ -1109,3 +1135,18 @@ class ScheduleOverride(models.Model):
         if self.start > self.finish:
             raise ValidationError(
                 "The start time should not be after the end time")
+
+
+class Request(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    successful = models.BooleanField()
+    blob = models.TextField()
+
+    def serialise(self, struct):
+        self.blob = json.dumps(struct)
+
+    def struct(self):
+        return json.loads(self.blob)
+
+    def when(self):
+        return when(self.created)

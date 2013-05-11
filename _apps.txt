@@ -1,6 +1,7 @@
 django<1.5
 django-celery
 python-memcached
+django-debug-toolbar
 south
 tweepy
 markdown

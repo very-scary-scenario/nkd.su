@@ -7,7 +7,7 @@ from django.core.validators import validate_email
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
-from vote.models import ManualVote
+from vote.models import ManualVote, Request
 from vote import trivia
 
 
@@ -77,6 +77,11 @@ class RequestForm(forms.Form):
 
             if not human:
                 self._errors['trivia'] = self.error_class([mark_safe(hint)])
+
+        request = Request()
+        request.successful = 'trivia' not in self._errors.keys()
+        request.serialise(cleaned_data)
+        request.save()
 
         return cleaned_data
 

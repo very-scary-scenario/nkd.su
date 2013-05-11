@@ -141,6 +141,7 @@ class ViewTests(unittest.TestCase):
             reverse('request_addition'),
             reverse('stats'),
             reverse('api_docs'),
+            reverse('bad_trivia'),
             reverse('track', kwargs={'track_id': track_id}),
             reverse('api_track', kwargs={'track_id': track_id}),
             # needs fixtures :<

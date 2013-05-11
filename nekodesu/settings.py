@@ -101,6 +101,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'nekodesu.urls'
@@ -119,6 +120,7 @@ INSTALLED_APPS = (
     'vote',
     'djcelery',
     'south',
+    'debug_toolbar',
 )
 
 LOGGING = {
