@@ -38,6 +38,12 @@ Short answer: [Django](https://www.djangoproject.com).
 Long answer: [GitHub](https://github.com/colons/nkdsu).
 [Suggestions][new_issue] welcome.
 
+## Does it work?
+
+Hopefully! Only Travis knows for sure:
+
+[![Build Status](https://travis-ci.org/colons/nkdsu.png)](https://travis-ci.org/colons/nkdsu)
+
 ## Can I build things with this data?
 
 Totally! There's a JSON API documented [here](http://nkd.su/info/api/). If
