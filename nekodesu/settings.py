@@ -2,7 +2,7 @@ import os
 
 import djcelery
 
-# note the sensitive settings blanked and commented out below; these must be
+# note the sensitive settings marked as 'secret' below; these must be
 # replicated in settings_local.py in any functional nkd.su instance. Settings
 # defined there will override settings here.
 
@@ -37,17 +37,17 @@ TWITTER_SHORT_URL_LENGTH = 22
 
 OPTIONS = {'timeout': 20}
 
-# CONSUMER_KEY = ''
-# CONSUMER_SECRET = ''
+CONSUMER_KEY = ''  # secret
+CONSUMER_SECRET = ''  # secret
 
 #@nkdsu
-# READING_ACCESS_TOKEN = ''
-# READING_ACCESS_TOKEN_SECRET = ''
+READING_ACCESS_TOKEN = ''  # secret
+READING_ACCESS_TOKEN_SECRET = ''  # secret
 READING_USERNAME = "nkdsu"
 
 #@nekodesuradio
-# POSTING_ACCESS_TOKEN = ''
-# POSTING_ACCESS_TOKEN_SECRET = ''
+POSTING_ACCESS_TOKEN = ''  # secret
+POSTING_ACCESS_TOKEN_SECRET = ''  # secret
 
 import os.path
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))+'/../'
