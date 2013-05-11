@@ -25,7 +25,7 @@ auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
 class TweetListener(tweepy.StreamListener):
     def on_data(self, data):
         loaded = json.loads(data)
-        print loaded.get('text', 'idk')
+        print loaded.get('text', loaded)
         vote.tasks.parse.delay(loaded)
         return True
 
