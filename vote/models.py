@@ -69,6 +69,10 @@ def when(date):
 
     our_day = date.date()
     today = timezone.now().date()
+    show_locale = timezone.get_current_timezone()
+
+    date = date.astimezone(show_locale)
+
     if our_day == today:
         return date.strftime('%I:%M %p').lower()
     elif today - our_day <= datetime.timedelta(days=6):
