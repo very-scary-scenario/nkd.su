@@ -787,6 +787,7 @@ def bad_trivia(request):
     context = {
         'title': 'the worst trivia',
         'requests': Request.objects.all().order_by('-created'),
+        'no_select': True
     }
 
     return render_to_response('trivia.html', RequestContext(request, context))
