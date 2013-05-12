@@ -40,7 +40,50 @@ class SearchForm(forms.Form):
     q = forms.CharField()
 
 
-class RequestForm(forms.Form):
+class TriviaForm(forms.Form):
+    """
+    A form protected by a trivia question.
+    """
+
+    trivia_question = forms.CharField(widget=forms.HiddenInput)
+    trivia = forms.CharField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(TriviaForm, self).__init__(*args, **kwargs)
+        self.fields.keyOrder.append(self.fields.keyOrder.pop(1))
+
+    def clean_trivia(self):
+        human = True
+
+        if 'trivia' in self.cleaned_data:
+            human = re.match(
+                trivia.questions[self.cleaned_data['trivia_question']] + '$',
+                self.cleaned_data['trivia'], re.I)
+
+        request = Request()
+        request.successful = bool(human)
+        request.serialise(self.cleaned_data)
+        request.save()
+
+        if not human:
+            hint = (
+                "That's not right, sorry. There are hints <a href='https://"
+                "github.com/colons/nkdsu/blob/master/vote/trivia.py'>here</a>."
+            )
+
+            raise forms.ValidationError([mark_safe(hint)])
+
+        return self.cleaned_data['trivia']
+
+
+class BadMetadataForm(TriviaForm):
+    details = forms.CharField(widget=forms.Textarea,
+                              label="What needs fixing?", required=False)
+    contact = EmailOrTwitterField(label="Email/Twitter (not required)",
+                                  required=False)
+
+
+class RequestForm(TriviaForm):
     title = forms.CharField(required=False)
     artist = forms.CharField(required=False)
     show = forms.CharField(label="Source Anime", required=False)
@@ -50,8 +93,6 @@ class RequestForm(forms.Form):
                               label="Additional Details", required=False)
     contact = EmailOrTwitterField(label="Email Address/Twitter name",
                                   required=True)
-    trivia_question = forms.CharField(widget=forms.HiddenInput)
-    trivia = forms.CharField(required=True)
 
     def clean(self):
         cleaned_data = super(RequestForm, self).clean()
@@ -64,24 +105,6 @@ class RequestForm(forms.Form):
         if len(filled) < 2:
             raise forms.ValidationError(
                 "I'm sure you can give us more information than that.")
-
-        if 'trivia' in cleaned_data:
-            human = re.match(
-                trivia.questions[cleaned_data['trivia_question']] + '$',
-                cleaned_data['trivia'], re.I)
-
-            hint = (
-                "That's not right, sorry. There are hints <a href='https://"
-                "github.com/colons/nkdsu/blob/master/vote/trivia.py'>here</a>."
-            )
-
-            if not human:
-                self._errors['trivia'] = self.error_class([mark_safe(hint)])
-
-        request = Request()
-        request.successful = 'trivia' not in self._errors.keys()
-        request.serialise(cleaned_data)
-        request.save()
 
         return cleaned_data
 

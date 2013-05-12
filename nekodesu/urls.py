@@ -23,6 +23,11 @@ urlpatterns = patterns('',
     url(r'^stats/$', 'vote.views.stats', name='stats'),
     url(r'^user/(?P<screen_name>[_0-9a-zA-Z]+)/$', 'vote.views.user', name='user'),
 
+    # tracks
+    url(r'^(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track'),
+    url(r'^(?P<slug>[^/]*)/(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track_by_slug'),
+    url(r'^(?P<track_id>[0-9A-F]{16})/report/$', 'vote.views.report_bad_metadata', name='report'),
+
     # registration
     url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
     url(r'^login/', 'django.contrib.auth.views.login', name='login'),
@@ -68,8 +73,4 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-
-    # tracks
-    url(r'^(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track'),
-    url(r'^(?P<slug>[^/]*)/(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track_by_slug'),
 )

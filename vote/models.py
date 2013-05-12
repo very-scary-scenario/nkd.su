@@ -887,10 +887,14 @@ class Track(models.Model):
         return slugify(self.derived_title())
 
     def rel_url(self):
-        return '/%s/%s/' % (self.slug(), self.id)
+        return reverse('track_by_slug', kwargs={'slug': self.slug(),
+                                                'track_id': self.id})
 
     def url(self):
         return 'http://nkd.su' + self.rel_url()
+
+    def report_url(self):
+        return reverse('report', kwargs={'track_id': self.id})
 
     def vote_url(self):
         tweet = '@%s %s' % (settings.READING_USERNAME, self.url())

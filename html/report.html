@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h2 class=message>{{ title }}</h2>
+<p class=subheading><a href="{{ track.rel_url }}">{{ track.canonical_string }}</a></p>
+
+<form class="reqeust" method="post" enctype="multipart/form-data" action=".">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="submit">
+</form>
+
+{% endblock %}

@@ -25,7 +25,7 @@ from vote.models import (User, Track, Play, Block, Shortlist, ManualVote, Week,
                          latest_play, length_str, total_length, tweet_len,
                          tweet_url, Discard, vote_tweet, Request)
 from vote.forms import (RequestForm, SearchForm, LibraryUploadForm,
-                        ManualVoteForm, BlockForm)
+                        ManualVoteForm, BlockForm, BadMetadataForm)
 from vote.update_library import update_library
 from vote import trivia
 
@@ -579,8 +579,51 @@ def upload_library(request):
             return redirect('/hidden/')
 
 
+def report_bad_metadata(request, track_id):
+    track = Track.objects.get(id=track_id)
+
+    question = choice(trivia.questions.keys())
+    d = {'trivia_question': question, 'track_id': track_id}
+
+    if request.method == 'POST':
+        form = BadMetadataForm(request.POST)
+    else:
+        form = BadMetadataForm(initial=d)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            f = form.cleaned_data
+
+            fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
+            fields.append(track.url())
+
+            send_mail(
+                '[nkd.su report] %s' % track.canonical_string(),
+                '\n\n'.join(fields),
+                '"nkd.su" <nkdsu@bldm.us>',
+                [settings.REQUEST_CURATOR],
+            )
+
+            context = {'message': 'thanks for letting us know'}
+
+            return render_to_response('message.html',
+                                      RequestContext(request, context))
+
+    form.fields['trivia'].label = 'Captcha: %s' % question
+    form.data['trivia'] = ''
+    form.data['trivia_question'] = question
+
+    context = {
+        'title': 'report bad metadata',
+        'track': track,
+        'form': form,
+        'no_select': True,
+    }
+
+    return render_to_response('report.html', RequestContext(request, context))
+
+
 def request_addition(request):
-    d = {}
     question = choice(trivia.questions.keys())
     d = {'trivia_question': question}
 
@@ -617,6 +660,7 @@ def request_addition(request):
     context = {
         'title': 'request an addition',
         'form': form,
+        'no_select': True,
     }
 
     return render_to_response('request.html', RequestContext(request, context))

@@ -459,6 +459,10 @@ div.tweet_deets p.meta.when {
   color: #666;
 }
 
+div.track span.report {
+  display: none;
+}
+
 p.refusal {
   color: #aaa;
 }
@@ -899,6 +903,25 @@ table.stats.tracks td.summary {
     border-bottom: none;
   }
 
+  div.track:hover span.report,
+  div.tracklist.solo div.track span.report {
+    display: inline;
+    position: absolute;
+    bottom: -.2em;
+    right: -.4em;
+    width: 100%;
+    text-align: right;
+    font-size: .7em;
+  }
+
+  div.track:hover span.report a,
+  div.tracklist.solo div.track span.report a {
+    background-color: #fdd;
+    border: 1px solid #d66;
+    padding: .3em .4em .1em;
+    border-radius: .3em;
+    line-height: 1em;
+  }
 
   table.stats .summary {
     width: 67%;

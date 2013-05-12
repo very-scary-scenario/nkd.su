@@ -7,7 +7,7 @@
   {% for request in requests %}
     <div class="trivia{% if request.successful %} successful{% endif %}">
       {% with request.struct as struct %}
-        <p class="created">{{ request.when }}, {{ struct.contact }}</p>
+      <p class="created">{{ request.when }}{% if struct.contact %}, {{ struct.contact }}{% endif %}</p>
         <div class="exchange">
           <p class="question">{{ struct.trivia_question }}</p>
           <p class="answer">{{ struct.trivia }}</p>
