@@ -407,7 +407,7 @@ class Week(object):
         except AttributeError:
             pass
 
-        votes = self._votes(track)
+        votes = self._votes(track).exclude(screen_name='Timcanpies')
         manual_votes = self._manual_votes(track)
         self.vote_tuple_cache = (votes, manual_votes)
 
