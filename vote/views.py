@@ -23,7 +23,7 @@ from django.views.decorators.cache import cache_page
 
 from vote.models import (User, Track, Play, Block, Shortlist, ManualVote, Week,
                          latest_play, length_str, total_length, tweet_len,
-                         tweet_url, Discard, vote_tweet, Request)
+                         tweet_url, Discard, vote_tweet, Request, Abuser)
 from vote.forms import (RequestForm, SearchForm, LibraryUploadForm,
                         ManualVoteForm, BlockForm, BadMetadataForm)
 from vote.update_library import update_library
@@ -48,7 +48,7 @@ def summary(request, week=None):
 
     form = SearchForm()
 
-    unfiltered_tracklist = week.tracks_sorted_by_votes()
+    unfiltered_tracklist = week.tracks_sorted_by_votes(exclude_abusers=True)
 
     if request.user.is_authenticated():
         tracklist = [t for t in unfiltered_tracklist if t.eligible()
@@ -182,7 +182,6 @@ def track(request, track_id, slug=None):
     return render_to_response('track.html', RequestContext(request, context))
 
 
-@cache_page(60 * 5)
 def user(request, screen_name):
     """ Shrines """
 
@@ -799,6 +798,20 @@ def hide(request, track_id):
 @login_required
 def unhide(request, track_id):
     return hide_or_unhide(request, track_id, False)
+
+
+@login_required
+def toggle_abuse(request, user_id):
+    our_abuser = Abuser.objects.filter(user_id=user_id)
+
+    if our_abuser.exists():
+        our_abuser.delete()
+    else:
+        Abuser(user_id=user_id).save()
+
+    user = User(user_id)
+
+    return redirect(user.get_absolute_url())
 
 
 @login_required

@@ -13,6 +13,15 @@
       </a>
     </p>
     <p class="subheading">batting at {{ voter.batting_average }}</p>
+    {% if user.is_authenticated %}
+      <p class="subheading"><a href="{% url toggle_abuse voter.id %}">
+        {% if voter.is_abuser %}
+          redeem {{ voter }}
+        {% else %}
+          condemn {{ voter }}
+        {% endif %}
+      </a></p>
+    {% endif %}
     <p class="subheading">
       <a class="avatar" href="{{ voter.twitter_url }}">
         <img class="avatar" src="{{ voter.user_image }}" alt="{{ voter.name }}"></img>

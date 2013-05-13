@@ -366,8 +366,8 @@ class Week(object):
 
         return False
 
-    def tracks_sorted_by_votes(self):
-        votes = self.votes()
+    def tracks_sorted_by_votes(self, exclude_abusers=False):
+        votes = self.votes(exclude_abusers=exclude_abusers)
         track_dict = {}
 
         # we need the track dict to be persistent so that stuff that is
@@ -390,15 +390,17 @@ class Week(object):
         return sorted(track_dict.values(), reverse=True,
                       key=lambda t: vote_dict[t.id])
 
-    def votes(self, track=None):
+    def votes(self, track=None, exclude_abusers=False):
         """
         Get all votes of any kind (for a particular track) from this week
         """
 
-        votes, manual_votes = self.votes_in_a_tuple(track=track)
+        votes, manual_votes = self.votes_in_a_tuple(
+            track=track, exclude_abusers=exclude_abusers)
+
         return list(votes) + list(manual_votes)
 
-    def votes_in_a_tuple(self, track=None):
+    def votes_in_a_tuple(self, track=None, exclude_abusers=False):
         """
         Returns all Votes and ManualVotes from this week in a tuple of
         QuerySets
@@ -411,7 +413,12 @@ class Week(object):
         except AttributeError:
             pass
 
-        votes = self._votes(track).exclude(screen_name='Timcanpies')
+        votes = self._votes(track)
+
+        if exclude_abusers:
+            votes = votes.exclude(user_id__in=(a.user_id for a in
+                                               Abuser.objects.all()))
+
         manual_votes = self._manual_votes(track)
         self.vote_tuple_cache = (votes, manual_votes)
 
@@ -581,6 +588,9 @@ class User(object):
 
         self._batting_average = '%i%%' % avg
         return self._batting_average
+
+    def is_abuser(self):
+        return Abuser.objects.filter(user_id=self.id).exists()
 
     @classmethod
     def create_alias(cls, attrib):
@@ -1162,3 +1172,7 @@ class Request(models.Model):
 
     def when(self):
         return when(self.created)
+
+
+class Abuser(models.Model):
+    user_id = models.IntegerField(primary_key=True)

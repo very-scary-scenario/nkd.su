@@ -52,6 +52,8 @@ urlpatterns = patterns('',
     url(r'^shortlist/(?P<track_id>.+)/$', 'vote.views.shortlist', name='shortlist'),
     url(r'^discard/(?P<track_id>.+)/$', 'vote.views.discard', name='discard'),
     url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'vote.views.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
+
+    url(r'^abuse/(?P<user_id>.+)/$', 'vote.views.toggle_abuse', name='toggle_abuse'),
     
     # API
     url(r'^info/api/$', 'vote.views.api_docs', name='api_docs'),

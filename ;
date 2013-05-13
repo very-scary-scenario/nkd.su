@@ -53,6 +53,5 @@ for model, modeladmin in [
         (models.ScheduleOverride, ScheduleOverrideAdmin),
         (models.RobotApocalypse, RobotApocalypseAdmin),
         (models.Request, RequestAdmin),
-        (models.Abuser, AbuserAdmin),
-]:
+        (models.Abuser, AbuserAdmin)]:
     admin.site.register(model, modeladmin)
