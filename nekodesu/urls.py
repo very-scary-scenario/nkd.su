@@ -23,15 +23,6 @@ urlpatterns = patterns('',
     url(r'^stats/$', 'vote.views.stats', name='stats'),
     url(r'^user/(?P<screen_name>[_0-9a-zA-Z]+)/$', 'vote.views.user', name='user'),
 
-    # tracks
-    url(r'^(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track'),
-    url(r'^(?P<slug>[^/]*)/(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track_by_slug'),
-    url(r'^(?P<track_id>[0-9A-F]{16})/report/$', 'vote.views.report_bad_metadata', name='report'),
-
-    # registration
-    url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
-    url(r'^login/', 'django.contrib.auth.views.login', name='login'),
-
     # peter functions
     url(r'^played/(?P<track_id>.+)/$', 'vote.views.mark_as_played', name='mark_as_played'),
     url(r'^unplay/(?P<track_id>.+)/$', 'vote.views.unmark_as_played', name='unmark_as_played'),
@@ -54,7 +45,16 @@ urlpatterns = patterns('',
     url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'vote.views.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
 
     url(r'^abuse/(?P<user_id>.+)/$', 'vote.views.toggle_abuse', name='toggle_abuse'),
-    
+
+    # tracks
+    url(r'^(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track'),
+    url(r'^(?P<slug>[^/]*)/(?P<track_id>[0-9A-F]{16})/$', 'vote.views.track', name='track_by_slug'),
+    url(r'^(?P<track_id>[0-9A-F]{16})/report/$', 'vote.views.report_bad_metadata', name='report'),
+
+    # registration
+    url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
+    url(r'^login/', 'django.contrib.auth.views.login', name='login'),
+
     # API
     url(r'^info/api/$', 'vote.views.api_docs', name='api_docs'),
 
