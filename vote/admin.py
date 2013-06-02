@@ -39,7 +39,7 @@ class RequestAdmin(admin.ModelAdmin):
 
 
 class AbuserAdmin(admin.ModelAdmin):
-    list_display = ('user_id',)
+    pass
 
 
 for model, modeladmin in [

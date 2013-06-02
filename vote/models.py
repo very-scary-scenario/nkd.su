@@ -493,7 +493,7 @@ class Week(object):
 class User(object):
     """ A twitter user """
     def __unicode__(self):
-        return self.screen_name()
+        return unicode(self.screen_name())
 
     def __repr__(self):
         return self.screen_name()
@@ -594,7 +594,18 @@ class User(object):
 
     @classmethod
     def create_alias(cls, attrib):
-        func = lambda self: getattr(self.most_recent_vote(), attrib)
+        def func(self):
+            try:
+                value = getattr(self.most_recent_vote(), attrib)
+            except IndexError:
+                try:
+                    value = getattr(tw_api.get_user(screen_name=self.id),
+                                    attrib)
+                except tweepy.TweepError:
+                    return self.id
+
+            return value
+
         setattr(cls, attrib, func)
 
 
@@ -1176,3 +1187,6 @@ class Request(models.Model):
 
 class Abuser(models.Model):
     user_id = models.IntegerField(primary_key=True)
+
+    def __unicode__(self):
+        return unicode(User(self.user_id))
