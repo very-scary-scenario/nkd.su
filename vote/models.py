@@ -330,8 +330,12 @@ class Week(object):
             except c.DoesNotExist:
                 return None
         else:
-            tracks = [s.track for s in c.objects.filter(
-                date__range=self.date_range)]
+            objects = c.objects.filter(date__range=self.date_range)
+
+            if c == Shortlist:
+                objects = sorted(objects, key=lambda o: o.index)
+
+            tracks = [s.track for s in objects]
             # to prevent redundant Week creation
             [setattr(t, '_vote_week', self) for t in tracks]
             [setattr(t, '_current_week', self) for t in tracks]
@@ -1109,6 +1113,7 @@ class Block(models.Model):
 class Shortlist(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     track = models.ForeignKey(Track)
+    index = models.IntegerField(default=0)
 
     def clean(self):
         conflict = Week(self.date).shortlist_or_discard(self.track)

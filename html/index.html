@@ -14,9 +14,13 @@
 <div class="shortlist {% if playlist %}limited{% endif %}" id="shortlist">
 <h3 class="heading">shortlist</h3>
 <p class="minor subheading">&mdash; {{ shortlist_len }} &mdash;</p>
-    {% for track in shortlist %}
-    {% include "trackrow.html" %}
-    {% endfor %}
+<ul>
+  {% for track in shortlist %}
+    <li id="shortlist_{{ track.id }}">
+      {% include "trackrow.html" %}
+    </li>
+  {% endfor %}
+</ul>
 </div>
 {% endif %}
 
@@ -46,4 +50,21 @@
 </div>
 {% endif %}
 
+{% endblock %}
+
+{% block footer_scripts %}
+  {% if shortlist %}
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
+    <script>
+      var s = $('#shortlist ul');
+      s.sortable({
+        update: function(e, ui) {
+          // send the new order to the server
+          string = s.sortable("serialize");
+          url = "{% url shortlist_order %}?" + string;
+          $.ajax(url);
+        }
+      });
+    </script>
+  {% endif %}
 {% endblock %}

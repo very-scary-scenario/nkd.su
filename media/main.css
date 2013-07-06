@@ -468,6 +468,7 @@ p.refusal {
 }
 
 /* shrunken track tables */
+
 div.shortlist div.track {
   font-size: .8em;
   width: 80%;
@@ -478,6 +479,15 @@ div.shortlist .voter img {
   height: 25px;
   width: 25px;
 }
+
+/* wipe styles for sortable shortlist */
+
+#shortist li, #shortlist ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 
 /* login form */
 form.login tr {

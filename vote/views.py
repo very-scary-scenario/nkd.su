@@ -11,7 +11,7 @@ from markdown import markdown
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
 from django.conf import settings
@@ -19,7 +19,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
-from django.views.decorators.cache import cache_page
 
 from vote.models import (User, Track, Play, Block, Shortlist, ManualVote, Week,
                          latest_play, length_str, total_length, tweet_len,
@@ -775,6 +774,19 @@ def shortlist(request, track_id):
 @login_required
 def discard(request, track_id):
     return shortlist_or_discard(request, track_id, Discard)
+
+
+@login_required
+def shortlist_order(request):
+    id_order = request.GET.getlist('shortlist[]')
+
+    for index, the_id in enumerate(id_order):
+        track = Track.objects.get(id=the_id)
+        shortlist = Shortlist.objects.get(track=track)
+        shortlist.index = index
+        shortlist.save()
+
+    return HttpResponse('cool')
 
 
 @login_required

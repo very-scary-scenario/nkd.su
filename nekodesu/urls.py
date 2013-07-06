@@ -41,6 +41,7 @@ urlpatterns = patterns('',
     url(r'^trivia/$', 'vote.views.bad_trivia', name='bad_trivia'),
 
     url(r'^shortlist/(?P<track_id>.+)/$', 'vote.views.shortlist', name='shortlist'),
+    url(r'^shortlist_order/$', 'vote.views.shortlist_order', name='shortlist_order'),
     url(r'^discard/(?P<track_id>.+)/$', 'vote.views.discard', name='discard'),
     url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'vote.views.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
 
