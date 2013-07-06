@@ -366,6 +366,7 @@ div.track {
   padding: .5em 0;
   display: table;
   width: 100%;
+  background-clip: padding-box;
 }
 
 div.track div.metadata, div.track div.votedata {
