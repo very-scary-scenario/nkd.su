@@ -779,10 +779,11 @@ def discard(request, track_id):
 @login_required
 def shortlist_order(request):
     id_order = request.GET.getlist('shortlist[]')
+    week = Week()
 
     for index, the_id in enumerate(id_order):
         track = Track.objects.get(id=the_id)
-        shortlist = Shortlist.objects.get(track=track)
+        shortlist = week.shortlist(track=track)
         shortlist.index = index
         shortlist.save()
 
