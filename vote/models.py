@@ -1120,6 +1120,11 @@ class Shortlist(models.Model):
         if conflict:
             conflict.delete()
 
+        if not self.index:
+            other = Shortlist.objects.filter(date__range=Week().date_range)
+            highest_index = max([s.index for s in other])
+            self.index = highest_index + 1
+
 
 class Discard(models.Model):
     date = models.DateTimeField(auto_now_add=True)
