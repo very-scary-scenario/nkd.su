@@ -1122,8 +1122,10 @@ class Shortlist(models.Model):
 
         if not self.index:
             other = Shortlist.objects.filter(date__range=Week().date_range)
-            highest_index = max([s.index for s in other])
-            self.index = highest_index + 1
+            if other.exists():
+                self.index = max([s.index for s in other]) + 1
+            else:
+                self.index = 0
 
 
 class Discard(models.Model):
