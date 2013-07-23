@@ -318,6 +318,7 @@ form#search input {
   font-family: "Bitter", "Calibri", serif;
   padding: .1em .3em;
   font-size: 1.1em;
+  color: #333;
 }
 
 form#search input#query:focus {
