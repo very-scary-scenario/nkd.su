@@ -1075,7 +1075,7 @@ class Play(models.Model):
 
     datetime = models.DateTimeField()
     track = models.ForeignKey(Track)
-    tweet_id = models.IntegerField(blank=True)
+    tweet_id = models.IntegerField(blank=True, null=True)
 
     def clean(self):
         if (not is_on_air(self.datetime)) and (not settings.DEBUG):
