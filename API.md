@@ -31,7 +31,7 @@ Information about a particular track, including metadata and a list of every
 play on record.
 
 Note that the `plays` list is only included for tracks in calls to
-`/track/<track_id>`; tracks returned as part of other endpojnts will not have
+`/track/<track_id>`; tracks returned as part of other endpoints will not have
 `plays` listed.
 
 ### [`/search/?q=query[&page=page]`][eg_search]
