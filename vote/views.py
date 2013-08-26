@@ -10,6 +10,7 @@ import tweepy
 from markdown import markdown
 
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.http import Http404, HttpResponse
 from django.shortcuts import render_to_response, redirect
@@ -98,12 +99,17 @@ def summary(request, week=None):
     return render
 
 
-def roulette(request):
+def roulette(request, mode=None):
     """ Five random tracks """
-    any_tracks = Track.objects.filter().order_by('?')
+    if mode is None:
+        any_tracks = Track.objects.filter()
+    else:
+        any_tracks = Track.objects.filter(play=None)
 
     if not request.user.is_authenticated():
         any_tracks = any_tracks.filter(hidden=False, inudesu=False)
+
+    any_tracks = any_tracks.order_by('?')
 
     tracks = []
     pos = 0
@@ -117,6 +123,7 @@ def roulette(request):
         'section': 'surprise me',
         'title': 'surprise me',
         'tracks': tracks,
+        'mode': mode,
     }
 
     return render_to_response('tracks.html', RequestContext(request, context))
