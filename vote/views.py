@@ -10,7 +10,6 @@ import tweepy
 from markdown import markdown
 
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.http import Http404, HttpResponse
 from django.shortcuts import render_to_response, redirect
@@ -926,6 +925,7 @@ def get_stats():
     user_votes = {}
     user_weeks = {}  # the number of weeks a user has participated
     weeks_since_user_voted = {}
+    user_streak_lengths = {}
 
     week = Week()
     # roll back until we're at a week that there was a show on
@@ -934,36 +934,43 @@ def get_stats():
 
     weeks = []
 
-    weeks_before_now = 1
-
-    # iterate through weeks, getting information on each
-    while week.has_plays() and weeks_before_now <= 26:
+    # make a list of weeks
+    while week.has_plays():
         weeks.append(week)
+        week = week.prev()
 
-        users = set()
+    for depth, week in enumerate(weeks, start=1):
+        users_that_voted = set()
 
         # in this case, we don't care about manual votes, so we use
         # week._votes()
         for vote in week._votes():
             if vote.get_tracks().exists():
-                users.add(vote.user_id)
-            for track in vote.get_tracks():
-                increment(track_votes, track)
-                increment(user_votes, vote.user_id)
+                users_that_voted.add(vote.user_id)
 
-                if track in week.tracks_played():
-                    increment(user_successes, vote.user_id)
-                else:
-                    increment(user_denials, vote.user_id)
+            if depth < 26:  # we don't care about most stats older than this
+                for track in vote.get_tracks():
+                    increment(track_votes, track)
+                    increment(user_votes, vote.user_id)
 
-        for user in users:
-            increment(user_weeks, user)
+                    if track in week.tracks_played():
+                        increment(user_successes, vote.user_id)
+                    else:
+                        increment(user_denials, vote.user_id)
 
-            if user not in weeks_since_user_voted:
-                weeks_since_user_voted[user] = weeks_before_now
+                for user in users_that_voted:
+                    increment(user_weeks, user)
 
-        week = week.prev()
-        weeks_before_now += 1
+                    if user not in weeks_since_user_voted:
+                        weeks_since_user_voted[user] = depth
+
+        if depth == 1:
+            user_streaks_running = set(users_that_voted)
+
+        for user in list(user_streaks_running):
+            if not user in users_that_voted:
+                user_streak_lengths[user] = depth
+                user_streaks_running.remove(user)
 
     unfiltered_user_success_ratios = top(
         make_relative(user_successes, user_votes))
@@ -993,8 +1000,9 @@ def get_stats():
             },
             {
                 'name': 'most obsessive users',
-                'stats': useful(top(user_weeks)[:top_count]),
-                'heading': 'weeks voted',
+                'stats': useful(top(user_streak_lengths)[:top_count]),
+                'heading': 'current streak',
+                'unlimited': True,
             },
         ),
         },

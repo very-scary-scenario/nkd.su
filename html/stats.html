@@ -3,7 +3,7 @@
 
 {% block content %}
 
-{% cache 3600 stat week "profiles" %}
+{% cache 3600 stat week "streaks" %}
   
   {% for stat in stats %}
 
@@ -11,7 +11,9 @@
 
       {% for stat in stat.items %}
         <h2 id="{{ stat.name }}">{{ stat.name }}</h2>
-        <p class="subheading">in the last six months</p>
+        {% if not stat.unlimited %}
+          <p class="subheading">in the last six months</p>
+        {% endif %}
         <table class="stats users">
           <tr>
             <th class="summary"><span>user</span></th>
