@@ -3,14 +3,14 @@
 
 {% block content %}
 
-{% cache 3600 stat week "streaks" %}
+{% cache 3600 stat week "valid-ids" %}
   
   {% for stat in stats %}
 
     {% if stat.type == 'user_stats' %}
 
       {% for stat in stat.items %}
-        <h2 id="{{ stat.name }}">{{ stat.name }}</h2>
+        <h2 id="{{ stat.name|slugify }}">{{ stat.name }}</h2>
         {% if not stat.unlimited %}
           <p class="subheading">in the last six months</p>
         {% endif %}
@@ -39,7 +39,7 @@
     {% else %}
 
       {% for stat in stat.items %}
-        <h2 id="{{ stat.name }}">{{ stat.name }}</h2>
+        <h2 id="{{ stat.name|slugify }}">{{ stat.name }}</h2>
         <p class="subheading">in the last six months</p>
         <table class="stats tracks">
           <tr>
