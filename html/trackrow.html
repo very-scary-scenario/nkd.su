@@ -62,7 +62,7 @@
           {% if track.ineligible and track.ineligible == 'blocked' %}
             | <a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>
           {% elif track.eligible %}
-            | <a href="/block/{{ track.id }}/">block&hellip;</a>
+            | <a href="/block/{{ track.id }}/">block&hellip;</a> | <a href="/block/{{ track.id }}/reason?reason=announced">announce</a>
           {% endif %}
         </p>
         <p class="peter">

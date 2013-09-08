@@ -30,8 +30,9 @@ urlpatterns = patterns('',
 
     url(r'^vote/(?P<track_id>.+)/$', 'vote.views.make_vote', name='make_vote'),
 
-    url(r'^block/(?P<track_id>.+)/$', 'vote.views.make_block', name='make_block'),
-    url(r'^unblock/(?P<track_id>.+)/$', 'vote.views.unblock', name='unblock'),
+    url(r'^block/(?P<track_id>[^/]+)/reason$', 'vote.views.make_block_with_reason', name='make_block_with_reason'),
+    url(r'^block/(?P<track_id>[^/]+)/$', 'vote.views.make_block', name='make_block'),
+    url(r'^unblock/(?P<track_id>[^/]+)/$', 'vote.views.unblock', name='unblock'),
 
     url(r'^hidden/$', 'vote.views.hidden', name='hidden'),
     url(r'^hide/(?P<track_id>.+)/$', 'vote.views.hide', name='hide'),

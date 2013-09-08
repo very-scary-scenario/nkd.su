@@ -732,6 +732,24 @@ def make_block(request, track_id):
 
 
 @login_required
+def make_block_with_reason(request, track_id):
+    """
+    Block a track for a GET-defined reason.
+    """
+
+    tracks = get_track_or_selection(request, track_id, wipe=False)
+    reason = request.GET.get('reason', None)
+
+    if reason is None:
+        raise Http404
+
+    for track in tracks:
+        Block(track=track, reason=reason).save()
+
+    return redirect('/')
+
+
+@login_required
 def unblock(request, track_id):
     tracks = get_track_or_selection(request, track_id)
     week = Week()
