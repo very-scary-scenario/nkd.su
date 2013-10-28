@@ -1,4 +1,3 @@
-# Create your views here.
 # -*- coding: utf-8 -*-
 
 import codecs
@@ -11,6 +10,7 @@ from markdown import markdown
 
 from django.core.exceptions import ValidationError
 from django.template import RequestContext
+from django.shortcuts import get_object_or_404
 from django.http import Http404, HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.utils import timezone
@@ -690,7 +690,7 @@ def get_track_or_selection(request, track_id, wipe=True):
         if wipe:
             request.session['selection'] = []
     else:
-        tracks = (Track.objects.get(id=track_id),)
+        tracks = get_object_or_404(Track, id=track_id),
 
     return tracks
 
