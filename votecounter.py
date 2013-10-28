@@ -18,4 +18,6 @@ while votes:
 counter = Counter(tracks)
 
 most_voted = counter.most_common(100)
-print '\n'.join(['%s %s' % m for m in most_voted])
+print '\n'.join([(u'%s %s %s' % (m[1], m[0][0].showtime.date().isoformat(),
+                                 m[0][1].canonical_string())).encode('utf-8')
+                 for m in most_voted])
