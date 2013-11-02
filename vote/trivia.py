@@ -1,6 +1,6 @@
 questions = {
     'We have always treaded ____':
-    r'(the )?borderlands?',
+    r'.*borderlands?.*',
 
     'JIBUN ____':
     r'WO+',
@@ -12,7 +12,7 @@ questions = {
     r'(shop)|(wub)',
 
     'Ever hosted a fun-filled ____?':
-    r'party',
+    r'parta?y',
 
     'BA BA BA BADIADIA BA BA ____':
     r'[BADIYUH !]+',
