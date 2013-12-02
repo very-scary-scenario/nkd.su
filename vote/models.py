@@ -517,7 +517,8 @@ class User(object):
                 # they last changed their name. Just in case it's the latter,
                 # get their user ID from the Twitter API.
                 try:
-                    user_id = tw_api.get_user(screen_name=user_id).id
+                    self._twitter_user = tw_api.get_user(screen_name=user_id)
+                    user_id = self.twitter_user.id
                 except tweepy.TweepError:
                     raise Http404
 
@@ -596,25 +597,36 @@ class User(object):
     def is_abuser(self):
         return Abuser.objects.filter(user_id=self.id).exists()
 
-    @classmethod
-    def create_alias(cls, attrib):
-        def func(self):
+    @property
+    def twitter_user(self):
+        if not hasattr(self, '_twitter_user'):
+            self. _twitter_user = tw_api.get_user(screen_name=self.id)
+
+        return self._twitter_user
+
+    def _get_attrib(self, attrib, api_attrib=None):
+        if api_attrib is None:
+            api_attrib = attrib
+
+        try:
+            value = getattr(self.most_recent_vote(), attrib)
+        except IndexError:
             try:
-                value = getattr(self.most_recent_vote(), attrib)
-            except IndexError:
-                try:
-                    value = getattr(tw_api.get_user(screen_name=self.id),
-                                    attrib)
-                except tweepy.TweepError:
-                    return self.id
+                value = getattr(self.twitter_user, api_attrib)
+                print value
+            except tweepy.TweepError:
+                raise Http404
 
-            return value
+        return value
 
-        setattr(cls, attrib, func)
+    def screen_name(self):
+        return self._get_attrib('screen_name')
 
+    def user_image(self):
+        return self._get_attrib('user_image', 'profile_image_url')
 
-for attrib in ['screen_name', 'name', 'user_image']:
-    User.create_alias(attrib)
+    def name(self):
+        return self._get_attrib('name')
 
 
 def vote_tweet(tracks):
