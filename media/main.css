@@ -935,6 +935,15 @@ table.stats.tracks td.summary {
     line-height: 1em;
   }
 
+  div.track.ineligible span.report a:hover {
+    color: #333;
+  }
+
+  div.track.inudesu span.report a {
+    border-color: #68d;
+    background-color: #ddf;
+  }
+
   table.stats .summary {
     width: 67%;
   }
