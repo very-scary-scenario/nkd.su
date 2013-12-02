@@ -28,7 +28,17 @@
   <span class="report"><a href="{{ track.report_url }}">bad metadata?</a></span>
   <div class="metacontainer">
     <div class="metadata">
-      <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>
+      <p class="artist">
+        {% with track.artist_has_page as artist_has_page %}
+          {% if artist_has_page %}
+            <a href="/artist/{{ track.artist|urlencode }}/">
+          {% endif %}
+            {{ track.artist }}
+          {% if artist_has_page %}
+            </a>
+          {% endif %}
+        {% endwith %}
+      </p>
       <p class="title">
       <span class="title"><a href="{{ track.rel_url }}">{{ track.derived_title }}</a></span>
       </p>

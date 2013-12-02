@@ -815,6 +815,10 @@ class Track(models.Model):
     def artist(self):
         return self.id3_artist
 
+    def artist_has_page(self):
+        return Track.objects.filter(
+            id3_artist=self.id3_artist, hidden=False, inudesu=False).exists()
+
     def canonical_string(self):
         """ Get the string that, for instance, would be tweeted """
         title, role = split_id3_title(self.id3_title)
