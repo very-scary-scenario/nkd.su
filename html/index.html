@@ -2,6 +2,23 @@
 
 {% block content %}
 
+{% if not user.is_authenticated %}
+  <div id="tblc-promo">
+    <div id="tblc-art">
+      <a href="http://desus.bandcamp.com/album/take-back-love-city">
+        <img src="http://colons.co/tblc.jpg">
+      </a>
+    </div>
+    <div id="tblc-text">
+      <a href="http://desus.bandcamp.com/album/take-back-love-city">
+        <h2>Take Back Love City</h2>
+      </a>
+      <p>Peter Shillito singing <em>Renai Circulation</em>, <em>D City Rock</em> and <em>Ai wo Torimodose</em> in aid of the RSPCA.</p>
+      <p><a href="http://desus.bandcamp.com/album/take-back-love-city">Yours this <code>[holiday]</code> for just £4.</a></p>
+    </div>
+  </div>
+{% endif %}
+
 {% if playlist %}
 <div class="playlist today">
 <h2 class="heading">played</h2>
