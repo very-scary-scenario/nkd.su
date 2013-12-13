@@ -1,4 +1,4 @@
-django<1.5
+django>=1.6,<1.7
 django-celery
 python-memcached
 django-debug-toolbar

@@ -1,16 +1,15 @@
-# Create your views here.
 # -*- coding: utf-8 -*-
+import json
+from datetime import datetime
 
-from vote.models import Week, Track
-from vote.views import split_query_into_keywords, search_for_tracks
-
+from django.core.paginator import Paginator, EmptyPage
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 from django.utils import timezone
-from datetime import datetime
-from django.utils import simplejson
-from django.core.serializers.json import DjangoJSONEncoder
-from django.core.paginator import Paginator, EmptyPage
+
+from vote.models import Week, Track
+from vote.views import split_query_into_keywords, search_for_tracks
 
 
 def last_week(request):
@@ -50,9 +49,8 @@ def week(request, date=None):
         'finish': week.finish,
     }
 
-    json = jsonify(the_show)
-
-    return HttpResponse(json, mimetype='application/json')
+    json_string = jsonify(the_show)
+    return HttpResponse(json_string, mimetype='application/json')
 
 
 def track(request, track_id):
@@ -61,8 +59,8 @@ def track(request, track_id):
     except Track.DoesNotExist:
         raise Http404
 
-    json = jsonify(the_track.api_dict(verbose=True))
-    return HttpResponse(json, mimetype='application/json')
+    json_string = jsonify(the_track.api_dict(verbose=True))
+    return HttpResponse(json_string, mimetype='application/json')
 
 
 def search(request):
@@ -91,9 +89,9 @@ def search(request):
         'results_count': paginator.count,
     }
 
-    json = jsonify(struc)
-    return HttpResponse(json, mimetype='application/json')
+    json_string = jsonify(struc)
+    return HttpResponse(json_string, mimetype='application/json')
 
 
 def jsonify(tree):
-    return simplejson.dumps(tree, cls=DjangoJSONEncoder, indent=2)
+    return json.dumps(tree, cls=DjangoJSONEncoder, indent=2)

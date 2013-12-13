@@ -78,7 +78,7 @@
         update: function(e, ui) {
           // send the new order to the server
           string = s.sortable("serialize");
-          url = "{% url shortlist_order %}?" + string;
+          url = "{% url 'shortlist_order' %}?" + string;
           $.ajax(url);
         }
       });
