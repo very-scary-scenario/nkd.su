@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import re
 import json
-import datetime
 
 from django.db import models
 from django.utils import timezone
@@ -15,24 +15,7 @@ from vote.utils import (length_str, split_id3_title, vote_tweet_intent_url,
                         reading_tw_api)
 
 
-def latest_play(track=None):
-    """
-    Get the latest play (for a particular track).
-    """
-
-    plays = Play.objects.all()
-
-    if track:
-        plays = plays.filter(track=track)
-
-    return plays.order_by('-datetime')[0]
-
-
-def total_length(tracks):
-    return sum([t.msec for t in tracks])
-
-
-class Show(models.model):
+class Show(models.Model):
     """
     A broadcast of the show and, by extention, the week leading up to it.
     """
@@ -41,7 +24,7 @@ class Show(models.model):
     end = models.DateTimeField()
 
     def __str__(self):
-        return '<week of %r>' % (self.showtime.date())
+        return '<Show for %r>' % (self.showtime.date())
 
     def __repr__(self):
         return str(self)
@@ -49,38 +32,64 @@ class Show(models.model):
     @classmethod
     def current(cls):
         """
-        Get (or create if necessary) the show that will next end.
+        Get (or create, if necessary) the show that will next end.
         """
 
-        cls.show_for(datetime.datetime.now())
+        return cls.show_for(timezone.now())
 
     @classmethod
     def at(cls, time):
         """
-        Get (or create if necessary) the show for `time`.
+        Get (or create, if necessary) the show for `time`.
         """
 
-        showtime_day = 5  # saturday
-        start_hour = 21
-        end_hour = 23
-        show_locale = timezone.get_current_timezone()
+        current_showtime = timezone.now() + settings.SHOWTIME
 
-        print showtime_day, start_hour, end_hour, show_locale  # fukken flake8
+        if time > current_showtime:
+            # We need to be wary of accidentally creating a show more than a
+            # week in the future, as doing so would prevent the creation of all
+            # intervening shows.
+            # This feels like an adequate compromise for the moment, and it
+            # shouldn't be too difficult to work around if it becomes necessary
+            # to start planning further in advance.
+            raise NotImplementedError('Cannot be called with dates falling '
+                                      'after the next showtime.')
 
-        # XXX be sure not to allow times in the future and think about the
-        # possible ramifications if this is not called at all for several weeks
+        shows_after_time = cls.objects.filter(end__gte=time)
+        if shows_after_time.exists():
+            show = shows_after_time.order_by('showtime')[0]
+        else:
+            # We have to switch to naive and back to make relativedelta
+            # look for the local showtime. If we did not, showtime would be
+            # calculated against UTC.
+            # Note that this could be a problem if a show is ever scheduled for
+            # a time that does not exist. If you're planning one, be sure to
+            # explicitly set which side of the clocks changing the show will be
+            # hosted at least a week in advance, or the site will start 500ing
+            # the moment the previous show ends.
+            naive_time = timezone.make_naive(time,
+                                             timezone.get_current_timezone())
+            naive_showtime = naive_time + settings.SHOWTIME
+            our_showtime = timezone.make_aware(naive_showtime,
+                                               timezone.get_current_timezone())
+            show = cls()
+            show.showtime = our_showtime
+            show.end = our_showtime + datetime.timedelta(hours=2)
+            show.save()
+
+        return show
 
     @classmethod
     def broadcasting_now(cls):
         """
-        Returns True if the show is broadcasting.
+        Return True if a show is broadcasting.
         """
 
-        # XXX
+        return cls.current().broadcasting(timezone.now())
 
     def broadcasting(self, time=None):
         """
-        Returns True if the time specified is during this week's show.
+        Return True if the time specified is during this week's show.
         """
 
         return (time >= self.showtime) and (time < self.finish)

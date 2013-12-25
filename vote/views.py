@@ -20,9 +20,6 @@ from django.utils.http import urlquote
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 
-from vote.models import (User, Track, Play, Block, Shortlist, ManualVote, Week,
-                         latest_play, length_str, total_length, tweet_len,
-                         tweet_url, Discard, vote_tweet, Request, Abuser)
 from vote.forms import (RequestForm, SearchForm, LibraryUploadForm,
                         ManualVoteForm, BlockForm, BadMetadataForm)
 from vote.update_library import update_library

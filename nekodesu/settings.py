@@ -28,6 +28,17 @@ EMAIL_HOST_USER = 'nivi@musicfortheblind.co.uk'
 # EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 
+# stuff about when the show is
+from dateutil.relativedelta import SA, relativedelta
+SHOWTIME = relativedelta(
+    weekday=SA,
+    hour=21,
+    minute=0,
+    second=0,
+    microsecond=0,
+)
+SHOW_LENGTH = 2
+
 HASHTAG = '#NekoDesu'
 INUDESU_HASHTAG = '#InuDesu'
 TMP_XML_PATH = '/tmp/songlibrary.xml'
@@ -163,9 +174,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 LOGIN_URL = '/login'
 LOGOUT_URL = '/logout'
 LOGIN_REDIRECT_URL = '/'
-# TWITTER_ARCHIVE = '/home/nivi/code/hrldcpr/twitter-archive/tweets/'
 
 try:
-    from nekodesu.settings_local import *
+    from nekodesu.settings_local import *  # noqa
 except ImportError:
     pass

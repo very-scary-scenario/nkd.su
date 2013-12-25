@@ -7,7 +7,7 @@ from django.core.validators import validate_email
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
-from vote.models import ManualVote, Request
+from vote.models import Vote, Request
 from vote import trivia
 
 
@@ -118,7 +118,8 @@ class ManualVoteForm(forms.ModelForm):
     """ Make a manual vote! """
 
     class Meta:
-        model = ManualVote
+        # XXX pick safe things
+        model = Vote
 
 
 class BlockForm(forms.Form):

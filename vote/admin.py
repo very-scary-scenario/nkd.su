@@ -2,16 +2,20 @@ from vote import models
 from django.contrib import admin
 
 
+class ShowAdmin(admin.ModelAdmin):
+    list_display = ('showtime', 'end')
+
+
+class TwitterUserAdmin(admin.ModelAdmin):
+    list_display = ('screen_name', 'is_abuser')
+
+
 class VoteAdmin(admin.ModelAdmin):
-    list_display = ('screen_name', 'date', 'name')
+    list_display = ('twitter_user', 'date')
 
 
 class TrackAdmin(admin.ModelAdmin):
     list_display = ('id3_title', 'id3_artist')
-
-
-class ManualVoteAdmin(admin.ModelAdmin):
-    list_display = ('name', 'message', 'track', 'date')
 
 
 class PlayAdmin(admin.ModelAdmin):
@@ -19,40 +23,26 @@ class PlayAdmin(admin.ModelAdmin):
 
 
 class BlockAdmin(admin.ModelAdmin):
-    list_display = ('track', 'reason', 'date')
+    list_display = ('track', 'reason', 'show')
 
 
 class DiscardShortlistAdmin(admin.ModelAdmin):
-    list_display = ('track', 'date')
-
-
-class ScheduleOverrideAdmin(admin.ModelAdmin):
-    list_display = ('overridden_showdate', 'start', 'finish')
-
-
-class RobotApocalypseAdmin(admin.ModelAdmin):
-    list_display = ('overridden_showdate',)
+    list_display = ('track', 'show')
 
 
 class RequestAdmin(admin.ModelAdmin):
     list_display = ('created', 'successful')
 
 
-class AbuserAdmin(admin.ModelAdmin):
-    pass
-
-
 for model, modeladmin in [
+        (models.Show, ShowAdmin),
+        (models.TwitterUser, TwitterUserAdmin),
         (models.Track, TrackAdmin),
         (models.Vote, VoteAdmin),
-        (models.ManualVote, ManualVoteAdmin),
         (models.Play, PlayAdmin),
         (models.Block, BlockAdmin),
         (models.Shortlist, DiscardShortlistAdmin),
         (models.Discard, DiscardShortlistAdmin),
-        (models.ScheduleOverride, ScheduleOverrideAdmin),
-        (models.RobotApocalypse, RobotApocalypseAdmin),
         (models.Request, RequestAdmin),
-        (models.Abuser, AbuserAdmin),
 ]:
     admin.site.register(model, modeladmin)
