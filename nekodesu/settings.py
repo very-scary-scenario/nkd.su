@@ -37,7 +37,13 @@ SHOWTIME = relativedelta(
     second=0,
     microsecond=0,
 )
-SHOW_LENGTH = 2
+SHOW_END = relativedelta(
+    weekday=SA,
+    hour=23,
+    minute=0,
+    second=0,
+    microsecond=0,
+)
 
 HASHTAG = '#NekoDesu'
 INUDESU_HASHTAG = '#InuDesu'

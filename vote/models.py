@@ -43,15 +43,9 @@ class Show(models.Model):
         Get (or create, if necessary) the show for `time`.
         """
 
-        current_showtime = timezone.now() + settings.SHOWTIME
+        current_threshold = timezone.now() + settings.SHOW_END
 
-        if time > current_showtime:
-            # We need to be wary of accidentally creating a show more than a
-            # week in the future, as doing so would prevent the creation of all
-            # intervening shows.
-            # This feels like an adequate compromise for the moment, and it
-            # shouldn't be too difficult to work around if it becomes necessary
-            # to start planning further in advance.
+        if time > current_threshold:
             raise NotImplementedError('Cannot be called with dates falling '
                                       'after the next showtime.')
 
@@ -69,12 +63,24 @@ class Show(models.Model):
             # the moment the previous show ends.
             naive_time = timezone.make_naive(time,
                                              timezone.get_current_timezone())
-            naive_showtime = naive_time + settings.SHOWTIME
+            naive_end = naive_time + settings.SHOW_END
+
+            # work around an unfortunate shortcoming of dateutil where
+            # specifying a time on a weekday won't increment the weekday even
+            # if our initial time is after that time
+            while naive_end < naive_time:
+                naive_time += datetime.timedelta(hours=1)
+                naive_end = naive_time + settings.SHOW_END
+
+            naive_showtime = naive_end - settings.SHOWTIME
+
+            our_end = timezone.make_aware(naive_end,
+                                          timezone.get_current_timezone())
             our_showtime = timezone.make_aware(naive_showtime,
                                                timezone.get_current_timezone())
             show = cls()
+            show.end = our_end
             show.showtime = our_showtime
-            show.end = our_showtime + datetime.timedelta(hours=2)
             show.save()
 
         return show
