@@ -49,5 +49,6 @@ class ShowTest(TestCase):
         self.assertLess(show_count, 54)
 
     def test_cannot_make_show_too_far_in_future(self):
-        too_far = timezone.now() + datetime.timedelta(days=8)
+        Show.at(timezone.now())
+        too_far = timezone.now() + datetime.timedelta(seconds=1)
         self.assertRaises(NotImplementedError, lambda: Show.at(too_far))

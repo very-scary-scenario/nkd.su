@@ -43,11 +43,9 @@ class Show(models.Model):
         Get (or create, if necessary) the show for `time`.
         """
 
-        current_threshold = timezone.now() + settings.SHOW_END
-
-        if time > current_threshold:
+        if time > timezone.now():
             raise NotImplementedError('Cannot be called with dates falling '
-                                      'after the next showtime.')
+                                      'in the future.')
 
         shows_after_time = cls.objects.filter(end__gte=time)
         if shows_after_time.exists():
