@@ -16,7 +16,7 @@ import djcelery
 
 djcelery.setup_loader()
 
-PROJECT_DIR = os.path.realpath(os.path.join(__file__, '..', '..'))
+PROJECT_DIR = os.path.realpath(os.path.join(__file__, '..'))
 
 CELERY_TIMEZONE = 'Europe/London'
 
@@ -79,7 +79,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_DIR, 'nkdsu', 'db'),
+        'NAME': os.path.join(PROJECT_DIR, 'db'),
     }
 }
 
@@ -99,12 +99,14 @@ USE_I18N = False
 USE_L10N = True
 USE_TZ = True
 
-# MEDIA_ROOT = '/home/nivi/www/nkdsm/user/'
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 # MEDIA_URL = 'http://m.nkd.su/user/'
-# STATIC_ROOT = '/home/nivi/www/nkdsm/'
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
 # STATIC_URL = 'http://m.nkd.su/'
 
-STATICFILES_DIRS = ()
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_DIR, 'static'),
+)
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -131,7 +133,7 @@ ROOT_URLCONF = 'nkdsu.urls'
 
 WSGI_APPLICATION = 'nkdsu.wsgi.application'
 
-TEMPLATE_DIRS = os.path.join(PROJECT_DIR, 'nkdsu', 'templates')
+TEMPLATE_DIRS = os.path.join(PROJECT_DIR, 'templates')
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -144,6 +146,7 @@ INSTALLED_APPS = (
     'djcelery',
     'south',
     'debug_toolbar',
+    'pipeline',
 
     'nkdsu.apps.vote',
 )
@@ -172,6 +175,10 @@ LOGGING = {
     }
 }
 
+LOGIN_URL = '/login'
+LOGOUT_URL = '/logout'
+LOGIN_REDIRECT_URL = '/'
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.media',
@@ -181,9 +188,28 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'nkdsu.apps.vote.context_processors.nkdsu_context_processor',
 )
 
-LOGIN_URL = '/login'
-LOGOUT_URL = '/logout'
-LOGIN_REDIRECT_URL = '/'
+
+## STATIC
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+PIPELINE_COMPILERS = (
+    'pipeline.compilers.less.LessCompiler',
+)
+
+PIPELINE_CSS_COMPRESSOR = None
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'
+
+PIPELINE_DISABLE_WRAPPER = True
+
+PIPELINE_CSS = {
+    'main': {
+        'source_filenames': [
+            'less/main.less',
+        ],
+        'output_filename': 'css/main.min.css',
+    }
+}
 
 try:
     from nkdsu.settings_local import *  # noqa
