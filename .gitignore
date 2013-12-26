@@ -1,0 +1,7 @@
+.*
+*.pyc
+nkdsu/settings_local.py
+nkdsu/db*
+songlibrary*.xml
+nkdsu/static/less/*.css
+nkdsu/static/admin/
