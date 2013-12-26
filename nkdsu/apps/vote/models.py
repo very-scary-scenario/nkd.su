@@ -11,8 +11,9 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 
-from vote.utils import (length_str, split_id3_title, vote_tweet_intent_url,
-                        reading_tw_api, memoize)
+from nkdsu.apps.vote.utils import (
+    length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
+    memoize)
 
 
 class Show(models.Model):

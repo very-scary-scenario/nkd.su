@@ -1,4 +1,4 @@
-from vote import models
+from ..vote import models
 from django.contrib import admin
 
 

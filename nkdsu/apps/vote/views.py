@@ -21,10 +21,10 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.views.generic.base import TemplateView
 
-from vote.forms import (RequestForm, SearchForm, LibraryUploadForm,
-                        ManualVoteForm, BlockForm, BadMetadataForm)
-from vote.update_library import update_library
-from vote import trivia, mixins
+from .forms import (RequestForm, SearchForm, LibraryUploadForm,
+                    ManualVoteForm, BlockForm, BadMetadataForm)
+from .update_library import update_library
+from ..vote import trivia, mixins
 
 
 post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,

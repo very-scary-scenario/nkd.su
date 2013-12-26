@@ -7,8 +7,8 @@ from django.core.validators import validate_email
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
-from vote.models import Vote, Request
-from vote import trivia
+from .models import Vote, Request
+from ..vote import trivia
 
 
 post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,

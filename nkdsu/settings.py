@@ -79,9 +79,11 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/home/nivi/code/nkdsu/nekodesu/db',
+        'NAME': os.path.join(PROJECT_DIR, 'nkdsu', 'db'),
     }
 }
+
+print DATABASES['default']['NAME']  # XXX
 
 CACHES = {
     'default': {
@@ -125,11 +127,11 @@ MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
-ROOT_URLCONF = 'nekodesu.urls'
+ROOT_URLCONF = 'nkdsu.urls'
 
-WSGI_APPLICATION = 'nekodesu.wsgi.application'
+WSGI_APPLICATION = 'nkdsu.wsgi.application'
 
-TEMPLATE_DIRS = os.path.join(PROJECT_DIR, 'html')
+TEMPLATE_DIRS = os.path.join(PROJECT_DIR, 'nkdsu', 'templates')
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -138,10 +140,12 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'vote',
+
     'djcelery',
     'south',
     'debug_toolbar',
+
+    'nkdsu.apps.vote',
 )
 
 LOGGING = {
@@ -174,7 +178,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
-    'vote.context_processors.nkdsu_context_processor',
+    'nkdsu.apps.vote.context_processors.nkdsu_context_processor',
 )
 
 LOGIN_URL = '/login'
@@ -182,6 +186,6 @@ LOGOUT_URL = '/logout'
 LOGIN_REDIRECT_URL = '/'
 
 try:
-    from nekodesu.settings_local import *  # noqa
+    from nkdsu.settings_local import *  # noqa
 except ImportError:
     pass

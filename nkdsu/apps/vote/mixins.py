@@ -1,4 +1,4 @@
-from vote.models import Show
+from .models import Show
 
 
 class CurrentShowMixin(object):

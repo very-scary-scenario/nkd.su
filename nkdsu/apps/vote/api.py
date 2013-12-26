@@ -8,8 +8,8 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 from django.utils import timezone
 
-from vote.models import Show, Track
-from vote.views import split_query_into_keywords, search_for_tracks
+from .models import Show, Track
+from .views import split_query_into_keywords, search_for_tracks
 
 
 def last_week(request):
