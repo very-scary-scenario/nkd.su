@@ -1,0 +1,233 @@
+li.track{ 
+  margin: .8em 0;
+  padding: .5em 0;
+  width: 100%;
+
+  background-color: #fafafa;
+  .noise();
+
+  border: 1px solid #ccc;
+  border-radius: 1em;
+
+  position: relative;  // so that our stamps work
+  clear: both;
+  display: table;
+  background-clip: padding-box;
+
+  &.ineligible {
+    -webkit-box-shadow: inset #222 0 .2em 2em;;
+    background-color: #333;
+    color: #eee;
+  }
+
+}
+
+// div.track.ineligible.selected {
+//   -webkit-box-shadow: inset #933 0 .2em 2em;
+//   .noise();
+//   background-color: #422;
+//   border-color: #a44;
+//   color: #eee;
+// }
+// 
+// div.track.inudesu.ineligible.selected {
+//   -webkit-box-shadow: inset #336 0 .2em 2em;
+//   background-color: #224;
+//   border-color: #44a;
+// }
+// 
+// div.track.ineligible .metadata, div.track.ineligible .invitation {
+//   text-shadow: #000 0 .1em 0;
+// }
+// 
+// div.track.ineligible a,
+// div#header a,
+// .track.ineligible:hover .title a {
+//   color: #f88;
+// }
+// 
+// div.track.inudesu.ineligible a,
+// .track.ineligible.inudesu:hover .title a {
+//   color: #88f;
+// }
+// 
+// div.track.ineligible .title a {
+//   color: #eee;
+// }
+// 
+// div.track.eligible.pending {
+//   background-color: #fff;
+// }
+// 
+// div.track.ineligible.pending {
+//   background-color: #222;
+//   -webkit-box-shadow: inset #433 0 .2em 2em;
+// }
+// 
+// div.track.ineligible.selected.pending {
+//   background-color: #311;
+//   -webkit-box-shadow: inset #333 0 .2em 2em;
+// }
+// 
+// div.track.inudesu.ineligible.selected.pending {
+//   background-color: #113;
+//   -webkit-box-shadow: inset #333 0 .2em 2em;
+// }
+// 
+// div.track.eligible.pending, div.track.eligible.selected {
+//   -webkit-box-shadow: inset #fdd 0 .2em 2em;
+// }
+// 
+// div.track.eligible.selected {
+//   border-color: #caa;
+// }
+// 
+// div.track.eligible.selected div.metacontainer div.metadata {
+//   border-color: #ecc;
+// }
+// 
+// div.track.ineligible div.metacontainer div.metadata {
+//   border-color: #555;
+// }
+// 
+// div.track.selected.eligible.pending {
+//   -webkit-box-shadow: inset #eee 0 .2em 2em;
+// }
+// 
+// div.track.selected {
+//   background-color: #fee;
+//   .noise();
+// }
+// 
+// /* NEW RECIPE! */
+// div.track.new div.stamp {
+//   background-color: #feb;
+//   border: 1px solid #ca6;
+//   padding: .2em .5em .3em .2em;
+//   border-radius: .3em;
+//   line-height: 1em;
+//   font-family: 'Kaushan Script', cursive;
+//   position: absolute;
+//   top: -.4em;
+//   font-size: 1.2em;
+// }
+// 
+// div.track.new div.stamp a {
+//   color: #c55;
+// }
+// 
+// div.track.new div.stamp a:hover {
+//   color: #444;
+//   border: none;
+// }
+// div.track div.metadata, div.track div.votedata {
+//   margin: 0em .5em;
+// }
+// 
+// div.voters {
+//   margin-left: .1em;
+//   display: table;
+//   width: 100%;
+// }
+// 
+// div.track.ineligible {
+//   border-color: #666;
+// }
+// 
+// div.track span.title {
+//   font-size: 1.4em;
+//   font-weight: bold;
+// }
+// 
+// .title a {
+//   color: #444;
+// }
+// 
+// .track:hover .title a,
+// div.user_votes div.vote:hover p.title a {
+//   color: #d66;
+// }
+// 
+// div.track p.metameta, div.track p.last_played, div.track p.peter, div.track p.refusal {
+//   font-size: .8em;
+//   clear: both;
+//   margin-top: .2em;
+// }
+// 
+// div.votes {
+//   display: table-cell;
+//   vertical-align: middle;
+//   padding-top: .4em;
+//   padding-right: .5em;
+// }
+// 
+// div.plusone {
+//   width: 2em;
+//   text-align: left;
+//   display: table-cell;
+//   vertical-align: middle;
+// }
+// 
+// .voter img {
+//   display: inline-block;
+//   height: 32px;
+//   width: 32px;
+//   margin: 1px;
+// }
+// 
+// div.tweet_deets {
+//   display: none
+// }
+// 
+// a.voter:hover div.tweet_deets {
+//   position: absolute;
+//   display: block;
+//   background-color: #f8f8f8;
+//   .noise();
+//   border: 1px solid #aaa;
+//   text-align: center;
+//   padding: .2em .5em;
+//   margin-left: -1px;
+//   margin-top: 3px;
+//   color: #444;
+//   font-size: .8em;
+//   overflow: hidden;
+//   border-radius: .4em;
+//   -webkit-box-shadow: inset #ddd 0 0 1em, #888 0 .1em .3em;
+//   z-index: 4;
+//   max-width: 17em;
+// }
+// 
+// div.tweet_deets div.tweet_deets, .full_name {
+//   color: #d66;
+// }
+// 
+// div.tweet_deets p.meta {
+//   color: #999;
+//   font-size: .8em;
+// }
+// 
+// div.tweet_deets p.meta.when {
+//   color: #666;
+// }
+// 
+// div.track span.report {
+//   display: none;
+// }
+// 
+// p.refusal {
+//   color: #aaa;
+// }
+// 
+// /* shrunken track tables */
+// 
+// div.shortlist div.track {
+//   font-size: .8em;
+//   width: 80%;
+//   margin: 1em auto;
+// }
+// 
+// div.shortlist .voter img {
+//   height: 25px;
+//   width: 25px;
+// }

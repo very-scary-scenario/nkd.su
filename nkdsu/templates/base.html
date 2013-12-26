@@ -58,11 +58,11 @@
         {% endfor %}
         
       </ul> <!-- nav -->
-      <div id="content">
+      <main>
         {% block content %}{% endblock %}
         <div id="selection"></div>
         <div id="stick" class="invisible"></div>
-      </div>
+      </main>
       <div id="footer">
         <a id="stamp" target="_blank" href="http://musicfortheblind.co.uk"><img alt="music for the blind" title="music for the blind" src="http://d.bldm.us/stamp.png"></a>
         {% if user.is_authenticated %}

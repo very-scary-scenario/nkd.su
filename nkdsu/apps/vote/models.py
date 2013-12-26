@@ -315,25 +315,36 @@ class Track(models.Model):
         elif self.hidden:
             reason = 'hidden'
 
-        elif self.play_set(**show._date_kwargs).exists():
+        elif self.play_set.filter(**show._date_kwargs).exists():
             reason = 'played this week'
 
-        elif self.plays(**show.prev()._date_kwargs).exists():
+        elif self.play_set.filter(**show.prev()._date_kwargs).exists():
             reason = 'played last week'
 
         elif block_qs.exists():
             reason = block_qs.get().reason
 
+        else:
+            reason = False
+
         return reason
 
-    def shortlist(self, time=None):
+    @memoize
+    def votes_for(self, show):
+        """
+        Return votes for this track for a given show.
+        """
+
+        return self.vote_set.filter(**show._date_kwargs)
+
+    def shortlist(self):
         """
         Shortlist this track for this week.
         """
 
         # XXX
 
-    def discard(self, time=None):
+    def discard(self):
         """
         Discard this track for this week.
         """
@@ -348,7 +359,7 @@ class Track(models.Model):
                                                 'track_id': self.id})
 
     def public_url(self):
-        return 'http://nkd.su' + self.rel_url()
+        return 'http://nkd.su' + self.get_absolute_url()
 
     def report_url(self):
         return reverse('report', kwargs={'track_id': self.id})

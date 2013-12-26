@@ -1,24 +1,16 @@
+@import "_reset.less";
+@import "_elements.less";
+@import "_mixins.less";
+@import "_tracks.less";
+
 html {
   height: 100%;
-}
-
-* {
-  padding: 0;
-  margin: 0;
-}
-
-em {
-  line-height: 1em;
-}
-
-img {
-  border: none;
 }
 
 body {
   font-family: "Bitter", "Calibri", serif;
   background-color: #fff;
-  background-image: url('/noise.png');
+  .noise();
   color: #444;
   text-shadow: #fff 0 .1em 0;
   height: 100%;
@@ -29,7 +21,7 @@ body {
   position: relative;
 }
 
-#content {
+main {
   margin: 0 auto;
   max-width: 50em;
   min-width: 200px;
@@ -38,110 +30,6 @@ body {
   padding-bottom: 10em;
 }
 
-h2, h3, h4 {
-  text-align: center;
-  margin: 1em 0 .5em;
-}
-
-.noheading {
-  margin-top: 2em;
-}
-
-p.subheading {
-  text-align: center;
-  margin: -.8em 0 1em;
-  font-size: .9em;
-}
-
-p.minor {
-  font-size: .8em;
-}
-
-
-/* alt tracks */
-div.track.ineligible {
-  -webkit-box-shadow: inset #222 0 .2em 2em;;
-  background-image: url('/noise.png');
-  background-color: #333;
-  color: #eee;
-}
-
-div.track.ineligible.selected {
-  -webkit-box-shadow: inset #933 0 .2em 2em;
-  background-image: url('/noise.png');
-  background-color: #422;
-  border-color: #a44;
-  color: #eee;
-}
-
-div.track.inudesu.ineligible.selected {
-  -webkit-box-shadow: inset #336 0 .2em 2em;
-  background-color: #224;
-  border-color: #44a;
-}
-
-div.track.ineligible .metadata, div.track.ineligible .invitation {
-  text-shadow: #000 0 .1em 0;
-}
-
-div.track.ineligible a,
-div#header a,
-.track.ineligible:hover .title a {
-  color: #f88;
-}
-
-div.track.inudesu.ineligible a,
-.track.ineligible.inudesu:hover .title a {
-  color: #88f;
-}
-
-div.track.ineligible .title a {
-  color: #eee;
-}
-
-div.track.eligible.pending {
-  background-color: #fff;
-}
-
-div.track.ineligible.pending {
-  background-color: #222;
-  -webkit-box-shadow: inset #433 0 .2em 2em;
-}
-
-div.track.ineligible.selected.pending {
-  background-color: #311;
-  -webkit-box-shadow: inset #333 0 .2em 2em;
-}
-
-div.track.inudesu.ineligible.selected.pending {
-  background-color: #113;
-  -webkit-box-shadow: inset #333 0 .2em 2em;
-}
-
-div.track.eligible.pending, div.track.eligible.selected {
-  -webkit-box-shadow: inset #fdd 0 .2em 2em;
-}
-
-div.track.eligible.selected {
-  border-color: #caa;
-}
-
-div.track.eligible.selected div.metacontainer div.metadata {
-  border-color: #ecc;
-}
-
-div.track.ineligible div.metacontainer div.metadata {
-  border-color: #555;
-}
-
-div.track.selected.eligible.pending {
-  -webkit-box-shadow: inset #eee 0 .2em 2em;
-}
-
-div.track.selected {
-  background-color: #fee;
-  background-image: url('/noise.png');
-}
 
 /* selection list */
 div.minitrack {
@@ -163,28 +51,6 @@ div.minitrack, p.metameta {
 
 div.minitrack p.id {
   display: none;
-}
-
-/* NEW RECIPE! */
-div.track.new div.stamp {
-  background-color: #feb;
-  border: 1px solid #ca6;
-  padding: .2em .5em .3em .2em;
-  border-radius: .3em;
-  line-height: 1em;
-  font-family: 'Kaushan Script', cursive;
-  position: absolute;
-  top: -.4em;
-  font-size: 1.2em;
-}
-
-div.track.new div.stamp a {
-  color: #c55;
-}
-
-div.track.new div.stamp a:hover {
-  color: #444;
-  border: none;
 }
 
 div#selection {
@@ -215,7 +81,7 @@ div#stick {
 div#stick div.stuck {
   display: inline-block;
   background-color: #fff;
-  background-image: url('/noise.png');
+  .noise();
   box-shadow: #888 0 .5em 2em; /*,inset #ddd 0 0 2em;*/
   border: 1px solid #aaa;
   padding: .5em 1em 1.5em;
@@ -259,7 +125,7 @@ ul#nav li.active a {
   background-color: #ddd;
   text-shadow: none;
   color: #666;
-  background-image: url('/noise.png');
+  .noise();
 }
 
 ul#nav li.lookatme {
@@ -277,7 +143,7 @@ ul#nav li a {
 
 div#header-background {
   width: 100%;
-  background-image: url('/noise.png');
+  .noise();
   color: #eee;
   text-shadow: #000 0 .1em 0;
   /*-webkit-box-shadow: inset #222 0 .2em 2em;*/
@@ -310,7 +176,7 @@ div#search_div {
 
 form#search input {
   background-color: #eee;
-  background-image: url('/noise.png');
+  .noise();
   border-radius: .3em;
   border: none;
   outline: none;
@@ -352,144 +218,6 @@ a {
   color: #d66;
   text-decoration: none;
 }
-
-/* track tables */
-
-div.track {
-  position: relative; /* so that our stamps work */
-  /* -webkit-box-shadow: inset #eee 0 .2em 2em; */
-  background-image: url('/noise.png');
-  background-color: #fafafa;
-  border: 1px solid #ccc;
-  border-radius: 1em;
-  clear: both;
-  margin-bottom: 1.5em;
-  padding: .5em 0;
-  display: table;
-  width: 100%;
-  background-clip: padding-box;
-}
-
-div.track div.metadata, div.track div.votedata {
-  margin: 0em .5em;
-}
-
-div.voters {
-  margin-left: .1em;
-  display: table;
-  width: 100%;
-}
-
-div.track.ineligible {
-  border-color: #666;
-}
-
-div.track span.title {
-  font-size: 1.4em;
-  font-weight: bold;
-}
-
-.title a {
-  color: #444;
-}
-
-.track:hover .title a,
-div.user_votes div.vote:hover p.title a {
-  color: #d66;
-}
-
-div.track p.metameta, div.track p.last_played, div.track p.peter, div.track p.refusal {
-  font-size: .8em;
-  clear: both;
-  margin-top: .2em;
-}
-
-div.votes {
-  display: table-cell;
-  vertical-align: middle;
-  padding-top: .4em;
-  padding-right: .5em;
-}
-
-div.plusone {
-  width: 2em;
-  text-align: left;
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.voter img {
-  display: inline-block;
-  height: 32px;
-  width: 32px;
-  margin: 1px;
-}
-
-div.tweet_deets {
-  display: none
-}
-
-a.voter:hover div.tweet_deets {
-  position: absolute;
-  display: block;
-  background-color: #f8f8f8;
-  background-image: url('/noise.png');
-  border: 1px solid #aaa;
-  text-align: center;
-  padding: .2em .5em;
-  margin-left: -1px;
-  margin-top: 3px;
-  color: #444;
-  font-size: .8em;
-  overflow: hidden;
-  border-radius: .4em;
-  -webkit-box-shadow: inset #ddd 0 0 1em, #888 0 .1em .3em;
-  z-index: 4;
-  max-width: 17em;
-}
-
-div.tweet_deets div.tweet_deets, .full_name {
-  color: #d66;
-}
-
-div.tweet_deets p.meta {
-  color: #999;
-  font-size: .8em;
-}
-
-div.tweet_deets p.meta.when {
-  color: #666;
-}
-
-div.track span.report {
-  display: none;
-}
-
-p.refusal {
-  color: #aaa;
-}
-
-/* shrunken track tables */
-
-div.shortlist div.track {
-  font-size: .8em;
-  width: 80%;
-  margin: 1em auto;
-}
-
-div.shortlist .voter img {
-  height: 25px;
-  width: 25px;
-}
-
-/* wipe styles for sortable shortlist */
-
-#shortist li, #shortlist ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 
 /* login form */
 form.login tr {
@@ -599,19 +327,6 @@ div.user div.vote div.vote_track p.title {
 
 div.playlist .last_played, div.playlist .refusal, div.playlist div.disabled {
   display: none;
-}
-
-div.playlist.today div.track .voters {
-  padding-top: .5em;
-}
-
-div.playlist div.track {
-  display: block;
-}
-
-div.playlist div.voters {
-  display: block;
-  width: 100%;
 }
 
 div.playlist div.metacontainer {
@@ -808,7 +523,7 @@ table.stats.tracks td.summary {
   ul#nav li a:hover {
     border: none;
     background-color: #d66;
-    background-image: url('/noise.png');
+    .noise();
     color: #fff;
     text-shadow: none;
   }
@@ -834,31 +549,6 @@ table.stats.tracks td.summary {
     left: 0;
     bottom: .05em;
     text-align: center;
-  }
-
-  div.tracklist div.track div.metadata, div.shortlist div.track div.metadata {
-    float: left;
-    text-align: right;
-    border-right: #ddd solid 1px;
-    padding: 100em 3.8%;
-    margin: -99.9em 0;
-    width: 89%;
-  }
-  
-  div.track div.metacontainer {
-    display: table-cell;
-    vertical-align: middle;
-    overflow: hidden;
-    width: 63%;
-  }
-
-  div.track.new div.stamp {
-    left: -.4em;
-  }
-
-  div.track.new p.artist {
-    /* wrap against new stamp */
-    padding-left: 3em;
   }
 
   div.votedata {
@@ -899,15 +589,6 @@ table.stats.tracks td.summary {
     color: #444;
   }
 
-  div.track.ineligible a:hover, div#header a:hover {
-    color: #eee;
-    border-color: #f99;
-  }
-
-  div.track.ineligible.inudesu a:hover {
-    border-color: #99f;
-  }
-
   h1 a:hover {
     border: none;
   }
@@ -915,64 +596,6 @@ table.stats.tracks td.summary {
   a:hover {
     color: #444;
     border-bottom: 1px dotted #d66;
-  }
-
-  div.track.selectable:hover {
-    border-color: #d66;
-  }
-
-  div.track.inudesu.selectable:hover {
-    border-color: #66d;
-  }
-
-  div.track:hover a.voter.commented img {
-    -webkit-box-shadow: #d66 0 0 .3em;
-    outline-color: #d66;
-    margin: 0;
-  }
-
-  div.track:hover a.voter img {
-    border: 1px solid #eee;
-    -webkit-box-shadow: #888 0 0 .3em;
-    outline: 1px solid #888;
-    margin: 0;
-  }
-
-  div.track.ineligible:hover a.voter img {
-    border-color: #333;
-  }
-
-  a.voter:hover {
-    border-bottom: none;
-  }
-
-  div.track:hover span.report,
-  div.tracklist.solo div.track span.report {
-    display: inline;
-    position: absolute;
-    bottom: -.2em;
-    right: -.4em;
-    width: 100%;
-    text-align: right;
-    font-size: .7em;
-  }
-
-  div.track:hover span.report a,
-  div.tracklist.solo div.track span.report a {
-    background-color: #fdd;
-    border: 1px solid #d66;
-    padding: .3em .4em .1em;
-    border-radius: .3em;
-    line-height: 1em;
-  }
-
-  div.track.ineligible span.report a:hover {
-    color: #333;
-  }
-
-  div.track.inudesu span.report a {
-    border-color: #68d;
-    background-color: #ddf;
   }
 
   table.stats .summary {
@@ -1012,11 +635,6 @@ table.stats.tracks td.summary {
     margin: 1em 0;
   }
 
-  div#everything div.track div.disabled {
-    font-size: 2em;
-    margin-top: .5em;
-  }
-
   form p input, form p label, form p textarea {
     display: block;
   }
@@ -1025,25 +643,8 @@ table.stats.tracks td.summary {
     margin-top: .5em;
   }
 
-  div.voters {
-    padding-top: .5em;
-  }
-
-  div.track {
-    display: block;
-  }
-
   div.request {
     margin-top: .3em;
-  }
-
-  div.track.new div.stamp {
-    right: -.4em;
-  }
-
-  div.track.new p.artist {
-    /* wrap against new stamp */
-    padding-right: 3em;
   }
 
   table.stats .summary {
