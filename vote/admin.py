@@ -8,10 +8,12 @@ class ShowAdmin(admin.ModelAdmin):
 
 class TwitterUserAdmin(admin.ModelAdmin):
     list_display = ('screen_name', 'is_abuser')
+    list_filter = ('is_abuser',)
 
 
 class VoteAdmin(admin.ModelAdmin):
     list_display = ('twitter_user', 'date')
+    list_filter = ('twitter_user',)
 
 
 class TrackAdmin(admin.ModelAdmin):
@@ -32,6 +34,7 @@ class DiscardShortlistAdmin(admin.ModelAdmin):
 
 class RequestAdmin(admin.ModelAdmin):
     list_display = ('created', 'successful')
+    list_filter = ('successful',)
 
 
 for model, modeladmin in [

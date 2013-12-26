@@ -29,6 +29,9 @@ class Show(models.Model):
     def __repr__(self):
         return str(self)
 
+    def clean(self):
+        pass  # XXX refuse to create overlapping shows
+
     @classmethod
     def current(cls):
         """
@@ -85,27 +88,31 @@ class Show(models.Model):
 
     @classmethod
     def broadcasting_now(cls):
+        cls.broadcasting_at(timezone.now())
+
+    @classmethod
+    def broadcasting_at(cls, time):
         """
         Return True if a show is broadcasting.
         """
 
-        return cls.current().broadcasting(timezone.now())
+        return cls.at(time).broadcasting(time)
 
-    def broadcasting(self, time=None):
+    def broadcasting(self, time):
         """
         Return True if the time specified is during this week's show.
         """
 
         return (time >= self.showtime) and (time < self.finish)
 
-    def next(self, ideal=False):
+    def next(self):
         """
         Return the next Show
         """
 
         # XXX
 
-    def prev(self, ideal=False):
+    def prev(self):
         """
         Return the previous Show
         """
@@ -178,20 +185,16 @@ class TwitterUser(models.Model):
 
 
 class Track(models.Model):
+    # derived from iTunes
     id = models.CharField(max_length=16, primary_key=True)
-
     id3_title = models.CharField(max_length=500)
-    title_en = models.CharField(max_length=500, blank=True)
-    title_ro = models.CharField(max_length=500, blank=True)
-    title_ka = models.CharField(max_length=500, blank=True)
     id3_artist = models.CharField(max_length=500)
     id3_album = models.CharField(max_length=500, blank=True)
-    show_en = models.CharField(max_length=500, blank=True)
-    show_ro = models.CharField(max_length=500, blank=True)
-    show_ka = models.CharField(max_length=500, blank=True)
-    role = models.CharField(max_length=100, blank=True)
     msec = models.IntegerField(blank=True, null=True)
-    added = models.DateTimeField(blank=True, null=True)
+    added = models.DateTimeField()
+
+    # nkdsu-specific
+    revealed = models.DateTimeField()
     hidden = models.BooleanField()
     inudesu = models.BooleanField()
 
@@ -223,15 +226,7 @@ class Track(models.Model):
 
         # XXX
 
-    def undoable(self):
-        """
-        Return True if this track is the source of the most recent Play.
-        Criteria subject to change.
-        """
-
-        return Play.objects.all().order_by('-datetime')[0].track == self
-
-    def block(self, show):
+    def blocks_for(self, show):
         """
         Get any block from the week specified applying to this Track in the
         specified show.
@@ -261,15 +256,6 @@ class Track(models.Model):
 
         return Track.objects.filter(
             id3_artist=self.id3_artist, hidden=False, inudesu=False).exists()
-
-    def deets(self):
-        """
-        Return a more detailed string
-        """
-
-        return ('%s: %s - %s - %s - %i msec - %s'
-                % (self.id, self.id3_title, self.id3_artist, self.id3_album,
-                   self.msec, self.added))
 
     def eligible(self):
         """
@@ -372,7 +358,6 @@ class Vote(models.Model):
     # universal
     tracks = models.ManyToManyField(Track)
     date = models.DateTimeField()
-    show = models.ForeignKey(Show)
     text = models.TextField(blank=True)
 
     # twitter only
@@ -471,7 +456,6 @@ class Play(models.Model):
     datetime = models.DateTimeField()
     track = models.ForeignKey(Track)
     tweet_id = models.IntegerField(blank=True, null=True)
-    show = models.ForeignKey(Show)
 
     def __str__(self):
         return '<played %s at %s>' % (self.track, self.datetime)

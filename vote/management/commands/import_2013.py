@@ -4,7 +4,7 @@ import ujson
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from vote.models import Show
+from vote.models import Show, Track
 
 
 class Command(BaseCommand):
@@ -17,12 +17,20 @@ class Command(BaseCommand):
 
         Show.objects.all().delete()
 
+        for track in Track.objects.all():
+            # sqlite refuses to do this all at once
+            track.delete()
+
         self.create_old_shows()
 
         def data_for_model(model_name):
             return filter(lambda m: m['model'] == model_name, data)
 
-        self.import_scheduleoverrides(data_for_model('vote.scheduleoverride'))
+        for instance in data_for_model('vote.scheduleoverride'):
+            self.import_scheduleoverride(instance)
+
+        for instance in data_for_model('vote.track'):
+            self.import_track(instance)
 
     def create_old_shows(self):
         """
@@ -37,13 +45,29 @@ class Command(BaseCommand):
             Show.at(point)
             point += timezone.timedelta(days=1)
 
-    def import_scheduleoverrides(self, instances):
-        for instance in instances:
-            fields = instance['fields']
-            overridden = timezone.make_aware(date_parser.parse(
-                fields['overridden_showdate']), timezone.utc)
+    def import_scheduleoverride(self, instance):
+        fields = instance['fields']
+        overridden = timezone.make_aware(date_parser.parse(
+            fields['overridden_showdate']), timezone.utc)
 
-            relevant_show = Show.at(overridden)
-            relevant_show.showtime = date_parser.parse(fields['start'])
-            relevant_show.end = date_parser.parse(fields['finish'])
-            relevant_show.save()
+        relevant_show = Show.at(overridden)
+        relevant_show.showtime = date_parser.parse(fields['start'])
+        relevant_show.end = date_parser.parse(fields['finish'])
+        relevant_show.save()
+
+    def import_track(self, instance):
+        fields = instance['fields']
+
+        track = Track(
+            pk=instance['pk'],
+            id3_artist=fields['id3_artist'],
+            id3_title=fields['id3_title'],
+            id3_album=fields['id3_album'],
+            msec=fields['msec'],
+            added=date_parser.parse(fields['added']),
+
+            revealed=date_parser.parse(fields['added']),
+            hidden=fields['hidden'],
+            inudesu=fields['inudesu'],
+        )
+        track.save()
