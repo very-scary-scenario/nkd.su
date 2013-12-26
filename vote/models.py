@@ -109,7 +109,7 @@ class Show(models.Model):
     @memoize
     def next(self):
         """
-        Return the next Show
+        Return the next Show.
         """
 
         return Show.objects.filter(showtime__gte=self.end).order_by(
@@ -118,7 +118,7 @@ class Show(models.Model):
     @memoize
     def prev(self):
         """
-        Return the previous Show
+        Return the previous Show.
         """
 
         return Show.objects.filter(end__lt=self.end).order_by('-showtime')[0]
@@ -126,8 +126,8 @@ class Show(models.Model):
     @property
     def _date_kwargs(self):
         """
-        Return the kwargs you would hand to a queryset to find objects
-        applicable to this show.
+        The kwargs you would hand to a queryset to find objects applicable to
+        this show.
         """
 
         return {'date__gt': self.prev().end, 'date__lte': self.end}
