@@ -1,11 +1,13 @@
 from django.conf.urls import patterns, include, url
-
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+
+from vote import views
+
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    url(r'^$', 'vote.views.summary', name='summary'),
+urlpatterns = patterns(
+    '',
+    url(r'^$', views.IndexView.as_view(), name='index'),
     #url(r'^everything/$', 'vote.views.everything', name='everything'),
     url(r'^artist/(?P<artist>.+)/$', 'vote.views.artist', name='artist'),
     url(r'^info/$', 'vote.views.info', name='info'),

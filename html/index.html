@@ -2,69 +2,40 @@
 
 {% block content %}
 
-{% if playlist %}
-<div class="playlist today">
-<h2 class="heading">played</h2>
-<p class="subheading">&mdash; {{ playlist_len }} &mdash;</p>
-{% include "playlist.html" %}
-</div>
-{% endif %}
+  {# XXX playlist #}
+  {# XXX shortlist #}
 
-{% if shortlist %}
-<div class="shortlist {% if playlist %}limited{% endif %}" id="shortlist">
-<h3 class="heading">shortlist</h3>
-<p class="minor subheading">&mdash; {{ shortlist_len }} &mdash;</p>
-<ul>
-  {% for track in shortlist %}
-    <li id="shortlist_{{ track.id }}">
-      {% include "trackrow.html" %}
-    </li>
-  {% endfor %}
-</ul>
-</div>
-{% endif %}
+  {% if show.tracks_sorted_by_votes %}
+    <h2 class="heading">current requests</h2>
+    {# XXX <p class="subheading">&mdash; {{ week.count_votes }} request{{ week.count_votes|pluralize }} - {{ tracks|length }} track{{ tracks|length|pluralize }} - {{ week.count_voters }} {{ week.count_voters|pluralize:"person, people" }} - {{ tracks_len }} &mdash;</p> #}
+    {% include "tracklist.html" with tracks=show.tracks_sorted_by_votes %}
 
-{% if tracks %}
-{% if playlist %}
-<div class="current">
-{% endif %}
-<h2 class="heading">current requests</h2>
-<p class="subheading">&mdash; {{ week.count_votes }} request{{ week.count_votes|pluralize }} - {{ tracks|length }} track{{ tracks|length|pluralize }} - {{ week.count_voters }} {{ week.count_voters|pluralize:"person, people" }} - {{ tracks_len }} &mdash;</p>
-{% include "tracklist.html" %}
-{% if playlist %}
-</div>
-{% endif %}
+    <p class="aside">Want to vote for something else?</p>
+  {% else %}
+    <h2 class="message">No requests yet</h2>
+  {% endif %}
 
-<p class="aside">Want to vote for something else?</p>
-{% else %}
-<h2 class="message">No requests yet</h2>
-{% endif %}
-<p class="aside">Search, browse the <a href="/show/">playlist archive</a> or just <a href="/roulette/">throw darts at the wall</a>.</p>
+  <p class="aside">Search, browse the <a href="/show/">playlist archive</a> or just <a href="/roulette/">throw darts at the wall</a>.</p>
 
-{% if discard %}
-<div class="shortlist" id="discard">
-<h3 class="heading">discard</h3>
-    {% for track in discard %}
-    {% include "trackrow.html" %}
-    {% endfor %}
-</div>
-{% endif %}
+  {# XXX discard #}
 
 {% endblock %}
 
 {% block footer_scripts %}
   {% if shortlist %}
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
-    <script>
-      var s = $('#shortlist ul');
-      s.sortable({
-        update: function(e, ui) {
-          // send the new order to the server
-          string = s.sortable("serialize");
-          url = "{% url 'shortlist_order' %}?" + string;
-          $.ajax(url);
-        }
-      });
-    </script>
+    {# XXX
+      <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
+      <script>
+        var s = $('#shortlist ul');
+        s.sortable({
+          update: function(e, ui) {
+            // send the new order to the server
+            string = s.sortable("serialize");
+            url = "{% url 'shortlist_order' %}?" + string;
+            $.ajax(url);
+          }
+        });
+      </script>
+    #} 
   {% endif %}
 {% endblock %}

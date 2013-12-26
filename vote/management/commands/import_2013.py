@@ -4,7 +4,7 @@ import ujson
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from vote.models import Show, Track, Play
+from vote.models import Show, Track, Play, Block, Vote, TwitterUser
 
 
 class Command(BaseCommand):
@@ -15,7 +15,7 @@ class Command(BaseCommand):
         with open(filename) as the_file:
             data = ujson.load(the_file)
 
-        for model in [Show, Track, Play]:
+        for model in [Show, Track, Play, Block, Vote, TwitterUser]:
             for instance in model.objects.all():
                 instance.delete()
 
@@ -28,6 +28,8 @@ class Command(BaseCommand):
             ('vote.scheduleoverride', self.import_scheduleoverride),
             ('vote.track', self.import_track),
             ('vote.play', self.import_play),
+            ('vote.vote', self.import_vote),
+            ('vote.block', self.import_block),
         ]:
             for instance in data_for_model(model):
                 func(instance)
@@ -86,3 +88,53 @@ class Command(BaseCommand):
         )
 
         play.save()
+
+    def import_vote(self, instance):
+        fields = instance['fields']
+
+        user_qs = TwitterUser.objects.filter(id=fields['user_id'])
+        if user_qs.exists():
+            user = user_qs.get()
+            # XXX update fields if this is the latest vote for this user
+        else:
+            user = TwitterUser(
+                screen_name=fields['screen_name'],
+                user_image=fields['user_image'],
+                id=fields['user_id'],
+                name=fields['name']
+            )
+            user.save()
+
+        track_pks = fields['tracks']
+        if fields['track'] is not None:
+            track_pks.append(fields['track'])
+
+        tracks = []
+        for track_pk in track_pks:
+            tracks.append(Track.objects.get(pk=track_pk))
+
+        if tracks:
+            vote = Vote(
+                date=date_parser.parse(fields['date']),
+                text=fields['text'],
+                twitter_user=user,
+                tweet_id=instance['pk']
+            )
+
+            vote.save()
+
+            for track in tracks:
+                vote.tracks.add(track)
+
+            vote.save()
+
+    def import_block(self, instance):
+        fields = instance['fields']
+
+        block = Block(
+            track=Track.objects.get(pk=fields['track']),
+            show=Show.at(date_parser.parse(fields['date'])),
+            reason=fields['reason'],
+        )
+
+        block.save()

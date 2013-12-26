@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 
 from vote.utils import (length_str, split_id3_title, vote_tweet_intent_url,
-                        reading_tw_api)
+                        reading_tw_api, memoize)
 
 
 class Show(models.Model):
@@ -38,7 +38,7 @@ class Show(models.Model):
         Get (or create, if necessary) the show that will next end.
         """
 
-        return cls.show_for(timezone.now())
+        return cls.at(timezone.now())
 
     @classmethod
     def at(cls, time):
@@ -98,26 +98,43 @@ class Show(models.Model):
 
         return cls.at(time).broadcasting(time)
 
+    @memoize
     def broadcasting(self, time):
         """
         Return True if the time specified is during this week's show.
         """
 
-        return (time >= self.showtime) and (time < self.finish)
+        return (time >= self.showtime) and (time < self.end)
 
+    @memoize
     def next(self):
         """
         Return the next Show
         """
 
-        # XXX
+        return Show.objects.filter(showtime__gte=self.end).order_by(
+            'showtime')[0]
 
+    @memoize
     def prev(self):
         """
         Return the previous Show
         """
 
-        # XXX
+        return Show.objects.filter(end__lt=self.end).order_by('-showtime')[0]
+
+    @property
+    def _date_kwargs(self):
+        """
+        Return the kwargs you would hand to a queryset to find objects
+        applicable to this show.
+        """
+
+        return {'date__gt': self.prev().end, 'date__lte': self.end}
+
+    @memoize
+    def votes(self):
+        return Vote.objects.filter(**self._date_kwargs)
 
     def tracks_sorted_by_votes(self, exclude_abusers=False):
         """
@@ -125,7 +142,16 @@ class Show(models.Model):
         when they were last voted for, starting from the most recent.
         """
 
-        # XXX
+        tracks_and_dates = {}
+
+        for vote in self.votes():
+            for track in vote.tracks.all():
+                date = tracks_and_dates.get(track)
+                if date is None or date < vote.date:
+                    tracks_and_dates[track] = vote.date
+
+        return sorted(tracks_and_dates.iterkeys(),
+                      key=lambda t: tracks_and_dates[t])
 
     def added(self, show_hidden=False):
         """
@@ -216,14 +242,14 @@ class Track(models.Model):
         # and vice-versa
         pass
 
-    def is_new(self, time=None):
-        return self.added > self.current_week(time).start and (
-            not self.last_played())
+    @property
+    def is_new(self):
+        pass  # XXX
 
     def length_str(self):
         return length_str(self.msec)
 
-    def weeks_since_play(self, time=None):
+    def weeks_since_play(self):
         """
         Get the number of shows that have ended since this track's most recent
         Play.
@@ -251,6 +277,7 @@ class Track(models.Model):
     def artist(self):
         return self.id3_artist
 
+    @memoize
     def split_id3_title(self):
         return split_id3_title(self.id3_title)
 
@@ -269,6 +296,7 @@ class Track(models.Model):
 
         return not self.ineligible()
 
+    @memoize
     def ineligible(self):
         """
         Return a string describing why a track is ineligible, or False if it
@@ -277,27 +305,25 @@ class Track(models.Model):
 
         # XXX gonna break, but shouldn't be difficult to fix
 
-        week = self.current_week()
+        show = Show.current()
+        block_qs = show.block_set.filter(track=self)
 
         if self.inudesu:
-            self.reason = 'inu desu'
+            reason = 'inu desu'
 
         elif self.hidden:
-            self.reason = 'hidden'
+            reason = 'hidden'
 
-        elif week.plays(self, select_related=False).exists():
-            self.reason = 'played this week'
+        elif self.play_set(**show._date_kwargs).exists():
+            reason = 'played this week'
 
-        elif week.prev().plays(self).filter(track=self):
-            self.reason = 'played last week'
+        elif self.plays(**show.prev()._date_kwargs).exists():
+            reason = 'played last week'
 
-        elif self.block(week):
-            self.reason = self.block(week).reason
+        elif block_qs.exists():
+            reason = block_qs.get().reason
 
-        else:
-            self.reason = False
-
-        return self.reason
+        return reason
 
     def shortlist(self, time=None):
         """
@@ -378,7 +404,16 @@ class Vote(models.Model):
         return not self.kind
 
     def __unicode__(self):
-        pass  # XXX
+        tracks = u', '.join([t.title for t in self.tracks.all()])
+
+        if self.twitter_user:
+            return u'{user} at {date} for {tracks}'.format(
+                user=self.twitter_user,
+                date=self.date,
+                tracks=tracks,
+            )
+        else:
+            raise NotImplementedError  # XXX
 
     def derive_tracks_from_url_list(self, url_list):
         """
@@ -498,9 +533,11 @@ class Shortlist(models.Model):
     index = models.IntegerField(default=0)
 
     # XXX unique_together show and track
+    # XXX unique_together show and index
 
     def save(self):
         pass  # XXX set our index appropriately
+        super(Shortlist, self).save()
 
 
 class Discard(models.Model):

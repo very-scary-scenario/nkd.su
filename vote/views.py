@@ -19,11 +19,12 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
+from django.views.generic.base import TemplateView
 
 from vote.forms import (RequestForm, SearchForm, LibraryUploadForm,
                         ManualVoteForm, BlockForm, BadMetadataForm)
 from vote.update_library import update_library
-from vote import trivia
+from vote import trivia, mixins
 
 
 post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
@@ -31,6 +32,10 @@ post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
 post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
                               settings.POSTING_ACCESS_TOKEN_SECRET)
 tw_api = tweepy.API(post_tw_auth)
+
+
+class IndexView(mixins.CurrentShowMixin, TemplateView):
+    template_name = 'index.html'
 
 
 def summary(request, week=None):
@@ -1051,6 +1056,8 @@ def do_selection(request, select=True):
     """
     Returns the current selection, optionally selects or deselects a track.
     """
+
+    return HttpResponse()  # XXX
 
     tracks = []
 

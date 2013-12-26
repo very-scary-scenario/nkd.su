@@ -1,5 +1,6 @@
 import datetime
 import re
+from functools import partial
 
 import tweepy
 
@@ -50,17 +51,6 @@ def length_str(msec):
         return '%i:%02d:%02d' % (hours, remainder_minutes, remainder_seconds)
     else:
         return '%i:%02d' % (minutes, remainder_seconds)
-
-
-def memoize(method):
-    """
-    A method wrapper. Stores the result of `method` in an attribute of the host
-    object so you don't have to calculate it multiple times.
-
-    Do not use on objects that will persist across requests.
-    """
-
-    # XXX
 
 
 def tweet_url(tweet):
@@ -120,3 +110,47 @@ def split_id3_title(id3_title):
         title = id3_title
 
     return title, role
+
+
+class Memoize(object):
+    """
+    Cache the return value of a method on the object itself.
+
+    This class is meant to be used as a decorator of methods. The return value
+    from a given method invocation will be cached on the instance whose method
+    was invoked. All arguments passed to a method decorated with memoize must
+    be hashable.
+
+    If a memoized method is invoked directly on its class the result will not
+    be cached. Instead the method will be invoked like a static method:
+    class Obj(object):
+        @memoize
+        def add_to(self, arg):
+            return self + arg
+    Obj.add_to(1) # not enough arguments
+    Obj.add_to(1, 2) # returns 3, result is not cached
+    """
+
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self.func
+        return partial(self, obj)
+
+    def __call__(self, *args, **kw):
+        obj = args[0]
+        try:
+            cache = obj.__cache
+        except AttributeError:
+            cache = obj.__cache = {}
+        key = (self.func, args[1:], frozenset(kw.items()))
+        try:
+            res = cache[key]
+        except KeyError:
+            res = cache[key] = self.func(*args, **kw)
+        return res
+
+
+memoize = Memoize

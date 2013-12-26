@@ -21,7 +21,7 @@ class TrackAdmin(admin.ModelAdmin):
 
 
 class PlayAdmin(admin.ModelAdmin):
-    list_display = ('track', 'datetime')
+    list_display = ('track', 'date')
 
 
 class BlockAdmin(admin.ModelAdmin):
