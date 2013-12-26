@@ -4,7 +4,7 @@ import ujson
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from vote.models import Show, Track
+from vote.models import Show, Track, Play
 
 
 class Command(BaseCommand):
@@ -15,22 +15,22 @@ class Command(BaseCommand):
         with open(filename) as the_file:
             data = ujson.load(the_file)
 
-        Show.objects.all().delete()
-
-        for track in Track.objects.all():
-            # sqlite refuses to do this all at once
-            track.delete()
+        for model in [Show, Track, Play]:
+            for instance in model.objects.all():
+                instance.delete()
 
         self.create_old_shows()
 
         def data_for_model(model_name):
             return filter(lambda m: m['model'] == model_name, data)
 
-        for instance in data_for_model('vote.scheduleoverride'):
-            self.import_scheduleoverride(instance)
-
-        for instance in data_for_model('vote.track'):
-            self.import_track(instance)
+        for model, func in [
+            ('vote.scheduleoverride', self.import_scheduleoverride),
+            ('vote.track', self.import_track),
+            ('vote.play', self.import_play),
+        ]:
+            for instance in data_for_model(model):
+                func(instance)
 
     def create_old_shows(self):
         """
@@ -66,8 +66,23 @@ class Command(BaseCommand):
             msec=fields['msec'],
             added=date_parser.parse(fields['added']),
 
-            revealed=date_parser.parse(fields['added']),
             hidden=fields['hidden'],
             inudesu=fields['inudesu'],
         )
+
+        if not fields['hidden']:
+            track.revealed = date_parser.parse(fields['added'])
+
         track.save()
+
+    def import_play(self, instance):
+        fields = instance['fields']
+
+        play = Play(
+            pk=instance['pk'],
+            track=Track.objects.get(pk=fields['track']),
+            tweet_id=fields['tweet_id'],
+            date=fields['datetime'],
+        )
+
+        play.save()

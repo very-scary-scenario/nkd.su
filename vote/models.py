@@ -194,7 +194,7 @@ class Track(models.Model):
     added = models.DateTimeField()
 
     # nkdsu-specific
-    revealed = models.DateTimeField()
+    revealed = models.DateTimeField(blank=True, null=True)
     hidden = models.BooleanField()
     inudesu = models.BooleanField()
 
@@ -210,6 +210,11 @@ class Track(models.Model):
 
     def __eq__(self, other):
         return type(self) == type(other) and self.id == other.id
+
+    def clean(self):
+        # XXX require that if a track is not hidden, it has a revealed date
+        # and vice-versa
+        pass
 
     def is_new(self, time=None):
         return self.added > self.current_week(time).start and (
@@ -453,7 +458,7 @@ class Vote(models.Model):
 
 
 class Play(models.Model):
-    datetime = models.DateTimeField()
+    date = models.DateTimeField()
     track = models.ForeignKey(Track)
     tweet_id = models.IntegerField(blank=True, null=True)
 
