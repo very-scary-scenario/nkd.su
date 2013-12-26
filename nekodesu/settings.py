@@ -109,7 +109,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-# SECRET_KEY = ''
+SECRET_KEY = 'please replace me with something decent in production'  # secret
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
