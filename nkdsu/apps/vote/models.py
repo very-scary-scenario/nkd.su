@@ -178,7 +178,7 @@ class TwitterUser(models.Model):
 
     # nkdsu stuff
     is_abuser = models.BooleanField(default=False)
-    updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField()
 
     def __unicode__(self):
         return unicode(self.screen_name)

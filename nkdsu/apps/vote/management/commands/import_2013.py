@@ -91,17 +91,26 @@ class Command(BaseCommand):
 
     def import_vote(self, instance):
         fields = instance['fields']
+        this_vote_date = date_parser.parse(fields['date'])
 
         user_qs = TwitterUser.objects.filter(id=fields['user_id'])
+
+        user_meta = {
+            k: fields[k] for k in ['screen_name', 'user_image', 'name']
+        }
+
         if user_qs.exists():
             user = user_qs.get()
-            # XXX update fields if this is the latest vote for this user
+            if user.updated < this_vote_date:
+                for attr, value in user_meta.iteritems():
+                    setattr(user, attr, value)
+                user.updated = this_vote_date
+                user.save()
         else:
             user = TwitterUser(
-                screen_name=fields['screen_name'],
-                user_image=fields['user_image'],
                 id=fields['user_id'],
-                name=fields['name']
+                updated=this_vote_date,
+                **user_meta
             )
             user.save()
 
@@ -115,7 +124,7 @@ class Command(BaseCommand):
 
         if tracks:
             vote = Vote(
-                date=date_parser.parse(fields['date']),
+                date=this_vote_date,
                 text=fields['text'],
                 twitter_user=user,
                 tweet_id=instance['pk']
