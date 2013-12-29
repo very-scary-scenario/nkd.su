@@ -1,3 +1,5 @@
+@metadata-width: 60%;
+
 li.track { 
   margin: .8em 0;
   padding: .5em 0;
@@ -9,7 +11,6 @@ li.track {
   border: 1px solid #ccc;
   border-radius: 1em;
 
-  position: relative;  // so that our stamps work
   clear: both;
   display: table;
   background-clip: padding-box;
@@ -22,7 +23,7 @@ li.track {
 
   div.metadata {
     text-align: right;
-    width: 60%;
+    width: @metadata-width;
 
     border-right: 1px solid #ccc;
 
@@ -34,22 +35,77 @@ li.track {
   }
 
   div.voting {
-    width: 40%;
-
     ul.votes {
       li.vote {
+        position: relative;
         display: inline-block;
 
-        .deets {
-          display: none;
+        a {
+          border: none;
+
+          img.thumb {
+            padding: 1px;
+            border: 1px solid rgba(128,128,128,0);
+            width: 32px;
+            height: 32px;
+          }
+
+          .deets {
+            display: none;
+          }
+
+          &:hover {
+            img.thumb {
+              opacity: 0;
+            }
+
+            .deets {
+              display: block;
+              position: absolute;
+              right: -1em;
+              top: -1em;
+              pointer-events: none;
+              text-align: center;
+              z-index: 1;
+              opacity: .95;
+
+              padding: .4em;
+              background-color: #fff;
+              .noise();
+              -webkit-box-shadow: inset #ddd 0 0 1em, #999 0 .2em .5em;
+              border: 1px solid #ccc;
+              max-width: 17em;
+              border-radius: .4em;
+
+              .full_name {
+                color: #d66;
+              }
+
+              .meta {
+                color: #999;
+                font-size: .8em;
+                white-space: nowrap;
+              }
+
+              .meta.when {
+                color: #666;
+              }
+            }
+          }
+        }
+
+        &.content {
+          img.thumb {
+            border-color: #d66;
+          }
         }
       }
     }
+  }
 
-    .invitation {
-      &.plusone {
-        display: inline;
-      }
+  .invitation {
+    &.plusone {
+      text-align: right;
     }
   }
 

@@ -1,11 +1,9 @@
-import datetime
 import re
 from functools import partial
 
 import tweepy
 
 from django.conf import settings
-from django.utils import timezone
 from django.utils.http import urlquote
 
 
@@ -14,25 +12,6 @@ _post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
 _post_tw_auth.set_access_token(settings.READING_ACCESS_TOKEN,
                                settings.READING_ACCESS_TOKEN_SECRET)
 reading_tw_api = tweepy.API(_post_tw_auth)
-
-
-def when(date):
-    """
-    Convert a date into an appropriately relative human-readable date.
-    """
-
-    our_day = date.date()
-    today = timezone.now().date()
-    show_locale = timezone.get_current_timezone()
-
-    date = date.astimezone(show_locale)
-
-    if our_day == today:
-        return date.strftime('%I:%M %p').lower()
-    elif today - our_day <= datetime.timedelta(days=6):
-        return date.strftime('%A at %I:%M %p').lower()
-    else:
-        return date.strftime('%a %b %d at %I:%M %p').lower()
 
 
 def length_str(msec):
