@@ -20,7 +20,7 @@
     "
     data-pk="{{ track.pk }}">
     {% if track.is_new %}
-      <div class="stamp new">
+      <div class="new">
         <a href="/recent/">
           New!
         </a>
@@ -36,7 +36,7 @@
           {% endif %}
         </p>
         <p class="title">
-          <span class="title"><a href="{{ track.rel_url }}">{{ track.title }}</a></span>
+          <a href="{{ track.rel_url }}">{{ track.title }}</a>
         </p>
 
         <p class="metameta">

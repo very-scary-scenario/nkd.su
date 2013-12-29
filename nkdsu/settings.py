@@ -83,8 +83,6 @@ DATABASES = {
     }
 }
 
-print DATABASES['default']['NAME']  # XXX
-
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',

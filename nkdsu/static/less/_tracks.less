@@ -1,4 +1,4 @@
-li.track{ 
+li.track { 
   margin: .8em 0;
   padding: .5em 0;
   width: 100%;
@@ -14,6 +14,65 @@ li.track{
   display: table;
   background-clip: padding-box;
 
+  div.metadata, div.voting {
+    display: table-cell;
+    vertical-align: middle;
+    padding: 0 .4em;
+  }
+
+  div.metadata {
+    text-align: right;
+    width: 60%;
+
+    border-right: 1px solid #ccc;
+
+    .title {
+      font-size: 1.4em;
+      margin-bottom: .1em;
+      font-weight: bold;
+    }
+  }
+
+  div.voting {
+    width: 40%;
+  }
+
+  // stamps
+  .report, .new {
+    padding: .3em .3em .2em;
+    border-radius: .3em;
+    line-height: 1em;
+    position: absolute;
+
+    a:hover {
+      border: none;
+    }
+  }
+
+  // NEW!
+  .new {
+    padding: .2em .5em .3em .2em;
+    font-size: 1.2em;
+    top: -.4em;
+    border: 1px solid #ca6;
+    background-color: #feb;
+    font-family: 'Kaushan Script', cursive;
+  }
+
+  // bad metadata?
+  .report {
+    font-size: .8em;
+    border: 1px solid #d66;
+    background-color: #fdd;
+    display: none;
+    bottom: -.2em;
+    right: -.2em;
+  }
+  &:hover .report {
+    display: block;
+  }
+
+  // variants
   &.ineligible {
     -webkit-box-shadow: inset #222 0 .2em 2em;;
     background-color: #333;
@@ -211,9 +270,6 @@ li.track{
 //   color: #666;
 // }
 // 
-// div.track span.report {
-//   display: none;
-// }
 // 
 // p.refusal {
 //   color: #aaa;

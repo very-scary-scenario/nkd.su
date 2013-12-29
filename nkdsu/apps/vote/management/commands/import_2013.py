@@ -4,7 +4,7 @@ import ujson
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from vote.models import Show, Track, Play, Block, Vote, TwitterUser
+from nkdsu.apps.vote.models import Show, Track, Play, Block, Vote, TwitterUser
 
 
 class Command(BaseCommand):
