@@ -27,78 +27,80 @@
       </div>
     {% endif %}
     <span class="report"><a href="{{ track.report_url }}">bad metadata?</a></span>
-      <div class="metadata">
-        <p class="artist">
-          {% if track.artist_has_page %}
-            <a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a>
-          {% else %}
-            {{ track.artist }}
-          {% endif %}
-        </p>
-        <p class="title">
-          <a href="{{ track.rel_url }}">{{ track.title }}</a>
-        </p>
 
-        <p class="metameta">
-          {% if track.role %}
-            <span class="role">{{ track.role }}</span>
-          {% endif %}
+    <div class="metadata">
+      <p class="artist">
+        {% if track.artist_has_page %}
+          <a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a>
+        {% else %}
+          {{ track.artist }}
+        {% endif %}
+      </p>
+      <p class="title">
+        <a href="{{ track.rel_url }}">{{ track.title }}</a>
+      </p>
 
-          {% if track.last_played %}
-            <span class="last_played">played <a href="/show/{{ track.last_played_showtime|date:"d-m-Y" }}/">
-              {% if track.weeks_since_play == 0 %}
-                this week
-              {% elif track.weeks_since_play == 1 %}
-                last week
-              {% else %}
-                {{ track.weeks_since_play }} weeks ago
-              {% endif %}
-              </a>
-            </span>
-          {% endif %}
+      <p class="metameta">
+        {% if track.role %}
+          <span class="role">{{ track.role }}</span>
+        {% endif %}
 
-          <span class="length">{{ track.length_str }}</span>
-        </p>
-
-        {% if user.is_authenticated %}
-          <p class="peter">
-            <a href="/played/{{ track.id }}/">now playing&hellip;</a> | <a href="/vote/{{ track.id }}/">add vote&hellip;</a>
-            {% if track.ineligible and track.ineligible == 'blocked' %}
-              | <a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>
-            {% elif track.eligible %}
-              | <a href="/block/{{ track.id }}/">block&hellip;</a> | <a href="/block/{{ track.id }}/reason?reason=announced">announce</a>
-            {% endif %}
-          </p>
-          <p class="peter">
-            {% if track.hidden %}
-              <a href="/unhide/{{ track.id }}/?from={{ path|urlencode }}">unhide</a>
+        {% if track.last_played %}
+          <span class="last_played">played <a href="/show/{{ track.last_played_showtime|date:"d-m-Y" }}/">
+            {% if track.weeks_since_play == 0 %}
+              this week
+            {% elif track.weeks_since_play == 1 %}
+              last week
             {% else %}
-              <a href="/hide/{{ track.id }}/?from={{ path|urlencode }}">hide</a>
+              {{ track.weeks_since_play }} weeks ago
             {% endif %}
-            |
-            {% if not track.shortlist and not track.discard %}
-              <a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a> | <a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a>
-            {% elif track.shortlist %}
-              <a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a>
-            {% elif track.discard %}
-              <a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-discard</a>
-            {% endif %}
-          </p>
+            </a>
+          </span>
         {% endif %}
-        {% if user.is_authenticated and not track.eligible and track.undoable %}
-          <p class="peter"><a href="/unplay/{{ track.id }}/">i didn't mean to play this</a></p>
-        {% endif %}
-        {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
-          <p class="refusal">{{ track.ineligible }}</p>
-        {% endif %}
-      </div>
+
+        <span class="length">{{ track.length_str }}</span>
+      </p>
+
+      {% if user.is_authenticated %}
+        <p class="peter">
+          <a href="/played/{{ track.id }}/">now playing&hellip;</a> | <a href="/vote/{{ track.id }}/">add vote&hellip;</a>
+          {% if track.ineligible and track.ineligible == 'blocked' %}
+            | <a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>
+          {% elif track.eligible %}
+            | <a href="/block/{{ track.id }}/">block&hellip;</a> | <a href="/block/{{ track.id }}/reason?reason=announced">announce</a>
+          {% endif %}
+        </p>
+        <p class="peter">
+          {% if track.hidden %}
+            <a href="/unhide/{{ track.id }}/?from={{ path|urlencode }}">unhide</a>
+          {% else %}
+            <a href="/hide/{{ track.id }}/?from={{ path|urlencode }}">hide</a>
+          {% endif %}
+          |
+          {% if not track.shortlist and not track.discard %}
+            <a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a> | <a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a>
+          {% elif track.shortlist %}
+            <a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a>
+          {% elif track.discard %}
+            <a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-discard</a>
+          {% endif %}
+        </p>
+      {% endif %}
+      {% if user.is_authenticated and not track.eligible and track.undoable %}
+        <p class="peter"><a href="/unplay/{{ track.id }}/">i didn't mean to play this</a></p>
+      {% endif %}
+      {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
+        <p class="refusal">{{ track.ineligible }}</p>
+      {% endif %}
+    </div>
+    {% if track|votes_for:show %}
       <div class="voting">
         <ul class="votes">
           {% for vote in track|votes_for:show %}
             <li class="vote {% if vote.content %}commented{% endif %}">
               <a href="{{ vote.twitter_user.get_absolute_url }}">
-                <img src="{{ vote.twitter_user.user_image }}" alt="{{ vote.twitter_user.screen_name }}">
-                <div class="vote_deets">
+                <img src="{{ vote.twitter_user.user_image }}" alt="{{ vote.twitter_user.screen_name }}"/>
+                <div class="deets">
                   <p class="full_name">{{ vote.twitter_user.name }}</p>
                   <p class="meta">
                     <span class="screen_name">@{{ vote.twitter_user.screen_name }}</span>
@@ -113,17 +115,19 @@
               </a>
             </li>
           {% endfor %}
-        {% if not user.is_authenticated and track.eligible %}
-          <div class="invitation {% if track.has_votes %}plusone{% else %}request{% endif %}"><a href="{{ track.vote_url }}">
-              {% if track.has_votes %}
-                +1
-              {% else %}
-                request this song
-              {% endif %}
-            </a>
-          </div> <!-- invitation -->
-        {% endif %}
-      </ul>
-    </div>
-  </li> <!-- track -->
+        </ul>
+      </div>
+    {% endif %}
+    {% if track.eligible %}
+      {% if track|votes_for:show %}
+        <div class="invitation plusone"><a href="{{ track.vote_url }}">
+            +1
+        </a></div>
+      {% else %}
+        <div class="invitation request"><a href="{{ track.vote_url }}">
+          request this song
+        </a></div>
+      {% endif %}
+    {% endif %}
+  </li>
 {% endfor %}
