@@ -141,10 +141,11 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
 
-    'djcelery',
-    'south',
     'debug_toolbar',
+    'django_nose',
+    'djcelery',
     'pipeline',
+    'south',
 
     'nkdsu.apps.vote',
 )
@@ -208,6 +209,8 @@ PIPELINE_CSS = {
         'output_filename': 'css/main.min.css',
     }
 }
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 try:
     from nkdsu.settings_local import *  # noqa

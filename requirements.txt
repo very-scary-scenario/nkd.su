@@ -9,4 +9,4 @@ ujson
 python-dateutil
 django-pipeline
 slimit
-nose
+django-nose

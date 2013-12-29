@@ -46,7 +46,7 @@ class ShowTest(TestCase):
         self.test_make_show(wipe=False)
         show_count = Show.objects.all().count()
         self.assertGreater(show_count, 51)
-        self.assertLess(show_count, 54)
+        self.assertLess(show_count, 55)
 
     def test_cannot_make_show_too_far_in_future(self):
         Show.at(timezone.now())
