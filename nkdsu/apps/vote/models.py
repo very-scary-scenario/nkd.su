@@ -405,7 +405,7 @@ class Vote(models.Model):
 
     # twitter only
     twitter_user = models.ForeignKey(TwitterUser, blank=True)
-    tweet_id = models.IntegerField()
+    tweet_id = models.BigIntegerField()
 
     # manual only
     name = models.CharField(max_length=40)
