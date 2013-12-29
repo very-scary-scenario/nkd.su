@@ -88,11 +88,7 @@ class Show(models.Model):
         return show
 
     @classmethod
-    def broadcasting_now(cls):
-        cls.broadcasting_at(timezone.now())
-
-    @classmethod
-    def broadcasting_at(cls, time):
+    def broadcasting_any(cls, time=None):
         """
         Return True if a show is broadcasting.
         """
@@ -100,10 +96,13 @@ class Show(models.Model):
         return cls.at(time).broadcasting(time)
 
     @memoize
-    def broadcasting(self, time):
+    def broadcasting(self, time=None):
         """
         Return True if the time specified is during this week's show.
         """
+
+        if time is None:
+            time = timezone.now()
 
         return (time >= self.showtime) and (time < self.end)
 
