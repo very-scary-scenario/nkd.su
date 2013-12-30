@@ -553,8 +553,13 @@ class Vote(models.Model):
         Return the non-mention, non-url content of the text.
         """
 
-        content = self.text.replace('@%s' %
-                                    settings.READING_USERNAME, '').strip('- ')
+        content = self.text
+
+        if content.startswith('@'):
+            content = content.split(' ', 1)[1]
+
+        content = content.strip('- ')
+
         for word in content.split():
             if re.match(r'https?://[^\s]+', word):
                 content = content.replace(word, '').strip()
