@@ -1,0 +1,13 @@
+&lt;
+{% if show.prev %}
+  <a href="{{ show.prev.get_absolute_url }}">{{ show.prev.showtime|date:"Y-m-d" }}</a>
+{% else %}
+  —
+{% endif %}
+·
+{% if show.next and show.next.has_ended %}
+  <a href="{{ show.next.get_absolute_url }}">{{ show.next.showtime|date:"Y-m-d" }}</a>
+{% else %}
+  —
+{% endif %}
+&gt;
