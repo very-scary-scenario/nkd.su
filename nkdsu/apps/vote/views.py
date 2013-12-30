@@ -41,6 +41,7 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
 
 class Archive(ListView):
     template_name = 'archive.html'
+    paginate_by = 50
 
     def get_queryset(self):
         qs = Show.objects.filter(end__lt=timezone.now())
