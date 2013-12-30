@@ -95,7 +95,7 @@
     </div>
     <div class="voting">
       <ul class="votes">
-        {% for vote in track|votes_for:show %}
+        {% for vote in track|votes_for:current_show %}
           <li class="vote {% if vote.content %}content{% endif %}">
             <a href="{{ vote.twitter_user.get_absolute_url }}">
               <img class="thumb" src="{{ vote.twitter_user.user_image }}" alt="{{ vote.twitter_user.screen_name }}"/>
@@ -111,7 +111,7 @@
         {% endfor %}
       </ul>
     </div>
-    {% if track.eligible and track|votes_for:show %}
+    {% if track.eligible and track|votes_for:current_show %}
       <div class="invitation plusone"><a href="{{ track.vote_url }}">
         +1
       </a></div>

@@ -1,0 +1,16 @@
+{% if page_obj.has_other_pages %}
+  <p class="aside">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}">&lt;&lt;</a>
+    {% else %}
+      &mdash; 
+    {% endif %}
+    {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+    {% if page_obj.has_next %}
+      <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">&gt;&gt;</a>
+    {% else %}
+      &mdash; 
+    {% endif %}
+  </p>
+  <p class="aside">{{ page_obj.start_index }}-{{ page_obj.end_index }} / {{ page_obj.paginator.count }}</p>
+{% endif %}

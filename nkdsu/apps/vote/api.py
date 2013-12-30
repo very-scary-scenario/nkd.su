@@ -9,7 +9,6 @@ from django.shortcuts import redirect
 from django.utils import timezone
 
 from .models import Show, Track
-from .views import split_query_into_keywords, search_for_tracks
 
 
 def last_week(request):

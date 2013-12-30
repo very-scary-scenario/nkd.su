@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h2>search results</h2>
+  <p class="subheading">{{ query }}</p>
+
+  <ul>
+    {% include "include/tracklist.html" %}
+  </ul>
+
+  {% include "include/paginator.html" %}
+
+  <p class="aligned everything">can't find what you're looking for? <a href="/request?q={{ query|urlencode }}">get it added to the library</a></p>
+
+{% endblock %}

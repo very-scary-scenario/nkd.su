@@ -19,12 +19,11 @@ urlpatterns = patterns(
         views.Roulette.as_view(), name='roulette'),
     url(r'^roulette/$', views.Roulette.as_view(), name='roulette'),
 
+    url(r'^search/$', views.Search.as_view(), name='search'),
+
     #url(r'^everything/$', 'nkdsu.apps.vote.views.everything', name='everything'),
     url(r'^artist/(?P<artist>.+)/$', 'nkdsu.apps.vote.views.artist', name='artist'),
     url(r'^info/$', 'nkdsu.apps.vote.views.info', name='info'),
-    url(r'^search/$', 'nkdsu.apps.vote.views.search_redirect', name='search_redirect'),
-    url(r'^search/(?P<query>[^/]+)/$', 'nkdsu.apps.vote.views.search', name='search'),
-    url(r'^search/(?P<query>[^/]+)/(?P<pageno>\d+)$', 'nkdsu.apps.vote.views.search', name='search'),
     url(r'^upload/$', 'nkdsu.apps.vote.views.upload_library', name='upload_library'),
     url(r'^request/$', 'nkdsu.apps.vote.views.request_addition', name='request_addition'),
     url(r'^stats/$', 'nkdsu.apps.vote.views.stats', name='stats'),

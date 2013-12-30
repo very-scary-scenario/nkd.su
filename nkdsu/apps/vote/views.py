@@ -18,7 +18,6 @@ from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
-from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.views.generic import TemplateView, ListView
 
@@ -69,7 +68,7 @@ class Roulette(ListView):
             return super(Roulette, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
-        qs = self.model.objects.filter(hidden=False, inudesu=False)
+        qs = self.model.objects.public()
 
         if self.kwargs.get('mode') != 'indiscriminate':
             qs = qs.filter(play=None)
@@ -83,36 +82,19 @@ class Roulette(ListView):
         return context
 
 
-# http://zeth.net/post/327/
-def split_query_into_keywords(query):
-    """Split the query into keywords,
-    where keywords are double quoted together,
-    use as one keyword."""
-    keywords = []
-    # Deal with quoted keywords
-    while '"' in query:
-        first_quote = query.find('"')
-        second_quote = query.find('"', first_quote + 1)
-        quoted_keywords = query[first_quote:second_quote + 1]
-        keywords.append(quoted_keywords.strip('"'))
-        query = query.replace(quoted_keywords, ' ')
-    # Split the rest by spaces
-    keywords.extend(query.split())
-    return keywords
+class Search(ListView):
+    template_name = 'search.html'
+    model = Track
+    context_object_name = 'tracks'
+    paginate_by = 20
 
+    def get_queryset(self):
+        return self.model.objects.search(self.request.GET.get('q', ''))
 
-def search_for_tracks(keywords, show_hidden=False):
-    """Make a search that contains all of the keywords."""
-    tracks = Track.objects.all()
-
-    if not show_hidden:
-        tracks = tracks.filter(hidden=False, inudesu=False)
-
-    trackset = set(tracks)
-    for keyword in keywords:
-        trackset = {t for t in trackset
-                    if keyword.lower() in t.canonical_string().lower()}
-    return list(trackset)
+    def get_context_data(self):
+        context = super(Search, self).get_context_data()
+        context['query'] = self.request.GET.get('q', '')
+        return context
 
 
 def search_redirect(request):
@@ -158,31 +140,6 @@ def user(request, screen_name):
     }
 
     return render_to_response('user.html', RequestContext(request, context))
-
-
-def search(request, query, pageno=1):
-    query = query.replace('%2F', '/')
-
-    try:
-        trackset = (Track.objects.get(id=query),)
-        if (not request.user.is_authenticated()) and trackset[0].hidden:
-            trackset = []
-    except Track.DoesNotExist:
-        keyword_list = split_query_into_keywords(query)
-        trackset = search_for_tracks(
-            keyword_list, show_hidden=request.user.is_authenticated())
-
-    paginator = Paginator(trackset, 20)
-    page = paginator.page(pageno)
-
-    context = {
-        'title': query,
-        'query': query,
-        'tracks': page.object_list,
-        'page': page,
-    }
-
-    return render_to_response('tracks.html', RequestContext(request, context))
 
 
 def artist(request, artist):

@@ -91,6 +91,24 @@ def split_id3_title(id3_title):
     return title, role
 
 
+# http://zeth.net/post/327/
+def split_query_into_keywords(query):
+    """Split the query into keywords,
+    where keywords are double quoted together,
+    use as one keyword."""
+    keywords = []
+    # Deal with quoted keywords
+    while '"' in query:
+        first_quote = query.find('"')
+        second_quote = query.find('"', first_quote + 1)
+        quoted_keywords = query[first_quote:second_quote + 1]
+        keywords.append(quoted_keywords.strip('"'))
+        query = query.replace(quoted_keywords, ' ')
+    # Split the rest by spaces
+    keywords.extend(query.split())
+    return keywords
+
+
 class Memoize(object):
     """
     Cache the return value of a method on the object itself.

@@ -23,7 +23,7 @@
   </p>
 
   <ul>
-    {% include "include/tracklist.html" with tracks=show.playlist %}
+    {% include "include/tracklist.html" with tracks=show.playlist current_show=show %}
   </ul>
 
 {% endblock %}

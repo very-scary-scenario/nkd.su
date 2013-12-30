@@ -13,7 +13,8 @@ from django.core.urlresolvers import reverse
 
 from nkdsu.apps.vote.utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
-    memoize)
+    memoize, split_query_into_keywords
+)
 
 
 class Show(models.Model):
@@ -255,7 +256,28 @@ class TwitterUser(models.Model):
         self.save()
 
 
+class TrackManager(models.Manager):
+    def public(self):
+        return self.filter(hidden=False, inudesu=False)
+
+    def search(self, query):
+        keywords = split_query_into_keywords(query)
+
+        if len(keywords) == 0:
+            return []
+
+        qs = self.public()
+
+        for keyword in keywords:
+            qs = qs.exclude(~models.Q(id3_title__icontains=keyword) &
+                            ~models.Q(id3_artist__icontains=keyword))
+
+        return qs
+
+
 class Track(models.Model):
+    objects = TrackManager()
+
     # derived from iTunes
     id = models.CharField(max_length=16, primary_key=True)
     id3_title = models.CharField(max_length=500)

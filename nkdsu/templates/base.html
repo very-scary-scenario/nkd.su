@@ -43,7 +43,7 @@
               </div> <!-- subtitle -->
             </div> <!-- titles -->
             <div id="search_div">
-              <form id="search" class="search_form" name="search" action="/search" method="get">
+              <form id="search" class="search_form" name="search" action="{% url "vote:search" %}" method="get">
                 <input class="{% if not query %}default{% endif %}" default="search" id="query" type="text" name="q" value="{% if query %}{{ query }}{% else %}search{% endif %}">
               </form>
             </div> <!-- search -->
