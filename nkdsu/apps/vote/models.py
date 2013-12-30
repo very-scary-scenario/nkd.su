@@ -159,8 +159,12 @@ class Show(models.Model):
         return Vote.objects.filter(**self._date_kwargs)
 
     @memoize
-    def playlist(self):
+    def plays(self):
         return Play.objects.filter(**self._date_kwargs).order_by('date')
+
+    @memoize
+    def playlist(self):
+        return (p.track for p in self.plays())
 
     def tracks_sorted_by_votes(self, exclude_abusers=False):
         """

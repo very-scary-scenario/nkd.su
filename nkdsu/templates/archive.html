@@ -4,9 +4,12 @@
   <ul class="archive">
     {% for show in object_list %}
       <li class="show">
-        <h2>{{ show.showtime|date:"F jS Y" }}</h2>
-        <p class="subheading">{{ show.playlist|length }} song{{ show.playlist|length|pluralize }}</p>
-        <p class="subheading">{{ show.votes|length }} vote{{ show.votes|length|pluralize }}</p>
+        <h2><a href="{{ show.get_absolute_url }}">{{ show.showtime|date:"F jS Y" }}</a></h2>
+        <p class="subheading">
+          <span>{{ show.plays|length }} play{{ show.plays|length|pluralize }}</span>
+          <span>{{ show.votes|length }} vote{{ show.votes|length|pluralize }}</span>
+        </p>
+        {# XXX new tracks? #}
       </li>
     {% endfor %}
   </ul>

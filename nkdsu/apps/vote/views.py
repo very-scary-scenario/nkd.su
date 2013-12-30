@@ -47,6 +47,10 @@ class Archive(ListView):
         return qs.order_by('-showtime')
 
 
+class ShowDetail(mixins.ShowDetail):
+    template_name = 'show_detail.html'
+
+
 def roulette(request, mode=None):
     """ Five random tracks """
     if mode is None:

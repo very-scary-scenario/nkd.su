@@ -33,10 +33,10 @@
                 <h1><a href="{% url "vote:index" %}">nkd.su</a></h1>
               </div> <!-- title -->
               <div id="subtitle">
-                {% if this_week.broadcasting %}
+                {% if current_show.broadcasting %}
                   <p class="subtitle">on air! listen live at <a target="_blank" href="http://thisisthecat.com">the&nbsp;cat</a>
-                {% elif this_week %}
-                  <p class="subtitle">taking requests for {{ current_show.showtime|date:"F"|lower }}&nbsp;{{ current_show.showtime|date:"jS"|lower }}</p>
+                {% elif current_show %}
+                  <p class="subtitle">taking requests for {{ current_show.showtime|date:"F"|lower }}&nbsp;{{ current_show.showtime|date:"jS" }}</p>
                 {% else %}
                   <p class="subtitle">a neko desu request robot</p>
                 {% endif %}

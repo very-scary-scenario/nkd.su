@@ -7,6 +7,6 @@ def nkdsu_context_processor(request):
     """
 
     return {
-        'this_week': Show.current(),
+        'current_show': Show.current(),
         'path': request.path,
     }

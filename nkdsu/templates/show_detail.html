@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h2>playlist for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS, Y" }}</h2>
+  {% if show.added %}
+    {# XXX this probably doesn't work #}
+    <p class="subheading"><a href="{{ show.get_added_url }}">{{ show.added|length }} track{{ show.added|pluralize }} added this week</a></p>
+  {% endif %}
+  <p class="subheading">
+    {% if show.prev %}
+      &lt; <a href="{{ show.prev.get_absolute_url }}">{{ show.prev.showtime|date:"Y-m-d" }}</a>
+    {% else %}
+      &lt; —
+    {% endif %}
+    |
+    {% if show.next %}
+      <a href="{{ show.next.get_absolute_url }}">{{ show.next.showtime|date:"Y-m-d" }}</a> &gt;
+    {% else %}
+      — &gt;
+    {% endif %}
+  </p>
+
+{% include "include/tracklist.html" with tracks=show.playlist %}
+
+{% endblock %}

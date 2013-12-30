@@ -1,3 +1,14 @@
 .noise() {
   background-image: url('../i/noise.png');
 }
+
+.span-iter() {
+  > span::after {
+    content: ' •';
+    opacity: .5;
+  }
+
+  > span:last-child::after {
+    content: none;
+  }
+}
