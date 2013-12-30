@@ -21,13 +21,15 @@ urlpatterns = patterns(
 
     url(r'^search/$', views.Search.as_view(), name='search'),
 
+    url(r'^user/(?P<screen_name>[_0-9a-zA-Z]+)/$',
+        views.TwitterUserDetail.as_view(), name='user'),
+
     #url(r'^everything/$', 'nkdsu.apps.vote.views.everything', name='everything'),
     url(r'^artist/(?P<artist>.+)/$', 'nkdsu.apps.vote.views.artist', name='artist'),
     url(r'^info/$', 'nkdsu.apps.vote.views.info', name='info'),
     url(r'^upload/$', 'nkdsu.apps.vote.views.upload_library', name='upload_library'),
     url(r'^request/$', 'nkdsu.apps.vote.views.request_addition', name='request_addition'),
     url(r'^stats/$', 'nkdsu.apps.vote.views.stats', name='stats'),
-    url(r'^user/(?P<screen_name>[_0-9a-zA-Z]+)/$', 'nkdsu.apps.vote.views.user', name='user'),
 
     # peter functions
     url(r'^played/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.mark_as_played', name='mark_as_played'),

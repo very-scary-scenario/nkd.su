@@ -235,6 +235,10 @@ class TwitterUser(models.Model):
     def get_absolute_url(self):
         return reverse('vote:user', kwargs={'screen_name': self.screen_name})
 
+    @memoize
+    def votes(self):
+        return self.vote_set.order_by('-date')
+
     def batting_average(self, cutoff=None):
         """
         Return a user's batting average for shows after cutoff. If cutoff is
@@ -594,8 +598,10 @@ class Vote(models.Model):
         return the_vote
 
     def twitter_url(self):
-        return 'http://twitter.com/%s/status/%s/' % (self.user.screen_name,
-                                                     self.user.tweet_id)
+        return 'http://twitter.com/%s/status/%s/' % (
+            self.twitter_user.screen_name,
+            self.tweet_id,
+        )
 
 
 class Play(models.Model):

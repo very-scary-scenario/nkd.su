@@ -25,7 +25,7 @@ from .forms import (RequestForm, LibraryUploadForm, ManualVoteForm, BlockForm,
                     BadMetadataForm)
 from .update_library import update_library
 from ..vote import trivia, mixins
-from ..vote.models import Show, Track
+from ..vote.models import Show, Track, TwitterUser
 
 
 post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
@@ -109,6 +109,18 @@ class TrackDetail(DetailView):
             return redirect(self.object.get_absolute_url())
         else:
             return super(TrackDetail, self).get(request, *args, **kwargs)
+
+
+class TwitterUserDetail(DetailView):
+    model = TwitterUser
+    template_name = 'twitter_user_detail.html'
+    context_object_name = 'voter'
+
+    def get_object(self):
+        # There's a bug in this code, but I can't think of an elegant
+        # workaround right now and I'm genuinely curious to see if it ever
+        # raises an error.
+        return self.model.objects.get(screen_name=self.kwargs['screen_name'])
 
 
 def track(request, track_id, slug=None):
