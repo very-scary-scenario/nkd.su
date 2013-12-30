@@ -63,11 +63,12 @@
 
       {% if user.is_authenticated %}
         <p class="admin">
-          <a href="/played/{{ track.id }}/">now playing&hellip;</a> | <a href="/vote/{{ track.id }}/">add vote&hellip;</a>
+          <a href="/played/{{ track.id }}/">now playing&hellip;</a>
+          <a href="/vote/{{ track.id }}/">add vote&hellip;</a>
           {% if track.ineligible and track.ineligible == 'blocked' %}
-            | <a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>
+            <a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>
           {% elif track.eligible %}
-            | <a href="/block/{{ track.id }}/">block&hellip;</a> | <a href="/block/{{ track.id }}/reason?reason=announced">announce</a>
+            <a href="/block/{{ track.id }}/">block&hellip;</a> | <a href="/block/{{ track.id }}/reason?reason=announced">announce</a>
           {% endif %}
         </p>
         <p class="admin">
