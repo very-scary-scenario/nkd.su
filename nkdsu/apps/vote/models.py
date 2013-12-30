@@ -140,32 +140,32 @@ class Show(models.Model):
         else:
             return None
 
-    @property
-    def _date_kwargs(self):
+    def _date_kwargs(self, attr='date'):
         """
         The kwargs you would hand to a queryset to find objects applicable to
         this show.
         """
 
-        kw = {'date__lte': self.end}
+        kw = {'%s__lte' % attr: self.end}
 
         if self.prev() is not None:
-            kw['date__gt'] = self.prev().end
+            kw['%s__gt' % attr] = self.prev().end
 
         return kw
 
     @memoize
     def votes(self):
-        return Vote.objects.filter(**self._date_kwargs)
+        return Vote.objects.filter(**self._date_kwargs())
 
     @memoize
     def plays(self):
-        return Play.objects.filter(**self._date_kwargs).order_by('date')
+        return Play.objects.filter(**self._date_kwargs()).order_by('date')
 
     @memoize
     def playlist(self):
         return (p.track for p in self.plays())
 
+    @memoize
     def tracks_sorted_by_votes(self, exclude_abusers=False):
         """
         Return a list of tracks that have been voted for this week, in order of
@@ -183,13 +183,15 @@ class Show(models.Model):
         return sorted(tracks_and_dates.iterkeys(),
                       key=lambda t: tracks_and_dates[t])
 
-    def added(self, show_hidden=False):
+    @memoize
+    def revealed(self, show_hidden=False):
         """
-        Return a all public (unhidden, non-inudesu) tracks added to the library
-        this week.
+        Return a all public (unhidden, non-inudesu) tracks revealed in the
+        library this week.
         """
 
-        # XXX
+        return Track.objects.filter(hidden=False, inudesu=False,
+                                    **self._date_kwargs('revealed'))
 
     def get_absolute_url(self):
         return reverse('vote:show', kwargs={'date': self.showtime.date()})
@@ -279,13 +281,31 @@ class Track(models.Model):
     def length_str(self):
         return length_str(self.msec)
 
+    @memoize
+    def last_play(self):
+        qs = self.play_set
+        if qs.exists():
+            return self.play_set.order_by('-date')[0]
+        else:
+            return None
+
+    @memoize
     def weeks_since_play(self):
         """
         Get the number of shows that have ended since this track's most recent
         Play.
         """
 
-        # XXX
+        if self.last_play() is None:
+            return None
+
+        count = 0
+        show = Show.current()
+        while show != self.last_play().show():
+            count += 1
+            show = show.prev()
+
+        return count
 
     def blocks_for(self, show):
         """
@@ -344,10 +364,10 @@ class Track(models.Model):
         elif self.hidden:
             reason = 'hidden'
 
-        elif self.play_set.filter(**show._date_kwargs).exists():
+        elif self.play_set.filter(**show._date_kwargs()).exists():
             reason = 'played this week'
 
-        elif self.play_set.filter(**show.prev()._date_kwargs).exists():
+        elif self.play_set.filter(**show.prev()._date_kwargs()).exists():
             reason = 'played last week'
 
         elif block_qs.exists():
@@ -364,7 +384,7 @@ class Track(models.Model):
         Return votes for this track for a given show.
         """
 
-        return self.vote_set.filter(**show._date_kwargs)
+        return self.vote_set.filter(**show._date_kwargs())
 
     def shortlist(self):
         """
@@ -549,6 +569,10 @@ class Play(models.Model):
 
         self.track.hidden = False  # If something's been played, it's public.
         self.track.save()
+
+    @memoize
+    def show(self):
+        return Show.at(self.date)
 
 
 class Block(models.Model):

@@ -13,7 +13,7 @@
     {% else %}
       &lt; —
     {% endif %}
-    |
+    ·
     {% if show.next %}
       <a href="{{ show.next.get_absolute_url }}">{{ show.next.showtime|date:"Y-m-d" }}</a> &gt;
     {% else %}
@@ -21,6 +21,8 @@
     {% endif %}
   </p>
 
-{% include "include/tracklist.html" with tracks=show.playlist %}
+  <ul>
+    {% include "include/tracklist.html" with tracks=show.playlist %}
+  </ul>
 
 {% endblock %}
