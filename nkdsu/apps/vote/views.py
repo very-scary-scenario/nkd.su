@@ -9,6 +9,7 @@ import tweepy
 from markdown import markdown
 
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.http import Http404, HttpResponse
@@ -25,7 +26,7 @@ from .forms import (RequestForm, SearchForm, LibraryUploadForm,
                     ManualVoteForm, BlockForm, BadMetadataForm)
 from .update_library import update_library
 from ..vote import trivia, mixins
-from ..vote.models import Show
+from ..vote.models import Show, Track
 
 
 post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
@@ -53,6 +54,33 @@ class ShowDetail(mixins.ShowDetail):
 
 class Added(mixins.ShowDetail):
     template_name = 'added.html'
+
+
+class Roulette(ListView):
+    model = Track
+    template_name = 'roulette.html'
+    context_object_name = 'tracks'
+
+    def get(self, request, *args, **kwargs):
+        if kwargs.get('mode') is None:
+            return redirect(reverse('vote:roulette',
+                                    kwargs={'mode': 'hipster'}))
+        else:
+            return super(Roulette, self).get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(hidden=False, inudesu=False)
+
+        if self.kwargs.get('mode') != 'indiscriminate':
+            qs = qs.filter(play=None)
+
+        return qs.order_by('?')[:5]
+
+    def get_context_data(self):
+        context = super(Roulette, self).get_context_data()
+        context['mode'] = self.kwargs.get('mode') or 'hipster'
+        context['modes'] = ['hipster', 'indiscriminate']
+        return context
 
 
 def roulette(request, mode=None):

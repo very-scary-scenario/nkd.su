@@ -201,10 +201,14 @@ class Show(models.Model):
                                     **self._date_kwargs('revealed'))
 
     def get_absolute_url(self):
-        return reverse('vote:show', kwargs={'date': self.showtime.date()})
+        return reverse('vote:show', kwargs={
+            'date': self.showtime.date().strftime('%Y-%m-%d')
+        })
 
     def get_added_url(self):
-        return reverse('vote:added', kwargs={'date': self.showtime.date()})
+        return reverse('vote:added', kwargs={
+            'date': self.showtime.date().strftime('%Y-%m-%d')
+        })
 
 
 class TwitterUser(models.Model):

@@ -17,22 +17,25 @@ body {
   color: @fg;
   text-shadow: @bg 0 .1em 0;
   height: 100%;
-}
 
-#everything {
-  min-height: 100%;
-  position: relative;
-}
+  #everything {
+    min-height: 100%;
+    position: relative;
 
-main {
-  margin: 0 auto;
-  max-width: 50em;
-  min-width: 200px;
-  padding: 1em;
-  position: relative;
-  padding-bottom: 10em;
-}
+    main {
+      margin: 0 auto;
+      max-width: 50em;
+      min-width: 200px;
+      padding: 1em;
+      position: relative;
+      padding-bottom: 10em;
 
+      .roulette-mode-switch {
+        .child-iter();
+      }
+    }
+  }
+}
 
 /* selection list */
 div.minitrack {

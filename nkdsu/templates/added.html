@@ -3,7 +3,6 @@
 {% block content %}
   <h2>tracks added for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS, Y" }}</h2>
   {% if show.plays %}
-    {# XXX this probably doesn't work #}
     <p class="subheading"><a href="{{ show.get_absolute_url }}">{{ show.plays|length }} track{{ show.plays|pluralize }} played this week</a></p>
   {% endif %}
   <p class="subheading">

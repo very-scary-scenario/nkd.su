@@ -56,14 +56,4 @@
   <p class="aligned everything">can't find what you're looking for? <a href="/request?q={{ query|urlencode }}">get it added to the library</a></p>
 {% endif %}
 
-{% if title == 'surprise me' %}
-  <p class="aside"><a href=".">these are all terrible</a></p>
-  {% if mode == 'forced uniform' %}
-  {% elif mode == 'unplayed' %}
-    <p class="aside"><a href="{% url "roulette" %}">these are all terrible and i can't stand all this hipster nonsense</a></p>
-  {% else %}
-    <p class="aside"><a href="{% url "roulette" mode='unplayed' %}">these are all terrible and i want to see more unloved tracks :&lt</a></p>
-  {% endif %}
-{% endif %}
-
 {% endblock %}

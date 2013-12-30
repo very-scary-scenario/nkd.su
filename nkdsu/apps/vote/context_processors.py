@@ -15,7 +15,7 @@ def nkdsu_context_processor(request):
         ('home', reverse('vote:index')),
         ('archive', reverse('vote:archive')),
         ('new tracks', reverse('vote:added')),
-        ('roulette', reverse('vote:roulette')),
+        ('roulette', reverse('vote:roulette', kwargs={'mode': 'hipster'})),
         ('stats', reverse('vote:stats')),
         ('irc', 'irc://irc.rizon.net/NekoDesu'),
         ('webchat',

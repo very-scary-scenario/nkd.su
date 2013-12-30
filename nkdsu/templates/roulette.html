@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h2>roulette</h2>
+  <p class="subheading roulette-mode-switch">
+    {% for m in modes %}
+      <span>
+      {% if mode == m %}
+        {{ m }}
+      {% else %}
+        <a href="{% url "vote:roulette" mode=m %}">{{ m }}</a>
+      {% endif %}
+    </span>
+    {% endfor %}
+  </p>
+
+  <ul>
+    {% include "include/tracklist.html" %}
+  </ul>
+
+  <p class="aside"><a href="{% url "vote:roulette" mode=mode %}">these are all terrible</a></p>
+
+
+{% endblock %}
