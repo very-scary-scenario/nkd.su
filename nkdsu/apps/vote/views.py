@@ -103,6 +103,13 @@ class TrackDetail(DetailView):
     template_name = 'track_detail.html'
     context_object_name = 'track'
 
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if kwargs.get('slug', None) != self.object.slug():
+            return redirect(self.object.get_absolute_url())
+        else:
+            return super(TrackDetail, self).get(request, *args, **kwargs)
+
 
 def track(request, track_id, slug=None):
     """ A view of a single track """
