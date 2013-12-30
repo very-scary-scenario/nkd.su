@@ -311,7 +311,13 @@ class Track(models.Model):
 
     @property
     def is_new(self):
-        pass  # XXX
+        current = Show.current()
+        prev = current.prev()
+
+        if prev is not None and self.revealed > prev.end:
+            return True
+        else:
+            return False
 
     def length_str(self):
         return length_str(self.msec)

@@ -133,10 +133,11 @@ li.track {
   }
 
   // stamps
-  .report, .new {
+  .report, &::before {
     .uninvert() !important;
     padding: .3em .3em .2em;
     border-radius: .3em;
+    border: 1px solid #ccc;
     line-height: 1em;
     position: absolute;
 
@@ -146,11 +147,14 @@ li.track {
   }
 
   // NEW!
-  .new {
+  &.new::before {
+    content: 'New!';
+    color: #964 !important;
     padding: .2em .5em .3em .2em;
     font-size: 1.2em;
-    top: -.4em;
-    border: 1px solid #ca6;
+    top: -.2em;
+    left: -.2em;
+    border-color: #ca6;
     background-color: #feb;
     font-family: 'Kaushan Script', cursive;
   }
@@ -158,7 +162,7 @@ li.track {
   // bad metadata?
   .report {
     font-size: .8em;
-    border: 1px solid #d66;
+    border-color: #d66;
     background-color: #fdd;
     opacity: 0;
     bottom: -.2em;
