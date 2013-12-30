@@ -4,6 +4,7 @@ import datetime
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.views.generic import DetailView
 
 from .models import Show
@@ -29,24 +30,48 @@ class ShowDetail(DetailView):
 
     @memoize
     def get_object(self):
-        qs = self.model.objects.filter(showtime__gt=self.date)
+        """
+        Get the show relating to self.date or, if self.date is None, the most
+        recent complete show.
+
+        Doesn't use Show.at() because I don't want views creating Shows in the
+        database.
+        """
+
+        if self.date is None:
+            qs = self.model.objects.filter(end__lt=timezone.now())
+            qs = qs.order_by('-end')
+        else:
+            qs = self.model.objects.filter(showtime__gt=self.date)
+            qs = qs.order_by('showtime')
 
         if not qs.exists():
             raise Http404
 
-        return qs.order_by('showtime')[0]
+        return qs[0]
 
     def get(self, request, *args, **kwargs):
-        datefmt = '%Y-%m-%d'
-        self.date = datetime.datetime.strptime(kwargs['date'], datefmt)
+        date_fmt = '%Y-%m-%d'
+        date_str = kwargs.get('date')
+
+        if date_str is None:
+            self.date = None
+        else:
+            naive_date = datetime.datetime.strptime(kwargs['date'], date_fmt)
+            self.date = timezone.make_aware(naive_date,
+                                            timezone.get_current_timezone())
+
         self.object = self.get_object()
 
-        if self.object.showtime.date() == self.date.date():
+        if (
+            self.date is not None and
+            self.object.showtime.date() == self.date.date()
+        ):
             return super(ShowDetail, self).get(request, *args, **kwargs)
         else:
             new_kwargs = copy(kwargs)
             name = ':'.join([request.resolver_match.namespace,
                              request.resolver_match.url_name])
-            new_kwargs['date'] = self.object.showtime.date().strftime(datefmt)
+            new_kwargs['date'] = self.object.showtime.date().strftime(date_fmt)
             url = reverse(name, kwargs=new_kwargs)
             return redirect(url)

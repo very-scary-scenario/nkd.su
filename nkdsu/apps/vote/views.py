@@ -51,6 +51,10 @@ class ShowDetail(mixins.ShowDetail):
     template_name = 'show_detail.html'
 
 
+class Added(mixins.ShowDetail):
+    template_name = 'added.html'
+
+
 def roulette(request, mode=None):
     """ Five random tracks """
     if mode is None:
@@ -286,59 +290,6 @@ def show(request, date):
     }
 
     return render_to_response('show.html', RequestContext(request, context))
-
-
-def added(request, date=None):
-    if date:
-        year, month, day = (int(d) for d in date.split('-'))
-        if day > 31:
-            old_date = True
-            day, month, year = (int(d) for d in date.split('-'))
-        else:
-            old_date = False
-
-        try:
-            dart = timezone.make_aware(datetime(year, month, day),
-                                       timezone.utc)
-            week = Week(dart)
-        except ValueError:
-            raise Http404
-
-        if old_date:
-            return redirect(week.get_added_url())
-    else:
-        week = Week(Track.objects.all().order_by('-added')[0].added)
-        return redirect(week.get_added_url())
-
-    tracks = week.added(show_hidden=request.user.is_authenticated())
-
-    # set up prev/next buttons
-    next_week_with_additions = prev_week_with_additions = None
-
-    older_tracks = Track.objects.filter(added__lt=week.start,
-                                        hidden=False).order_by('-added')
-    newer_tracks = Track.objects.filter(added__gt=week.finish,
-                                        hidden=False).order_by('added')
-
-    if older_tracks:
-        prev_week_with_additions = Week(older_tracks[0].added).showtime
-    if newer_tracks:
-        next_week_with_additions = Week(newer_tracks[0].added).showtime
-
-    plays_this_week = bool(week.plays())
-
-    context = {
-        'title': 'new tracks from %s' % date,
-        'section': 'new tracks',
-        'additions_from': week.showtime,
-        'tracks': tracks,
-        'next_week_with_additions': next_week_with_additions,
-        'prev_week_with_additions': prev_week_with_additions,
-        'plays_this_week': plays_this_week,
-        'is_current_week': week == Week(),
-    }
-
-    return render_to_response('tracks.html', RequestContext(request, context))
 
 
 def info(request):

@@ -42,7 +42,7 @@ class Show(models.Model):
         return cls.at(timezone.now())
 
     @classmethod
-    def _at(cls, time):
+    def _at(cls, time, create=True):
         """
         Get (or create, if necessary) the show for `time`. Use .at() instead.
         """
@@ -50,7 +50,7 @@ class Show(models.Model):
         shows_after_time = cls.objects.filter(end__gt=time)
         if shows_after_time.exists():
             show = shows_after_time.order_by('showtime')[0]
-        else:
+        elif create:
             # We have to switch to naive and back to make relativedelta
             # look for the local showtime. If we did not, showtime would be
             # calculated against UTC.
@@ -75,6 +75,8 @@ class Show(models.Model):
             show.end = our_end
             show.showtime = our_showtime
             show.save()
+        else:
+            show = None
 
         return show
 
@@ -96,7 +98,7 @@ class Show(models.Model):
         show = last_show
 
         while show.end < time:
-            show = show.next()
+            show = show.next(create=True)
 
         return show
 
@@ -120,12 +122,12 @@ class Show(models.Model):
         return (time >= self.showtime) and (time < self.end)
 
     @memoize
-    def next(self):
+    def next(self, create=False):
         """
         Return the next Show.
         """
 
-        return Show._at(self.end + datetime.timedelta(microseconds=1))
+        return Show._at(self.end + datetime.timedelta(microseconds=1), create)
 
     @memoize
     def prev(self):
@@ -139,6 +141,11 @@ class Show(models.Model):
             return qs.order_by('-showtime')[0]
         else:
             return None
+
+    def has_ended(self):
+        print timezone.now()
+        print self.end
+        return timezone.now() > self.end
 
     def _date_kwargs(self, attr='date'):
         """

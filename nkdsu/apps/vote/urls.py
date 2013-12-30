@@ -6,17 +6,20 @@ from nkdsu.apps.vote import views
 urlpatterns = patterns(
     '',
     url(r'^$', views.IndexView.as_view(), name='index'),
+
     url(r'^archive/$', views.Archive.as_view(), name='archive'),
+
+    url(r'^show/$', views.ShowDetail.as_view(), name='show'),
     url(r'^show/(?P<date>[\d-]+)/$', views.ShowDetail.as_view(), name='show'),
+
+    url(r'^added/$', views.Added.as_view(), name='added'),
+    url(r'^added/(?P<date>[\d-]+)/$', views.Added.as_view(), name='added'),
 
     #url(r'^everything/$', 'nkdsu.apps.vote.views.everything', name='everything'),
     url(r'^artist/(?P<artist>.+)/$', 'nkdsu.apps.vote.views.artist', name='artist'),
     url(r'^info/$', 'nkdsu.apps.vote.views.info', name='info'),
     url(r'^roulette/$', 'nkdsu.apps.vote.views.roulette', name='roulette'),
     url(r'^roulette/(?P<mode>unplayed)/$', 'nkdsu.apps.vote.views.roulette', name='roulette'),
-    url(r'^recent/$', 'nkdsu.apps.vote.views.added'),
-    url(r'^added/$', 'nkdsu.apps.vote.views.added', name='added'),
-    url(r'^added/(?P<date>[\d-]+)/$', 'nkdsu.apps.vote.views.added', name='added'),
     url(r'^search/$', 'nkdsu.apps.vote.views.search_redirect', name='search_redirect'),
     url(r'^search/(?P<query>[^/]+)/$', 'nkdsu.apps.vote.views.search', name='search'),
     url(r'^search/(?P<query>[^/]+)/(?P<pageno>\d+)$', 'nkdsu.apps.vote.views.search', name='search'),
