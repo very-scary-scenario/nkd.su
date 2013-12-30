@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load vote_tags %}
 
 {% block title %}{{ track.derived_title|lower }}{% endblock %}
 
@@ -9,5 +10,16 @@
 </ul>
 
 <p class="aside">added to the library on <a href="/added/{{ added|date:"d-m-Y" }}/">{{ track.added|date:"F"|lower }}&nbsp;{{ track.added|date:"jS, Y" }}</a>
+
+{% if track.plays %}
+  <h3>play history</h3>
+  <ul class="plays">
+    {% for play in track.plays %}
+      <li>
+        <a href="{{ play.show.get_absolute_url }}">{{ play.date|date:"F"|lower }} {{ play.date|date:"jS, Y" }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
 
 {% endblock %}

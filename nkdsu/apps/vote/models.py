@@ -325,6 +325,10 @@ class Track(models.Model):
             return None
 
     @memoize
+    def plays(self):
+        return self.play_set.order_by('date')
+
+    @memoize
     def weeks_since_play(self):
         """
         Get the number of shows that have ended since this track's most recent
@@ -593,11 +597,11 @@ class Play(models.Model):
     track = models.ForeignKey(Track)
     tweet_id = models.IntegerField(blank=True, null=True)
 
-    def __str__(self):
-        return '<played %s at %s>' % (self.track, self.datetime)
+    def __unicode__(self):
+        return u'%s at %s' % (self.track, self.date)
 
     def clean(self):
-        if (not Show.was_broadcasting(self.datetime)):
+        if (not Show.was_broadcasting(self.date)):
             raise ValidationError('It is not currently showtime.')
 
         # XXX raise ValidationError('This has been played today already.')
