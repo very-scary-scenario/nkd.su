@@ -52,8 +52,11 @@
       </div> <!-- header-background -->
       <ul id="nav">
         {% for s in sections %}
-          <li class="{{ s.classes }} {% if s.name == section %}active{% endif %}">
-            <a href="{{ s.url }}">{% if s.name == 'new tracks' and new_tracks %}<span class="new_tracks">{{ new_tracks }}</span> {% endif %}{{ s.name }}</a>
+        <li class="
+          {% if s.name == section %}active{% endif %}
+          {% if s.name == 'new tracks' and current_show.revealed %}lookatme{% endif %}
+        ">
+            <a href="{{ s.url }}">{% if s.name == 'new tracks' and current_show.revealed %}<span class="new_tracks">{{ current_show.revealed }}</span> {% endif %}{{ s.name }}</a>
           </li>
         {% endfor %}
         
