@@ -1,6 +1,9 @@
+from copy import copy
 import datetime
 
+from django.core.urlresolvers import reverse
 from django.http import Http404
+from django.shortcuts import redirect
 from django.views.generic import DetailView
 
 from .models import Show
@@ -26,18 +29,24 @@ class ShowDetail(DetailView):
 
     @memoize
     def get_object(self):
-        qs = self.model.objects.filter(end__gt=self.date)
+        qs = self.model.objects.filter(showtime__gt=self.date)
 
         if not qs.exists():
             raise Http404
 
-        return qs.order_by('end')[0]
+        return qs.order_by('showtime')[0]
 
     def get(self, request, *args, **kwargs):
-        self.date = datetime.datetime.strptime(kwargs['date'], '%Y-%m-%d')
+        datefmt = '%Y-%m-%d'
+        self.date = datetime.datetime.strptime(kwargs['date'], datefmt)
         self.object = self.get_object()
 
-        if self.object.end.date() == self.date.date():
+        if self.object.showtime.date() == self.date.date():
             return super(ShowDetail, self).get(request, *args, **kwargs)
         else:
-            return NotImplementedError('We need a redirect')
+            new_kwargs = copy(kwargs)
+            name = ':'.join([request.resolver_match.namespace,
+                             request.resolver_match.url_name])
+            new_kwargs['date'] = self.object.showtime.date().strftime(datefmt)
+            url = reverse(name, kwargs=new_kwargs)
+            return redirect(url)
