@@ -189,7 +189,8 @@ class Show(models.Model):
                     tracks_and_dates[track] = vote.date
 
         return sorted(tracks_and_dates.iterkeys(),
-                      key=lambda t: tracks_and_dates[t])
+                      key=lambda t: tracks_and_dates[t],
+                      reverse=True)
 
     @memoize
     def revealed(self, show_hidden=False):
