@@ -203,7 +203,7 @@ class Show(models.Model):
 class TwitterUser(models.Model):
     # Twitter stuff
     screen_name = models.CharField(max_length=100)
-    id = models.IntegerField(primary_key=True)
+    user_id = models.BigIntegerField(unique=True)
     user_image = models.URLField()
     name = models.CharField(max_length=20)
 
@@ -236,10 +236,12 @@ class TwitterUser(models.Model):
         Update this user's database object based on the Twitter API.
         """
 
-        api_resp = reading_tw_api.get_user(screen_name=self.id)
-        print api_resp
+        api_user = reading_tw_api.get_user(user_id=self.user_id)
 
-        # XXX actually do the thing
+        self.name = api_user.name
+        self.screen_name = api_user.screen_name
+        self.user_image = api_user.profile_image_url
+        self.save()
 
 
 class Track(models.Model):

@@ -93,7 +93,7 @@ class Command(BaseCommand):
         fields = instance['fields']
         this_vote_date = date_parser.parse(fields['date'])
 
-        user_qs = TwitterUser.objects.filter(id=fields['user_id'])
+        user_qs = TwitterUser.objects.filter(user_id=fields['user_id'])
 
         user_meta = {
             k: fields[k] for k in ['screen_name', 'user_image', 'name']
@@ -108,7 +108,7 @@ class Command(BaseCommand):
                 user.save()
         else:
             user = TwitterUser(
-                id=fields['user_id'],
+                user_id=fields['user_id'],
                 updated=this_vote_date,
                 **user_meta
             )
