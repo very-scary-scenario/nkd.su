@@ -49,6 +49,23 @@ class ShowTest(TestCase):
         self.assertLess(show_count, 55)
 
     def test_cannot_make_show_too_far_in_future(self):
-        Show.at(timezone.now())
+        Show.current()
         too_far = timezone.now() + datetime.timedelta(seconds=1)
-        self.assertRaises(NotImplementedError, lambda: Show.at(too_far))
+        self.assertRaises(NotImplementedError, lambda: Show._at(too_far))
+
+    def test_get_show_far_in_future(self):
+        make_current = lambda t: timezone.make_aware(
+            t, timezone.get_current_timezone())
+
+        for x in xrange(2):
+            # these functions do different things depending on if shows already
+            # exist, but there should be no visible difference between the
+            # results of these different things
+            ours = Show.at(make_current(datetime.datetime(3000, 1, 1)))
+            self.assertEqual(Show.objects.all().count(), 1)
+            self.assertEqual(ours.end.date(), datetime.date(3000, 1, 4))
+
+        for x in xrange(2):
+            ours = Show.at(make_current(datetime.datetime(3010, 1, 1)))
+            self.assertEqual(Show.objects.all().count(), 523)
+            self.assertEqual(ours.end.date(), datetime.date(3010, 1, 6))

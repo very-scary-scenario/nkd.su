@@ -42,34 +42,25 @@ class Show(models.Model):
         return cls.at(timezone.now())
 
     @classmethod
-    def at(cls, time):
+    def _at(cls, time):
         """
-        Get (or create, if necessary) the show for `time`.
+        Get (or create, if necessary) the show for `time`. Use .at() instead.
         """
 
-        if time > timezone.now():
-            raise NotImplementedError('Cannot be called with dates falling '
-                                      'in the future.')
-
-        shows_after_time = cls.objects.filter(end__gte=time)
+        shows_after_time = cls.objects.filter(end__gt=time)
         if shows_after_time.exists():
             show = shows_after_time.order_by('showtime')[0]
         else:
             # We have to switch to naive and back to make relativedelta
             # look for the local showtime. If we did not, showtime would be
             # calculated against UTC.
-            # Note that this could be a problem if a show is ever scheduled for
-            # a time that does not exist. If you're planning one, be sure to
-            # explicitly set which side of the clocks changing the show will be
-            # hosted at least a week in advance, or the site will start 500ing
-            # the moment the previous show ends.
             naive_time = timezone.make_naive(time,
                                              timezone.get_current_timezone())
             naive_end = naive_time + settings.SHOW_END
 
-            # work around an unfortunate shortcoming of dateutil where
+            # Work around an unfortunate shortcoming of dateutil where
             # specifying a time on a weekday won't increment the weekday even
-            # if our initial time is after that time
+            # if our initial time is after that time.
             while naive_end < naive_time:
                 naive_time += datetime.timedelta(hours=1)
                 naive_end = naive_time + settings.SHOW_END
@@ -84,6 +75,28 @@ class Show(models.Model):
             show.end = our_end
             show.showtime = our_showtime
             show.save()
+
+        return show
+
+    @classmethod
+    def at(cls, time):
+        """
+        Get the show for the date specified, creating every intervening show
+        in the process if necessary.
+        """
+
+        if Show.objects.all().exists():
+            last_show = cls.objects.all().order_by('-end')[0]
+        else:
+            return cls._at(time)  # this is the first show!
+
+        if time <= last_show.end:
+            return cls._at(time)
+
+        show = last_show
+
+        while show.end < time:
+            show = show.next()
 
         return show
 
@@ -112,8 +125,7 @@ class Show(models.Model):
         Return the next Show.
         """
 
-        return Show.objects.filter(showtime__gte=self.end).order_by(
-            'showtime')[0]
+        return Show._at(self.end + datetime.timedelta(microseconds=1))
 
     @memoize
     def prev(self):
@@ -121,7 +133,12 @@ class Show(models.Model):
         Return the previous Show.
         """
 
-        return Show.objects.filter(end__lt=self.end).order_by('-showtime')[0]
+        qs = Show.objects.filter(end__lt=self.end)
+
+        if qs.exists():
+            return qs.order_by('-showtime')[0]
+        else:
+            return None
 
     @property
     def _date_kwargs(self):
