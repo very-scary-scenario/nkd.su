@@ -48,11 +48,6 @@ class ShowTest(TestCase):
         self.assertGreater(show_count, 51)
         self.assertLess(show_count, 55)
 
-    def test_cannot_make_show_too_far_in_future(self):
-        Show.current()
-        too_far = timezone.now() + datetime.timedelta(seconds=1)
-        self.assertRaises(NotImplementedError, lambda: Show._at(too_far))
-
     def test_get_show_far_in_future(self):
         make_current = lambda t: timezone.make_aware(
             t, timezone.get_current_timezone())
