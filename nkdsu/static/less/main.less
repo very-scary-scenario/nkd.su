@@ -1,6 +1,7 @@
 @import "_reset.less";
 @import "_elements.less";
 @import "_mixins.less";
+@import "_vars.less";
 
 @import "_tracks.less";
 @import "_archive.less";
@@ -11,10 +12,10 @@ html {
 
 body {
   font-family: "Bitter", "Calibri", serif;
-  background-color: #fff;
+  background-color: @bg;
   .noise();
-  color: #444;
-  text-shadow: #fff 0 .1em 0;
+  color: @fg;
+  text-shadow: @bg 0 .1em 0;
   height: 100%;
 }
 
@@ -45,10 +46,6 @@ div#selection h3 {
 
 div.minitrack p.title {
   font-size: 1.2em;
-}
-
-div.minitrack, p.metameta {
-  font-size: .8em;
 }
 
 div.minitrack p.id {
@@ -217,7 +214,7 @@ p.new_tracks {
 }
 
 a {
-  color: #d66;
+  color: @hl;
   text-decoration: none;
 }
 
@@ -285,7 +282,7 @@ div.user p.when a {
 }
 
 div.user div.vote:hover p.when a {
-  color: #d66;
+  color: @hl;
 }
 
 div.user p.content {

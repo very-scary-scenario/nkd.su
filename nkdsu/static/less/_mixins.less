@@ -1,14 +1,40 @@
+@import "_vars.less";
+
 .noise() {
   background-image: url('../i/noise.png');
 }
 
-.span-iter() {
-  > span::after {
-    content: ' •';
-    opacity: .5;
+.child-iter() {
+  > *::after {
+    content: ' ·';
   }
 
-  > span:last-child::after {
+  > *:last-child::after {
     content: none;
+  }
+}
+
+.invert() {
+  background-color: @inv_bg;
+  color: @inv_fg;
+  text-shadow: #000 0 .1em 0;
+
+  a {
+    &:hover {
+      color: @inv_fg;
+    }
+    color: @inv_hl;
+  }
+}
+
+.uninvert() {
+  background-color: none;
+  color: @fg;
+  text-shadow: @bg 0 .1em 0;
+  a {
+    &:hover {
+      color: @fg;
+    }
+    color: @hl;
   }
 }

@@ -1,3 +1,5 @@
+@import "_mixins.less"; 
+
 @metadata-width: 60%;
 
 li.track { 
@@ -27,6 +29,15 @@ li.track {
     width: @metadata-width;
 
     border-right: 1px solid #ccc;
+
+    .refusal, .admin, .meta {
+      font-size: .8em;
+      .child-iter();
+    }
+
+    .refusal {
+      color: #aaa;
+    }
 
     .title {
       font-size: 1.4em;
@@ -69,11 +80,11 @@ li.track {
               text-align: right;
               z-index: 1;
 
-              opacity: .95;
+              .uninvert();
               padding: .4em;
-              background-color: #fff;
+              background-color: @bg;
               .noise();
-              -webkit-box-shadow: inset #ddd 0 0 1em, #999 0 .2em .5em;
+              box-shadow: inset #ddd 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
               border: 1px solid #ccc;
               max-width: 17em;
               border-radius: .4em;
@@ -118,13 +129,12 @@ li.track {
   }
 
   .invitation {
-    &.plusone {
-      text-align: right;
-    }
+    text-align: right;
   }
 
   // stamps
   .report, .new {
+    .uninvert() !important;
     padding: .3em .3em .2em;
     border-radius: .3em;
     line-height: 1em;
@@ -160,9 +170,24 @@ li.track {
 
   // variants
   &.ineligible {
+    border-color: #222;
+    .invert();
     -webkit-box-shadow: inset #222 0 .2em 2em;;
-    background-color: #333;
-    color: #eee;
+
+    div.metadata {
+      border-color: #222;
+    }
+
+    &.inudesu {
+      a {
+        color: @inv_inu_hl;
+
+        &:hover {
+          border-color: @inv_inu_hl;
+          color: @inv_fg;
+        }
+      }
+    }
   }
 }
 
@@ -178,10 +203,6 @@ li.track {
 //   -webkit-box-shadow: inset #336 0 .2em 2em;
 //   background-color: #224;
 //   border-color: #44a;
-// }
-// 
-// div.track.ineligible .metadata, div.track.ineligible .invitation {
-//   text-shadow: #000 0 .1em 0;
 // }
 // 
 // div.track.ineligible a,

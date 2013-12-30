@@ -40,7 +40,7 @@
         <a href="{{ track.rel_url }}">{{ track.title }}</a>
       </p>
 
-      <p class="metameta">
+      <p class="meta">
         {% if track.role %}
           <span class="role">{{ track.role }}</span>
         {% endif %}
@@ -62,7 +62,7 @@
       </p>
 
       {% if user.is_authenticated %}
-        <p class="peter">
+        <p class="admin">
           <a href="/played/{{ track.id }}/">now playing&hellip;</a> | <a href="/vote/{{ track.id }}/">add vote&hellip;</a>
           {% if track.ineligible and track.ineligible == 'blocked' %}
             | <a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>
@@ -70,13 +70,12 @@
             | <a href="/block/{{ track.id }}/">block&hellip;</a> | <a href="/block/{{ track.id }}/reason?reason=announced">announce</a>
           {% endif %}
         </p>
-        <p class="peter">
+        <p class="admin">
           {% if track.hidden %}
             <a href="/unhide/{{ track.id }}/?from={{ path|urlencode }}">unhide</a>
           {% else %}
             <a href="/hide/{{ track.id }}/?from={{ path|urlencode }}">hide</a>
           {% endif %}
-          |
           {% if not track.shortlist and not track.discard %}
             <a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a> | <a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a>
           {% elif track.shortlist %}
@@ -87,7 +86,7 @@
         </p>
       {% endif %}
       {% if user.is_authenticated and not track.eligible and track.undoable %}
-        <p class="peter"><a href="/unplay/{{ track.id }}/">i didn't mean to play this</a></p>
+        <p class="admin"><a href="/unplay/{{ track.id }}/">i didn't mean to play this</a></p>
       {% endif %}
       {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
         <p class="refusal">{{ track.ineligible }}</p>
@@ -113,7 +112,7 @@
     </div>
     {% if track.eligible and track|votes_for:show %}
       <div class="invitation plusone"><a href="{{ track.vote_url }}">
-          +1
+        +1
       </a></div>
     {% elif track.eligible %}
       <div class="invitation request"><a href="{{ track.vote_url }}">
