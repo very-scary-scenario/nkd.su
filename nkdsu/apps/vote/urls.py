@@ -6,6 +6,7 @@ from nkdsu.apps.vote import views
 urlpatterns = patterns(
     '',
     url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^archive/$', views.Archive.as_view(), name='archive'),
 
     #url(r'^everything/$', 'nkdsu.apps.vote.views.everything', name='everything'),
     url(r'^artist/(?P<artist>.+)/$', 'nkdsu.apps.vote.views.artist', name='artist'),
@@ -13,7 +14,6 @@ urlpatterns = patterns(
     url(r'^roulette/$', 'nkdsu.apps.vote.views.roulette', name='roulette'),
     url(r'^roulette/(?P<mode>unplayed)/$', 'nkdsu.apps.vote.views.roulette', name='roulette'),
     url(r'^show/(?P<date>[\d-]+)/$', 'nkdsu.apps.vote.views.show', name='show'),
-    url(r'^show/$', 'nkdsu.apps.vote.views.latest_show', name='latest_show'),
     url(r'^recent/$', 'nkdsu.apps.vote.views.added'),
     url(r'^added/$', 'nkdsu.apps.vote.views.added', name='added'),
     url(r'^added/(?P<date>[\d-]+)/$', 'nkdsu.apps.vote.views.added', name='added'),

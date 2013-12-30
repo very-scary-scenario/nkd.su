@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <ul class="archive">
+    {% for show in object_list %}
+      <li class="show">
+        <h2>{{ show.showtime|date:"F jS Y" }}</h2>
+        <p class="subheading">{{ show.playlist|length }} song{{ show.playlist|length|pluralize }}</p>
+        <p class="subheading">{{ show.votes|length }} vote{{ show.votes|length|pluralize }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

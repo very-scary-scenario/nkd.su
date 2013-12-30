@@ -36,7 +36,7 @@
                 {% if this_week.broadcasting %}
                   <p class="subtitle">on air! listen live at <a target="_blank" href="http://thisisthecat.com">the&nbsp;cat</a>
                 {% elif this_week %}
-                  <p class="subtitle">taking requests for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS"|lower }}</p>
+                  <p class="subtitle">taking requests for {{ current_show.showtime|date:"F"|lower }}&nbsp;{{ current_show.showtime|date:"jS"|lower }}</p>
                 {% else %}
                   <p class="subtitle">a neko desu request robot</p>
                 {% endif %}

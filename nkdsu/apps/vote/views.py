@@ -19,12 +19,13 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
-from django.views.generic.base import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from .forms import (RequestForm, SearchForm, LibraryUploadForm,
                     ManualVoteForm, BlockForm, BadMetadataForm)
 from .update_library import update_library
 from ..vote import trivia, mixins
+from ..vote.models import Show
 
 
 post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
@@ -38,66 +39,12 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
     template_name = 'index.html'
 
 
-def summary(request, week=None):
-    """
-    Our landing page (as it looked at the end of week; manual weeks mostly for
-    testing)
-    """
+class Archive(ListView):
+    template_name = 'archive.html'
 
-    if not week:
-        week = Week()
-
-    form = SearchForm()
-
-    unfiltered_tracklist = week.tracks_sorted_by_votes(exclude_abusers=True)
-
-    if request.user.is_authenticated():
-        tracklist = [t for t in unfiltered_tracklist if t.eligible()
-                     and not week.shortlist_or_discard(t)]
-        shortlist = week.shortlist()
-        shortlist_len = length_str(total_length(shortlist))
-        discard = week.discard()
-        tracklist.extend([t for t in unfiltered_tracklist if t.ineligible()
-                          and (t.ineligible() != 'played this week')
-                          and not week.shortlist_or_discard(t)])
-    else:
-        shortlist = None
-        discard = None
-        shortlist_len = None
-        tracklist = [t for t in unfiltered_tracklist if t.eligible()]
-        tracklist.extend([t for t in unfiltered_tracklist if t.ineligible()
-                          and (t.ineligible() != 'played this week')])
-
-    tracklist_len = length_str(total_length(tracklist))
-
-    # ditto plays
-    playlist = [p.track for p in week.plays(invert=True)]
-    for track in playlist:
-        track._vote_week = week
-        track._current_week = week
-
-    if playlist:
-        playlist_len = length_str(total_length(playlist))
-    else:
-        playlist_len = None
-
-    context = {
-        'week': week,
-        'section': 'home',
-        'session': request.session,
-        'playlist': playlist,
-        'form': form,
-        'tracks': tracklist,
-        'tracks_len': tracklist_len,
-        'shortlist_len': shortlist_len,
-        'shortlist': shortlist,
-        'discard': discard,
-        'playlist_len': playlist_len,
-        'robot_apocalypse': week.prev().has_robot_apocalypse(),
-    }
-
-    render = render_to_response('index.html', RequestContext(request, context))
-    return render
+    def get_queryset(self):
+        qs = Show.objects.filter(end__lt=timezone.now())
+        return qs.order_by('-showtime')
 
 
 def roulette(request, mode=None):

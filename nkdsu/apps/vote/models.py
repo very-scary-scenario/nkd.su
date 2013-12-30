@@ -147,11 +147,20 @@ class Show(models.Model):
         this show.
         """
 
-        return {'date__gt': self.prev().end, 'date__lte': self.end}
+        kw = {'date__lte': self.end}
+
+        if self.prev() is not None:
+            kw['date__gt'] = self.prev().end
+
+        return kw
 
     @memoize
     def votes(self):
         return Vote.objects.filter(**self._date_kwargs)
+
+    @memoize
+    def playlist(self):
+        return Play.objects.filter(**self._date_kwargs).order_by('date')
 
     def tracks_sorted_by_votes(self, exclude_abusers=False):
         """
