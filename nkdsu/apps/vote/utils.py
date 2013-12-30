@@ -46,7 +46,7 @@ def vote_tweet(tracks):
     """
 
     return '@%s %s' % (settings.READING_USERNAME,
-                       ' '.join([t.public_url() for t in tracks]))
+                       ' '.join([t.get_public_url() for t in tracks]))
 
 
 def vote_tweet_intent_url(tracks):

@@ -4,9 +4,9 @@
 
 {% block content %}
 
-<div class="tracklist noheading solo">
-  {% include "trackrow.html" %}
-</div>
+<ul>
+  {% include "include/track.html" %}
+</ul>
 
 <p class="aside">added to the library on <a href="/added/{{ added|date:"d-m-Y" }}/">{{ track.added|date:"F"|lower }}&nbsp;{{ track.added|date:"jS, Y" }}</a>
 

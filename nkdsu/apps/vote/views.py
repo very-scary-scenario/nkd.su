@@ -19,10 +19,10 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.utils.http import urlquote
 from django.core.mail import send_mail
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 
-from .forms import (RequestForm, SearchForm, LibraryUploadForm,
-                    ManualVoteForm, BlockForm, BadMetadataForm)
+from .forms import (RequestForm, LibraryUploadForm, ManualVoteForm, BlockForm,
+                    BadMetadataForm)
 from .update_library import update_library
 from ..vote import trivia, mixins
 from ..vote.models import Show, Track
@@ -98,14 +98,10 @@ class Search(ListView):
         return context
 
 
-def search_redirect(request):
-    form = SearchForm(request.GET)
-
-    if not form.is_valid():
-        return redirect('/')
-    else:
-        query = form.cleaned_data['q']
-        return redirect('/search/%s' % urlquote(query, safe=''))
+class TrackDetail(DetailView):
+    model = Track
+    template_name = 'track_detail.html'
+    context_object_name = 'track'
 
 
 def track(request, track_id, slug=None):

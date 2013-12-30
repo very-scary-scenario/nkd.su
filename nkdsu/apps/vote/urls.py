@@ -55,9 +55,10 @@ urlpatterns = patterns(
     url(r'^abuse/(?P<user_id>.+)/$', 'nkdsu.apps.vote.views.toggle_abuse', name='toggle_abuse'),
 
     # tracks
-    url(r'^(?P<track_id>[0-9A-F]{16})/$', 'nkdsu.apps.vote.views.track', name='track'),
-    url(r'^(?P<slug>[^/]*)/(?P<track_id>[0-9A-F]{16})/$', 'nkdsu.apps.vote.views.track', name='track_by_slug'),
-    url(r'^(?P<track_id>[0-9A-F]{16})/report/$', 'nkdsu.apps.vote.views.report_bad_metadata', name='report'),
+    url(r'^(?P<pk>[0-9A-F]{16})/$', views.TrackDetail.as_view(), name='track'),
+    url(r'^(?P<slug>[^/]*)/(?P<pk>[0-9A-F]{16})/$',
+        views.TrackDetail.as_view(), name='track'),
+    url(r'^(?P<pk>[0-9A-F]{16})/report/$', 'nkdsu.apps.vote.views.report_bad_metadata', name='report'),
 
     # registration
     url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),

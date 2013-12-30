@@ -439,16 +439,16 @@ class Track(models.Model):
         return slugify(self.title)
 
     def get_absolute_url(self):
-        return reverse('vote:track_by_slug', kwargs={'slug': self.slug(),
-                                                     'track_id': self.id})
+        return reverse('vote:track', kwargs={'slug': self.slug(),
+                                             'pk': self.pk})
 
-    def public_url(self):
+    def get_public_url(self):
         return 'http://nkd.su' + self.get_absolute_url()
 
-    def report_url(self):
-        return reverse('vote:report', kwargs={'track_id': self.id})
+    def get_report_url(self):
+        return reverse('vote:report', kwargs={'pk': self.pk})
 
-    def vote_url(self):
+    def get_vote_url(self):
         """
         Return the Twitter intent url for voting for this track alone.
         """
