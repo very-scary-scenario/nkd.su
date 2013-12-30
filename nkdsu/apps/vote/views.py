@@ -83,36 +83,6 @@ class Roulette(ListView):
         return context
 
 
-def roulette(request, mode=None):
-    """ Five random tracks """
-    if mode is None:
-        any_tracks = Track.objects.filter()
-    else:
-        any_tracks = Track.objects.filter(play=None)
-
-    if not request.user.is_authenticated():
-        any_tracks = any_tracks.filter(hidden=False, inudesu=False)
-
-    any_tracks = any_tracks.order_by('?')
-
-    tracks = []
-    pos = 0
-    while len(tracks) < 5 and pos < len(any_tracks):
-        track = any_tracks[pos]
-        if track.eligible():
-            tracks.append(track)
-        pos += 1
-
-    context = {
-        'section': 'surprise me',
-        'title': 'surprise me',
-        'tracks': tracks,
-        'mode': mode,
-    }
-
-    return render_to_response('tracks.html', RequestContext(request, context))
-
-
 # http://zeth.net/post/327/
 def split_query_into_keywords(query):
     """Split the query into keywords,
