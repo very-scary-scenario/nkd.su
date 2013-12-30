@@ -3,9 +3,10 @@ from .models import Show
 
 def nkdsu_context_processor(request):
     """
-    Add this_week and path to every context.
+    Add common stuff to context.
     """
 
     return {
         'this_week': Show.current(),
+        'path': request.path,
     }

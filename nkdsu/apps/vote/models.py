@@ -179,10 +179,10 @@ class Show(models.Model):
         # XXX
 
     def get_absolute_url(self):
-        return reverse('show', kwargs={'date': self.showtime.date()})
+        return reverse('vote:show', kwargs={'date': self.showtime.date()})
 
     def get_added_url(self):
-        return reverse('added', kwargs={'date': self.showtime.date()})
+        return reverse('vote:added', kwargs={'date': self.showtime.date()})
 
 
 class TwitterUser(models.Model):
@@ -206,7 +206,7 @@ class TwitterUser(models.Model):
         return 'https://twitter.com/%s' % self.screen_name
 
     def get_absolute_url(self):
-        return reverse('user', kwargs={'screen_name': self.screen_name})
+        return reverse('vote:user', kwargs={'screen_name': self.screen_name})
 
     def batting_average(self, cutoff=None):
         """
@@ -371,14 +371,14 @@ class Track(models.Model):
         return slugify(self.title)
 
     def get_absolute_url(self):
-        return reverse('track_by_slug', kwargs={'slug': self.slug(),
-                                                'track_id': self.id})
+        return reverse('vote:track_by_slug', kwargs={'slug': self.slug(),
+                                                     'track_id': self.id})
 
     def public_url(self):
         return 'http://nkd.su' + self.get_absolute_url()
 
     def report_url(self):
-        return reverse('report', kwargs={'track_id': self.id})
+        return reverse('vote:report', kwargs={'track_id': self.id})
 
     def vote_url(self):
         """
