@@ -9,7 +9,7 @@ from models import Show
 class ShowTest(TestCase):
     """
     Tests for Show objects. Many of these depend on Neko Desu continuing to be
-    broadcast at 11pm.
+    broadcast at 9-11pm.
     """
 
     def setUp(self):
