@@ -64,7 +64,7 @@
         <div id="stick" class="invisible"></div>
       </main>
       <div id="footer">
-        <a id="stamp" target="_blank" href="http://musicfortheblind.co.uk"><img alt="music for the blind" title="music for the blind" src="http://d.bldm.us/stamp.png"></a>
+        <a id="stamp" target="_blank" href="http://musicfortheblind.co.uk"><img alt="music for the blind" title="music for the blind" src="http://colons.co/stamp.png"></a>
         {% if user.is_authenticated %}
         <p class="credit"><a href="/admin/">admin</a> | <a href="{% url "hidden" %}">hidden tracks</a> | <a href="{% url "inudesu" %}">inu desu</a> | <a href="{% url "upload_library" %}">update library</a> | <a href="{% url "bad_trivia" %}">bad trivia</a> | <a href="{% url "logout" %}?next={{ path|urlencode }}">log out</a></p>
         {% else %}
