@@ -5,6 +5,7 @@ from sys import exc_info
 import datetime
 from random import choice
 
+from cache_utils.decorators import cached
 import tweepy
 from markdown import markdown
 
@@ -164,10 +165,22 @@ class Stats(TemplateView):
             minimum_weight=minimum_weight
         ), reverse=True)
 
+    @cached(60*5)
+    def popular_tracks(self):
+        cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
+        tracks = []
+
+        for track in Track.objects.all():
+            tracks.append((track,
+                           track.vote_set.filter(date__gt=cutoff).count()))
+
+        return sorted(tracks, key=lambda t: t[1], reverse=True)
+
     def get_context_data(self):
         context = super(Stats, self).get_context_data()
         context.update({
             'batting_averages': self.batting_averages(),
+            'popular_tracks': self.popular_tracks(),
         })
         return context
 

@@ -27,7 +27,7 @@
     {% endfor %}
   </table>
 
-  <h2 id="most-successful-users">least successful users</h2>
+  <h2 id="least-successful-users">least successful users</h2>
   <p class="subheading">in the last six months</p>
   <table class="stats users">
     <tr>
@@ -51,5 +51,29 @@
     {% endfor %}
 
   </table>
+
+  <h2 id="most-popular-tracks">most popular tracks</h2>
+  <p class="subheading">in the last six months</p>
+  <table class="stats tracks">
+    <tr>
+      <th class="summary"><span>track</span></th>
+      <th class="value">votes</th>
+    </tr>
+
+    {% for track, count in popular_tracks|slice:":10" %}
+      <tr class="stat">
+        <td class="summary">
+          <p class="artist"><a href="{# XXX artist URL #}">{{ track.title }}</a></p>
+          <p class="title"><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
+          <p class="role">{{ track.role }}</p>
+        </td>
+        <td>
+          {{ count }}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+
+
 
 {% endblock %}

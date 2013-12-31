@@ -240,6 +240,7 @@ class TwitterUser(models.Model):
     def votes(self):
         return self.vote_set.order_by('-date')
 
+    @memoize
     def _batting_average(self, cutoff=None, minimum_weight=1):
         @cached(60*60)
         def ba(pk, cutoff):
