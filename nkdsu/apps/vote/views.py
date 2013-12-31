@@ -124,58 +124,24 @@ class TwitterUserDetail(DetailView):
             screen_name__iexact=self.kwargs['screen_name'])
 
 
-def track(request, track_id, slug=None):
-    """ A view of a single track """
+class Artist(ListView):
+    model = Track
+    template_name = 'artist_detail.html'
+    context_object_name = 'tracks'
 
-    track = get_track_or_selection(request, track_id)[0]
+    def get_queryset(self):
+        qs = self.model.objects.filter(
+            id3_artist=self.kwargs['artist']).order_by('id3_title')
 
-    if not slug or slug != track.slug():
-        return redirect(track.rel_url())
+        if not qs.exists():
+            raise Http404
+        else:
+            return qs
 
-    context = {
-        'added': Week(track.added).showtime,
-        'title': track.derived_title(),
-        'track': track,
-    }
-
-    return render_to_response('track.html', RequestContext(request, context))
-
-
-def user(request, screen_name):
-    """ Shrines """
-
-    user = User(screen_name)
-
-    try:
-        user.name()
-    except IndexError:
-        raise Http404
-
-    context = {
-        'voter': user,
-        'no_select': True,
-    }
-
-    return render_to_response('user.html', RequestContext(request, context))
-
-
-def artist(request, artist):
-    """ All tracks by a particular artist """
-    artist_tracks = Track.objects.filter(
-        id3_artist=artist).order_by('id3_title')
-
-    if not request.user.is_authenticated():
-        artist_tracks = artist_tracks.filter(hidden=False, inudesu=False)
-
-    if not artist_tracks.exists():
-        raise Http404
-
-    context = {
-        'title': artist.lower(),
-        'tracks': artist_tracks,
-    }
-
-    return render_to_response('tracks.html', RequestContext(request, context))
+    def get_context_data(self):
+        context = super(Artist, self).get_context_data()
+        context['artist'] = self.kwargs['artist']
+        return context
 
 
 def latest_show(request):

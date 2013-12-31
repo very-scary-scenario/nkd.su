@@ -24,8 +24,9 @@ urlpatterns = patterns(
     url(r'^user/(?P<screen_name>[_0-9a-zA-Z]+)/$',
         views.TwitterUserDetail.as_view(), name='user'),
 
+    url(r'^artist/(?P<artist>.+)/$', views.Artist.as_view(), name='artist'),
+
     #url(r'^everything/$', 'nkdsu.apps.vote.views.everything', name='everything'),
-    url(r'^artist/(?P<artist>.+)/$', 'nkdsu.apps.vote.views.artist', name='artist'),
     url(r'^info/$', 'nkdsu.apps.vote.views.info', name='info'),
     url(r'^upload/$', 'nkdsu.apps.vote.views.upload_library', name='upload_library'),
     url(r'^request/$', 'nkdsu.apps.vote.views.request_addition', name='request_addition'),
