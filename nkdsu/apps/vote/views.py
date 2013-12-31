@@ -149,15 +149,20 @@ class Stats(TemplateView):
 
     def batting_averages(self):
         users = []
+        minimum_weight = 4
 
         for user in TwitterUser.objects.all():
             cutoff = Show.at(timezone.now() -
                              datetime.timedelta(days=7*5)).end
-            if user.vote_set.filter(date__gt=cutoff).exists():
+            if (
+                user.vote_set.filter(date__gt=cutoff).exists() and
+                user.batting_average(minimum_weight=minimum_weight)
+            ):
                 users.append(user)
 
-        return sorted(users, key=lambda u: u.batting_average(minimum_weight=4),
-                      reverse=True)
+        return sorted(users, key=lambda u: u.batting_average(
+            minimum_weight=minimum_weight
+        ), reverse=True)
 
     def get_context_data(self):
         context = super(Stats, self).get_context_data()
