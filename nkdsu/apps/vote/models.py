@@ -4,6 +4,8 @@ import datetime
 import re
 import json
 
+from cache_utils.decorators import cached
+
 from django.db import models
 from django.utils import timezone
 from django.template.defaultfilters import slugify
@@ -238,7 +240,7 @@ class TwitterUser(models.Model):
     def votes(self):
         return self.vote_set.order_by('-date')
 
-    @memoize
+    @cached(60*6)
     def _batting_average(self, cutoff=None):
         score = 0
         weight = 0

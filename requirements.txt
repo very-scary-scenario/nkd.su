@@ -11,3 +11,4 @@ django-pipeline
 slimit
 django-nose
 requests
+django-cache-utils
