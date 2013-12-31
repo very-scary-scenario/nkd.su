@@ -156,7 +156,7 @@ class Stats(TemplateView):
             if user.vote_set.filter(date__gt=cutoff).exists():
                 users.append(user)
 
-        return sorted(users, key=lambda u: u.batting_average(),
+        return sorted(users, key=lambda u: u.batting_average(minimum_weight=4),
                       reverse=True)
 
     def get_context_data(self):

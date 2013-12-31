@@ -10,6 +10,7 @@
       <th class="summary"><span>user</span></th>
       <th class="value">batting average</th>
     </tr>
+
     {% for user in batting_averages|slice:":10" %}
       <tr class="user">
         <td class="summary">
@@ -24,6 +25,31 @@
         </td>
       </tr>
     {% endfor %}
+  </table>
+
+  <h2 id="most-successful-users">least successful users</h2>
+  <p class="subheading">in the last six months</p>
+  <table class="stats users">
+    <tr>
+      <th class="summary"><span>user</span></th>
+      <th class="value">batting average</th>
+    </tr>
+
+    {% for user in batting_averages|slice:":-10:-1" %}
+      <tr class="user">
+        <td class="summary">
+          <img alt="{{ user.name }}" src="{{ user.user_image }}">
+          <p class="name">{{ user.name }}</p>
+          <p><a class="screen_name" href="{{ user.get_absolute_url }}">
+            @{{ user.screen_name }}
+          </a></p>
+        </td>
+        <td class="value">
+          {{ user.batting_average|percent }}
+        </td>
+      </tr>
+    {% endfor %}
+
   </table>
 
 {% endblock %}

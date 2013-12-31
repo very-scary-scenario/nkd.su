@@ -240,7 +240,7 @@ class TwitterUser(models.Model):
     def votes(self):
         return self.vote_set.order_by('-date')
 
-    def _batting_average(self, cutoff=None):
+    def _batting_average(self, cutoff=None, minimum_weight=1):
         @cached(60*60)
         def ba(pk, cutoff):
             score = 0
@@ -252,24 +252,30 @@ class TwitterUser(models.Model):
                     score += success * vote.weight()
                     weight += vote.weight()
 
-            if weight == 0:
-                # there were no worthwhile votes
-                return None
-            else:
-                return score / weight
+            return (score, weight)
 
-        return ba(self.pk, cutoff)
+        score, weight = ba(self.pk, cutoff)
 
-    def batting_average(self):
+        if weight >= minimum_weight:
+            return score / weight
+        else:
+            # there were no worthwhile votes
+            return None
+
+        return score
+
+    def batting_average(self, minimum_weight=1):
         """
         Return a user's batting average for the past six months.
         """
 
         return self._batting_average(
-            Show.at(timezone.now() - datetime.timedelta(days=31*6)).end)
+            cutoff=Show.at(timezone.now() - datetime.timedelta(days=31*6)).end,
+            minimum_weight=minimum_weight
+        )
 
-    def all_time_batting_average(self):
-        return self._batting_average()
+    def all_time_batting_average(self, minimum_weight=1):
+        return self._batting_average(minimum_weight=minimum_weight)
 
     def update_from_api(self):
         """
