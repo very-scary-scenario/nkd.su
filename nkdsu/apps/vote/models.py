@@ -240,22 +240,25 @@ class TwitterUser(models.Model):
     def votes(self):
         return self.vote_set.order_by('-date')
 
-    @cached(60*6)
     def _batting_average(self, cutoff=None):
-        score = 0
-        weight = 0
+        @cached(60*60)
+        def ba(pk, cutoff):
+            score = 0
+            weight = 0
 
-        for vote in self.vote_set.filter(date__gt=cutoff):
-            success = vote.success()
-            if success is not None:
-                score += success * vote.weight()
-                weight += vote.weight()
+            for vote in self.vote_set.filter(date__gt=cutoff):
+                success = vote.success()
+                if success is not None:
+                    score += success * vote.weight()
+                    weight += vote.weight()
 
-        if weight == 0:
-            # there were no worthwhile votes
-            return None
-        else:
-            return score / weight
+            if weight == 0:
+                # there were no worthwhile votes
+                return None
+            else:
+                return score / weight
+
+        return ba(self.pk, cutoff)
 
     def batting_average(self):
         """

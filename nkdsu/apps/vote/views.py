@@ -2,7 +2,7 @@
 
 import codecs
 from sys import exc_info
-from datetime import datetime
+import datetime
 from random import choice
 
 import tweepy
@@ -144,10 +144,27 @@ class Artist(ListView):
         return context
 
 
-def latest_show(request):
-    """ Redirect to the last week's show """
-    last_week = Week(ignore_apocalypse=True).prev()
-    return redirect(last_week.get_absolute_url())
+class Stats(TemplateView):
+    template_name = 'stats.html'
+
+    def batting_averages(self):
+        users = []
+
+        for user in TwitterUser.objects.all():
+            cutoff = Show.at(timezone.now() -
+                             datetime.timedelta(days=7*5)).end
+            if user.vote_set.filter(date__gt=cutoff).exists():
+                users.append(user)
+
+        return sorted(users, key=lambda u: u.batting_average(),
+                      reverse=True)
+
+    def get_context_data(self):
+        context = super(Stats, self).get_context_data()
+        context.update({
+            'batting_averages': self.batting_averages(),
+        })
+        return context
 
 
 def info(request):
@@ -647,168 +664,6 @@ def bad_trivia(request):
     }
 
     return render_to_response('trivia.html', RequestContext(request, context))
-
-
-def increment(dictionary, key):
-    """ Increment by one or create a value of 1 in a dictionary. """
-    try:
-        dictionary[key] += 1
-    except KeyError:
-        dictionary[key] = 1
-
-
-def top(dictionary):
-    """
-    Return a sorted tuple of (key, value) for the top values in a dictionary
-    """
-
-    l = sorted(dictionary, key=lambda t: dictionary[t], reverse=True)
-    return [(t, dictionary[t]) for t in l]
-
-
-def make_relative(absolute, reference):
-    """ Return a dictionary of ratios of absolute[x]:reference[x] """
-    ratios = {}
-    for key in absolute:
-        ratios[key] = float(absolute[key]) / float(reference[key])
-
-    for key in [k for k in absolute if k not in reference]:
-        ratios[key] = 0
-
-    return ratios
-
-
-def useful(the_list, convert_to_percent=False):
-    """ Convert a list of (user_id, key) tuples into (<User>, key) tuples.
-    If convert_to_percent is True, multiply all keys by 100 """
-    new_list = []
-    for user_id, value in the_list:
-        if convert_to_percent:
-            value *= 100
-            value = '%i%%' % value
-
-        new_list.append((User(user_id), value))
-
-    return new_list
-
-
-def get_stats():
-    # how big should our top lists be?
-    top_count = 10
-
-    # create our stat dictionaries using tracks as keys...
-    track_votes = {}
-
-    # and using twitter user IDs as keys...
-    user_denials = {}
-    user_successes = {}
-    user_votes = {}
-    user_weeks = {}  # the number of weeks a user has participated
-    weeks_since_user_voted = {}
-    user_streak_lengths = {}
-
-    week = Week()
-    # roll back until we're at a week that there was a show on
-    while not week.has_plays():
-        week = week.prev()
-
-    weeks = []
-
-    # make a list of weeks
-    while week.has_plays():
-        weeks.append(week)
-        week = week.prev()
-
-    for depth, week in enumerate(weeks, start=1):
-        users_that_voted = set()
-
-        # in this case, we don't care about manual votes, so we use
-        # week._votes()
-        for vote in week._votes():
-            if vote.get_tracks().exists():
-                users_that_voted.add(vote.user_id)
-
-            if depth < 26:  # we don't care about most stats older than this
-                for track in vote.get_tracks():
-                    increment(track_votes, track)
-                    increment(user_votes, vote.user_id)
-
-                    if track in week.tracks_played():
-                        increment(user_successes, vote.user_id)
-                    else:
-                        increment(user_denials, vote.user_id)
-
-                for user in users_that_voted:
-                    increment(user_weeks, user)
-
-                    if user not in weeks_since_user_voted:
-                        weeks_since_user_voted[user] = depth
-
-        if depth == 1:
-            user_streaks_running = set(users_that_voted)
-
-        for user in list(user_streaks_running):
-            if not user in users_that_voted:
-                user_streak_lengths[user] = depth
-                user_streaks_running.remove(user)
-
-    unfiltered_user_success_ratios = top(
-        make_relative(user_successes, user_votes))
-
-    # if a person hasn't voted on at least three seperate weeks and at some
-    # point in the last month, they're not worth considering
-    user_success_ratios = [u for u in unfiltered_user_success_ratios
-                           if user_weeks[u[0]] >= 3
-                           and weeks_since_user_voted[u[0]] <= 4]
-
-    most_successful_users = useful(user_success_ratios[:top_count],
-                                   convert_to_percent=True)
-    least_successful_users = useful(list(reversed(
-        user_success_ratios))[:top_count], convert_to_percent=True)
-
-    return (
-        {'type': 'user_stats', 'items': (
-            {
-                'name': 'most successful users',
-                'stats': most_successful_users,
-                'heading': 'batting average',
-            },
-            {
-                'name': 'least successful users',
-                'stats': least_successful_users,
-                'heading': 'batting average',
-            },
-            {
-                'name': 'most obsessive users',
-                'stats': useful(top(user_streak_lengths)[:top_count]),
-                'heading': 'current streak',
-                'unlimited': True,
-            },
-        ),
-        },
-
-        {'type': 'track_stats', 'items': (
-            {
-                'name': 'most popular tracks',
-                'stats': top(track_votes)[:top_count],
-                'heading': 'votes',
-            },
-        ),
-        },
-    )
-
-
-def stats(request):
-    current_week = Week()
-    context = {
-        'no_select': True,
-        'stats': get_stats,
-        'week': current_week,
-        'section': 'stats',
-        'title': 'stats',
-    }
-
-    return render_to_response('stats.html', RequestContext(request, context))
 
 
 # javascript nonsense

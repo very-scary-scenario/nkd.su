@@ -26,11 +26,12 @@ urlpatterns = patterns(
 
     url(r'^artist/(?P<artist>.+)/$', views.Artist.as_view(), name='artist'),
 
+    url(r'^stats/$', views.Stats.as_view(), name='stats'),
+
     #url(r'^everything/$', 'nkdsu.apps.vote.views.everything', name='everything'),
     url(r'^info/$', 'nkdsu.apps.vote.views.info', name='info'),
     url(r'^upload/$', 'nkdsu.apps.vote.views.upload_library', name='upload_library'),
     url(r'^request/$', 'nkdsu.apps.vote.views.request_addition', name='request_addition'),
-    url(r'^stats/$', 'nkdsu.apps.vote.views.stats', name='stats'),
 
     # peter functions
     url(r'^played/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.mark_as_played', name='mark_as_played'),

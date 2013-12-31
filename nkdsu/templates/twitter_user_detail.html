@@ -36,7 +36,7 @@
 
   <h2>votes</h2>
   <ul class="user-votes">
-    {% cache 300 "user_detail:votes" voter.user_id %}
+    {% cache 300 user_detail:votes voter.user_id %}
       {% for vote in voter.votes %}
         <li class="vote">
           <p class="when"><a href="{{ vote.twitter_url }}">{{ vote.date|when }}</a></p>

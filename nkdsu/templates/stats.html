@@ -1,66 +1,29 @@
 {% extends "base.html" %}
-{% load cache %}
+{% load vote_tags cache %}
 
 {% block content %}
 
-{% cache 3600 stat week "valid-ids" %}
-  
-  {% for stat in stats %}
-
-    {% if stat.type == 'user_stats' %}
-
-      {% for stat in stat.items %}
-        <h2 id="{{ stat.name|slugify }}">{{ stat.name }}</h2>
-        {% if not stat.unlimited %}
-          <p class="subheading">in the last six months</p>
-        {% endif %}
-        <table class="stats users">
-          <tr>
-            <th class="summary"><span>user</span></th>
-            <th class="value">{{ stat.heading }}</th>
-          </tr>
-          {% for user, value in stat.stats %}
-            <tr class="user">
-              <td class="summary">
-                <img alt="{{ user.screen_name }}" src="{{ user.user_image }}">
-                <p class="name">{{ user.name }}</p>
-                <p><a class="screen_name" href="{{ user.get_absolute_url }}">
-                  @{{ user.screen_name }}
-                </a></p>
-              </td>
-              <td class="value">
-                {{ value }}
-              </td>
-            </tr>
-          {% endfor %}
-        </table>
-      {% endfor %}
-
-    {% else %}
-
-      {% for stat in stat.items %}
-        <h2 id="{{ stat.name|slugify }}">{{ stat.name }}</h2>
-        <p class="subheading">in the last six months</p>
-        <table class="stats tracks">
-          <tr>
-            <th class="summary"><span>track</span></th>
-            <th class="value">{{ stat.heading }}</th>
-          </tr>
-          {% for track, value in stat.stats %}
-            <tr class="track">
-              <td class="summary">
-                <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>
-                <p class="title"><a href="{{ track.rel_url }}">{{ track.derived_title }}</a></p>
-                <p class="role">{{ track.derived_role }}</p>
-              </td>
-              <td class="value">{{ value }}</td>
-            </tr>
-          {% endfor %}
-        </table>
-      {% endfor %}
-      
-    {% endif %}
-  {% endfor %}
-{% endcache %}
+  <h2 id="most-successful-users">most successful users</h2>
+  <p class="subheading">in the last six months</p>
+  <table class="stats users">
+    <tr>
+      <th class="summary"><span>user</span></th>
+      <th class="value">batting average</th>
+    </tr>
+    {% for user in batting_averages|slice:":10" %}
+      <tr class="user">
+        <td class="summary">
+          <img alt="{{ user.name }}" src="{{ user.user_image }}">
+          <p class="name">{{ user.name }}</p>
+          <p><a class="screen_name" href="{{ user.get_absolute_url }}">
+            @{{ user.screen_name }}
+          </a></p>
+        </td>
+        <td class="value">
+          {{ user.batting_average|percent }}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
 
 {% endblock %}

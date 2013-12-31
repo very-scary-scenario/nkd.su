@@ -44,4 +44,4 @@ def percent(flt):
     if flt is None:
         return '[in flux]'
 
-    return '{0:.2f}%'.format(flt * 100)
+    return '{0:.0f}%'.format(flt * 100)
