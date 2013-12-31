@@ -1,6 +1,6 @@
 {% load vote_tags cache %}
 
-{% cache 10 "track_include" track.pk user.is_authenticated %}
+{% cache 10 "track_include" track.pk track.ineligible user.is_authenticated %}
   <li class="track
     {% if track.eligible %}
       eligible
