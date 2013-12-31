@@ -118,11 +118,15 @@ class TwitterUserDetail(DetailView):
     context_object_name = 'voter'
 
     def get_object(self):
-        # There's a bug in this code, but I can't think of an elegant
-        # workaround right now and I'm genuinely curious to see if it ever
-        # raises an error.
-        return self.model.objects.get(
+        users = self.model.objects.filter(
             screen_name__iexact=self.kwargs['screen_name'])
+
+        if not users.exists():
+            return Http404
+        elif users.count() == 1:
+            return users[0]
+        else:
+            return users.order_by('-updated')[0]
 
 
 class Artist(ListView):

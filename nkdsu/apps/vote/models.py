@@ -288,6 +288,8 @@ class TwitterUser(models.Model):
         self.name = api_user.name
         self.screen_name = api_user.screen_name
         self.user_image = api_user.profile_image_url
+        self.updated = timezone.now()
+
         self.save()
 
 
@@ -622,6 +624,10 @@ class Vote(models.Model):
 
     def save(self):
         # XXX remove any tracks this person has already voted for this week
+
+        # XXX set updated on our user to the date of this vote if it's their
+        # latest vote
+
         return super(Vote, self).save()
 
     @memoize
