@@ -122,7 +122,7 @@ class TwitterUserDetail(DetailView):
             screen_name__iexact=self.kwargs['screen_name'])
 
         if not users.exists():
-            return Http404
+            raise Http404
         elif users.count() == 1:
             return users[0]
         else:
