@@ -144,8 +144,6 @@ class Show(models.Model):
             return None
 
     def has_ended(self):
-        print timezone.now()
-        print self.end
         return timezone.now() > self.end
 
     def _date_kwargs(self, attr='date'):
@@ -240,13 +238,33 @@ class TwitterUser(models.Model):
     def votes(self):
         return self.vote_set.order_by('-date')
 
-    def batting_average(self, cutoff=None):
+    @memoize
+    def _batting_average(self, cutoff=None):
+        score = 0
+        weight = 0
+
+        for vote in self.vote_set.filter(date__gt=cutoff):
+            success = vote.success()
+            if success is not None:
+                score += success * vote.weight()
+                weight += vote.weight()
+
+        if weight == 0:
+            # there were no worthwhile votes
+            return None
+        else:
+            return score / weight
+
+    def batting_average(self):
         """
-        Return a user's batting average for shows after cutoff. If cutoff is
-        None, assume the beginning of time.
+        Return a user's batting average for the past six months.
         """
 
-        # XXX
+        return self._batting_average(
+            Show.at(timezone.now() - datetime.timedelta(days=31*6)).end)
+
+    def all_time_batting_average(self):
+        return self._batting_average()
 
     def update_from_api(self):
         """
@@ -532,7 +550,8 @@ class Vote(models.Model):
         considered voted for based on that list.
         """
 
-        # XXX should be fine, but might want to make a little DRYer
+        # XXX should work fine, but needs to be updated to use reverse() or
+        # self.get_absolute_url
 
         tracks = []
         for url in url_list:
@@ -549,6 +568,7 @@ class Vote(models.Model):
 
         return tracks
 
+    @memoize
     def content(self):
         """
         Return the non-mention, non-url content of the text.
@@ -587,6 +607,40 @@ class Vote(models.Model):
 
         if not self.tracks:
             raise ValidationError('no tracks in vote')
+
+    def save(self):
+        # XXX remove any tracks this person has already voted for this week
+        return super(Vote, self).save()
+
+    @memoize
+    def success(self):
+        """
+        Return how successful this vote is, as a float between 0 and 1, or None
+        if we don't know yet.
+        """
+
+        if not self.show().has_ended():
+            return None
+
+        successes = 0
+        for track in self.tracks.all():
+            if track in self.show().playlist():
+                successes += 1
+
+        return successes / self.weight()
+
+    @memoize
+    def weight(self):
+        """
+        Return how much we should take this vote into account when calculating
+        a user's batting average.
+        """
+
+        return float(self.tracks.all().count())
+
+    @memoize
+    def show(self):
+        return Show.at(self.date)
 
     def api_dict(self):
         the_vote = {

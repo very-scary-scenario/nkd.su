@@ -33,3 +33,15 @@ def when(date):
         return date.strftime('%A at %I:%M %p').lower()
     else:
         return date.strftime('%a %b %d at %I:%M %p').lower()
+
+
+@register.filter
+def percent(flt):
+    """
+    Convert a float into a percentage string.
+    """
+
+    if flt is None:
+        return '[in flux]'
+
+    return '{0:.2f}%'.format(flt * 100)

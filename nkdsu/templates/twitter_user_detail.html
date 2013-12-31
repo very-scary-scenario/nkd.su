@@ -13,7 +13,11 @@
         @{{ voter.screen_name }}
       </a>
     </p>
-    <p class="subheading">batting at {{ voter.batting_average }}</p>
+    {% if voter.batting_average == None %}
+      <p class="subheading">needs to vote more</p>
+    {% else %}
+      <p class="subheading">batting at {{ voter.batting_average|percent }} over the last six months</p>
+    {% endif %}
     {% if voter.is_authenticated %}
       <p class="subheading"><a href="{% url toggle_abuse voter.id %}">
         {% if voter.is_abuser %}

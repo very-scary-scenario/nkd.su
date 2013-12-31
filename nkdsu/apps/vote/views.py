@@ -120,7 +120,8 @@ class TwitterUserDetail(DetailView):
         # There's a bug in this code, but I can't think of an elegant
         # workaround right now and I'm genuinely curious to see if it ever
         # raises an error.
-        return self.model.objects.get(screen_name=self.kwargs['screen_name'])
+        return self.model.objects.get(
+            screen_name__iexact=self.kwargs['screen_name'])
 
 
 def track(request, track_id, slug=None):
