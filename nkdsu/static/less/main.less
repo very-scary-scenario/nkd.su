@@ -159,6 +159,56 @@ body {
           }
         }
       }
+
+      table.stats {
+        margin: 0 auto 4em;
+        position: relative;
+        min-width: 80%;
+
+        td, th {
+          padding: .3em .5em;
+        }
+
+        .summary {
+          text-align: right;
+        }
+
+        .value {
+          text-align: left;
+        }
+
+        th.summary span {
+          display: none;
+        }
+
+        tr.stat {
+          td.summary {
+            img {
+              float: right;
+              margin-left: 1em;
+              width: 48px;
+              height: 48px;
+            }
+
+            p {
+              font-size: .9em;
+
+              &.name, &.title {
+                font-size: 1.2em;
+                font-weight: bold;
+              }
+            }
+          }
+
+          .value {
+            text-align: left;
+          }
+        }
+      }
+
+      &.tracks td.summary {
+        padding: .5em;
+      }
     }
   }
 }
@@ -387,52 +437,6 @@ a#stamp img {
 
 a#stamp:hover, a.avatar:hover {
   border: none;
-}
-
-/* stats */
-
-table.stats {
-  margin: 0 auto 4em;
-  position: relative;
-  min-width: 80%;
-}
-
-table.stats td, table.stats th {
-  padding: .3em .5em;
-}
-
-table.stats td {
-  position: relative;
-}
-
-table.stats .summary {
-  text-align: right;
-}
-
-table.stats tr.user td.summary img {
-  float: right;
-  margin-left: 1em;
-}
-
-table.stats tr.user td.summary p.name, table.stats tr.track td.summary p.title {
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-table.stats td.summary p {
-  font-size: .9em
-}
-
-table.stats .value {
-  text-align: left;
-}
-
-table.stats th.summary span {
-  display: none;
-}
-
-table.stats.tracks td.summary {
-  padding: .5em;
 }
 
 

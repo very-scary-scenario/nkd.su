@@ -12,7 +12,7 @@
     </tr>
 
     {% for user in batting_averages|slice:":10" %}
-      <tr class="user">
+      <tr class="stat">
         <td class="summary">
           <img alt="{{ user.name }}" src="{{ user.user_image }}">
           <p class="name">{{ user.name }}</p>
@@ -36,7 +36,7 @@
     </tr>
 
     {% for user in batting_averages|slice:":-10:-1" %}
-      <tr class="user">
+      <tr class="stat">
         <td class="summary">
           <img alt="{{ user.name }}" src="{{ user.user_image }}">
           <p class="name">{{ user.name }}</p>
