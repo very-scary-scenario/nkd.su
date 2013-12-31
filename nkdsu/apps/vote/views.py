@@ -170,7 +170,7 @@ class Stats(TemplateView):
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
         tracks = []
 
-        for track in Track.objects.all():
+        for track in Track.objects.public():
             tracks.append((track,
                            track.vote_set.filter(date__gt=cutoff).count()))
 
