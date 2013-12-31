@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load vote_tags %}
 
 {% block title %}{{ user.screen_name }}{% endblock %}
 
@@ -29,28 +30,28 @@
     </p>
   </div>
 
-  <div class="user_votes">
-    <h2>votes</h2>
-    <ul>
-      {% for vote in voter.votes %}
-        <li class="vote">
-          <p class="when"><a href="{{ vote.twitter_url }}">{{ vote.when }}</a></p>
-          {% if vote.content %}
-            <p class="content">‘{{ vote.content }}’</p>
-          {% endif %}
+  <h2>votes</h2>
+  <ul class="user-votes">
+    {% for vote in voter.votes %}
+      <li class="vote">
+        <p class="when"><a href="{{ vote.twitter_url }}">{{ vote.date|when }}</a></p>
+        {% if vote.content %}
+          <p class="content">‘{{ vote.content }}’</p>
+        {% endif %}
+        <ul class="vote-tracks">
           {% for track in vote.tracks.all %}
-          <div class="vote_track">
-            <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>
-            <p class="title"><a href="{{ track.rel_url }}">{{ track.derived_title }}</a></p>
-            {% if track.derived_role %}
-              <p class="role">{{ track.derived_role }}</p>
-            {% endif %}
-          </div>
+            <li class="vote-track">
+              <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>
+              <p class="title"><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
+              {% if track.role %}
+                <p class="role">{{ track.role }}</p>
+              {% endif %}
+            </li>
           {% endfor %}
-        </div>
-      {% endfor %}
-    </ul>
-  </div> <!-- user_votes -->
+        </ul>
+      </li>
+    {% endfor %}
+  </ul>
 </div>
 
 {% endblock %}

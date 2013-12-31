@@ -111,6 +111,54 @@ body {
       ul.plays {
         text-align: center;
       }
+
+      div.user {
+        .avatar img {
+          padding-top: .5em;
+        }
+
+        ul.user-votes {
+          list-style: none;
+
+          li.vote {
+            padding: 0 0 2em;
+            border-radius: .5em;
+
+            > p {
+              padding: 0 1.5%;
+              font-size: .8em;
+            }
+
+            p.content {
+              font-style: italic;
+            }
+
+            p.when a {
+              color: #999;
+            }
+
+            ul.vote-tracks {
+              list-style: none;
+
+              li.vote-track {
+                margin: 0 3% .2em;
+                padding: .4em 0;
+
+                p.title {
+                  font-size: 1.2em;
+                  font-weight: bold;
+                }
+              }
+            }
+
+            &:hover {
+              p.when a {
+                color: @hl;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -288,55 +336,6 @@ form ul.errorlist li {
   color: #999;
   position: relative;
   top: .6em;
-}
-
-/* user pages */
-
-div.user div.user_votes h3 {
-  text-align: left;
-}
-
-div.user p.subheading a.avatar img {
-  padding-top: .5em;
-}
-
-div.user div.vote_week {
-  margin: 0 0 2em;
-}
-
-div.user div.vote {
-  padding: 0 0 2em;
-  border-radius: .5em;
-}
-
-div.user div.vote div.vote_track {
-  margin: 0 3% .2em;
-}
-
-div.user p.when, div.user p.content {
-  padding: 0 1.5%;
-  font-size: .8em;
-}
-
-div.user p.when a {
-  color: #999;
-}
-
-div.user div.vote:hover p.when a {
-  color: @hl;
-}
-
-div.user p.content {
-  font-style: italic;
-}
-
-div.user div.vote div.vote_track {
-  padding: .4em 0;
-}
-
-div.user div.vote div.vote_track p.title {
-  font-size: 1.2em;
-  font-weight: bold;
 }
 
 /* footer */
