@@ -104,6 +104,13 @@ body {
       position: relative;
       padding-bottom: 10em;
 
+      .markdown {
+        > * {
+          text-align: left;
+          margin-top: .5em;
+        }
+      }
+
       .roulette-mode-switch {
         .child-iter();
       }
@@ -403,13 +410,6 @@ form ul.errorlist li {
 
 #footer .credit {
   margin: .5em 2em;
-}
-
-/* markdown */
-
-.markdown * {
-  text-align: left;
-  margin-top: .5em;
 }
 
 /* front-page divs */

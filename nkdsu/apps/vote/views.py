@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import codecs
 from sys import exc_info
 import datetime
 from random import choice
 
 from cache_utils.decorators import cached
 import tweepy
-from markdown import markdown
 
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -189,25 +187,15 @@ class Stats(TemplateView):
         return context
 
 
-def info(request):
-    return docs(request, 'what?', 'README.md')
+class Info(mixins.MarkdownView):
+    title = 'what?'
+    filename = 'README.md'
 
 
-def api_docs(request):
-    return docs(request, 'api', 'API.md')
+class APIDocs(mixins.MarkdownView):
+    title = 'api'
+    filename = 'API.md'
 
-
-def docs(request, title, filename):
-    words = markdown(codecs.open(settings.SITE_ROOT + filename,
-                                 encoding='utf-8').read())
-    context = {
-        'title': title,
-        'words': words,
-        'no_select': True,
-    }
-
-    return render_to_response('markdown.html', RequestContext(request,
-                                                              context))
 
 
 def confirm(request, action, deets=None):

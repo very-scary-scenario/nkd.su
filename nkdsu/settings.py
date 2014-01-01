@@ -17,6 +17,7 @@ import djcelery
 djcelery.setup_loader()
 
 PROJECT_DIR = os.path.realpath(os.path.join(__file__, '..'))
+PROJECT_ROOT = os.path.realpath(os.path.join(PROJECT_DIR, '..'))
 
 CELERY_TIMEZONE = 'Europe/London'
 
@@ -65,9 +66,6 @@ READING_USERNAME = "nkdsu"
 #@nekodesuradio
 POSTING_ACCESS_TOKEN = ''  # secret
 POSTING_ACCESS_TOKEN_SECRET = ''  # secret
-
-import os.path
-SITE_ROOT = os.path.dirname(os.path.realpath(__file__))+'/../'
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG

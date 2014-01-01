@@ -29,7 +29,7 @@ urlpatterns = patterns(
     url(r'^stats/$', views.Stats.as_view(), name='stats'),
 
     #url(r'^everything/$', 'nkdsu.apps.vote.views.everything', name='everything'),
-    url(r'^info/$', 'nkdsu.apps.vote.views.info', name='info'),
+    url(r'^info/$', views.Info.as_view(), name='info'),
     url(r'^upload/$', 'nkdsu.apps.vote.views.upload_library', name='upload_library'),
     url(r'^request/$', 'nkdsu.apps.vote.views.request_addition', name='request_addition'),
 
@@ -69,7 +69,7 @@ urlpatterns = patterns(
     url(r'^login/', 'django.contrib.auth.views.login', name='login'),
 
     # API
-    url(r'^info/api/$', 'nkdsu.apps.vote.views.api_docs', name='api_docs'),
+    url(r'^info/api/$', views.APIDocs.as_view(), name='api_docs'),
 
     url(r'^api/$', 'nkdsu.apps.vote.api.week', name='api'),
     url(r'^api/week/(?P<date>[\d-]+)/$', 'nkdsu.apps.vote.api.week', name='api_week'),

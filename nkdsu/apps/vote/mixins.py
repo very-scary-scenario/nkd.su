@@ -1,11 +1,16 @@
+import codecs
 from copy import copy
 import datetime
+from os import path
 
+from markdown import markdown
+
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import redirect
 from django.utils import timezone
-from django.views.generic import DetailView
+from django.views.generic import DetailView, TemplateView
 
 from .models import Show
 from .utils import memoize
@@ -75,3 +80,22 @@ class ShowDetail(DetailView):
             new_kwargs['date'] = self.object.showtime.date().strftime(date_fmt)
             url = reverse(name, kwargs=new_kwargs)
             return redirect(url)
+
+
+class MarkdownView(TemplateView):
+    template_name = 'markdown.html'
+
+    def get_context_data(self):
+        context = super(MarkdownView, self).get_context_data()
+
+        words = markdown(codecs.open(
+            path.join(settings.PROJECT_ROOT, self.filename),
+            encoding='utf-8'
+        ).read())
+
+        context.update({
+            'title': self.title,
+            'words': words,
+        })
+
+        return context
