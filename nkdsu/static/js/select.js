@@ -41,7 +41,7 @@ $(document).ready(function(){
     // build a list of IDs of selected tracks
     var selected_tracks = [];
     $('p.id').each(function() {
-      selected_tracks.push($(this).text())
+      selected_tracks.push($(this).text());
     });
     
     // ensure selected tracks are marked as such and vice-versa
@@ -61,7 +61,7 @@ $(document).ready(function(){
         all_selectable.push(this.id);
         $(this).addClass('pending');
       });
-      var id_map = { track_id: all_selectable }
+      var id_map = { track_id: all_selectable };
       $.post($(this).attr('href'), id_map, function(data) {
         update_selection(data);
       });
@@ -69,15 +69,15 @@ $(document).ready(function(){
 
     // explicitly clear selection when user mass-votes
     $('a.mass_vote').click(function(event) {
-      $.post('/do/clear_selection/'), function(data) {
+      $.post('/do/clear_selection/', function(data) {
         update_selection(data);
-      }
+      });
     });
 
     // do js-friendly actions without reloading if possible
     $("a.track_jspost").click(function(event) {
       event.preventDefault();
-      var id_map = { track_id: $(this).closest('div.minitrack').find('p.id').text() }
+      var id_map = { track_id: $(this).closest('div.minitrack').find('p.id').text() };
       $.post($(this).attr('href'), id_map, function(data) {
         update_selection(data);
       });
@@ -105,8 +105,7 @@ $(document).ready(function(){
     $('div#stick div.stuck h3').on("click", function() {
       window.scrollTo(0,$('div#selection').offset().top);
     });
-    
-  };
+  }
 
   $.post('/do/selection/', function(data) {
     update_selection(data);
