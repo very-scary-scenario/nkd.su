@@ -105,6 +105,11 @@ body {
       padding-bottom: 10em;
 
       .markdown {
+        @media (min-width: @breakpoint) {
+          width: 80%;
+          margin: 0 auto;
+        }
+
         > * {
           text-align: left;
           margin-top: .5em;
@@ -581,11 +586,6 @@ a#stamp:hover, a.avatar:hover {
   div.current {
     float: left;
     width: 64%;
-  }
-
-  .markdown {
-    width: 80%;
-    margin: 0 auto;
   }
 
   form p label {
