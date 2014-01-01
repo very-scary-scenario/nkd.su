@@ -7,11 +7,17 @@ from django.conf import settings
 from django.utils.http import urlquote
 
 
+_read_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
+                                    settings.CONSUMER_SECRET)
+_read_tw_auth.set_access_token(settings.READING_ACCESS_TOKEN,
+                               settings.READING_ACCESS_TOKEN_SECRET)
+reading_tw_api = tweepy.API(_read_tw_auth)
+
 _post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
                                     settings.CONSUMER_SECRET)
-_post_tw_auth.set_access_token(settings.READING_ACCESS_TOKEN,
-                               settings.READING_ACCESS_TOKEN_SECRET)
-reading_tw_api = tweepy.API(_post_tw_auth)
+_post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
+                               settings.POSTING_ACCESS_TOKEN_SECRET)
+posting_tw_api = tweepy.API(_post_tw_auth)
 
 
 def length_str(msec):

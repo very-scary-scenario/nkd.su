@@ -56,7 +56,7 @@
 
       {% if user.is_authenticated %}
         <p class="admin">
-          <a href="/played/{{ track.id }}/">now playing&hellip;</a>
+        <a href="{% url "vote:admin:play" pk=track.id %}">play</a>
           <a href="/vote/{{ track.id }}/">add vote&hellip;</a>
           {% if track.ineligible and track.ineligible == 'blocked' %}
             <a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>

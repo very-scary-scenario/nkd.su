@@ -4,20 +4,89 @@ from sys import exc_info
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse_lazy
 from django.http import Http404, HttpResponse
+from django.shortcuts import redirect
 from django.utils.http import urlquote
+from django.views.generic import DetailView
+from django.views.generic.base import TemplateResponseMixin
 
 from ..forms import LibraryUploadForm, ManualVoteForm, BlockForm
+from ..models import Track
 from ..update_library import update_library
 
 
-def confirm(request, action, deets=None):
-    context = {
-        'action': action,
-        'deets': deets,
-    }
+class AdminMixin(object):
+    """
+    A mixin we should apply to all admin views.
+    """
 
-    return render_to_response('confirm.html', RequestContext(request, context))
+    @classmethod
+    def as_view(cls):
+        return login_required(super(AdminMixin, cls).as_view())
+
+
+class AdminActionMixin(AdminMixin):
+    url = reverse_lazy('vote:index')
+
+    def get_redirect_url(self):
+        return self.url
+
+    def do_thing_and_redirect(self):
+        self.do_thing()
+        return redirect(self.get_redirect_url())
+
+
+class AdminAction(AdminActionMixin):
+    """
+    A view for an admin action that we can be comfortable doing immediately.
+    """
+
+    def get(self, request, *args, **kwargs):
+        return self.do_thing_and_redirect()
+
+
+class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
+    """
+    A view for an admin action that's worth asking if our host is sure.
+    """
+
+    template_name = 'confirm.html'
+    deets = None
+
+    def get_deets(self):
+        return self.deets
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DestructiveAdminAction, self
+                        ).get_context_data(*args, **kwargs)
+
+        context.update({
+            'deets': self.get_deets(),
+            'action': self.__doc__.strip('\n .'),
+        })
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('confirm') == 'true':
+            return self.do_thing_and_redirect()
+        else:
+            return super(DestructiveAdminAction, self).get(request, *args,
+                                                           **kwargs)
+
+
+class Play(DestructiveAdminAction, DetailView):
+    """
+    Mark this track as played.
+    """
+
+    model = Track
+
+    def get_deets(self):
+        return unicode(self.get_object())
+
+    def do_thing(self):
+        self.get_object().play()
 
 
 @login_required

@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse
 
 from nkdsu.apps.vote.utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
-    memoize, split_query_into_keywords
+    posting_tw_api, memoize, split_query_into_keywords
 )
 
 
@@ -174,7 +174,7 @@ class Show(models.Model):
         return (p.track for p in self.plays())
 
     @memoize
-    def tracks_sorted_by_votes(self, exclude_abusers=False):
+    def tracks_sorted_by_votes(self):
         """
         Return a list of tracks that have been voted for this week, in order of
         when they were last voted for, starting from the most recent.
@@ -482,6 +482,23 @@ class Track(models.Model):
 
         # XXX
 
+    def play(self):
+        """
+        Mark this track as played.
+        """
+
+        play = Play(
+            track=self,
+            date=timezone.now(),
+        )
+
+        play.save()
+        play.tweet()
+
+    shortlist.alters_data = True
+    discard.alters_data = True
+    play.alters_data = True
+
     def slug(self):
         return slugify(self.title)
 
@@ -698,6 +715,27 @@ class Play(models.Model):
 
         self.track.hidden = False  # If something's been played, it's public.
         self.track.save()
+
+    def tweet(self):
+        """
+        Send out a tweet for this play, set self.tweet_id and save.
+        """
+
+        if self.tweet_id is not None:
+            raise TypeError('This play has already been tweeted')
+
+        canon = unicode(self.track)
+        hashtag = settings.HASHTAG
+
+        if len(canon) > 140 - (len(hashtag) + 1):
+            canon = canon[0:140-(len(hashtag)+2)]+u'…'
+
+        status = u'%s %s' % (canon, hashtag)
+        tweet = posting_tw_api.update_status(status)
+        self.tweet_id = tweet.id
+        self.save()
+
+    tweet.alters_data = True
 
     @memoize
     def show(self):

@@ -3,10 +3,10 @@
 {% block title %}{{ action }}{% endblock %}
 {% block content %}
 
-<h2 class="aligned">Are you sure you want to {{ action }}?</h2>
+<h2 class="aligned">Are you sure you want to {{ action|lower }}?</h2>
 
 {% if deets %}
-{{ deets|linebreaks }}
+  {{ deets|linebreaks }}
 {% endif %}
 
 <p class="aside"><a href="?confirm=true">yep</a> : <a href="/">NO SHIT NO NO NO NOT AT ALL</a></p>

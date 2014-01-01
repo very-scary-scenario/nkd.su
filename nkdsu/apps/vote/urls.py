@@ -1,39 +1,40 @@
 from django.conf.urls import patterns, url, include
 
 from nkdsu.apps.vote import views
+from nkdsu.apps.vote.views import admin
 
 
 admin_patterns = patterns(
     '',
     url(r'^upload/$', 'nkdsu.apps.vote.views.admin.upload_library', name='upload_library'),
-    url(r'^played/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.mark_as_played', name='mark_as_played'),
-    url(r'^unplay/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.unmark_as_played', name='unmark_as_played'),
+    url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
+    url(r'^unplay/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.unmark_as_played', name='unmark_as_played'),
 
-    url(r'^vote/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.make_vote', name='make_vote'),
+    url(r'^vote/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.make_vote', name='make_vote'),
 
-    url(r'^block/(?P<track_id>[^/]+)/reason$', 'nkdsu.apps.vote.views.admin.make_block_with_reason', name='make_block_with_reason'),
-    url(r'^block/(?P<track_id>[^/]+)/$', 'nkdsu.apps.vote.views.admin.make_block', name='make_block'),
-    url(r'^unblock/(?P<track_id>[^/]+)/$', 'nkdsu.apps.vote.views.admin.unblock', name='unblock'),
+    url(r'^block/(?P<pk>[^/]+)/reason$', 'nkdsu.apps.vote.views.admin.make_block_with_reason', name='make_block_with_reason'),
+    url(r'^block/(?P<pk>[^/]+)/$', 'nkdsu.apps.vote.views.admin.make_block', name='make_block'),
+    url(r'^unblock/(?P<pk>[^/]+)/$', 'nkdsu.apps.vote.views.admin.unblock', name='unblock'),
 
     url(r'^hidden/$', 'nkdsu.apps.vote.views.admin.hidden', name='hidden'),
-    url(r'^hide/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.hide', name='hide'),
-    url(r'^unhide/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.unhide', name='unhide'),
+    url(r'^hide/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.hide', name='hide'),
+    url(r'^unhide/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.unhide', name='unhide'),
 
     url(r'^inudesu/$', 'nkdsu.apps.vote.views.admin.inudesu', name='inudesu'),
 
     url(r'^trivia/$', 'nkdsu.apps.vote.views.admin.bad_trivia', name='bad_trivia'),
 
-    url(r'^shortlist/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.shortlist', name='shortlist'),
+    url(r'^shortlist/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.shortlist', name='shortlist'),
     url(r'^shortlist_order/$', 'nkdsu.apps.vote.views.admin.shortlist_order', name='shortlist_order'),
-    url(r'^discard/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.discard', name='discard'),
-    url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
+    url(r'^discard/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.discard', name='discard'),
+    url(r'^unshortlist_or_undiscard/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
 
     url(r'^abuse/(?P<user_id>.+)/$', 'nkdsu.apps.vote.views.admin.toggle_abuse', name='toggle_abuse'),
 )
 
 urlpatterns = patterns(
     '',
-    url(r'^', include(admin_patterns, namespace='admin')),
+    url(r'^vote-admin/', include(admin_patterns, namespace='admin')),
 
     url(r'^$', views.IndexView.as_view(), name='index'),
 
