@@ -67,9 +67,9 @@
       <div id="footer">
         <a id="stamp" target="_blank" href="http://musicfortheblind.co.uk"><img alt="music for the blind" title="music for the blind" src="http://colons.co/stamp.png"></a>
         {% if user.is_authenticated %}
-        <p class="credit"><a href="/admin/">admin</a> | <a href="{% url "vote:hidden" %}">hidden tracks</a> | <a href="{% url "vote:inudesu" %}">inu desu</a> | <a href="{% url "vote:upload_library" %}">update library</a> | <a href="{% url "vote:bad_trivia" %}">bad trivia</a> | <a href="{% url "logout" %}?next={{ path|urlencode }}">log out</a></p>
+          <p class="credit"><a href="/admin/">admin</a> | <a href="{% url "vote:admin:hidden" %}">hidden tracks</a> | <a href="{% url "vote:admin:inudesu" %}">inu desu</a> | <a href="{% url "vote:admin:upload_library" %}">update library</a> | <a href="{% url "vote:admin:bad_trivia" %}">bad trivia</a> | <a href="{% url "logout" %}?next={{ path|urlencode }}">log out</a></p>
         {% else %}
-        <p class="credit"><a href="{% url "vote:info" %}">help</a> | <a href="/info/api/">api</a> | <a target="_blank" href="https://github.com/colons/nkdsu">source</a> | <a href="{% url "vote:login" %}?next={{ path|urlencode }}">log in</a></p>
+          <p class="credit"><a href="{% url "vote:info" %}">help</a> | <a href="/info/api/">api</a> | <a target="_blank" href="https://github.com/colons/nkdsu">source</a> | <a href="{% url "login" %}?next={{ path|urlencode }}">log in</a></p>
         {% endif %}
       </div>
     </div>

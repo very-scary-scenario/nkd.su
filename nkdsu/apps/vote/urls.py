@@ -1,10 +1,40 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 
 from nkdsu.apps.vote import views
 
 
+admin_patterns = patterns(
+    '',
+    url(r'^upload/$', 'nkdsu.apps.vote.views.admin.upload_library', name='upload_library'),
+    url(r'^played/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.mark_as_played', name='mark_as_played'),
+    url(r'^unplay/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.unmark_as_played', name='unmark_as_played'),
+
+    url(r'^vote/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.make_vote', name='make_vote'),
+
+    url(r'^block/(?P<track_id>[^/]+)/reason$', 'nkdsu.apps.vote.views.admin.make_block_with_reason', name='make_block_with_reason'),
+    url(r'^block/(?P<track_id>[^/]+)/$', 'nkdsu.apps.vote.views.admin.make_block', name='make_block'),
+    url(r'^unblock/(?P<track_id>[^/]+)/$', 'nkdsu.apps.vote.views.admin.unblock', name='unblock'),
+
+    url(r'^hidden/$', 'nkdsu.apps.vote.views.admin.hidden', name='hidden'),
+    url(r'^hide/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.hide', name='hide'),
+    url(r'^unhide/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.unhide', name='unhide'),
+
+    url(r'^inudesu/$', 'nkdsu.apps.vote.views.admin.inudesu', name='inudesu'),
+
+    url(r'^trivia/$', 'nkdsu.apps.vote.views.admin.bad_trivia', name='bad_trivia'),
+
+    url(r'^shortlist/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.shortlist', name='shortlist'),
+    url(r'^shortlist_order/$', 'nkdsu.apps.vote.views.admin.shortlist_order', name='shortlist_order'),
+    url(r'^discard/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.discard', name='discard'),
+    url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.admin.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
+
+    url(r'^abuse/(?P<user_id>.+)/$', 'nkdsu.apps.vote.views.admin.toggle_abuse', name='toggle_abuse'),
+)
+
 urlpatterns = patterns(
     '',
+    url(r'^', include(admin_patterns, namespace='admin')),
+
     url(r'^$', views.IndexView.as_view(), name='index'),
 
     url(r'^archive/$', views.Archive.as_view(), name='archive'),
@@ -32,32 +62,6 @@ urlpatterns = patterns(
 
     url(r'^request/$',
         views.RequestAddition.as_view(), name='request_addition'),
-
-    # admin views
-    # url(r'^upload/$', 'nkdsu.apps.vote.views.upload_library', name='upload_library'),
-    # url(r'^played/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.mark_as_played', name='mark_as_played'),
-    # url(r'^unplay/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.unmark_as_played', name='unmark_as_played'),
-
-    # url(r'^vote/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.make_vote', name='make_vote'),
-
-    # url(r'^block/(?P<track_id>[^/]+)/reason$', 'nkdsu.apps.vote.views.make_block_with_reason', name='make_block_with_reason'),
-    # url(r'^block/(?P<track_id>[^/]+)/$', 'nkdsu.apps.vote.views.make_block', name='make_block'),
-    # url(r'^unblock/(?P<track_id>[^/]+)/$', 'nkdsu.apps.vote.views.unblock', name='unblock'),
-
-    # url(r'^hidden/$', 'nkdsu.apps.vote.views.hidden', name='hidden'),
-    # url(r'^hide/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.hide', name='hide'),
-    # url(r'^unhide/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.unhide', name='unhide'),
-
-    # url(r'^inudesu/$', 'nkdsu.apps.vote.views.inudesu', name='inudesu'),
-
-    # url(r'^trivia/$', 'nkdsu.apps.vote.views.bad_trivia', name='bad_trivia'),
-
-    # url(r'^shortlist/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.shortlist', name='shortlist'),
-    # url(r'^shortlist_order/$', 'nkdsu.apps.vote.views.shortlist_order', name='shortlist_order'),
-    # url(r'^discard/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.discard', name='discard'),
-    # url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
-
-    # url(r'^abuse/(?P<user_id>.+)/$', 'nkdsu.apps.vote.views.toggle_abuse', name='toggle_abuse'),
 
     # tracks
     url(r'^(?P<pk>[0-9A-F]{16})/$', views.TrackDetail.as_view(), name='track'),
