@@ -567,7 +567,7 @@ class Vote(CleanOnSaveMixin, models.Model):
                             blank=True)
 
     def clean(self):
-        if self.is_manaul:
+        if self.is_manual:
             if self.tweet_id or self.twitter_user_id:
                 raise ValidationError(
                     'Twitter attributes present on manual vote')
@@ -579,7 +579,7 @@ class Vote(CleanOnSaveMixin, models.Model):
                 raise ValidationError('Kind not specified')
 
     @property
-    def is_manaul(self):
+    def is_manual(self):
         return bool(self.kind)
 
     def __unicode__(self):
@@ -623,7 +623,7 @@ class Vote(CleanOnSaveMixin, models.Model):
 
         content = self.text
 
-        if not self.is_manaul:
+        if not self.is_manual:
             if content.startswith('@'):
                 content = content.split(' ', 1)[1]
 
