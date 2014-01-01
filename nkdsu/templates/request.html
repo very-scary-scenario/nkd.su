@@ -2,13 +2,14 @@
 
 
 {% block content %}
-<h2 class=message>{{ title }}</h2>
+  <h2 class=message>Request a new song</h2>
 
-<p class="aside">Please include as much information about the song you want as possible. Any information you can provide will make it easier to find and include your song.</p>
-<form class="reqeust" method="post" enctype="multipart/form-data" action=".">
-{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="submit">
-</form>
+  <p class="aside">Please include as much information about the song you want as possible. Any information you can provide will make it easier to find and include your song.</p>
+
+  <form class="reqeust" method="post" enctype="multipart/form-data" action=".">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="submit">
+  </form>
 
 {% endblock %}

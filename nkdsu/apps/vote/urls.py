@@ -28,41 +28,43 @@ urlpatterns = patterns(
 
     url(r'^stats/$', views.Stats.as_view(), name='stats'),
 
-    #url(r'^everything/$', 'nkdsu.apps.vote.views.everything', name='everything'),
     url(r'^info/$', views.Info.as_view(), name='info'),
-    url(r'^upload/$', 'nkdsu.apps.vote.views.upload_library', name='upload_library'),
-    url(r'^request/$', 'nkdsu.apps.vote.views.request_addition', name='request_addition'),
 
-    # peter functions
-    url(r'^played/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.mark_as_played', name='mark_as_played'),
-    url(r'^unplay/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.unmark_as_played', name='unmark_as_played'),
+    url(r'^request/$',
+        views.RequestAddition.as_view(), name='request_addition'),
 
-    url(r'^vote/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.make_vote', name='make_vote'),
+    # admin views
+    # url(r'^upload/$', 'nkdsu.apps.vote.views.upload_library', name='upload_library'),
+    # url(r'^played/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.mark_as_played', name='mark_as_played'),
+    # url(r'^unplay/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.unmark_as_played', name='unmark_as_played'),
 
-    url(r'^block/(?P<track_id>[^/]+)/reason$', 'nkdsu.apps.vote.views.make_block_with_reason', name='make_block_with_reason'),
-    url(r'^block/(?P<track_id>[^/]+)/$', 'nkdsu.apps.vote.views.make_block', name='make_block'),
-    url(r'^unblock/(?P<track_id>[^/]+)/$', 'nkdsu.apps.vote.views.unblock', name='unblock'),
+    # url(r'^vote/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.make_vote', name='make_vote'),
 
-    url(r'^hidden/$', 'nkdsu.apps.vote.views.hidden', name='hidden'),
-    url(r'^hide/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.hide', name='hide'),
-    url(r'^unhide/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.unhide', name='unhide'),
+    # url(r'^block/(?P<track_id>[^/]+)/reason$', 'nkdsu.apps.vote.views.make_block_with_reason', name='make_block_with_reason'),
+    # url(r'^block/(?P<track_id>[^/]+)/$', 'nkdsu.apps.vote.views.make_block', name='make_block'),
+    # url(r'^unblock/(?P<track_id>[^/]+)/$', 'nkdsu.apps.vote.views.unblock', name='unblock'),
 
-    url(r'^inudesu/$', 'nkdsu.apps.vote.views.inudesu', name='inudesu'),
+    # url(r'^hidden/$', 'nkdsu.apps.vote.views.hidden', name='hidden'),
+    # url(r'^hide/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.hide', name='hide'),
+    # url(r'^unhide/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.unhide', name='unhide'),
 
-    url(r'^trivia/$', 'nkdsu.apps.vote.views.bad_trivia', name='bad_trivia'),
+    # url(r'^inudesu/$', 'nkdsu.apps.vote.views.inudesu', name='inudesu'),
 
-    url(r'^shortlist/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.shortlist', name='shortlist'),
-    url(r'^shortlist_order/$', 'nkdsu.apps.vote.views.shortlist_order', name='shortlist_order'),
-    url(r'^discard/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.discard', name='discard'),
-    url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
+    # url(r'^trivia/$', 'nkdsu.apps.vote.views.bad_trivia', name='bad_trivia'),
 
-    url(r'^abuse/(?P<user_id>.+)/$', 'nkdsu.apps.vote.views.toggle_abuse', name='toggle_abuse'),
+    # url(r'^shortlist/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.shortlist', name='shortlist'),
+    # url(r'^shortlist_order/$', 'nkdsu.apps.vote.views.shortlist_order', name='shortlist_order'),
+    # url(r'^discard/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.discard', name='discard'),
+    # url(r'^unshortlist_or_undiscard/(?P<track_id>.+)/$', 'nkdsu.apps.vote.views.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
+
+    # url(r'^abuse/(?P<user_id>.+)/$', 'nkdsu.apps.vote.views.toggle_abuse', name='toggle_abuse'),
 
     # tracks
     url(r'^(?P<pk>[0-9A-F]{16})/$', views.TrackDetail.as_view(), name='track'),
     url(r'^(?P<slug>[^/]*)/(?P<pk>[0-9A-F]{16})/$',
         views.TrackDetail.as_view(), name='track'),
-    url(r'^(?P<pk>[0-9A-F]{16})/report/$', 'nkdsu.apps.vote.views.report_bad_metadata', name='report'),
+    url(r'^(?P<pk>[0-9A-F]{16})/report/$',
+        views.ReportBadMetadata.as_view(), name='report'),
 
     # registration
     url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
@@ -78,8 +80,8 @@ urlpatterns = patterns(
     url(r'^api/search/$', 'nkdsu.apps.vote.api.search', name='api_search'),
 
     # javascript responses
-    url(r'^do/select/$', 'nkdsu.apps.vote.views.do_select', name='do_select'),
-    url(r'^do/deselect/$', 'nkdsu.apps.vote.views.do_deselect', name='do_deselect'),
-    url(r'^do/selection/$', 'nkdsu.apps.vote.views.do_selection', name='do_selection'),
-    url(r'^do/clear_selection/$', 'nkdsu.apps.vote.views.do_clear_selection', name='do_clear_selection'),
+    # url(r'^do/select/$', 'nkdsu.apps.vote.views.do_select', name='do_select'),
+    # url(r'^do/deselect/$', 'nkdsu.apps.vote.views.do_deselect', name='do_deselect'),
+    # url(r'^do/selection/$', 'nkdsu.apps.vote.views.do_selection', name='do_selection'),
+    # url(r'^do/clear_selection/$', 'nkdsu.apps.vote.views.do_clear_selection', name='do_clear_selection'),
 )

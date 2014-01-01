@@ -208,7 +208,4 @@ PIPELINE_CSS = {
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
-try:
-    from nkdsu.settings_local import *  # noqa
-except ImportError:
-    pass
+from nkdsu.settings_local import *  # noqa

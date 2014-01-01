@@ -62,7 +62,7 @@ def mark_as_played(request, track_id):
                            % track.derived_title())
         else:
             # tweet it
-            canon = track.canonical_string()
+            canon = track.get_absolute_url()
             if track.inudesu:
                 hashtag = settings.INUDESU_HASHTAG
             else:

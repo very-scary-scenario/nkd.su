@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from random import choice
 
 from cache_utils.decorators import cached
 import tweepy
 
-from django.core.urlresolvers import reverse
-from django.template import RequestContext
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 from django.conf import settings
 from django.core.mail import send_mail
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, FormView
 
-from .forms import RequestForm, BadMetadataForm
-from ..vote import trivia, mixins
-from ..vote.models import Show, Track, TwitterUser
+from ..forms import RequestForm, BadMetadataForm
+from ...vote import mixins
+from ...vote.models import Show, Track, TwitterUser
 
 
 post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
@@ -190,88 +188,57 @@ class APIDocs(mixins.MarkdownView):
     filename = 'API.md'
 
 
-def report_bad_metadata(request, track_id):
-    track = Track.objects.get(id=track_id)
+class ReportBadMetadata(FormView):
+    form_class = BadMetadataForm
+    template_name = 'report.html'
 
-    question = choice(trivia.questions.keys())
-    d = {'trivia_question': question, 'track_id': track_id}
+    # XXX raise 404 if PK incorrect
 
-    if request.method == 'POST':
-        form = BadMetadataForm(request.POST)
-    else:
-        form = BadMetadataForm(initial=d)
+    def get_track(self):
+        return get_object_or_404(Track, pk=self.kwargs['pk'])
 
-    if request.method == 'POST':
-        if form.is_valid():
-            f = form.cleaned_data
+    def get_context_data(self, *args, **kwargs):
+        context = super(ReportBadMetadata, self).get_context_data(*args,
+                                                                  **kwargs)
+        context['track'] = self.get_track()
+        return context
 
-            fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
-            fields.append(track.url())
+    def get_success_url(self):
+        return self.get_track().get_absolute_url()
 
-            send_mail(
-                '[nkd.su report] %s' % track.canonical_string(),
-                '\n\n'.join(fields),
-                '"nkd.su" <nkdsu@bldm.us>',
-                [settings.REQUEST_CURATOR],
-            )
+    def form_valid(self, form):
+        f = form.cleaned_data
 
-            context = {'message': 'thanks for letting us know'}
+        track = Track.objects.get(pk=self.kwargs['pk'])
 
-            return render_to_response('message.html',
-                                      RequestContext(request, context))
+        fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
+        fields.append(track.get_public_url())
 
-    form.fields['trivia'].label = 'Captcha: %s' % question
-    form.data['trivia'] = ''
-    form.data['trivia_question'] = question
+        send_mail(
+            '[nkd.su report] %s' % track.get_absolute_url(),
+            '\n\n'.join(fields),
+            '"nkd.su" <nkdsu@bldm.us>',
+            [settings.REQUEST_CURATOR],
+        )
 
-    context = {
-        'title': 'report bad metadata',
-        'track': track,
-        'form': form,
-        'no_select': True,
-    }
-
-    return render_to_response('report.html', RequestContext(request, context))
+        return super(ReportBadMetadata, self).form_valid(form)
 
 
-def request_addition(request):
-    question = choice(trivia.questions.keys())
-    d = {'trivia_question': question}
+class RequestAddition(FormView):
+    form_class = RequestForm
+    template_name = 'request.html'
+    success_url = reverse_lazy('vote:index')
 
-    if 'q' in request.GET:
-        d['title'] = request.GET['q']
+    def form_valid(self, form):
+        f = form.cleaned_data
 
-    if request.method == 'POST':
-        form = RequestForm(request.POST)
-    else:
-        form = RequestForm(initial=d)
+        fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
 
-    if request.method == 'POST':
-        if form.is_valid():
-            f = form.cleaned_data
+        send_mail(
+            '[nkd.su] %s' % f['title'],
+            '\n\n'.join(fields),
+            '"nkd.su" <nkdsu@bldm.us>',
+            [settings.REQUEST_CURATOR],
+        )
 
-            fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
-
-            send_mail(
-                '[nkd.su] %s' % f['title'],
-                '\n\n'.join(fields),
-                '"nkd.su" <nkdsu@bldm.us>',
-                [settings.REQUEST_CURATOR],
-            )
-
-            context = {'message': 'thank you for your request'}
-
-            return render_to_response('message.html',
-                                      RequestContext(request, context))
-
-    form.fields['trivia'].label = 'Captcha: %s' % question
-    form.data['trivia'] = ''
-    form.data['trivia_question'] = question
-
-    context = {
-        'title': 'request an addition',
-        'form': form,
-        'no_select': True,
-    }
-
-    return render_to_response('request.html', RequestContext(request, context))
+        return super(RequestAddition, self).form_valid(form)

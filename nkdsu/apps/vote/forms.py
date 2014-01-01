@@ -1,21 +1,15 @@
+from random import choice
 import re
 
 import tweepy
 
 from django import forms
 from django.core.validators import validate_email
-from django.conf import settings
 from django.utils.safestring import mark_safe
 
 from .models import Vote, Request
 from ..vote import trivia
-
-
-post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
-                                   settings.CONSUMER_SECRET)
-post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
-                              settings.POSTING_ACCESS_TOKEN_SECRET)
-tw_api = tweepy.API(post_tw_auth)
+from .utils import reading_tw_api
 
 
 def email_or_twitter(address):
@@ -23,13 +17,14 @@ def email_or_twitter(address):
         validate_email(address)
     except forms.ValidationError:
         try:
-            tw_api.get_user(screen_name=address.lstrip('@'))
+            reading_tw_api.get_user(screen_name=address.lstrip('@'))
         except tweepy.TweepError:
             raise forms.ValidationError(
                 'Enter a valid email address or twitter username')
 
 
 class EmailOrTwitterField(forms.EmailField):
+    widget = forms.TextInput
     default_error_messages = {
         'invalid': u'Enter a valid email address or Twitter username',
     }
@@ -51,6 +46,11 @@ class TriviaForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(TriviaForm, self).__init__(*args, **kwargs)
         self.fields.keyOrder.append(self.fields.keyOrder.pop(1))
+
+        question = choice(trivia.questions.keys())
+
+        self.fields['trivia'].label = 'Captcha: %s' % question
+        self.fields['trivia_question'].initial = question
 
     def clean_trivia(self):
         human = True
@@ -122,6 +122,6 @@ class ManualVoteForm(forms.ModelForm):
         model = Vote
 
 
-class BlockForm(forms.Form):
+class BlockForm(forms.Form):  # XXX should be a ModelForm for Block
     """ Block something """
     reason = forms.CharField(max_length=256)
