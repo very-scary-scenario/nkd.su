@@ -17,8 +17,8 @@ admin_patterns = patterns(
     url(r'^unblock/(?P<pk>[^/]+)/$', 'nkdsu.apps.vote.views.admin.unblock', name='unblock'),
 
     url(r'^hidden/$', 'nkdsu.apps.vote.views.admin.hidden', name='hidden'),
-    url(r'^hide/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.hide', name='hide'),
-    url(r'^unhide/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.unhide', name='unhide'),
+    url(r'^hide/(?P<pk>.+)/$', admin.Hide.as_view(), name='hide'),
+    url(r'^unhide/(?P<pk>.+)/$', admin.Unhide.as_view(), name='unhide'),
 
     url(r'^inudesu/$', 'nkdsu.apps.vote.views.admin.inudesu', name='inudesu'),
 

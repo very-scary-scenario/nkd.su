@@ -42,6 +42,10 @@ class AdminAction(AdminActionMixin):
     A view for an admin action that we can be comfortable doing immediately.
     """
 
+    def get_redirect_url(self):
+        # XXX get referer, fall back to...
+        return super(AdminAction, self).get_redirect_url()
+
     def get(self, request, *args, **kwargs):
         return self.do_thing_and_redirect()
 
@@ -87,6 +91,24 @@ class Play(DestructiveAdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().play()
+
+
+class Hide(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        track = self.get_object()
+        track.hidden = True
+        track.save()
+
+
+class Unhide(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        track = self.get_object()
+        track.hidden = False
+        track.save()
 
 
 @login_required

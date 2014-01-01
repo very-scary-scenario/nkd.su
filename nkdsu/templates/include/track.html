@@ -66,9 +66,9 @@
         </p>
         <p class="admin">
           {% if track.hidden %}
-            <a href="/unhide/{{ track.id }}/?from={{ path|urlencode }}">unhide</a>
+            <a href="{% url "vote:admin:unhide" pk=track.id %}">unhide</a>
           {% else %}
-            <a href="/hide/{{ track.id }}/?from={{ path|urlencode }}">hide</a>
+            <a href="{% url "vote:admin:hide" pk=track.id %}">hide</a>
           {% endif %}
           {% if not track.shortlist and not track.discard %}
             <a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a> | <a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a>

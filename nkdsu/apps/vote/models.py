@@ -19,7 +19,13 @@ from nkdsu.apps.vote.utils import (
 )
 
 
-class Show(models.Model):
+class CleanOnSaveMixin(object):
+    def save(self):
+        self.full_clean()
+        return super(CleanOnSaveMixin, self).save()
+
+
+class Show(CleanOnSaveMixin, models.Model):
     """
     A broadcast of the show and, by extention, the week leading up to it.
     """
@@ -213,7 +219,7 @@ class Show(models.Model):
         })
 
 
-class TwitterUser(models.Model):
+class TwitterUser(CleanOnSaveMixin, models.Model):
     # Twitter stuff
     screen_name = models.CharField(max_length=100)
     user_id = models.BigIntegerField(unique=True)
@@ -293,7 +299,7 @@ class TwitterUser(models.Model):
         self.save()
 
 
-class TrackManager(models.Manager):
+class TrackManager(CleanOnSaveMixin, models.Manager):
     def public(self):
         return self.filter(hidden=False, inudesu=False)
 
@@ -312,7 +318,7 @@ class TrackManager(models.Manager):
         return qs
 
 
-class Track(models.Model):
+class Track(CleanOnSaveMixin, models.Model):
     objects = TrackManager()
 
     # derived from iTunes
@@ -545,7 +551,7 @@ MANUAL_VOTE_KINDS = (
 )
 
 
-class Vote(models.Model):
+class Vote(CleanOnSaveMixin, models.Model):
     # universal
     tracks = models.ManyToManyField(Track)
     date = models.DateTimeField()
@@ -699,7 +705,7 @@ class Vote(models.Model):
         )
 
 
-class Play(models.Model):
+class Play(CleanOnSaveMixin, models.Model):
     date = models.DateTimeField()
     track = models.ForeignKey(Track)
     tweet_id = models.IntegerField(blank=True, null=True)
@@ -708,13 +714,18 @@ class Play(models.Model):
         return u'%s at %s' % (self.track, self.date)
 
     def clean(self):
-        if (not Show.was_broadcasting(self.date)):
+        if (not self.show().broadcasting(self.date)):
             raise ValidationError('It is not currently showtime.')
 
-        # XXX raise ValidationError('This has been played today already.')
+        if self.track in self.show.playlist:
+            raise ValidationError('This has already been played.')
 
-        self.track.hidden = False  # If something's been played, it's public.
-        self.track.save()
+    def save(self):
+        super(Play, self).save()
+
+        if self.track.hidden:
+            self.track.hidden = False
+            self.track.save()
 
     def tweet(self):
         """
@@ -742,7 +753,7 @@ class Play(models.Model):
         return Show.at(self.date)
 
 
-class Block(models.Model):
+class Block(CleanOnSaveMixin, models.Model):
     """
     A particular track that we are not going to allow to be voted for on
     particular show.
@@ -759,7 +770,7 @@ class Block(models.Model):
             raise ValidationError('track is already blocked')
 
 
-class Shortlist(models.Model):
+class Shortlist(CleanOnSaveMixin, models.Model):
     show = models.ForeignKey(Show)
     track = models.ForeignKey(Track)
     index = models.IntegerField(default=0)
@@ -772,7 +783,7 @@ class Shortlist(models.Model):
         super(Shortlist, self).save()
 
 
-class Discard(models.Model):
+class Discard(CleanOnSaveMixin, models.Model):
     """
     A track that we're not going to play, but that we don't want to make public
     that we're not going to play.
@@ -783,7 +794,7 @@ class Discard(models.Model):
     # XXX unique_together show and track
 
 
-class Request(models.Model):
+class Request(CleanOnSaveMixin, models.Model):
     """
     A request for a database addition. Stored for the benefit of enjoying
     hilarious spam.
