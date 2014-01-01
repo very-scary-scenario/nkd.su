@@ -66,10 +66,6 @@ urlpatterns = patterns(
     url(r'^(?P<pk>[0-9A-F]{16})/report/$',
         views.ReportBadMetadata.as_view(), name='report'),
 
-    # registration
-    url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
-    url(r'^login/', 'django.contrib.auth.views.login', name='login'),
-
     # API
     url(r'^info/api/$', views.APIDocs.as_view(), name='api_docs'),
 
