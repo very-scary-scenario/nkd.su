@@ -576,11 +576,12 @@ class Vote(CleanOnSaveMixin, models.Model):
                 raise ValidationError(
                     'Manual attributes present on Twitter vote')
             if not (self.tweet_id and self.twitter_user_id):
-                raise ValidationError('Kind not specified')
+                raise ValidationError(
+                    'Twitter attributes missing from Twitter vote')
 
     @property
     def is_manual(self):
-        return bool(self.kind)
+        return not bool(self.tweet_id)
 
     def __unicode__(self):
         tracks = u', '.join([t.title for t in self.tracks.all()])
