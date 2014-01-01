@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  sel = 'form#search input#query'
+  var sel = 'form#search input#query';
 
   $(sel).focus(function() {
     if ($(this).hasClass('default') && $(this).val() == $(this).attr('default')) {
@@ -9,7 +9,7 @@ $(document).ready(function(){
   });
 
   $(sel).blur(function() {
-    if ($(this).val() == '') {
+    if ($(this).val() === '') {
       $(this).addClass('default');
       $(this).val($(this).attr('default'));
     }
