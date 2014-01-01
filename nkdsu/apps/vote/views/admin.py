@@ -43,8 +43,11 @@ class AdminAction(AdminActionMixin):
     """
 
     def get_redirect_url(self):
-        # XXX get referer, fall back to...
-        return super(AdminAction, self).get_redirect_url()
+        referer = self.request.META.get('HTTP_REFERER')
+        if referer is not None:
+            return referer
+        else:
+            return super(AdminAction, self).get_redirect_url()
 
     def get(self, request, *args, **kwargs):
         return self.do_thing_and_redirect()
