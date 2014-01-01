@@ -92,7 +92,7 @@ TIME_ZONE = 'Europe/London'
 LANGUAGE_CODE = 'en-gb'
 SITE_ID = 1
 USE_I18N = False
-USE_L10N = True
+USE_L10N = False
 USE_TZ = True
 
 MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
