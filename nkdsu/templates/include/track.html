@@ -57,7 +57,7 @@
       {% if user.is_authenticated %}
         <p class="admin">
           <span><a href="{% url "vote:admin:play" pk=track.id %}">play</a></span>
-          <span><a href="/vote/{{ track.id }}/">add vote</a></span>
+          <span><a href="{% url "vote:admin:manual_vote" pk=track.id %}">manual vote</a></span>
           {% if track.ineligible and track.ineligible == 'blocked' %}
             <span><a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a></span>
           {% elif track.eligible %}

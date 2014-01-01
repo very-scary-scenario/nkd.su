@@ -10,7 +10,8 @@ admin_patterns = patterns(
     url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
     url(r'^unplay/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.unmark_as_played', name='unmark_as_played'),
 
-    url(r'^vote/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.make_vote', name='make_vote'),
+    url(r'^add-manual-vote/(?P<pk>.+)/$',
+        admin.ManualVote.as_view(), name='manual_vote'),
 
     url(r'^block/(?P<pk>[^/]+)/reason$', 'nkdsu.apps.vote.views.admin.make_block_with_reason', name='make_block_with_reason'),
     url(r'^block/(?P<pk>[^/]+)/$', 'nkdsu.apps.vote.views.admin.make_block', name='make_block'),

@@ -114,14 +114,6 @@ class LibraryUploadForm(forms.Form):
     inudesu = forms.BooleanField(label='Inu Desu', required=False)
 
 
-class ManualVoteForm(forms.ModelForm):
-    """ Make a manual vote! """
-
-    class Meta:
-        # XXX pick safe things
-        model = Vote
-
-
 class BlockForm(forms.Form):  # XXX should be a ModelForm for Block
     """ Block something """
     reason = forms.CharField(max_length=256)

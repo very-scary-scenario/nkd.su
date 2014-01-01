@@ -558,28 +558,38 @@ class Vote(CleanOnSaveMixin, models.Model):
     text = models.TextField(blank=True)
 
     # twitter only
-    twitter_user = models.ForeignKey(TwitterUser, blank=True)
-    tweet_id = models.BigIntegerField()
+    twitter_user = models.ForeignKey(TwitterUser, blank=True, null=True)
+    tweet_id = models.BigIntegerField(blank=True, null=True)
 
     # manual only
-    name = models.CharField(max_length=40)
-    kind = models.CharField(max_length=10, choices=MANUAL_VOTE_KINDS)
+    name = models.CharField(max_length=40, blank=True)
+    kind = models.CharField(max_length=10, choices=MANUAL_VOTE_KINDS,
+                            blank=True)
+
+    def clean(self):
+        if self.is_manaul:
+            if self.tweet_id or self.twitter_user_id:
+                raise ValidationError(
+                    'Twitter attributes present on manual vote')
+        else:
+            if self.name or self.kind:
+                raise ValidationError(
+                    'Manual attributes present on Twitter vote')
+            if not (self.tweet_id and self.twitter_user_id):
+                raise ValidationError('Kind not specified')
 
     @property
     def is_manaul(self):
-        return not self.kind
+        return bool(self.kind)
 
     def __unicode__(self):
         tracks = u', '.join([t.title for t in self.tracks.all()])
 
-        if self.twitter_user:
-            return u'{user} at {date} for {tracks}'.format(
-                user=self.twitter_user,
-                date=self.date,
-                tracks=tracks,
-            )
-        else:
-            raise NotImplementedError  # XXX
+        return u'{user} at {date} for {tracks}'.format(
+            user=self.name or self.twitter_user,
+            date=self.date,
+            tracks=tracks,
+        )
 
     def derive_tracks_from_url_list(self, url_list):
         """
@@ -613,17 +623,18 @@ class Vote(CleanOnSaveMixin, models.Model):
 
         content = self.text
 
-        if content.startswith('@'):
-            content = content.split(' ', 1)[1]
+        if not self.is_manaul:
+            if content.startswith('@'):
+                content = content.split(' ', 1)[1]
 
-        content = content.strip('- ')
+            content = content.strip('- ')
 
-        for word in content.split():
-            if re.match(r'https?://[^\s]+', word):
-                content = content.replace(word, '').strip()
-            elif len(word) == 16 and re.match('[0-9A-F]{16}', word):
-                # for the sake of old pre-url votes
-                content = content.replace(word, '').strip()
+            for word in content.split():
+                if re.match(r'https?://[^\s]+', word):
+                    content = content.replace(word, '').strip()
+                elif len(word) == 16 and re.match('[0-9A-F]{16}', word):
+                    # for the sake of old pre-url votes
+                    content = content.replace(word, '').strip()
 
         return content
 
@@ -634,16 +645,6 @@ class Vote(CleanOnSaveMixin, models.Model):
         """
 
         # XXX
-
-    def clean(self):
-        # XXX require that manual votes have a type and twitter votes have
-        # a user
-
-        # XXX Be xor-y (that is, don't allow twitter votes to have manual vote
-        # properties and vice-versa)
-
-        if not self.tracks:
-            raise ValidationError('no tracks in vote')
 
     def save(self):
         # XXX remove any tracks this person has already voted for this week
@@ -764,11 +765,8 @@ class Block(CleanOnSaveMixin, models.Model):
     reason = models.CharField(max_length=256)
     show = models.ForeignKey(Show)
 
-    # XXX unique_together show and track
-
-    def clean(self):
-        if self.track.ineligible():
-            raise ValidationError('track is already blocked')
+    class Meta:
+        unique_together = [['show', 'track']]
 
 
 class Shortlist(CleanOnSaveMixin, models.Model):
@@ -776,8 +774,8 @@ class Shortlist(CleanOnSaveMixin, models.Model):
     track = models.ForeignKey(Track)
     index = models.IntegerField(default=0)
 
-    # XXX unique_together show and track
-    # XXX unique_together show and index
+    class Meta:
+        unique_together = [['show', 'track'], ['show', 'index']]
 
     def save(self):
         pass  # XXX set our index appropriately
@@ -792,7 +790,9 @@ class Discard(CleanOnSaveMixin, models.Model):
 
     show = models.ForeignKey(Show)
     track = models.ForeignKey(Track)
-    # XXX unique_together show and track
+
+    class Meta:
+        unique_together = [['show', 'track']]
 
 
 class Request(CleanOnSaveMixin, models.Model):

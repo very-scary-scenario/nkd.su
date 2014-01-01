@@ -28,6 +28,7 @@ class Command(BaseCommand):
             ('vote.scheduleoverride', self.import_scheduleoverride),
             ('vote.track', self.import_track),
             ('vote.play', self.import_play),
+            ('vote.manualvote', self.import_manual_vote),
             ('vote.vote', self.import_vote),
             ('vote.block', self.import_block),
         ]:
@@ -136,6 +137,19 @@ class Command(BaseCommand):
                 vote.tracks.add(track)
 
             vote.save()
+
+    def import_manual_vote(self, instance):
+        fields = instance['fields']
+
+        vote = Vote(
+            date=date_parser.parse(fields['date']),
+            kind=fields['kind'],
+            name=fields['name'],
+            text=fields['message'],
+        )
+        vote.save()
+        vote.tracks.add(Track.objects.get(pk=fields['track']))
+        vote.save()
 
     def import_block(self, instance):
         fields = instance['fields']

@@ -4,15 +4,16 @@ from sys import exc_info
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
+from django.utils import timezone
 from django.utils.http import urlquote
-from django.views.generic import DetailView
+from django.views.generic import DetailView, CreateView
 from django.views.generic.base import TemplateResponseMixin
 
-from ..forms import LibraryUploadForm, ManualVoteForm, BlockForm
-from ..models import Track
+from ..forms import LibraryUploadForm
+from ..models import Track, Vote
 from ..update_library import update_library
 
 
@@ -120,26 +121,27 @@ class Unhide(AdminAction, DetailView):
         track.save()
 
 
-@login_required
-def make_vote(request, track_id):
-    track = Track.objects.get(id=track_id)
+class ManualVote(AdminMixin, CreateView):
+    model = Vote
+    fields = ['text', 'name', 'kind']
+    template_name = 'manual_vote.html'
 
-    if request.method == 'POST':
-        vote = ManualVote(track=track)
-        form = ManualVoteForm(request.POST, instance=vote)
-        if form.is_valid():
-            form.save()
-            return redirect('/')
-    else:
-        form = ManualVoteForm()
+    def get_track(self):
+        return get_object_or_404(Track, pk=self.kwargs['pk'])
 
-    context = {
-        'track': track,
-        'form': form,
-        'title': 'new vote',
-    }
+    def get_context_data(self, *args, **kwargs):
+        context = super(ManualVote, self).get_context_data(*args, **kwargs)
+        context['track'] = self.get_track()
+        return context
 
-    return render_to_response('vote.html', RequestContext(request, context))
+    def form_valid(self, form):
+        track = self.get_track()
+        vote = form.save(commit=False)
+        vote.date = timezone.now()
+        vote.save()
+        vote.tracks.add(track)
+        vote.save()
+        return redirect(reverse('vote:index'))
 
 
 @login_required
