@@ -56,26 +56,28 @@
 
       {% if user.is_authenticated %}
         <p class="admin">
-        <a href="{% url "vote:admin:play" pk=track.id %}">play</a>
-          <a href="/vote/{{ track.id }}/">add vote&hellip;</a>
+          <span><a href="{% url "vote:admin:play" pk=track.id %}">play</a></span>
+          <span><a href="/vote/{{ track.id }}/">add vote&hellip;</a></span>
           {% if track.ineligible and track.ineligible == 'blocked' %}
-            <a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a>
+            <span><a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a></span>
           {% elif track.eligible %}
-            <a href="/block/{{ track.id }}/">block&hellip;</a> | <a href="/block/{{ track.id }}/reason?reason=announced">announce</a>
+            <span><a href="/block/{{ track.id }}/">block&hellip;</a></span>
+            <span><a href="/block/{{ track.id }}/reason?reason=announced">announce</a></span>
           {% endif %}
         </p>
         <p class="admin">
           {% if track.hidden %}
-            <a href="{% url "vote:admin:unhide" pk=track.id %}">unhide</a>
+            <span><a href="{% url "vote:admin:unhide" pk=track.id %}">unhide</a></span>
           {% else %}
-            <a href="{% url "vote:admin:hide" pk=track.id %}">hide</a>
+            <span><a href="{% url "vote:admin:hide" pk=track.id %}">hide</a></span>
           {% endif %}
           {% if not track.shortlist and not track.discard %}
-            <a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a> | <a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a>
+            <span><a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a></span>
+            <span><a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a></span>
           {% elif track.shortlist %}
-            <a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a>
+            <span><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a></span>
           {% elif track.discard %}
-            <a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-discard</a>
+            <span><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-discard</a></span>
           {% endif %}
         </p>
       {% endif %}
