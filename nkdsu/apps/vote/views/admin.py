@@ -44,8 +44,13 @@ class AdminAction(AdminActionMixin):
 
     def get_redirect_url(self):
         referer = self.request.META.get('HTTP_REFERER')
-        if referer is not None:
-            return referer
+        next_param = self.request.GET.get('next')
+
+        if next_param is not None:
+            self.url = next_param
+        elif referer is not None:
+            self.url = referer
+
         else:
             return super(AdminAction, self).get_redirect_url()
 
@@ -71,6 +76,7 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
         context.update({
             'deets': self.get_deets(),
             'action': self.__doc__.strip('\n .'),
+            'next': self.request.META.get('HTTP_REFERER'),
         })
         return context
 
