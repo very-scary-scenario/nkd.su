@@ -714,10 +714,11 @@ class Play(CleanOnSaveMixin, models.Model):
         return u'%s at %s' % (self.track, self.date)
 
     def clean(self):
-        if (not self.show().broadcasting(self.date)):
-            raise ValidationError('It is not currently showtime.')
+        if not settings.DEBUG:
+            if (not self.show().broadcasting(self.date)):
+                raise ValidationError('It is not currently showtime.')
 
-        if self.track in self.show.playlist:
+        if self.track in self.show().playlist():
             raise ValidationError('This has already been played.')
 
     def save(self):
