@@ -46,6 +46,7 @@ class Show(CleanOnSaveMixin, models.Model):
         pass  # XXX refuse to create overlapping shows
 
     @classmethod
+    @cached(1)
     def current(cls):
         """
         Get (or create, if necessary) the show that will next end.
@@ -482,6 +483,12 @@ class Track(CleanOnSaveMixin, models.Model):
 
     play.alters_data = True
 
+    def is_listed(self):
+        return (
+            self.shortlist_set.filter(show=Show.current()).exists() or
+            self.discard_set.filter(show=Show.current()).exists()
+        )
+
     def slug(self):
         return slugify(self.title)
 
@@ -763,6 +770,7 @@ class Shortlist(CleanOnSaveMixin, models.Model):
 
     class Meta:
         unique_together = [['show', 'track'], ['show', 'index']]
+        ordering = ['-show__showtime', 'index']
 
     def take_first_available_index(self):
         index = 0

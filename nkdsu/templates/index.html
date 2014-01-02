@@ -2,40 +2,55 @@
 
 {% block content %}
 
+  {% if user.is_authenticated %}
+    <h2>shortlist</h2>
+    <ul id="shortlist">
+      {% for shortlist in show.shortlist_set.all %}
+        {% include "include/track.html" with track=shortlist.track %}
+      {% endfor %}
+    </ul>
+  {% endif %}
   {# XXX playlist #}
-  {# XXX shortlist #}
 
   {% if show.tracks_sorted_by_votes %}
-    <h2 class="heading">current requests</h2>
+    <h2>current requests</h2>
     {# XXX <p class="subheading">&mdash; {{ week.count_votes }} request{{ week.count_votes|pluralize }} - {{ tracks|length }} track{{ tracks|length|pluralize }} - {{ week.count_voters }} {{ week.count_voters|pluralize:"person, people" }} - {{ tracks_len }} &mdash;</p> #}
-    {% include "include/tracklist.html" with tracks=show.tracks_sorted_by_votes %}
+    <ul>
+      {% include "include/tracklist.html" with tracks=show.tracks_sorted_by_votes exclude_listed=True %}
+    </ul>
 
     <p class="aside">Want to vote for something else?</p>
   {% else %}
     <h2 class="message">No requests yet</h2>
   {% endif %}
 
-  <p class="aside">Search, browse the <a href="/show/">playlist archive</a> or just <a href="/roulette/">throw darts at the wall</a>.</p>
 
-  {# XXX discard #}
+  {% if user.is_authenticated %}
+    <h2>discarded</h2>
+    <ul id="discarded">
+      {% for discard in show.discard_set.all %}
+        {% include "include/track.html" with track=discard.track %}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="aside">Search, browse the <a href="/show/">playlist archive</a> or just <a href="/roulette/">throw darts at the wall</a>.</p>
+  {% endif %}
 
 {% endblock %}
 
 {% block footer_scripts %}
-  {% if shortlist %}
-    {# XXX
-      <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
-      <script>
-        var s = $('#shortlist ul');
-        s.sortable({
-          update: function(e, ui) {
-            // send the new order to the server
-            string = s.sortable("serialize");
-            url = "{% url 'shortlist_order' %}?" + string;
-            $.ajax(url);
-          }
-        });
-      </script>
-    #} 
+  {% if user.is_authenticated %}
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
+    <script>
+      var s = $('ul#shortlist');
+      s.sortable({
+        update: function(e, ui) {
+          // send the new order to the server
+          string = s.sortable("serialize");
+          url = "{% url 'vote:admin:shortlist_order' %}?" + string;
+          $.ajax(url);
+        }
+      });
+    </script>
   {% endif %}
 {% endblock %}

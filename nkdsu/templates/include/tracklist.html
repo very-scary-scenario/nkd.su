@@ -1,3 +1,5 @@
 {% for track in tracks %}
-  {% include "include/track.html" %}
+  {% if user.is_authenticated and exclude_listed and track.is_listed %}{% else %}
+    {% include "include/track.html" %}
+  {% endif %}
 {% endfor %}
