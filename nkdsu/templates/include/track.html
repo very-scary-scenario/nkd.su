@@ -18,7 +18,8 @@
     inudesu 
   {% endif %}
   "
-  data-pk="{{ track.pk }}">
+  data-pk="{{ track.pk }}"
+  data-shortlist-pk="shortlist_{{ track.pk }}">
   <span class="report"><a href="{{ track.get_report_url }}">bad metadata?</a></span>
 
   <div class="metadata">
@@ -71,7 +72,7 @@
           <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
         {% endif %}
         {% if track in current_show.discarded or track in current_show.shortlisted %}
-          <span><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">reset shortlist/discard</a></span>
+          <span><a href="{% url "vote:admin:reset" pk=track.pk %}">reset shortlist/discard</a></span>
         {% else %}
           <span><a href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
           <span><a href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>

@@ -14,6 +14,7 @@ from django.views.generic.base import TemplateResponseMixin
 from ..forms import LibraryUploadForm
 from ..models import Track, Vote, Block, Show, Shortlist, Discard
 from ..update_library import update_library
+from .js import JSApiView
 
 
 class AdminMixin(object):
@@ -198,6 +199,25 @@ class MakeDiscard(AdminAction, DetailView):
             track=self.get_object(),
             show=Show.current(),
         ).save()
+
+
+class OrderShortlist(AdminMixin, JSApiView):
+    def do_thing(self, post):
+        for index, pk in enumerate(post.getlist('shortlist[]')):
+            shortlist = Shortlist.objects.get(show=Show.current(),
+                                              track__pk=pk)
+            shortlist.index = index
+            shortlist.save(force_save=True)
+
+
+class ResetShortlistAndDiscard(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        qs_kwargs = {'track': self.get_object(),
+                     'show': Show.current()}
+        Discard.objects.filter(**qs_kwargs).delete()
+        Shortlist.objects.filter(**qs_kwargs).delete()
 
 
 @login_required

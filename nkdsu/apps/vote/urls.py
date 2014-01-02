@@ -29,9 +29,11 @@ admin_patterns = patterns(
 
     url(r'^shortlist/(?P<pk>.+)/$',
         admin.MakeShortlist.as_view(), name='shortlist'),
-    url(r'^shortlist_order/$', 'nkdsu.apps.vote.views.admin.shortlist_order', name='shortlist_order'),
+    url(r'^shortlist-order/$',
+        admin.OrderShortlist.as_view(), name='shortlist_order'),
     url(r'^discard/(?P<pk>.+)/$', admin.MakeDiscard.as_view(), name='discard'),
-    url(r'^unshortlist_or_undiscard/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.unshortlist_or_undiscard', name='unshortlist_or_undiscard'),
+    url(r'^reset/(?P<pk>.+)/$',
+        admin.ResetShortlistAndDiscard.as_view(), name='reset'),
 
     url(r'^abuse/(?P<user_id>.+)/$', 'nkdsu.apps.vote.views.admin.toggle_abuse', name='toggle_abuse'),
 )

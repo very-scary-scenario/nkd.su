@@ -646,13 +646,13 @@ class Vote(CleanOnSaveMixin, models.Model):
 
         # XXX
 
-    def save(self):
+    def save(self, *args, **kwargs):
         # XXX remove any tracks this person has already voted for this week
 
         # XXX set updated on our user to the date of this vote if it's their
         # latest vote
 
-        return super(Vote, self).save()
+        return super(Vote, self).save(*args, **kwargs)
 
     @memoize
     def success(self):
@@ -722,8 +722,8 @@ class Play(CleanOnSaveMixin, models.Model):
         if self.track in self.show().playlist():
             raise ValidationError('This has already been played.')
 
-    def save(self):
-        super(Play, self).save()
+    def save(self, *args, **kwargs):
+        super(Play, self).save(*args, **kwargs)
 
         if self.track.hidden:
             self.track.hidden = False
@@ -779,17 +779,17 @@ class Shortlist(CleanOnSaveMixin, models.Model):
         ordering = ['-show__showtime', 'index']
 
     def take_first_available_index(self):
-        index = 0
-        taken_indices = [s.index for s in
-                         Shortlist.objects.filter(show=self.show)]
+        existing = Shortlist.objects.filter(show=self.show)
 
-        while index in taken_indices:
-            index += 1
+        if not existing.exists():
+            self.index = 0
+        else:
+            for index, shortlist in enumerate(existing):
+                if shortlist.index != index:
+                    shortlist.index = index
+                    shortlist.save()
 
-        self.index = index
-
-    def save(self):
-        super(Shortlist, self).save()
+            self.index = index + 1
 
 
 class Discard(CleanOnSaveMixin, models.Model):

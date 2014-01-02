@@ -1,7 +1,14 @@
 from django.http import HttpResponse
+from django.views.generic import View
 
 from ..models import Track
 from ..utils import vote_tweet, tweet_url, length_str
+
+
+class JSApiView(View):
+    def post(self, request):
+        result = self.do_thing(request.POST)
+        return HttpResponse(result)
 
 
 # javascript nonsense

@@ -43,13 +43,11 @@
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
     <script>
       var s = $('ul#shortlist');
+      var shortlistOrderURL = "{% url 'vote:admin:shortlist_order' %}";
       if (s.length) {
         s.sortable({
           update: function(e, ui) {
-            // send the new order to the server
-            string = s.sortable("serialize");
-            url = "{% url 'vote:admin:shortlist_order' %}?" + string;
-            $.ajax(url);
+            $.post(shortlistOrderURL, s.sortable("serialize", {attribute: 'data-shortlist-pk'}));
           }
         });
       }
