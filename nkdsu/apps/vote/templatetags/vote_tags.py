@@ -3,6 +3,8 @@ import datetime
 from django.template import Library
 from django.utils import timezone
 
+from ..utils import length_str
+
 register = Library()
 
 
@@ -45,3 +47,8 @@ def percent(flt):
         return '[in flux]'
 
     return '{0:.0f}%'.format(flt * 100)
+
+
+@register.filter
+def total_length(tracks):
+    return length_str(sum([t.msec for t in tracks]))

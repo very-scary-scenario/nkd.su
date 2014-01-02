@@ -1,12 +1,14 @@
 {% extends "base.html" %}
+{% load vote_tags %}
 
 {% block content %}
 
   {% if user.is_authenticated and show.shortlist_set.exists %}
     <h2>shortlist</h2>
+    <p class="subheading">{{ show.shortlisted|total_length }}</p>
     <ul id="shortlist">
-      {% for shortlist in show.shortlist_set.all %}
-        {% include "include/track.html" with track=shortlist.track %}
+      {% for track in show.shortlisted %}
+        {% include "include/track.html" %}
       {% endfor %}
     </ul>
   {% endif %}
