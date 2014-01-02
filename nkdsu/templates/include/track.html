@@ -93,9 +93,9 @@
         {% for vote in track|votes_for:current_show %}
           <li class="vote {% if vote.content %}content{% endif %}">
             <a href="{{ vote.twitter_user.get_absolute_url }}">
-              <img class="thumb" src="{{ vote.twitter_user.user_image }}" alt="{{ vote.twitter_user.screen_name }}"/>
+              <img class="thumb" src="{{ vote.get_image_url }}" alt="{{ vote.twitter_user.screen_name }}"/>
               <div class="deets">
-                <img src="{{ vote.twitter_user.user_image }}" alt="{{ vote.twitter_user.screen_name }}"/>
+                <img src="{{ vote.get_image_url }}" alt="{{ vote.twitter_user.screen_name }}"/>
                 {% if vote.is_manual %}
                   <p class="meta full_name">{{ vote.name }}</p>
                   <p class="meta kind">via {{ vote.kind }}</p>

@@ -12,6 +12,7 @@ from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
+from django.templatetags.static import static
 
 from nkdsu.apps.vote.utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
@@ -582,6 +583,12 @@ class Vote(CleanOnSaveMixin, models.Model):
     @property
     def is_manual(self):
         return not bool(self.tweet_id)
+
+    def get_image_url(self):
+        if self.is_manual:
+            return static('i/vote-kinds/{0}.png'.format(self.kind))
+        else:
+            return self.twitter_user.user_image
 
     def __unicode__(self):
         tracks = u', '.join([t.title for t in self.tracks.all()])
