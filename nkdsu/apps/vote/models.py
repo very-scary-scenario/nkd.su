@@ -396,14 +396,6 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return count
 
-    def blocks_for(self, show):
-        """
-        Get any block from the week specified applying to this Track in the
-        specified show.
-        """
-
-        # XXX
-
     @property
     def title(self):
         return self.split_id3_title()[0]
