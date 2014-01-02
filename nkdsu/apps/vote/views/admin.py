@@ -8,13 +8,13 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
-from django.views.generic import DetailView, CreateView
+from django.views.generic import DetailView, CreateView, View
 from django.views.generic.base import TemplateResponseMixin
 
 from ..forms import LibraryUploadForm
 from ..models import Track, Vote, Block, Show, Shortlist, Discard
 from ..update_library import update_library
-from .js import JSApiView
+from .js import JSApiMixin
 
 
 class AdminMixin(object):
@@ -201,7 +201,7 @@ class MakeDiscard(AdminAction, DetailView):
         ).save()
 
 
-class OrderShortlist(AdminMixin, JSApiView):
+class OrderShortlist(AdminMixin, JSApiMixin, View):
     def do_thing(self, post):
         for index, pk in enumerate(post.getlist('shortlist[]')):
             shortlist = Shortlist.objects.get(show=Show.current(),
@@ -272,53 +272,6 @@ def upload_library(request):
             return redirect('/inudesu/')
         else:
             return redirect('/hidden/')
-
-
-def shortlist_or_discard(request, track_id, c=None):
-    """ Shortlist or discard something, whichever class is passed to c """
-    tracks = get_track_or_selection(request, track_id)
-
-    for track in tracks:
-        if c:
-            # we should create an instance of c
-            instance = c(track=track)
-            try:
-                instance.clean()
-            except ValidationError:
-                if len(tracks) == 1:
-                    # don't bother if this is a multi-track operation
-                    context = {'message': exc_info()[1].messages[0]}
-                    return render_to_response('message.html',
-                                              RequestContext(request, context))
-            else:
-                instance.save()
-        else:
-            # no class has been handed to us, so we should wipe the status of
-            # this track
-            current = Week().shortlist_or_discard(track)
-            if current:
-                current.delete()
-
-    return redirect_nicely(request)
-
-
-@login_required
-def shortlist_order(request):
-    id_order = request.GET.getlist('shortlist[]')
-    week = Week()
-
-    for index, the_id in enumerate(id_order):
-        track = Track.objects.get(id=the_id)
-        shortlist = week.shortlist(track=track)
-        shortlist.index = index
-        shortlist.save()
-
-    return HttpResponse('cool')
-
-
-@login_required
-def unshortlist_or_undiscard(request, track_id):
-    return shortlist_or_discard(request, track_id, None)
 
 
 @login_required

@@ -1,14 +1,47 @@
 from django.http import HttpResponse
-from django.views.generic import View
+from django.views.generic import TemplateView
 
 from ..models import Track
-from ..utils import vote_tweet, tweet_url, length_str
+from ..utils import vote_tweet, tweet_url
 
 
-class JSApiView(View):
+class JSApiMixin(object):
     def post(self, request):
         result = self.do_thing(request.POST)
         return HttpResponse(result)
+
+
+class SelectionView(JSApiMixin, TemplateView):
+    template_name = 'minitracklist.html'
+    model = Track
+
+    def get_queryset(self):
+        return self.model.objects.filter(
+            pk__in=self.request.session.get('selection', set()))
+
+    def post(self, request, *args, **kwargs):
+        self.request = request
+        self.do_thing()
+        return self.render_to_response({'selection': self.get_queryset()})
+
+
+class GetSelection(SelectionView):
+    def do_thing(self):
+        pass
+
+
+class Select(SelectionView):
+    def do_thing(self):
+        new_pks = self.request.POST.getlist('track_pk', [])
+        print new_pks
+        pks = set(self.request.session.get('selection', []))
+        print pks
+
+        for pk in new_pks:
+            if Track.objects.public().filter(pk=pk).exists():
+                pks.add(pk)
+
+        self.request.session['selection'] = list(pks)
 
 
 # javascript nonsense
@@ -16,8 +49,6 @@ def do_selection(request, select=True):
     """
     Returns the current selection, optionally selects or deselects a track.
     """
-
-    return HttpResponse()  # XXX
 
     tracks = []
 
@@ -68,7 +99,6 @@ def do_selection(request, select=True):
 
     tweet = vote_tweet(selection_queryset)
     vote_url = tweet_url(tweet)
-    selection_len = length_str(total_length(selection_queryset))
 
     context = {
         'selection': selection_queryset,

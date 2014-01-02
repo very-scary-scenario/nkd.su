@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url, include
 
 from nkdsu.apps.vote import views
-from nkdsu.apps.vote.views import admin
+from nkdsu.apps.vote.views import admin, js
 
 
 admin_patterns = patterns(
@@ -38,9 +38,20 @@ admin_patterns = patterns(
     url(r'^abuse/(?P<user_id>.+)/$', 'nkdsu.apps.vote.views.admin.toggle_abuse', name='toggle_abuse'),
 )
 
+
+js_patterns = patterns(
+    '',
+    url(r'^select/$', js.Select.as_view(), name='select'),
+    url(r'^deselect/$', js.do_deselect, name='deselect'),
+    url(r'^selection/$', js.GetSelection.as_view(), name='get_selection'),
+    url(r'^clear_selection/$', js.do_clear_selection, name='clear_selection'),
+)
+
+
 urlpatterns = patterns(
     '',
     url(r'^vote-admin/', include(admin_patterns, namespace='admin')),
+    url(r'^js/', include(js_patterns, namespace='js')),
 
     url(r'^$', views.IndexView.as_view(), name='index'),
 
@@ -85,10 +96,4 @@ urlpatterns = patterns(
     url(r'^api/week/$', 'nkdsu.apps.vote.api.last_week', name='api_last_week'),
     url(r'^api/track/(?P<track_id>[0-9A-F]{16})/$', 'nkdsu.apps.vote.api.track', name='api_track'),
     url(r'^api/search/$', 'nkdsu.apps.vote.api.search', name='api_search'),
-
-    # javascript responses
-    # url(r'^do/select/$', 'nkdsu.apps.vote.views.do_select', name='do_select'),
-    # url(r'^do/deselect/$', 'nkdsu.apps.vote.views.do_deselect', name='do_deselect'),
-    # url(r'^do/selection/$', 'nkdsu.apps.vote.views.do_selection', name='do_selection'),
-    # url(r'^do/clear_selection/$', 'nkdsu.apps.vote.views.do_clear_selection', name='do_clear_selection'),
 )

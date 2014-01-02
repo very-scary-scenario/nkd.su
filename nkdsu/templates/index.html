@@ -54,4 +54,10 @@
       }
     </script>
   {% endif %}
+  <script>
+    var selectURL = "{% url 'vote:js:select' %}";
+    var deselectURL = "{% url 'vote:js:deselect' %}";
+    var getSelectionURL = "{% url 'vote:js:get_selection' %}";
+    var clearSelectionURL = "{% url 'vote:js:clear_selection' %}";
+  </script>
 {% endblock %}

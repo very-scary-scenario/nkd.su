@@ -2,47 +2,37 @@
   {% if selection %}
     <div class="stuck">
       <h3 id="selection">{{ selection|length }} song{{ selection|pluralize }} selected</h3>
-      <p class="minor">&mdash; {{ selection_len }} &mdash;</p>
       {% if user.is_authenticated %}
         <p class="actions"><a href="/block/selection/">block&hellip;</a> | <a href="/unblock/selection/">unblock</a></p>
         <p class="actions"><a href="/hide/selection/">hide</a> | <a href="/unhide/selection/">unhide</a></p>
         <p class="actions"><a href="/discard/selection/">discard</a> | <a href="/shortlist/selection/">shortlist</a> | <a href="/unshortlist_or_undiscard/selection/">reset discard/shortlist status</a>
-        {% else %}
+      {% else %}
         {% if tweet_is_too_long %}
-        <p class="refusal actions">too many tracks</p>
+          <p class="refusal actions">too many tracks</p>
         {% else %}
-        <p class="actions"><a class="mass_vote" href="{{ vote_url }}">vote for all</a></p>
+          <p class="actions"><a class="mass_vote" href="{{ vote_url }}">vote for all</a></p>
         {% endif %}
       {% endif %}
-        <p class="actions small"><a href="/do/clear_selection/" class="selection_jspost" name="clear_selection">clear selection</a>
-    {% endif %}
-    {% if not selection %}
-      <p class="actions small">
-    {% endif %}
-    {% if user.is_authenticated %}
-    {% if selection %}
-    |
-    {% endif %}
-      <a class="select_all" href="/do/select/">select all</a></p>
-    {% endif %}
-    {% if selection %}
+      <p class="actions small"><a href="{% url "vote:js:clear_selection" %}" name="clear_selection">clear selection</a>
+      <a class="select_all" href="{% url "vote:js:select" %}">select all</a></p>
     </div> <!-- stuck -->
   {% endif %}
 </div> <!-- selhead -->
 
 {% for track in selection %}
-<div class="minitrack selected">
-  <p class="id">{{ track.id }}</p>
-  <div class="metadata">
-    <p class="title">
-      {{ track.derived_title }}
-    </p>
-    {% if track.derived_role %}
-    <p class="role">
-      {{ track.derived_role }}
-    </p>
-    {% endif %}
-  </div>
-  <p class="deselect"><a class="track_jspost" href="/do/deselect/">deselect</a></p>
-</div>
+<ul class="selection">
+  <li class="minitrack selected" data-pk="{{ track.pk }}">
+    <div class="metadata">
+      <p class="title">
+        {{ track.derived_title }}
+      </p>
+      {% if track.derived_role %}
+      <p class="role">
+        {{ track.derived_role }}
+      </p>
+      {% endif %}
+    </div>
+    <p class="deselect"><a href="/do/deselect/">deselect</a></p>
+  </li>
+</ul>
 {% endfor %}
