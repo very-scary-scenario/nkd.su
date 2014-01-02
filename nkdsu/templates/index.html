@@ -24,6 +24,7 @@
     <h2 class="message">No requests yet</h2>
   {% endif %}
 
+  <p class="aside">Search, browse the <a href="/show/">playlist archive</a> or just <a href="/roulette/">throw darts at the wall</a>.</p>
 
   {% if user.is_authenticated and show.discard_set.exists %}
     <h2>discarded</h2>
@@ -32,8 +33,6 @@
         {% include "include/track.html" with track=discard.track %}
       {% endfor %}
     </ul>
-  {% else %}
-    <p class="aside">Search, browse the <a href="/show/">playlist archive</a> or just <a href="/roulette/">throw darts at the wall</a>.</p>
   {% endif %}
 
 {% endblock %}
