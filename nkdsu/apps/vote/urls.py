@@ -12,10 +12,10 @@ admin_patterns = patterns(
     url(r'^add-manual-vote/(?P<pk>.+)/$',
         admin.ManualVote.as_view(), name='manual_vote'),
 
-    url(r'^block/(?P<pk>[^/]+)/reason$', 'nkdsu.apps.vote.views.admin.make_block_with_reason', name='make_block_with_reason'),
+    url(r'^block/(?P<pk>[^/]+)/reason$',
+        admin.MakeBlockWithReason.as_view(), name='block_with_reason'),
     url(r'^block/(?P<pk>[^/]+)/$',
         admin.MakeBlock.as_view(), name='block'),
-    url(r'^unblock/(?P<pk>[^/]+)/$', 'nkdsu.apps.vote.views.admin.unblock', name='unblock'),
 
     url(r'^hidden/$', 'nkdsu.apps.vote.views.admin.hidden', name='hidden'),
     url(r'^hide/(?P<pk>.+)/$', admin.Hide.as_view(), name='hide'),

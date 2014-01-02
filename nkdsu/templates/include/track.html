@@ -62,7 +62,7 @@
             <span><a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a></span>
           {% elif track.eligible %}
             <span><a href="{% url "vote:admin:block" pk=track.pk %}">block</a></span>
-            <span><a href="/block/{{ track.id }}/reason?reason=announced">announce</a></span>
+            <span><a href="{% url "vote:admin:block_with_reason" pk=track.pk %}?reason=announced">announce</a></span>
           {% endif %}
         </p>
         <p class="admin">

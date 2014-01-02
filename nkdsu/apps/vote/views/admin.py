@@ -62,8 +62,7 @@ class AdminAction(AdminActionMixin):
         elif referer is not None:
             self.url = referer
 
-        else:
-            return super(AdminAction, self).get_redirect_url()
+        return super(AdminAction, self).get_redirect_url()
 
     def get(self, request, *args, **kwargs):
         return self.do_thing_and_redirect()
@@ -157,6 +156,17 @@ class MakeBlock(TrackSpecificAdminMixin, CreateView):
         block.show = Show.current()
         block.save()
         return redirect(reverse('vote:index'))
+
+
+class MakeBlockWithReason(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        Block(
+            reason=self.request.GET.get('reason'),
+            track=self.get_object(),
+            show=Show.current(),
+        ).save()
 
 
 @login_required
