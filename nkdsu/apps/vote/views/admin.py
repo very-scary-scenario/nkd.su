@@ -224,24 +224,6 @@ def upload_library(request):
 
 
 @login_required
-def make_block_with_reason(request, track_id):
-    """
-    Block a track for a GET-defined reason.
-    """
-
-    tracks = get_track_or_selection(request, track_id, wipe=False)
-    reason = request.GET.get('reason', None)
-
-    if reason is None:
-        raise Http404
-
-    for track in tracks:
-        Block(track=track, reason=reason).save()
-
-    return redirect('/')
-
-
-@login_required
 def unblock(request, track_id):
     tracks = get_track_or_selection(request, track_id)
     week = Week()
@@ -309,24 +291,6 @@ def shortlist_order(request):
 @login_required
 def unshortlist_or_undiscard(request, track_id):
     return shortlist_or_discard(request, track_id, None)
-
-
-def hide_or_unhide(request, track_id, hidden):
-    tracks = get_track_or_selection(request, track_id)
-    for track in tracks:
-        track.hidden = hidden
-        track.save()
-    return redirect_nicely(request)
-
-
-@login_required
-def hide(request, track_id):
-    return hide_or_unhide(request, track_id, True)
-
-
-@login_required
-def unhide(request, track_id):
-    return hide_or_unhide(request, track_id, False)
 
 
 @login_required
