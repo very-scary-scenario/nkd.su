@@ -434,8 +434,6 @@ class Track(CleanOnSaveMixin, models.Model):
         is not
         """
 
-        # XXX gonna break, but shouldn't be difficult to fix
-
         show = Show.current()
         block_qs = show.block_set.filter(track=self)
 
