@@ -59,7 +59,7 @@
           <span><a href="{% url "vote:admin:play" pk=track.pk %}">play</a></span>
           <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
           {% if track.ineligible %}
-            <span><a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a></span>
+            <span><a href="{% url "vote:admin:unblock" pk=track.pk %}">unblock</a></span>
           {% elif track.eligible %}
             <span><a href="{% url "vote:admin:block" pk=track.pk %}">block</a></span>
             <span><a href="{% url "vote:admin:block_with_reason" pk=track.pk %}?reason=announced">announce</a></span>

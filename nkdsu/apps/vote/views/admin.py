@@ -158,6 +158,15 @@ class MakeBlock(TrackSpecificAdminMixin, CreateView):
         return redirect(reverse('vote:index'))
 
 
+class Unblock(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        block = get_object_or_404(Block, track=self.get_object(),
+                                  show=Show.current())
+        block.delete()
+
+
 class MakeBlockWithReason(AdminAction, DetailView):
     model = Track
 
@@ -243,19 +252,6 @@ def upload_library(request):
             return redirect('/inudesu/')
         else:
             return redirect('/hidden/')
-
-
-@login_required
-def unblock(request, track_id):
-    tracks = get_track_or_selection(request, track_id)
-    week = Week()
-
-    for track in tracks:
-        block = track.block(week)
-        if block:
-            block.delete()
-
-    return redirect_nicely(request)
 
 
 def shortlist_or_discard(request, track_id, c=None):

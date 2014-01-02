@@ -16,6 +16,8 @@ admin_patterns = patterns(
         admin.MakeBlockWithReason.as_view(), name='block_with_reason'),
     url(r'^block/(?P<pk>[^/]+)/$',
         admin.MakeBlock.as_view(), name='block'),
+    url(r'^unblock/(?P<pk>[^/]+)/$',
+        admin.Unblock.as_view(), name='unblock'),
 
     url(r'^hidden/$', 'nkdsu.apps.vote.views.admin.hidden', name='hidden'),
     url(r'^hide/(?P<pk>.+)/$', admin.Hide.as_view(), name='hide'),
