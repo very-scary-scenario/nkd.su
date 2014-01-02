@@ -71,13 +71,11 @@
           {% else %}
             <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
           {% endif %}
-          {% if not track.shortlist and not track.discard %}
+          {% if track in current_show.discarded or track in current_show.shortlisted %}
+            <span><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">reset shortlist/discard</a></span>
+          {% else %}
             <span><a href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
             <span><a href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
-          {% elif track.shortlist %}
-            <span><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a></span>
-          {% elif track.discard %}
-            <span><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-discard</a></span>
           {% endif %}
         </p>
       {% endif %}
@@ -90,7 +88,7 @@
     </div>
     <div class="voting">
       <ul class="votes">
-        {% for vote in track|votes_for:current_show %}
+        {% for vote in track|votes_for:vote_show %}
           <li class="vote {% if vote.content %}content{% endif %}">
             <a href="{{ vote.twitter_user.get_absolute_url }}">
               <img class="avatar thumb" src="{{ vote.get_image_url }}" alt="{{ vote.twitter_user.screen_name }}"/>
@@ -111,7 +109,7 @@
         {% endfor %}
       </ul>
     </div>
-    {% if track.eligible and track|votes_for:current_show %}
+    {% if track.eligible and track|votes_for:vote_show %}
       <div class="invitation plusone"><a href="{{ track.get_vote_url }}">
         +1
       </a></div>

@@ -23,8 +23,11 @@ def nkdsu_context_processor(request):
         ('neko desu', 'http://thisisthecat.com/index.php/neko-desu'),
     ]]
 
+    current_show = Show.current()
+
     return {
-        'current_show': Show.current(),
+        'current_show': current_show,
+        'vote_show': current_show,
         'path': request.path,
         'sections': sections,
     }

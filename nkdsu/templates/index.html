@@ -2,7 +2,7 @@
 
 {% block content %}
 
-  {% if user.is_authenticated %}
+  {% if user.is_authenticated and show.shortlist_set.exists %}
     <h2>shortlist</h2>
     <ul id="shortlist">
       {% for shortlist in show.shortlist_set.all %}
@@ -25,7 +25,7 @@
   {% endif %}
 
 
-  {% if user.is_authenticated %}
+  {% if user.is_authenticated and show.discard_set.exists %}
     <h2>discarded</h2>
     <ul id="discarded">
       {% for discard in show.discard_set.all %}
@@ -43,14 +43,16 @@
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
     <script>
       var s = $('ul#shortlist');
-      s.sortable({
-        update: function(e, ui) {
-          // send the new order to the server
-          string = s.sortable("serialize");
-          url = "{% url 'vote:admin:shortlist_order' %}?" + string;
-          $.ajax(url);
-        }
-      });
+      if (s.length) {
+        s.sortable({
+          update: function(e, ui) {
+            // send the new order to the server
+            string = s.sortable("serialize");
+            url = "{% url 'vote:admin:shortlist_order' %}?" + string;
+            $.ajax(url);
+          }
+        });
+      }
     </script>
   {% endif %}
 {% endblock %}

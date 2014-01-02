@@ -183,6 +183,12 @@ class Show(CleanOnSaveMixin, models.Model):
     def playlist(self):
         return (p.track for p in self.plays())
 
+    def shortlisted(self):
+        return (p.track for p in self.shortlist_set.all())
+
+    def discarded(self):
+        return (p.track for p in self.discard_set.all())
+
     @memoize
     def tracks_sorted_by_votes(self):
         """
