@@ -572,6 +572,9 @@ class Vote(CleanOnSaveMixin, models.Model):
             if self.tweet_id or self.twitter_user_id:
                 raise ValidationError(
                     'Twitter attributes present on manual vote')
+            if not (self.name and self.kind):
+                raise ValidationError(
+                    'Attributes missing from manual vote')
         else:
             if self.name or self.kind:
                 raise ValidationError(

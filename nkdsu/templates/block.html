@@ -1,21 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}block {{ track.title }}{% endblock %}
 
 {% block content %}
-<h2 class=message>{{ title }}</h2>
-{% for track in tracks %}
-<p class="aside">{{ track.canonical_string }}</p>
-{% endfor %}
+  <h2 class=message>Block <a href="{{ track.get_absolute_url }}">{{ track.title }}</a></h2>
+  <p class="aside">{{ track.canonical_string }}</p>
 
-{% if form.errors %}
-<p class="aside problems">problems!</p>
-{% endif %}
-
-<form class="login" method="post" action=".">
-{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="submit">
+  <form class="login" method="post" action=".">
+    {% csrf_token %}
+    {{ form.as_p }}
+  <input type="submit" value="submit">
 </form>
 
 {% endblock %}

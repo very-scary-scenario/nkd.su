@@ -12,7 +12,7 @@ from django.views.generic import DetailView, CreateView
 from django.views.generic.base import TemplateResponseMixin
 
 from ..forms import LibraryUploadForm
-from ..models import Track, Vote
+from ..models import Track, Vote, Block, Show
 from ..update_library import update_library
 
 
@@ -24,6 +24,17 @@ class AdminMixin(object):
     @classmethod
     def as_view(cls):
         return login_required(super(AdminMixin, cls).as_view())
+
+
+class TrackSpecificAdminMixin(AdminMixin):
+    def get_track(self):
+        return get_object_or_404(Track, pk=self.kwargs['pk'])
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(TrackSpecificAdminMixin, self
+                        ).get_context_data(*args, **kwargs)
+        context['track'] = self.get_track()
+        return context
 
 
 class AdminActionMixin(AdminMixin):
@@ -120,18 +131,10 @@ class Unhide(AdminAction, DetailView):
         track.save()
 
 
-class ManualVote(AdminMixin, CreateView):
+class ManualVote(TrackSpecificAdminMixin, CreateView):
     model = Vote
     fields = ['text', 'name', 'kind']
     template_name = 'manual_vote.html'
-
-    def get_track(self):
-        return get_object_or_404(Track, pk=self.kwargs['pk'])
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(ManualVote, self).get_context_data(*args, **kwargs)
-        context['track'] = self.get_track()
-        return context
 
     def form_valid(self, form):
         track = self.get_track()
@@ -143,29 +146,17 @@ class ManualVote(AdminMixin, CreateView):
         return redirect(reverse('vote:index'))
 
 
-@login_required
-def unmark_as_played(request, track_id):
-    """ Deletes the latest Play for a track """
-    try:
-        track = Track.objects.get(id=track_id)
-    except Track.DoesNotExist:
-        raise Http404
+class MakeBlock(TrackSpecificAdminMixin, CreateView):
+    model = Block
+    fields = ['reason']
+    template_name = 'block.html'
 
-    try:
-        play = latest_play(track)
-    except IndexError:
-        raise Http404
-
-    if not ('confirm' in request.GET and request.GET['confirm'] == 'true'):
-        return confirm(request, 'unmark %s as played' % track.derived_title())
-    else:
-        try:
-            tw_api.destroy_status(id=play.tweet_id)
-        except:
-            pass
-
-        play.delete()
-        return redirect_nicely(request)
+    def form_valid(self, form):
+        block = form.save(commit=False)
+        block.track = self.get_track()
+        block.show = Show.current()
+        block.save()
+        return redirect(reverse('vote:index'))
 
 
 @login_required
@@ -220,42 +211,6 @@ def upload_library(request):
             return redirect('/inudesu/')
         else:
             return redirect('/hidden/')
-
-
-@login_required
-def make_block(request, track_id):
-    tracks = get_track_or_selection(request, track_id, wipe=False)
-
-    if not tracks:
-        context = {'message': 'nothing selected'}
-        return render_to_response('message.html', RequestContext(request,
-                                                                 context))
-
-    if request.method == 'POST':
-        form = BlockForm(request.POST)
-        for track in tracks:
-            if form.is_valid():
-                block = Block(
-                    track=track,
-                    reason=form.cleaned_data['reason'])
-                block.save()
-
-        # now is the time to wipe the selection
-        if track_id == 'selection':
-            request.session['selection'] = []
-
-        return redirect('/')
-    else:
-        form = BlockForm()
-
-    context = {
-        'session': request.session,
-        'tracks': tracks,
-        'form': form,
-        'title': 'new block',
-    }
-
-    return render_to_response('block.html', RequestContext(request, context))
 
 
 @login_required

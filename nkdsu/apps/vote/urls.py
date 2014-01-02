@@ -8,13 +8,13 @@ admin_patterns = patterns(
     '',
     url(r'^upload/$', 'nkdsu.apps.vote.views.admin.upload_library', name='upload_library'),
     url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
-    url(r'^unplay/(?P<pk>.+)/$', 'nkdsu.apps.vote.views.admin.unmark_as_played', name='unmark_as_played'),
 
     url(r'^add-manual-vote/(?P<pk>.+)/$',
         admin.ManualVote.as_view(), name='manual_vote'),
 
     url(r'^block/(?P<pk>[^/]+)/reason$', 'nkdsu.apps.vote.views.admin.make_block_with_reason', name='make_block_with_reason'),
-    url(r'^block/(?P<pk>[^/]+)/$', 'nkdsu.apps.vote.views.admin.make_block', name='make_block'),
+    url(r'^block/(?P<pk>[^/]+)/$',
+        admin.MakeBlock.as_view(), name='block'),
     url(r'^unblock/(?P<pk>[^/]+)/$', 'nkdsu.apps.vote.views.admin.unblock', name='unblock'),
 
     url(r'^hidden/$', 'nkdsu.apps.vote.views.admin.hidden', name='hidden'),

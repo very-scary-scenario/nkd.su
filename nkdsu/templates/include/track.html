@@ -56,20 +56,20 @@
 
       {% if user.is_authenticated %}
         <p class="admin">
-          <span><a href="{% url "vote:admin:play" pk=track.id %}">play</a></span>
-          <span><a href="{% url "vote:admin:manual_vote" pk=track.id %}">manual vote</a></span>
-          {% if track.ineligible and track.ineligible == 'blocked' %}
+          <span><a href="{% url "vote:admin:play" pk=track.pk %}">play</a></span>
+          <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
+          {% if track.ineligible %}
             <span><a href="/unblock/{{ track.id }}/?from={{ path|urlencode }}">unblock</a></span>
           {% elif track.eligible %}
-            <span><a href="/block/{{ track.id }}/">block</a></span>
+            <span><a href="{% url "vote:admin:block" pk=track.pk %}">block</a></span>
             <span><a href="/block/{{ track.id }}/reason?reason=announced">announce</a></span>
           {% endif %}
         </p>
         <p class="admin">
           {% if track.hidden %}
-            <span><a href="{% url "vote:admin:unhide" pk=track.id %}">unhide</a></span>
+            <span><a href="{% url "vote:admin:unhide" pk=track.pk %}">unhide</a></span>
           {% else %}
-            <span><a href="{% url "vote:admin:hide" pk=track.id %}">hide</a></span>
+            <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
           {% endif %}
           {% if not track.shortlist and not track.discard %}
             <span><a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a></span>
