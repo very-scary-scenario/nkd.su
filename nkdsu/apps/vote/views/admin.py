@@ -8,7 +8,6 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
-from django.utils.http import urlquote
 from django.views.generic import DetailView, CreateView
 from django.views.generic.base import TemplateResponseMixin
 
@@ -142,70 +141,6 @@ class ManualVote(AdminMixin, CreateView):
         vote.tracks.add(track)
         vote.save()
         return redirect(reverse('vote:index'))
-
-
-@login_required
-def mark_as_played(request, track_id):
-    try:
-        track = Track.objects.get(id=track_id)
-    except Track.DoesNotExist:
-        raise Http404
-
-    play = Play(datetime=timezone.now(), track=track)
-
-    try:
-        play.clean()
-    except ValidationError:
-        context = {'message': exc_info()[1].messages[0]}
-        return render_to_response('message.html',
-                                  RequestContext(request, context))
-
-    else:
-        if not ('confirm' in request.GET and request.GET['confirm'] == 'true'):
-            return confirm(request, 'mark %s as played'
-                           % track.derived_title())
-        else:
-            # tweet it
-            canon = track.get_absolute_url()
-            if track.inudesu:
-                hashtag = settings.INUDESU_HASHTAG
-            else:
-                hashtag = settings.HASHTAG
-
-            if len(canon) > 140 - (len(hashtag) + 1):
-                canon = canon[0:140-(len(hashtag)+2)]+u'…'
-
-            status = u'%s %s' % (canon, hashtag)
-
-            try:
-                tweet = tw_api.update_status(status)
-            except tweepy.TweepError as e:
-                tweet_sent = False
-                error = e
-            else:
-                tweet_sent = True
-
-            if tweet_sent:
-                play.tweet_id = tweet.id
-            else:
-                context = {
-                    'message': 'the tweet failed to send',
-                    'deets': '<p>the play has been added anyway</p><p>you '
-                    'should <a href="https://twitter.com/intent/tweet?text='
-                    '%s">send the now playing tweet manually</a></p><p>error: '
-                    '%s</p>' % (urlquote(status), error),
-                    'safe': True
-                }
-
-            play.save()
-            # unshortlist/discard
-            shortlist_or_discard(request, track.id)
-
-            if not tweet_sent:
-                return render_to_response('message.html',
-                                          RequestContext(request, context))
-
-    return redirect_nicely(request)
 
 
 @login_required
