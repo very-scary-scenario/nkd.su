@@ -21,8 +21,10 @@ from nkdsu.apps.vote.utils import (
 
 
 class CleanOnSaveMixin(object):
-    def save(self):
-        self.full_clean()
+    def save(self, force_save=False):
+        if not force_save:
+            self.full_clean()
+
         return super(CleanOnSaveMixin, self).save()
 
 
@@ -465,20 +467,6 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return self.vote_set.filter(**show._date_kwargs())
 
-    def shortlist(self):
-        """
-        Shortlist this track for this week.
-        """
-
-        # XXX
-
-    def discard(self):
-        """
-        Discard this track for this week.
-        """
-
-        # XXX
-
     def play(self):
         """
         Mark this track as played.
@@ -492,8 +480,6 @@ class Track(CleanOnSaveMixin, models.Model):
         play.save()
         play.tweet()
 
-    shortlist.alters_data = True
-    discard.alters_data = True
     play.alters_data = True
 
     def slug(self):
@@ -778,8 +764,17 @@ class Shortlist(CleanOnSaveMixin, models.Model):
     class Meta:
         unique_together = [['show', 'track'], ['show', 'index']]
 
+    def take_first_available_index(self):
+        index = 0
+        taken_indices = [s.index for s in
+                         Shortlist.objects.filter(show=self.show)]
+
+        while index in taken_indices:
+            index += 1
+
+        self.index = index
+
     def save(self):
-        pass  # XXX set our index appropriately
         super(Shortlist, self).save()
 
 

@@ -72,8 +72,8 @@
             <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
           {% endif %}
           {% if not track.shortlist and not track.discard %}
-            <span><a href="/shortlist/{{ track.id }}/?from={{ path|urlencode }}">shortlist</a></span>
-            <span><a href="/discard/{{ track.id }}/?from={{ path|urlencode }}">discard</a></span>
+            <span><a href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
+            <span><a href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
           {% elif track.shortlist %}
             <span><a href="/unshortlist_or_undiscard/{{ track.id }}/?from={{ path|urlencode }}">un-shortlist</a></span>
           {% elif track.discard %}

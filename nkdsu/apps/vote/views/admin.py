@@ -5,14 +5,14 @@ from sys import exc_info
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 from django.views.generic import DetailView, CreateView
 from django.views.generic.base import TemplateResponseMixin
 
 from ..forms import LibraryUploadForm
-from ..models import Track, Vote, Block, Show
+from ..models import Track, Vote, Block, Show, Shortlist, Discard
 from ..update_library import update_library
 
 
@@ -169,6 +169,28 @@ class MakeBlockWithReason(AdminAction, DetailView):
         ).save()
 
 
+class MakeShortlist(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        shortlist = Shortlist(
+            track=self.get_object(),
+            show=Show.current(),
+        )
+        shortlist.take_first_available_index()
+        shortlist.save()
+
+
+class MakeDiscard(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        Discard(
+            track=self.get_object(),
+            show=Show.current(),
+        ).save()
+
+
 @login_required
 def upload_library(request):
     """ Handling library uploads """
@@ -262,16 +284,6 @@ def shortlist_or_discard(request, track_id, c=None):
                 current.delete()
 
     return redirect_nicely(request)
-
-
-@login_required
-def shortlist(request, track_id):
-    return shortlist_or_discard(request, track_id, Shortlist)
-
-
-@login_required
-def discard(request, track_id):
-    return shortlist_or_discard(request, track_id, Discard)
 
 
 @login_required
