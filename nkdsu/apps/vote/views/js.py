@@ -46,7 +46,12 @@ class Select(SelectionView):
         selection = set(self.request.session.get('selection', []))
 
         for new_pk in new_pks:
-            qs = Track.objects.public().filter(pk=new_pk)
+            if self.request.user.is_authenticated():
+                base_qs = Track.objects.all()
+            else:
+                base_qs = Track.objects.public()
+
+            qs = base_qs.filter(pk=new_pk)
             if qs.exists():
                 track = qs[0]
                 if self.request.user.is_authenticated() or track.eligible():
