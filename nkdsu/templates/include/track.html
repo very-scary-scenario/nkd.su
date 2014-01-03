@@ -25,7 +25,7 @@
   <div class="metadata">
     <p class="artist">
       {% if track.artist_has_page %}
-        <a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a>
+        <a href="{{ track.get_artist_url }}">{{ track.artist }}</a>
       {% else %}
         {{ track.artist }}
       {% endif %}
@@ -79,9 +79,6 @@
         {% endif %}
       </p>
     {% endif %}
-    {% if user.is_authenticated and not track.eligible and track.undoable %}
-      <p class="admin"><a href="/unplay/{{ track.id }}/">i didn't mean to play this</a></p>
-    {% endif %}
     {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
       <p class="refusal">{{ track.ineligible }}</p>
     {% endif %}
@@ -90,7 +87,7 @@
     <ul class="votes">
       {% for vote in track|votes_for:vote_show %}
         <li class="vote {% if vote.content %}content{% endif %}">
-          <a href="{{ vote.twitter_user.get_absolute_url }}">
+        <a {% if not vote.is_manual %}href="{{ vote.twitter_user.get_absolute_url }}"{% endif %}>
             <img class="avatar thumb" src="{{ vote.get_image_url }}" alt="{{ vote.twitter_user.screen_name }}"/>
             <div class="deets">
               <img class="avatar" src="{{ vote.get_image_url }}" alt="{{ vote.twitter_user.screen_name }}"/>

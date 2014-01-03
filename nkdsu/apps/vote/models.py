@@ -364,13 +364,15 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @property
     def is_new(self):
-        current = Show.current()
-        prev = current.prev()
+        return Show.current() == self.show_revealed()
 
-        if prev is not None and self.revealed > prev.end:
-            return True
-        else:
-            return False
+    @memoize
+    def show_revealed(self):
+        """
+        Return the show that this track was revealed for.
+        """
+
+        return Show.at(self.revealed)
 
     def length_str(self):
         return length_str(self.msec)
@@ -504,6 +506,9 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def get_public_url(self):
         return 'http://nkd.su' + self.get_absolute_url()
+
+    def get_artist_url(self):
+        return reverse('vote:artist', kwargs={'artist': self.artist})
 
     def get_report_url(self):
         return reverse('vote:report', kwargs={'pk': self.pk})

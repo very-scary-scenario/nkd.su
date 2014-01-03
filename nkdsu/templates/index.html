@@ -26,7 +26,7 @@
     <h2 class="message">No requests yet</h2>
   {% endif %}
 
-  <p class="aside">Search, browse the <a href="/show/">playlist archive</a> or just <a href="/roulette/">throw darts at the wall</a>.</p>
+  <p class="aside">Search, browse the <a href="{% url "vote:archive" %}">playlist archive</a> or just <a href="{% url "vote:roulette" %}">throw darts at the wall</a>.</p>
 
   {% if user.is_authenticated and show.discard_set.exists %}
     <h2>discarded</h2>

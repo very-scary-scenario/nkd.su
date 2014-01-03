@@ -28,6 +28,5 @@ def nkdsu_context_processor(request):
     return {
         'current_show': current_show,
         'vote_show': current_show,
-        'path': request.path,
         'sections': sections,
     }

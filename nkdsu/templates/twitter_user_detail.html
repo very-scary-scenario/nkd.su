@@ -46,7 +46,7 @@
           <ul class="vote-tracks">
             {% for track in vote.tracks.all %}
               <li class="vote-track">
-                <p class="artist"><a href="/artist/{{ track.artist|urlencode }}/">{{ track.artist }}</a></p>
+                <p class="artist"><a href="{{ track.get_artist_url }}">{{ track.artist }}</a></p>
                 <p class="title"><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
                 {% if track.role %}
                   <p class="role">{{ track.role }}</p>

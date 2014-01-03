@@ -53,7 +53,7 @@
           {% if s.name == section %}active{% endif %}
           {% if s.name == 'new tracks' and current_show.revealed %}lookatme{% endif %}
         ">
-            <a href="{{ s.url }}">{% if s.name == 'new tracks' and current_show.revealed %}<span class="new_tracks">{{ current_show.revealed }}</span> {% endif %}{{ s.name }}</a>
+            <a href="{{ s.url }}">{% if s.name == 'new tracks' and current_show.revealed %}<span class="new_tracks">{{ current_show.revealed|length }}</span> {% endif %}{{ s.name }}</a>
           </li>
         {% endfor %}
         
@@ -66,9 +66,9 @@
       <div id="footer">
         <a id="stamp" target="_blank" href="http://musicfortheblind.co.uk"><img alt="music for the blind" title="music for the blind" src="http://colons.co/stamp.png"></a>
         {% if user.is_authenticated %}
-          <p class="credit"><a href="/admin/">admin</a> | <a href="{% url "vote:admin:hidden" %}">hidden tracks</a> | <a href="{% url "vote:admin:inudesu" %}">inu desu</a> | <a href="{% url "vote:admin:upload_library" %}">update library</a> | <a href="{% url "vote:admin:bad_trivia" %}">bad trivia</a> | <a href="{% url "logout" %}?next={{ path|urlencode }}">log out</a></p>
+        <p class="credit"><a href="{% url "admin:index" %}">admin</a> | <a href="{% url "vote:admin:hidden" %}">hidden tracks</a> | <a href="{% url "vote:admin:inudesu" %}">inu desu</a> | <a href="{% url "vote:admin:upload_library" %}">update library</a> | <a href="{% url "vote:admin:bad_trivia" %}">bad trivia</a> | <a href="{% url "logout" %}?next={{ request.path|urlencode }}">log out</a></p>
         {% else %}
-          <p class="credit"><a href="{% url "vote:info" %}">help</a> | <a href="/info/api/">api</a> | <a target="_blank" href="https://github.com/colons/nkdsu">source</a> | <a href="{% url "login" %}?next={{ path|urlencode }}">log in</a></p>
+          <p class="credit"><a href="{% url "vote:info" %}">help</a> | <a href="{% url "vote:api_docs" %}">api</a> | <a target="_blank" href="https://github.com/colons/nkdsu">source</a> | <a href="{% url "login" %}?next={{ request.path|urlencode }}">log in</a></p>
         {% endif %}
       </div>
     </div>

@@ -11,6 +11,6 @@
 
   {% include "include/paginator.html" %}
 
-  <p class="aligned everything">can't find what you're looking for? <a href="/request?q={{ query|urlencode }}">get it added to the library</a></p>
+  <p class="aligned everything">Can't find what you're looking for? <a href="{% url "vote:request_addition" %}?q={{ query|urlencode }}">Get it added to the library</a></p>
 
 {% endblock %}

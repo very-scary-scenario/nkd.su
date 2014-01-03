@@ -16,7 +16,7 @@ $(document).ready(function(){
   });
 
   // prevent clicking on a voter from selecting a track 
-  $("a.voter").click(function(event) {
+  $("li.vote a").click(function(event) {
     event.stopPropagation();
   });
 
