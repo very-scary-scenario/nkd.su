@@ -197,6 +197,28 @@ li.track {
       }
     }
   }
+
+  &.selectable {
+    &:hover {
+      border-color: @hl !important;
+    }
+  }
+
+  &.pending {
+    opacity: .5;
+  }
+
+  &.selected {
+    background-color: #fee;
+
+    &.ineligible {
+      background-color: #422;
+
+      &.inudesu {
+        background-color: #224;
+      }
+    }
+  }
 }
 
 #shortlist, #discarded {

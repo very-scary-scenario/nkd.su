@@ -3,8 +3,9 @@
 @import "_mixins.less";
 @import "_vars.less";
 
-@import "_tracks.less";
 @import "_archive.less";
+@import "_selection.less";
+@import "_tracks.less";
 
 html {
   height: 100%;
@@ -223,62 +224,6 @@ body {
       }
     }
   }
-}
-
-/* selection list */
-div.minitrack {
-  text-align: center;
-  margin-top: .5em;
-}
-
-div#selection h3 {
-  text-align: center;
-}
-
-div.minitrack p.title {
-  font-size: 1.2em;
-}
-
-div.minitrack p.id {
-  display: none;
-}
-
-div#selection {
-  clear: both;
-  text-align: center;
-  padding-top: 1em;
-}
-
-p.actions.small, p.deselect {
-  font-size: .8em;
-  margin-bottom: .3em;
-  clear: both;
-}
-
-h3#selection {
-  margin: 0;
-}
-
-div#stick {
-  pointer-events: none;
-  position: fixed;
-  bottom: -1em;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 10;
-}
-
-div#stick div.stuck {
-  pointer-events: auto;
-  display: inline-block;
-  background-color: #fff;
-  .noise();
-  box-shadow: #888 0 .5em 2em; /*,inset #ddd 0 0 2em;*/
-  border: 1px solid #aaa;
-  padding: .5em 1em 1.5em;
-  margin: 0 auto;
-  border-radius: 1em;
 }
 
 /* header and stamps */

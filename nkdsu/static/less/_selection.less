@@ -1,0 +1,57 @@
+div#stick {
+  pointer-events: none;
+  position: fixed;
+  bottom: -1em;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+
+  div.stuck {
+    pointer-events: auto;
+    display: inline-block;
+    background-color: #fff;
+    .noise();
+    box-shadow: #888 0 .5em 2em; /*,inset #ddd 0 0 2em;*/
+    border: 1px solid #aaa;
+    padding: .5em 1em 1.5em;
+    margin: 0 auto;
+    border-radius: 1em;
+  }
+}
+
+#selection, #stick {
+  text-align: center;
+
+  h3 {
+    padding: 0;
+    margin: 0;
+  }
+
+  ul.selection {
+    li.minitrack {
+      margin-top: .5em;
+
+      p.role {
+        font-size: .8em;
+      }
+    }
+  }
+
+  p.actions.minor {
+    .child-iter();
+    font-size: .8em;
+    margin-bottom: .3em;
+    clear: both;
+  }
+
+  p.deselect {
+    font-size: .8em;
+  }
+}
+
+#selection {
+  clear: both;
+  text-align: center;
+  padding-top: 1em;
+}

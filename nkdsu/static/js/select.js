@@ -40,8 +40,8 @@ $(document).ready(function(){
 
     // build a list of IDs of selected tracks
     var selected_tracks = [];
-    $('p.id').each(function() {
-      selected_tracks.push($(this).text());
+    $('.selection .minitrack').each(function() {
+      selected_tracks.push($(this).attr('data-pk'));
     });
     
     // ensure selected tracks are marked as such and vice-versa
@@ -115,14 +115,13 @@ $(document).ready(function(){
   $(".track.selectable").on("click", function(event) {
     if (!$(event.target).is('a')) {
       $(this).addClass('pending');
-      var id_map = { track_pk: $(this).attr('data-pk') };
+      var pk_map = { track_pk: [$(this).attr('data-pk')] };
       if (!$(this).hasClass("selected")) {
-        $.post(selectURL, id_map, function(data) {
+        $.post(selectURL, pk_map, function(data) {
           update_selection(data);
         });
-      }
-      else {
-        $.post(deselectURL, id_map, function(data) {
+      } else {
+        $.post(deselectURL, pk_map, function(data) {
           update_selection(data);
         });
       }

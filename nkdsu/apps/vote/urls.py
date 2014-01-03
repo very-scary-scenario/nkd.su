@@ -42,9 +42,10 @@ admin_patterns = patterns(
 js_patterns = patterns(
     '',
     url(r'^select/$', js.Select.as_view(), name='select'),
-    url(r'^deselect/$', js.do_deselect, name='deselect'),
+    url(r'^deselect/$', js.Deselect.as_view(), name='deselect'),
     url(r'^selection/$', js.GetSelection.as_view(), name='get_selection'),
-    url(r'^clear_selection/$', js.do_clear_selection, name='clear_selection'),
+    url(r'^clear_selection/$',
+        js.ClearSelection.as_view(), name='clear_selection'),
 )
 
 
