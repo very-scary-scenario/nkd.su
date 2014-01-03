@@ -16,7 +16,6 @@
 
   {% if show.tracks_sorted_by_votes %}
     <h2>current requests</h2>
-    {# XXX <p class="subheading">&mdash; {{ week.count_votes }} request{{ week.count_votes|pluralize }} - {{ tracks|length }} track{{ tracks|length|pluralize }} - {{ week.count_voters }} {{ week.count_voters|pluralize:"person, people" }} - {{ tracks_len }} &mdash;</p> #}
     <ul>
       {% include "include/tracklist.html" with tracks=show.tracks_sorted_by_votes exclude_listed=True %}
     </ul>
