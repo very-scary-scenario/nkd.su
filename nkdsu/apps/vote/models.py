@@ -350,9 +350,9 @@ class Track(CleanOnSaveMixin, models.Model):
         """
 
         if self.role:
-            return u'‘%s’ (%s) - %s' % (self.title, self.role, self.id3_artist)
+            return u'‘%s’ (%s) - %s' % (self.title, self.role, self.artist)
         else:
-            return u'‘%s’ - %s' % (self.title, self.id3_artist)
+            return u'‘%s’ - %s' % (self.title, self.artist)
 
     def __eq__(self, other):
         return type(self) == type(other) and self.id == other.id
@@ -523,9 +523,9 @@ class Track(CleanOnSaveMixin, models.Model):
     def api_dict(self, verbose=False):
         the_track = {
             'id': self.id,
-            'title': self.derived_title(),
-            'role': self.derived_role(),
-            'artist': self.id3_artist,
+            'title': self.title,
+            'role': self.role,
+            'artist': self.artist,
             'length': self.msec,
             'inu desu': self.inudesu,
             'url': self.url(),
