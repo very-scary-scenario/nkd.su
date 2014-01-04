@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 from django.views.generic import (DetailView, CreateView, View, FormView,
-                                  TemplateView)
+                                  TemplateView, ListView)
 from django.views.generic.base import TemplateResponseMixin
 
 from ..forms import LibraryUploadForm
@@ -265,28 +265,22 @@ class ToggleAbuser(AdminAction, DetailView):
         user.save()
 
 
-@login_required
-def hidden(request):
-    """ A view of all currently hidden tracks """
-    context = {
-        'session': request.session,
-        'title': 'hidden tracks',
-        'tracks': Track.objects.filter(hidden=True, inudesu=False),
-    }
+class HiddenTracks(AdminMixin, ListView):
+    model = Track
+    template_name = 'hidden.html'
+    context_object_name = 'tracks'
 
-    return render_to_response('tracks.html', RequestContext(request, context))
+    def get_queryset(self):
+        return self.model.objects.filter(hidden=True, inudesu=False)
 
 
-@login_required
-def inudesu(request):
-    """ A view of unhidden inudesu tracks """
-    context = {
-        'session': request.session,
-        'title': 'inu desu',
-        'tracks': Track.objects.filter(hidden=False, inudesu=True),
-    }
+class InuDesuTracks(AdminMixin, ListView):
+    model = Track
+    template_name = 'inudesu.html'
+    context_object_name = 'tracks'
 
-    return render_to_response('tracks.html', RequestContext(request, context))
+    def get_queryset(self):
+        return self.model.objects.filter(hidden=False, inudesu=True)
 
 
 @login_required

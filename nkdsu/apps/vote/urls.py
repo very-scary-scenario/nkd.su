@@ -23,11 +23,11 @@ admin_patterns = patterns(
     url(r'^unblock/(?P<pk>[^/]+)/$',
         admin.Unblock.as_view(), name='unblock'),
 
-    url(r'^hidden/$', 'nkdsu.apps.vote.views.admin.hidden', name='hidden'),
+    url(r'^hidden/$', admin.HiddenTracks.as_view(), name='hidden'),
     url(r'^hide/(?P<pk>.+)/$', admin.Hide.as_view(), name='hide'),
     url(r'^unhide/(?P<pk>.+)/$', admin.Unhide.as_view(), name='unhide'),
 
-    url(r'^inudesu/$', 'nkdsu.apps.vote.views.admin.inudesu', name='inudesu'),
+    url(r'^inudesu/$', admin.InuDesuTracks.as_view(), name='inudesu'),
 
     url(r'^trivia/$', 'nkdsu.apps.vote.views.admin.bad_trivia', name='bad_trivia'),
 
