@@ -3,9 +3,11 @@
 import datetime
 import re
 import json
+from urlparse import urlparse
 
 from cache_utils.decorators import cached
 
+from django.core.urlresolvers import resolve, Resolver404
 from django.db import models
 from django.utils import timezone
 from django.template.defaultfilters import slugify
@@ -13,6 +15,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.templatetags.static import static
+
 
 from nkdsu.apps.vote.utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
@@ -255,6 +258,20 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     @memoize
     def votes(self):
         return self.vote_set.order_by('-date')
+
+    @memoize
+    def votes_for(self, show):
+        return self.votes().filter(**show._date_kwargs())
+
+    @memoize
+    def tracks_voted_for_for(self, show):
+        tracks = set()
+
+        for vote in self.votes_for(show):
+            for track in vote.tracks.all():
+                tracks.add(track)
+
+        return tracks
 
     @memoize
     def _batting_average(self, cutoff=None, minimum_weight=1):
@@ -561,6 +578,82 @@ class Vote(CleanOnSaveMixin, models.Model):
     kind = models.CharField(max_length=10, choices=MANUAL_VOTE_KINDS,
                             blank=True)
 
+    @classmethod
+    def handle_tweet(cls, tweet):
+        """
+        Take a Tweet object and create, save and return the vote it should come
+        to represent (or None if it's not a valid vote).
+        """
+
+        if cls.objects.filter(tweet_id=tweet.id).exists():
+            return None  # we already have this tweet
+
+        utc_created_at = timezone.make_aware(tweet.created_at, timezone.utc)
+
+        def mention_is_first_and_for_us(mention):
+            return (
+                mention['indices'][0] == 0 and
+                mention['screen_name'] == settings.READING_USERNAME
+            )
+
+        if not any([mention_is_first_and_for_us(m)
+                    for m in tweet.entities['user_mentions']]):
+            return None
+
+        show = Show.at(utc_created_at)
+
+        user_qs = TwitterUser.objects.filter(user_id=tweet.user.id)
+        if user_qs.exists():
+            twitter_user = user_qs.get()
+        else:
+            twitter_user = TwitterUser(
+                user_id=tweet.user.id,
+                screen_name=tweet.user.screen_name,
+                name=tweet.user.name,
+                user_image=tweet.user.profile_image_url,
+                updated=utc_created_at,
+            )
+            twitter_user.save()
+
+        tracks = []
+        for url in tweet.entities['urls']:
+            parsed = urlparse(url['expanded_url'])
+
+            try:
+                match = resolve(parsed.path)
+            except Resolver404:
+                continue
+
+            if (
+                match.namespace == 'vote' and
+                match.url_name == 'track'
+            ):
+                track_qs = Track.objects.public().filter(pk=match.kwargs['pk'])
+
+                if not track_qs.exists():
+                    continue
+
+                track = track_qs.get()
+
+                if track not in twitter_user.tracks_voted_for_for(show):
+                    tracks.append(track)
+
+        if tracks:
+            vote = cls(
+                tweet_id=tweet.id,
+                twitter_user=twitter_user,
+                date=utc_created_at,
+                text=tweet.text,
+            )
+
+            vote.save()
+
+            for track in tracks:
+                vote.tracks.add(track)
+
+            vote.save()
+            return vote
+
     def clean(self):
         if self.is_manual:
             if self.tweet_id or self.twitter_user_id:
@@ -642,14 +735,6 @@ class Vote(CleanOnSaveMixin, models.Model):
                     content = content.replace(word, '').strip()
 
         return content
-
-    def relevant_prior_voted_tracks(self):
-        """
-        Return the tracks that this vote's issuer has already voted for this
-        show.
-        """
-
-        # XXX
 
     def save(self, *args, **kwargs):
         # XXX remove any tracks this person has already voted for this week

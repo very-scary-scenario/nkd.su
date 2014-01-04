@@ -111,9 +111,14 @@ class TwitterUserDetail(DetailView):
         if not users.exists():
             raise Http404
         elif users.count() == 1:
-            return users[0]
+            user = users[0]
         else:
-            return users.order_by('-updated')[0]
+            user = users.order_by('-updated')[0]
+
+        if user.vote_set.exists():
+            return user
+        else:
+            raise Http404
 
 
 class Artist(ListView):
