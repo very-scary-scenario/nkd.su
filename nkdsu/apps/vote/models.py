@@ -157,7 +157,7 @@ class Show(CleanOnSaveMixin, models.Model):
         if qs.exists():
             return qs.order_by('-showtime')[0]
         else:
-            return None
+            return
 
     def has_ended(self):
         return timezone.now() > self.end
@@ -295,7 +295,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             return score / weight
         else:
             # there were no worthwhile votes
-            return None
+            return
 
         return score
 
@@ -401,7 +401,7 @@ class Track(CleanOnSaveMixin, models.Model):
         if qs.exists():
             return self.play_set.order_by('-date')[0]
         else:
-            return None
+            return
 
     @memoize
     def plays(self):
@@ -415,7 +415,7 @@ class Track(CleanOnSaveMixin, models.Model):
         """
 
         if self.last_play() is None:
-            return None
+            return
 
         count = 0
         show = Show.current()
@@ -586,8 +586,15 @@ class Vote(CleanOnSaveMixin, models.Model):
         come to represent (or None if it's not a valid vote).
         """
 
+        if 'text' not in tweet:
+            if 'delete' in tweet:
+                Vote.objects.filter(
+                    tweet_id=tweet['delete']['status']['id']
+                ).delete()
+            return
+
         if cls.objects.filter(tweet_id=tweet['id']).exists():
-            return None  # we already have this tweet
+            return  # we already have this tweet
 
         created_at = date_parser.parse(tweet['created_at'])
 
@@ -599,7 +606,7 @@ class Vote(CleanOnSaveMixin, models.Model):
 
         if not any([mention_is_first_and_for_us(m)
                     for m in tweet['entities']['user_mentions']]):
-            return None
+            return
 
         show = Show.at(created_at)
 
@@ -636,7 +643,10 @@ class Vote(CleanOnSaveMixin, models.Model):
 
                 track = track_qs.get()
 
-                if track not in twitter_user.tracks_voted_for_for(show):
+                if (
+                    track not in twitter_user.tracks_voted_for_for(show) and
+                    track.eligible()
+                ):
                     tracks.append(track)
 
         if tracks:
@@ -753,7 +763,7 @@ class Vote(CleanOnSaveMixin, models.Model):
         """
 
         if not self.show().has_ended():
-            return None
+            return
 
         successes = 0
         for track in self.tracks.all():
