@@ -6,6 +6,7 @@ import json
 from urlparse import urlparse
 
 from cache_utils.decorators import cached
+from dateutil import parser as date_parser
 
 from django.core.urlresolvers import resolve, Resolver404
 from django.db import models
@@ -581,14 +582,14 @@ class Vote(CleanOnSaveMixin, models.Model):
     @classmethod
     def handle_tweet(cls, tweet):
         """
-        Take a Tweet object and create, save and return the vote it should come
-        to represent (or None if it's not a valid vote).
+        Take a tweet json object and create, save and return the vote it should
+        come to represent (or None if it's not a valid vote).
         """
 
-        if cls.objects.filter(tweet_id=tweet.id).exists():
+        if cls.objects.filter(tweet_id=tweet['id']).exists():
             return None  # we already have this tweet
 
-        utc_created_at = timezone.make_aware(tweet.created_at, timezone.utc)
+        created_at = date_parser.parse(tweet['created_at'])
 
         def mention_is_first_and_for_us(mention):
             return (
@@ -597,26 +598,26 @@ class Vote(CleanOnSaveMixin, models.Model):
             )
 
         if not any([mention_is_first_and_for_us(m)
-                    for m in tweet.entities['user_mentions']]):
+                    for m in tweet['entities']['user_mentions']]):
             return None
 
-        show = Show.at(utc_created_at)
+        show = Show.at(created_at)
 
-        user_qs = TwitterUser.objects.filter(user_id=tweet.user.id)
+        user_qs = TwitterUser.objects.filter(user_id=tweet['user']['id'])
         if user_qs.exists():
             twitter_user = user_qs.get()
         else:
             twitter_user = TwitterUser(
-                user_id=tweet.user.id,
-                screen_name=tweet.user.screen_name,
-                name=tweet.user.name,
-                user_image=tweet.user.profile_image_url,
-                updated=utc_created_at,
+                user_id=tweet['user']['id'],
+                screen_name=tweet['user']['screen_name'],
+                name=tweet['user']['name'],
+                user_image=tweet['user']['profile_image_url'],
+                updated=created_at,
             )
             twitter_user.save()
 
         tracks = []
-        for url in tweet.entities['urls']:
+        for url in tweet['entities']['urls']:
             parsed = urlparse(url['expanded_url'])
 
             try:
@@ -640,10 +641,10 @@ class Vote(CleanOnSaveMixin, models.Model):
 
         if tracks:
             vote = cls(
-                tweet_id=tweet.id,
+                tweet_id=tweet['id'],
                 twitter_user=twitter_user,
-                date=utc_created_at,
-                text=tweet.text,
+                date=created_at,
+                text=tweet['text'],
             )
 
             vote.save()
