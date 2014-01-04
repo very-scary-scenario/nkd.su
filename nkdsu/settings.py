@@ -184,7 +184,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'nkdsu.apps.vote.context_processors.nkdsu_context_processor',
 )
 
-
 ## STATIC
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'

@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 
-import plistlib
 from models import Track
 from django.utils.timezone import utc, make_aware
 
 
-def update_library(plist, dry_run=False, is_inudesu=False):
+def update_library(tree, dry_run=False, inudesu=False):
     changes = []
-    alltracks = Track.objects.filter(inudesu=is_inudesu)
+    alltracks = Track.objects.filter(inudesu=inudesu)
     tracks_kept = []
-
-    tree = plistlib.readPlist(plist)
 
     for tid in tree['Tracks']:
         changed = False
@@ -37,7 +34,7 @@ def update_library(plist, dry_run=False, is_inudesu=False):
                     or (db_track.added != added)):
                 # we need to update an existing track
                 changed = True
-                pre_change = db_track.deets()
+                pre_change = unicode(db_track)
 
         if new or changed:
             db_track.id = t['Persistent ID']
@@ -46,19 +43,19 @@ def update_library(plist, dry_run=False, is_inudesu=False):
             db_track.id3_album = t['Album']
             db_track.msec = t['Total Time']
             db_track.added = added
-            db_track.inudesu = is_inudesu
+            db_track.inudesu = inudesu
 
         if new:
-            if not is_inudesu:
+            if not inudesu:
                 db_track.hidden = True
             else:
                 db_track.hidden = False
 
-            changes.append('new:\n%s' % (db_track.deets()))
+            changes.append('new:\n%s' % unicode(db_track))
 
         if changed:
             changes.append('change:\n%s' % pre_change)
-            changes.append('to:\n%s' % db_track.deets())
+            changes.append('to:\n%s' % unicode(db_track))
 
         if (new or changed) and (not dry_run):
             db_track.save()
@@ -67,7 +64,7 @@ def update_library(plist, dry_run=False, is_inudesu=False):
 
     for track in [t for t in alltracks
                   if t not in tracks_kept and not t.hidden]:
-        changes.append('hide:\n%s' % track.deets())
+        changes.append('hide:\n%s' % unicode(track))
         if not dry_run:
             track.hidden = True
             track.save()

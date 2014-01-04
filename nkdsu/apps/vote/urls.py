@@ -6,7 +6,11 @@ from nkdsu.apps.vote.views import admin, js
 
 admin_patterns = patterns(
     '',
-    url(r'^upload/$', 'nkdsu.apps.vote.views.admin.upload_library', name='upload_library'),
+    url(r'^upload/$',
+        admin.LibraryUploadView.as_view(), name='upload_library'),
+    url(r'^upload/confirm/$',
+        admin.LibraryUploadConfirmView.as_view(), name='confirm_upload'),
+
     url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
 
     url(r'^add-manual-vote/(?P<pk>.+)/$',

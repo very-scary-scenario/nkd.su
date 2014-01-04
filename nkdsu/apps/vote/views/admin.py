@@ -1,14 +1,13 @@
 # coding: utf-8
 
-from sys import exc_info
+import plistlib
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
-from django.views.generic import DetailView, CreateView, View
+from django.views.generic import (DetailView, CreateView, View, FormView,
+                                  TemplateView)
 from django.views.generic.base import TemplateResponseMixin
 
 from ..forms import LibraryUploadForm
@@ -220,58 +219,38 @@ class ResetShortlistAndDiscard(AdminAction, DetailView):
         Shortlist.objects.filter(**qs_kwargs).delete()
 
 
-@login_required
-def upload_library(request):
-    """ Handling library uploads """
-    form = LibraryUploadForm()
+class LibraryUploadView(AdminMixin, FormView):
+    template_name = 'upload.html'
+    form_class = LibraryUploadForm
 
-    if request.method == 'POST':
-        form = LibraryUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            f = open(settings.TMP_XML_PATH, 'w')
-            f.write(request.FILES['library_xml'].read())
-            f.close()
-
-            f = open(settings.TMP_XML_PATH, 'r')
-            changes = update_library(
-                f, dry_run=True,
-                is_inudesu=form.cleaned_data['inudesu'])
-
-            request.session['inudesu'] = form.cleaned_data['inudesu']
-
-            if changes:
-                summary = '\n'.join(changes)
-            else:
-                summary = 'no changes'
-            response = confirm(request, 'update the library', summary)
-            f.close()
-
-            return response
-
-    elif ((not ('confirm' in request.GET and request.GET['confirm'] == 'true'))
-          or (request.method == 'POST' and not form.is_valid())):
-        # this is an initial load OR an invalid submission
-        context = {
-            'form': form,
-            'title': 'library update',
+    def form_valid(self, form):
+        self.request.session['library_update'] = {
+            'inudesu': form.cleaned_data['inudesu'],
+            'library_xml': form.cleaned_data['library_xml'].read(),
         }
 
-        return render_to_response('upload.html', RequestContext(request,
-                                                                context))
+        return redirect(reverse('vote:admin:confirm_upload'))
 
-    else:
-        # act; this is a confirmation
-        plist = open(settings.TMP_XML_PATH)
-        update_library(
-            plist, dry_run=False,
-            is_inudesu=request.session['inudesu'])
 
-        plist.close()
+class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
+    """
+    Update the library.
+    """
 
-        if request.session['inudesu']:
-            return redirect('/inudesu/')
-        else:
-            return redirect('/hidden/')
+    def update_library(self, dry_run):
+        library_update = self.request.session['library_update']
+        return update_library(
+            plistlib.readPlistFromString(
+                library_update['library_xml'].encode('utf-8')),
+            inudesu=library_update['inudesu'],
+            dry_run=dry_run,
+        )
+
+    def get_deets(self):
+        return '\n\n'.join(self.update_library(dry_run=True))
+
+    def do_thing(self):
+        return self.update_library(dry_run=False)
 
 
 @login_required

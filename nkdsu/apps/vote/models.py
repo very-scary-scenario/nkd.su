@@ -437,7 +437,6 @@ class Track(CleanOnSaveMixin, models.Model):
     def artist(self):
         return self.id3_artist
 
-    @memoize
     def split_id3_title(self):
         return split_id3_title(self.id3_title)
 

@@ -112,8 +112,3 @@ class RequestForm(TriviaForm):
 class LibraryUploadForm(forms.Form):
     library_xml = forms.FileField(label='Library XML')
     inudesu = forms.BooleanField(label='Inu Desu', required=False)
-
-
-class BlockForm(forms.Form):  # XXX should be a ModelForm for Block
-    """ Block something """
-    reason = forms.CharField(max_length=256)
