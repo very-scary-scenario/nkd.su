@@ -39,7 +39,8 @@ admin_patterns = patterns(
     url(r'^reset/(?P<pk>.+)/$',
         admin.ResetShortlistAndDiscard.as_view(), name='reset'),
 
-    url(r'^abuse/(?P<user_id>.+)/$', 'nkdsu.apps.vote.views.admin.toggle_abuse', name='toggle_abuse'),
+    url(r'^abuse/(?P<user_id>.+)/$',
+        admin.ToggleAbuser.as_view(), name='toggle_abuser'),
 )
 
 

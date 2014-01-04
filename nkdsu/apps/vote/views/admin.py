@@ -11,7 +11,7 @@ from django.views.generic import (DetailView, CreateView, View, FormView,
 from django.views.generic.base import TemplateResponseMixin
 
 from ..forms import LibraryUploadForm
-from ..models import Track, Vote, Block, Show, Shortlist, Discard
+from ..models import Track, Vote, Block, Show, Shortlist, Discard, TwitterUser
 from ..update_library import update_library
 from .js import JSApiMixin
 
@@ -253,18 +253,16 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
         return self.update_library(dry_run=False)
 
 
-@login_required
-def toggle_abuse(request, user_id):
-    our_abuser = Abuser.objects.filter(user_id=user_id)
+class ToggleAbuser(AdminAction, DetailView):
+    model = TwitterUser
 
-    if our_abuser.exists():
-        our_abuser.delete()
-    else:
-        Abuser(user_id=user_id).save()
+    def get_object(self):
+        return self.model.objects.get(user_id=self.kwargs['user_id'])
 
-    user = User(user_id)
-
-    return redirect(user.get_absolute_url())
+    def do_thing(self):
+        user = self.get_object()
+        user.is_abuser = not user.is_abuser
+        user.save()
 
 
 @login_required

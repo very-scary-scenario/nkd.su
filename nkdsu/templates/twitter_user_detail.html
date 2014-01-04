@@ -18,8 +18,8 @@
     {% else %}
       <p class="subheading">batting at {{ voter.batting_average|percent }} over the last six months</p>
     {% endif %}
-    {% if voter.is_authenticated %}
-      <p class="subheading"><a href="{% url toggle_abuse voter.id %}">
+    {% if user.is_authenticated %}
+      <p class="subheading"><a href="{{ voter.get_toggle_abuser_url }}">
         {% if voter.is_abuser %}
           redeem {{ voter }}
         {% else %}

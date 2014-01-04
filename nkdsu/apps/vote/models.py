@@ -203,6 +203,9 @@ class Show(CleanOnSaveMixin, models.Model):
         tracks_and_dates = {}
 
         for vote in self.votes():
+            if not vote.is_manual and vote.twitter_user.is_abuser:
+                continue
+
             for track in vote.tracks.all():
                 date = tracks_and_dates.get(track)
                 if date is None or date < vote.date:
@@ -255,6 +258,10 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
     def get_absolute_url(self):
         return reverse('vote:user', kwargs={'screen_name': self.screen_name})
+
+    def get_toggle_abuser_url(self):
+        return reverse('vote:admin:toggle_abuser',
+                       kwargs={'user_id': self.user_id})
 
     @memoize
     def votes(self):
