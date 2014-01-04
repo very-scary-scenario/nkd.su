@@ -4,7 +4,8 @@ import ujson
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from nkdsu.apps.vote.models import Show, Track, Play, Block, Vote, TwitterUser
+from nkdsu.apps.vote.models import (Show, Track, Play, Block, Vote,
+                                    TwitterUser, Request)
 
 
 class Command(BaseCommand):
@@ -15,7 +16,7 @@ class Command(BaseCommand):
         with open(filename) as the_file:
             data = ujson.load(the_file)
 
-        for model in [Show, Track, Play, Block, Vote, TwitterUser]:
+        for model in [Show, Track, Play, Block, Vote, TwitterUser, Request]:
             for instance in model.objects.all():
                 instance.delete()
 
@@ -25,6 +26,7 @@ class Command(BaseCommand):
             return filter(lambda m: m['model'] == model_name, data)
 
         for model, func in [
+            ('vote.request', self.import_request),
             ('vote.scheduleoverride', self.import_scheduleoverride),
             ('vote.track', self.import_track),
             ('vote.play', self.import_play),
@@ -47,6 +49,10 @@ class Command(BaseCommand):
         while point <= last:
             Show.at(point)
             point += timezone.timedelta(days=1)
+
+    def import_request(self, instance):
+        fields = instance['fields']
+        Request(**fields).save()
 
     def import_scheduleoverride(self, instance):
         fields = instance['fields']

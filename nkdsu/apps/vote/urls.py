@@ -29,7 +29,7 @@ admin_patterns = patterns(
 
     url(r'^inudesu/$', admin.InuDesuTracks.as_view(), name='inudesu'),
 
-    url(r'^trivia/$', 'nkdsu.apps.vote.views.admin.bad_trivia', name='bad_trivia'),
+    url(r'^trivia/$', admin.BadTrivia.as_view(), name='bad_trivia'),
 
     url(r'^shortlist/(?P<pk>.+)/$',
         admin.MakeShortlist.as_view(), name='shortlist'),

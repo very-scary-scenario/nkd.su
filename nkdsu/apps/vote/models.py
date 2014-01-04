@@ -827,7 +827,11 @@ class Play(CleanOnSaveMixin, models.Model):
                 raise ValidationError('It is not currently showtime.')
 
         if self.track in self.show().playlist():
-            raise ValidationError('This has already been played.')
+            raise ValidationError(
+                '{track} already played during {show}.'.format(
+                    track=self.track, show=self.show(),
+                )
+            )
 
     def save(self, *args, **kwargs):
         super(Play, self).save(*args, **kwargs)

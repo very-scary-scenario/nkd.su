@@ -11,7 +11,8 @@ from django.views.generic import (DetailView, CreateView, View, FormView,
 from django.views.generic.base import TemplateResponseMixin
 
 from ..forms import LibraryUploadForm
-from ..models import Track, Vote, Block, Show, Shortlist, Discard, TwitterUser
+from ..models import (Track, Vote, Block, Show, Shortlist, Discard,
+                      TwitterUser, Request)
 from ..update_library import update_library
 from .js import JSApiMixin
 
@@ -283,13 +284,10 @@ class InuDesuTracks(AdminMixin, ListView):
         return self.model.objects.filter(hidden=False, inudesu=True)
 
 
-@login_required
-def bad_trivia(request):
-    """ Incorrect trivia """
-    context = {
-        'title': 'the worst trivia',
-        'requests': Request.objects.all().order_by('-created'),
-        'no_select': True
-    }
+class BadTrivia(AdminMixin, ListView):
+    model = Request
+    template_name = 'trivia.html'
+    context_object_name = 'requests'
 
-    return render_to_response('trivia.html', RequestContext(request, context))
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-created')
