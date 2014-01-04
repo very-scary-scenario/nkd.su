@@ -17,7 +17,6 @@ class Command(BaseCommand):
             data = ujson.load(the_file)
 
         for model in [Show, Track, Play, Block, Vote, TwitterUser]:
-                                  )
             for instance in model.objects.all():
                 instance.delete()
 
