@@ -195,13 +195,15 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     def playlist(self):
-        return (p.track for p in self.plays())
+        return [p.track for p in self.plays()]
 
+    @memoize
     def shortlisted(self):
-        return (p.track for p in self.shortlist_set.all())
+        return [p.track for p in self.shortlist_set.all()]
 
+    @memoize
     def discarded(self):
-        return (p.track for p in self.discard_set.all())
+        return [p.track for p in self.discard_set.all()]
 
     @memoize
     def tracks_sorted_by_votes(self):
@@ -543,12 +545,6 @@ class Track(CleanOnSaveMixin, models.Model):
         play.tweet()
 
     play.alters_data = True
-
-    def is_listed(self):
-        return (
-            self.shortlist_set.filter(show=Show.current()).exists() or
-            self.discard_set.filter(show=Show.current()).exists()
-        )
 
     def slug(self):
         return slugify(self.title)

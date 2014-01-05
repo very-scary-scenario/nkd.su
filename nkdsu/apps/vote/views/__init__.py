@@ -26,6 +26,22 @@ tw_api = tweepy.API(post_tw_auth)
 class IndexView(mixins.CurrentShowMixin, TemplateView):
     template_name = 'index.html'
 
+    def get_context_data(self):
+        context = super(IndexView, self).get_context_data()
+        show = context['show']
+
+        def track_should_be_in_main_list(track):
+            if self.request.user.is_authenticated():
+                if track in show.shortlisted() or track in show.discarded():
+                    return False
+
+            return True
+
+        context['tracks'] = filter(track_should_be_in_main_list,
+                                   show.tracks_sorted_by_votes())
+
+        return context
+
 
 class Archive(ListView):
     template_name = 'archive.html'

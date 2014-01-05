@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}new tracks{% endblock %}
+
 {% block content %}
   <h2>tracks added for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS, Y" }}</h2>
   {% if show.plays %}
@@ -27,5 +29,4 @@
   {% else %}
     <p class="aside">no tracks added this week ( ´· _ ·`)<p>
   {% endif %}
-
 {% endblock %}
