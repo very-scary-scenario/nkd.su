@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load vote_tags cache %}
 
+{% block title %}stats{% endblock %}
+
 {% block content %}
 
   <h2 id="most-successful-users">most successful users</h2>
@@ -73,7 +75,5 @@
       </tr>
     {% endfor %}
   </table>
-
-
 
 {% endblock %}

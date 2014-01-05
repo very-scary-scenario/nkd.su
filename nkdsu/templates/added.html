@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}new tracks{% endblock %}
+{% block title %}new tracks for {{ show.showtime|date:"F"|lower }} {{ show.showtime|date:"jS Y" }}{% endblock %}
 
 {% block content %}
-  <h2>tracks added for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS, Y" }}</h2>
+  <h2>tracks added for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS Y" }}</h2>
   {% if show.plays %}
     <p class="subheading"><a href="{{ show.get_absolute_url }}">{{ show.plays|length }} track{{ show.plays|pluralize }} played this week</a></p>
   {% endif %}
