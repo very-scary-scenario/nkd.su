@@ -47,7 +47,16 @@ class Show(CleanOnSaveMixin, models.Model):
         return str(self)
 
     def clean(self):
-        pass  # XXX refuse to create overlapping shows
+        if self.end < self.showtime:
+            raise ValidationError(
+                'Show ends before it begins; {end} < {start}'.format(
+                    end=self.end, start=self.showtime))
+        overlap = Show.objects.filter(showtime__lt=self.end,
+                                      end__gt=self.showtime)
+        if overlap.exists():
+            raise ValidationError(
+                '{self} overlaps existing shows: {overlap}'.format(
+                    self=self, overlap=overlap))
 
     @classmethod
     @cached(1)

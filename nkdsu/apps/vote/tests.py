@@ -1,5 +1,6 @@
 import datetime
 
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 
@@ -64,3 +65,31 @@ class ShowTest(TestCase):
             ours = Show.at(make_current(datetime.datetime(3010, 1, 1)))
             self.assertEqual(Show.objects.all().count(), 523)
             self.assertEqual(ours.end.date(), datetime.date(3010, 1, 6))
+
+    def test_cannot_make_overlapping_shows(self):
+        def mkutc(*args, **kwargs):
+            return timezone.make_aware(datetime.datetime(*args, **kwargs),
+                                       timezone.utc)
+
+        Show(showtime=mkutc(2010, 1, 1),
+             end=mkutc(2011, 1, 1)).save()
+
+        for showtime, end, should_raise in [
+            (mkutc(2009, 1, 1), mkutc(2010, 6, 1), True),
+            (mkutc(2010, 6, 1), mkutc(2012, 1, 1), True),
+            (mkutc(2010, 3, 1), mkutc(2010, 9, 1), True),
+            (mkutc(2012, 1, 1), mkutc(2012, 2, 1), False),
+            (mkutc(2009, 1, 1), mkutc(2009, 9, 1), False),
+            # also, since we're here, make sure we can't make shows that end
+            # before they begin
+            (mkutc(2010, 1, 1), mkutc(2009, 1, 1), True),
+        ]:
+            def func():
+                show = Show(showtime=showtime, end=end)
+                show.save()
+                show.delete()
+
+            if should_raise:
+                self.assertRaises(ValidationError, func)
+            else:
+                func()
