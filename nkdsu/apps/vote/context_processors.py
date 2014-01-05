@@ -8,9 +8,18 @@ def nkdsu_context_processor(request):
     Add common stuff to context.
     """
 
+    active_section = None
+
+    for cell in request.resolver_match.func.__closure__:
+        thing = cell.cell_contents
+        if hasattr(thing, 'section'):
+            active_section = thing.section
+            break
+
     sections = [{
         'name': section[0],
         'url': section[1],
+        'active': section[0] == active_section
     } for section in [
         ('home', reverse('vote:index')),
         ('archive', reverse('vote:archive')),

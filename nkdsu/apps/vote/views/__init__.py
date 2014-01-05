@@ -24,6 +24,7 @@ tw_api = tweepy.API(post_tw_auth)
 
 
 class IndexView(mixins.CurrentShowMixin, TemplateView):
+    section = 'home'
     template_name = 'index.html'
 
     def get_context_data(self):
@@ -47,6 +48,7 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
 
 
 class Archive(ListView):
+    section = 'archive'
     template_name = 'archive.html'
     paginate_by = 50
 
@@ -56,14 +58,17 @@ class Archive(ListView):
 
 
 class ShowDetail(mixins.ShowDetail):
+    section = 'archive'
     template_name = 'show_detail.html'
 
 
 class Added(mixins.ShowDetail):
+    section = 'new tracks'
     template_name = 'added.html'
 
 
 class Roulette(ListView):
+    section = 'roulette'
     model = Track
     template_name = 'roulette.html'
     context_object_name = 'tracks'
@@ -164,6 +169,7 @@ class Artist(ListView):
 
 
 class Stats(TemplateView):
+    section = 'stats'
     template_name = 'stats.html'
 
     def batting_averages(self):
