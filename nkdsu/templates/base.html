@@ -19,34 +19,25 @@
   <body>
     {% csrf_token %}
     <div id="everything">
-      <div id="header-background">
-        <!-- 
-        <div id="beta">[beta]</div>
-        -->
-        <div id="header-container">
-          <div id="header">
-            <div id="titles">
-              <div id="title">
-                <h1><a href="{% url "vote:index" %}">nkd.su</a></h1>
-              </div> <!-- title -->
-              <div id="subtitle">
-                {% if current_show.broadcasting %}
-                  <p class="subtitle">on air! listen live at <a target="_blank" href="http://thisisthecat.com">the&nbsp;cat</a>
-                {% elif current_show %}
-                  <p class="subtitle">taking requests for {{ current_show.showtime|date:"F"|lower }}&nbsp;{{ current_show.showtime|date:"jS" }}</p>
-                {% else %}
-                  <p class="subtitle">a neko desu request robot</p>
-                {% endif %}
-              </div> <!-- subtitle -->
-            </div> <!-- titles -->
-            <div id="search_div">
-              <form id="search" class="search_form" name="search" action="{% url "vote:search" %}" method="get">
-                <input placeholder="search" id="query" type="text" name="q" value="{{ query }}">
-              </form>
-            </div> <!-- search -->
-          </div> <!-- header -->
-        </div> <!-- header-container -->
-      </div> <!-- header-background -->
+      <header>
+        <div id="header-content">
+          <div id="titles">
+            <h1><a href="{% url "vote:index" %}">nkd.su</a></h1>
+            {% if current_show.broadcasting %}
+              <p class="subtitle">on air! listen live at <a target="_blank" href="http://thisisthecat.com">the&nbsp;cat</a>
+            {% elif current_show %}
+              <p class="subtitle">taking requests for {{ current_show.showtime|date:"F"|lower }}&nbsp;{{ current_show.showtime|date:"jS" }}</p>
+            {% else %}
+              <p class="subtitle">a neko desu request robot</p>
+            {% endif %}
+          </div>
+          <div id="search">
+            <form name="search" action="{% url "vote:search" %}" method="get">
+              <input placeholder="search" id="query" type="text" name="q" value="{{ query }}">
+            </form>
+          </div>
+        </div>
+      </header>
       <ul id="nav">
         {% for s in sections %}
         <li class="

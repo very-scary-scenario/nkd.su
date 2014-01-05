@@ -23,7 +23,7 @@ body {
     min-height: 100%;
     position: relative;
 
-    ul#nav {
+    #nav {
       height: 2em;
       line-height: 2em;
       margin: 0 auto;
@@ -226,67 +226,60 @@ body {
   }
 }
 
-/* header and stamps */
-
-div#titles {
-  text-align: center;
-  z-index: 1;
-}
-
-h1 {
-  margin-bottom: -.1em;
-  text-shadow: #333 0 0 .2em;
-}
-
-div#header-background {
+header {
   width: 100%;
+  .invert();
   .noise();
-  color: #eee;
-  text-shadow: #000 0 .1em 0;
-  /*-webkit-box-shadow: inset #222 0 .2em 2em;*/
-  background-color: #333;
   overflow: hidden;
-}
-
-div#header-container {
-  margin: 0 auto;
-  max-width: 30em;
-}
-
-
-div#header {
-  width: 100%;
-  margin: 0 auto;
-}
-
-div#subtitle {
-  font-size: .8em;
   text-align: center;
+  padding: .2em 0 .4em;
+
+  #header-content {
+    margin: 0 auto;
+    max-width: 50em;
+    display: table;
+    width: 50%;
+
+    @media (max-width: @breakpoint) {
+      display: block !important;
+
+      > div {
+        display: block !important;
+      }
+    }
+
+    > div {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    .subtitle {
+      font-size: .8em;
+      width: 11em;
+      margin: 0 auto .4em;
+    }
+
+    #search {
+      padding: .2em 1em;
+
+      input {
+        .noise();
+        background-color: @inv_fg;
+        color: @inv_bg;
+        border-radius: .3em;
+        border: none;
+        outline: none;
+        height: 1.5em;
+        font-family: "Bitter", "Calibri", serif;
+        padding: .1em .3em;
+        font-size: 1.1em;
+      }
+    }
+  }
 }
+
 
 /* search form */
-
-div#search_div {
-  text-align: center;
-  position: relative;
-}
-
-form#search input {
-  background-color: #eee;
-  .noise();
-  border-radius: .3em;
-  border: none;
-  outline: none;
-  height: 1.5em;
-  font-family: "Bitter", "Calibri", serif;
-  padding: .1em .3em;
-  font-size: 1.1em;
-  color: #333;
-}
-
-form#search input#query:focus {
-  outline: none;
-}
 
 p.new_tracks {
   padding-top: .5em;
@@ -354,7 +347,6 @@ form ul.errorlist li {
   line-height: 1.5em;
 }
 
-
 #footer .credit {
   margin: .5em 2em;
 }
@@ -369,7 +361,6 @@ a#stamp {
     border: none;
   }
 }
-
 
 /* trivia */
 
@@ -424,96 +415,8 @@ a#stamp {
       content: '>'
     }
 
-/* TBLC promo */
-
-#tblc-promo {
-  display: table-row;
-}
-
-  #tblc-promo div {
-    display: table-cell;
-    vertical-align: middle;
-  }
-
-  #tblc-promo #tblc-art a:hover {
-    border: none;
-  }
-
-  #tblc-promo #tblc-art img {
-    max-width: 240px;
-  }
-
-  #tblc-promo #tblc-text {
-    padding-left: 1em;
-  }
-
-    #tblc-promo #tblc-text h2 {
-      text-align: left;
-      margin: 0;
-    }
-
-    #tblc-promo #tblc-text p {
-      margin: .5em 0;
-    }
 
 @media (min-width:551px) {
-  div#header {
-    display: table;
-  }
-
-  div#titles {
-    float: left;
-    margin-left: 1em;
-    margin-bottom: .5em;
-  }
-
-  div#title {
-    width: 120px;
-    float: right;
-    text-align: center;
-  }
-
-  div#subtitle {
-    clear: both;;
-    width: 120px;
-    float: right;
-    text-align: center;
-  }
-
-  div#search_div {
-    float: right;
-    padding-top: 1.7em;
-    padding-bottom: .8em;
-    padding-right: 1em;
-    width: 14em;
-  }
-
-  form#search {
-    margin: 0 auto;
-    width: 13em;
-  }
-
-
-  div.votedata {
-    width: 100%;
-    display: table-cell;
-    vertical-align: middle;
-  }
-
-  div.playlist div.votedata {
-    display: block;
-  }
-
-  div.playlist {
-    float: right;
-    width: 32%;
-  }
-
-  div.current {
-    float: left;
-    width: 64%;
-  }
-
   form p label {
     clear: both;
     float: left;
@@ -525,15 +428,6 @@ a#stamp {
   /* hover effects are desktop only */
   form#search input#submit:hover {
     color: #444;
-  }
-
-  h1 a:hover {
-    border: none;
-  }
-
-  a:hover {
-    color: #444;
-    border-bottom: 1px dotted #d66;
   }
 
   table.stats .summary {
@@ -551,20 +445,6 @@ a#stamp {
 }
 
 @media (max-width:550px) {
-  div#header {
-    padding-bottom: .4em;
-  }
-
-  div#search_div {
-    padding: .5em;
-    max-width: 14em;
-    margin: 0 auto;
-  }
-
-  div#title, div#search_div {
-    display: block;
-  }
-
   .aligned, p.aside {
     margin: 1em 0;
   }
@@ -588,15 +468,6 @@ a#stamp {
   table.stats .value {
     width: 20%;
   }
-
-  #tblc-promo {
-    display: block;
-  }
-
-    #tblc-promo div {
-      display: block;
-      padding-left: 0 !important;
-    }
 }
 
 #djDebug {
