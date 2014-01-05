@@ -128,6 +128,10 @@ class Unhide(AdminAction, DetailView):
     def do_thing(self):
         track = self.get_object()
         track.hidden = False
+
+        if not track.revealed:
+            track.revealed = timezone.now()
+
         track.save()
 
 

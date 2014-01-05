@@ -354,13 +354,16 @@ class TrackManager(CleanOnSaveMixin, models.Manager):
     def public(self):
         return self.filter(hidden=False, inudesu=False)
 
-    def search(self, query):
+    def search(self, query, show_secret_tracks=False):
         keywords = split_query_into_keywords(query)
 
         if len(keywords) == 0:
             return []
 
-        qs = self.public()
+        if show_secret_tracks:
+            qs = self.all()
+        else:
+            qs = self.public()
 
         for keyword in keywords:
             qs = qs.exclude(~models.Q(id3_title__icontains=keyword) &
@@ -399,11 +402,11 @@ class Track(CleanOnSaveMixin, models.Model):
         return type(self) == type(other) and self.id == other.id
 
     def clean(self):
-        # XXX require that if a track is not hidden, it has a revealed date
-        # and vice-versa
-        pass
+        if (not self.hidden) and (not self.revealed):
+            raise ValidationError('{track} is not hidden but has no revealed '
+                                  'date'.format(track=self))
 
-    @property
+    @memoize
     def is_new(self):
         return Show.current() == self.show_revealed()
 

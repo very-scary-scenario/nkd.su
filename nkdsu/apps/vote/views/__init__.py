@@ -78,7 +78,10 @@ class Search(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return self.model.objects.search(self.request.GET.get('q', ''))
+        return self.model.objects.search(
+            self.request.GET.get('q', ''),
+            show_secret_tracks=self.request.user.is_authenticated(),
+        )
 
     def get_context_data(self):
         context = super(Search, self).get_context_data()
