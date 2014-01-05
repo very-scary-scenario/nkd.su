@@ -40,7 +40,7 @@
       {% endif %}
 
       {% if track.last_play %}
-        <span class="last_played">played <a href="{{ track.last_play.show.get_absolute_url }}/">
+        <span class="last_played">played <a href="{{ track.last_play.show.get_absolute_url }}">
           {% if track.weeks_since_play == 0 %}
             this week
           {% elif track.weeks_since_play == 1 %}
