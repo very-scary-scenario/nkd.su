@@ -199,11 +199,13 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     def shortlisted(self):
-        return [p.track for p in self.shortlist_set.all()]
+        return filter(lambda t: t not in self.playlist(),
+                      [p.track for p in self.shortlist_set.all()])
 
     @memoize
     def discarded(self):
-        return [p.track for p in self.discard_set.all()]
+        return filter(lambda t: t not in self.playlist(),
+                      [p.track for p in self.discard_set.all()])
 
     @memoize
     def tracks_sorted_by_votes(self):

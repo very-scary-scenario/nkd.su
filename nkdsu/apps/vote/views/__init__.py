@@ -35,6 +35,9 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
                 if track in show.shortlisted() or track in show.discarded():
                     return False
 
+            if track in show.playlist():
+                return False
+
             return True
 
         context['tracks'] = filter(track_should_be_in_main_list,

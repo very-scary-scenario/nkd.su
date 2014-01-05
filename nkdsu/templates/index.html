@@ -3,7 +3,18 @@
 
 {% block content %}
 
-  {% if user.is_authenticated and show.shortlist_set.exists %}
+  {% if show.playlist %}
+    <div id="playlist">
+      <h2>played</h2>
+      <ul class="playlist">
+        {% for track in show.playlist %}
+          {% include "include/track.html" %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  {% if user.is_authenticated and show.shortlisted %}
     <h2>shortlist</h2>
     <p class="subheading">{{ show.shortlisted|total_length }}</p>
     <ul id="shortlist">
@@ -27,11 +38,11 @@
 
   <p class="aside">Search, browse the <a href="{% url "vote:archive" %}">playlist archive</a> or just <a href="{% url "vote:roulette" %}">throw darts at the wall</a>.</p>
 
-  {% if user.is_authenticated and show.discard_set.exists %}
+  {% if user.is_authenticated and show.discarded %}
     <h2>discarded</h2>
     <ul id="discarded">
-      {% for discard in show.discard_set.all %}
-        {% include "include/track.html" with track=discard.track %}
+      {% for track in show.discarded %}
+        {% include "include/track.html" %}
       {% endfor %}
     </ul>
   {% endif %}

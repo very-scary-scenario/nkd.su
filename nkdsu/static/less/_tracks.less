@@ -2,6 +2,20 @@
 
 @metadata-width: 60%;
 
+.tinytrack() {
+  display: block;
+
+  div.metadata, div.voting, div.invitation {
+    text-align: left;
+    display: block;
+  }
+
+  div.metadata {
+    width: auto;
+    padding-bottom: .6em;
+  }
+}
+
 li.track { 
   margin: .8em 0;
   padding: .5em 0;
@@ -63,6 +77,7 @@ li.track {
               border: 1px solid rgba(128,128,128,0);
               width: 32px;
               height: 32px;
+              border-radius: .4em;
             }
           }
 
@@ -219,9 +234,24 @@ li.track {
       }
     }
   }
+
+  @media (max-width: @breakpoint) {
+    .tinytrack();
+  }
 }
 
 #shortlist, #discarded {
   width: 90%;
   margin: 0 auto;
+}
+
+#playlist {
+  @media (min-width: @breakpoint) {
+    float: right;
+    width: 30%;
+
+    ul .track {
+      .tinytrack();
+    }
+  }
 }
