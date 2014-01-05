@@ -51,8 +51,9 @@ class Show(CleanOnSaveMixin, models.Model):
             raise ValidationError(
                 'Show ends before it begins; {end} < {start}'.format(
                     end=self.end, start=self.showtime))
-        overlap = Show.objects.filter(showtime__lt=self.end,
-                                      end__gt=self.showtime)
+        overlap = Show.objects.exclude(pk=self.pk).filter(
+            showtime__lt=self.end,
+            end__gt=self.showtime)
         if overlap.exists():
             raise ValidationError(
                 '{self} overlaps existing shows: {overlap}'.format(
@@ -840,6 +841,7 @@ class Play(CleanOnSaveMixin, models.Model):
 
         if self.track.hidden:
             self.track.hidden = False
+            self.track.revealed = timezone.now()
             self.track.save()
 
     def tweet(self):
