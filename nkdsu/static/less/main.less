@@ -185,10 +185,26 @@ body {
 
         .summary {
           text-align: right;
+          width: 67%;
+
+          img {
+            border-radius: .4em;
+          }
         }
 
         .value {
           text-align: left;
+          width: 33%;
+        }
+
+        @media (max-width: @breakpoint) {
+          .summary {
+            width: 80%;
+          }
+
+          .value {
+            width: 20%;
+          }
         }
 
         th.summary span {
@@ -442,14 +458,6 @@ a#stamp {
     color: #444;
   }
 
-  table.stats .summary {
-    width: 67%;
-  }
-
-  table.stats .value {
-    width: 33%;
-  }
-  
   #trivia {
     margin: 0 auto 3em;
     max-width: 25em;
@@ -471,14 +479,6 @@ a#stamp {
 
   div.request {
     margin-top: .3em;
-  }
-
-  table.stats .summary {
-    width: 80%;
-  }
-
-  table.stats .value {
-    width: 20%;
   }
 }
 

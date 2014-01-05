@@ -16,7 +16,9 @@
     {% for user in batting_averages|slice:":10" %}
       <tr class="stat">
         <td class="summary">
-          <img alt="{{ user.name }}" src="{{ user.user_image }}">
+          <a href="{{ user.get_absolute_url }}">
+            <img alt="{{ user.name }}" src="{{ user.user_image }}">
+          </a>
           <p class="name">{{ user.name }}</p>
           <p><a class="screen_name" href="{{ user.get_absolute_url }}">
             @{{ user.screen_name }}
@@ -40,7 +42,9 @@
     {% for user in batting_averages|slice:":-10:-1" %}
       <tr class="stat">
         <td class="summary">
-          <img alt="{{ user.name }}" src="{{ user.user_image }}">
+          <a href="{{ user.get_absolute_url }}">
+            <img alt="{{ user.name }}" src="{{ user.user_image }}">
+          </a>
           <p class="name">{{ user.name }}</p>
           <p><a class="screen_name" href="{{ user.get_absolute_url }}">
             @{{ user.screen_name }}
