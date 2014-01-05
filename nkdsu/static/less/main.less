@@ -148,7 +148,7 @@ body {
             }
 
             p.when a {
-              color: #999;
+              color: @light;
             }
 
             ul.vote-tracks {
@@ -222,6 +222,14 @@ body {
 
       &.tracks td.summary {
         padding: .5em;
+      }
+
+      .paginator {
+        text-align: center;
+
+        &.objects {
+          font-size: .8em;
+        }
       }
     }
   }
@@ -330,7 +338,7 @@ form p textarea {
 form ul.errorlist li {
   list-style: none;
   font-size: .7em;
-  color: #999;
+  color: @light;
   position: relative;
   top: .6em;
 }
@@ -343,7 +351,7 @@ form ul.errorlist li {
   width: 100%;
   font-size: .8em;
   text-align: center;
-  color: #999;
+  color: @light;
   line-height: 1.5em;
 }
 
@@ -381,7 +389,7 @@ a#stamp {
   }
 
   #trivia .created {
-    color: #999;
+    color: @light;
     font-size: .8em;
   }
 
@@ -390,7 +398,7 @@ a#stamp {
   }
 
     #trivia .exchange p:before {
-      color: #999;
+      color: @light;
       width: 1em;
       margin-left: .3em;
       display: inline-block;
