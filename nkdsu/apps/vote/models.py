@@ -240,6 +240,9 @@ class Show(CleanOnSaveMixin, models.Model):
                                     **self._date_kwargs('revealed'))
 
     def get_absolute_url(self):
+        if self == Show.current():
+            return reverse('vote:index')
+
         return reverse('vote:show', kwargs={
             'date': self.showtime.date().strftime('%Y-%m-%d')
         })
