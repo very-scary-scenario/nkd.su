@@ -820,7 +820,7 @@ class Vote(CleanOnSaveMixin, models.Model):
 class Play(CleanOnSaveMixin, models.Model):
     date = models.DateTimeField()
     track = models.ForeignKey(Track)
-    tweet_id = models.IntegerField(blank=True, null=True)
+    tweet_id = models.BigIntegerField(blank=True, null=True)
 
     def __unicode__(self):
         return u'%s at %s' % (self.track, self.date)
