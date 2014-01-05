@@ -1,5 +1,5 @@
 """
-WSGI config for nekodesu project.
+WSGI config for nkdsu project.
 
 This module contains the WSGI application used by Django's development server
 and any production WSGI deployments. It should expose a module-level variable
@@ -13,10 +13,9 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
-import os, sys
-sys.path.append('/home/nivi/code/nkdsu')
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nekodesu.settings")
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "nkdsu.settings")
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
