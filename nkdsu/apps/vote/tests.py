@@ -93,3 +93,7 @@ class ShowTest(TestCase):
                 self.assertRaises(ValidationError, func)
             else:
                 func()
+
+    def test_calling_next_or_prev_on_only_show_returns_none(self):
+        self.assertIs(None, Show.current().next())
+        self.assertIs(None, Show.current().prev())
