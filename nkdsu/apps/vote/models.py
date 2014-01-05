@@ -641,12 +641,13 @@ class Vote(CleanOnSaveMixin, models.Model):
         else:
             twitter_user = TwitterUser(
                 user_id=tweet['user']['id'],
-                screen_name=tweet['user']['screen_name'],
-                name=tweet['user']['name'],
-                user_image=tweet['user']['profile_image_url'],
-                updated=created_at,
             )
-            twitter_user.save()
+
+        twitter_user.screen_name = tweet['user']['screen_name']
+        twitter_user.name = tweet['user']['name']
+        twitter_user.user_image = tweet['user']['profile_image_url']
+        twitter_user.updated = created_at
+        twitter_user.save()
 
         tracks = []
         for url in tweet['entities']['urls']:
@@ -725,30 +726,6 @@ class Vote(CleanOnSaveMixin, models.Model):
             tracks=tracks,
         )
 
-    def derive_tracks_from_url_list(self, url_list):
-        """
-        Take a list of URLs and return a list of Tracks that should be
-        considered voted for based on that list.
-        """
-
-        # XXX should work fine, but needs to be updated to use reverse() or
-        # self.get_absolute_url
-
-        tracks = []
-        for url in url_list:
-            chunks = url.strip('/').split('/')
-            track_id = chunks[-1]
-            slug = chunks[-2]
-            try:
-                track = Track.objects.get(id=track_id)
-            except Track.DoesNotExist:
-                pass
-            else:
-                if track.slug() == slug:
-                    tracks.append(track)
-
-        return tracks
-
     @memoize
     def content(self):
         """
@@ -771,14 +748,6 @@ class Vote(CleanOnSaveMixin, models.Model):
                     content = content.replace(word, '').strip()
 
         return content
-
-    def save(self, *args, **kwargs):
-        # XXX remove any tracks this person has already voted for this week
-
-        # XXX set updated on our user to the date of this vote if it's their
-        # latest vote
-
-        return super(Vote, self).save(*args, **kwargs)
 
     @memoize
     def success(self):

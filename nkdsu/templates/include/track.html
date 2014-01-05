@@ -111,7 +111,7 @@
       +1
     </a></div>
   {% elif track.eligible %}
-    <div class="invitation request"><a href="{{ track.vote_url }}">
+    <div class="invitation request"><a href="{{ track.get_vote_url }}">
       request this song
     </a></div>
   {% else %}
