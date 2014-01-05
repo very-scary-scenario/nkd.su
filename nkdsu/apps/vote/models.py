@@ -235,6 +235,22 @@ class Show(CleanOnSaveMixin, models.Model):
             'date': self.showtime.date().strftime('%Y-%m-%d')
         })
 
+    def api_dict(self, verbose=False):
+        prev = self.prev()
+        if prev is None:
+            start = None
+        else:
+            start = prev.end
+
+        return {
+            'playlist': [p.api_dict() for p in self.plays()],
+            'added': [t.api_dict() for t in self.revealed()],
+            'votes': [v.api_dict() for v in self.votes()],
+            'showtime': self.showtime,
+            'finish': self.end,
+            'start': start,
+        }
+
 
 class TwitterUser(CleanOnSaveMixin, models.Model):
     # Twitter stuff
@@ -552,12 +568,12 @@ class Track(CleanOnSaveMixin, models.Model):
             'artist': self.artist,
             'length': self.msec,
             'inu desu': self.inudesu,
-            'url': self.url(),
+            'url': self.get_public_url(),
         }
 
         if verbose:
             the_track.update({
-                'plays': [p.datetime for p in Play.objects.filter(track=self)]
+                'plays': [p.date for p in self.plays()],
             })
 
         return the_track
@@ -791,18 +807,23 @@ class Vote(CleanOnSaveMixin, models.Model):
     def show(self):
         return Show.at(self.date)
 
-    def api_dict(self):
+    def api_dict(self, verbose=False):
+        tracks = self.tracks.all()
         the_vote = {
-            'user_name': self.name,
-            'user_screen_name': self.screen_name,
-            'user_image': self.user_image,
-            'user_id': self.user_id,
-            'tweet_id': self.tweet_id,
             'comment': self.content() if self.content() != '' else None,
             'time': self.date,
-            'track_ids': [t.id for t in self.get_tracks()],
-            'tracks': [t.api_dict() for t in self.get_tracks()]
+            'track_ids': [t.id for t in tracks],
+            'tracks': [t.api_dict() for t in tracks],
         }
+
+        if not self.is_manual:
+            the_vote.update({
+                'user_name': self.twitter_user.name,
+                'user_screen_name': self.twitter_user.screen_name,
+                'user_image': self.twitter_user.user_image,
+                'user_id': self.twitter_user.user_id,
+                'tweet_id': self.tweet_id,
+            })
 
         return the_vote
 
@@ -864,6 +885,12 @@ class Play(CleanOnSaveMixin, models.Model):
     @memoize
     def show(self):
         return Show.at(self.date)
+
+    def api_dict(self, verbose=False):
+        return {
+            'time': self.date,
+            'track': self.track.api_dict(),
+        }
 
 
 class Block(CleanOnSaveMixin, models.Model):

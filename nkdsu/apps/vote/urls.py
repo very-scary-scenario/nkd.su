@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url, include
 
 from nkdsu.apps.vote import views
-from nkdsu.apps.vote.views import admin, js
+from nkdsu.apps.vote.views import admin, js, api
 
 
 admin_patterns = patterns(
@@ -54,10 +54,22 @@ js_patterns = patterns(
 )
 
 
+api_patterns = patterns(
+    '',
+    url(r'^$', api.ShowAPI.as_view(), name='show'),
+    url(r'^week/(?P<date>[\d-]+)/$', api.ShowAPI.as_view(), name='show'),
+    url(r'^week/$', api.PrevShowAPI.as_view(), name='last_week'),
+    url(r'^track/(?P<pk>[0-9A-F]{16})/$',
+        api.TrackAPI.as_view(), name='api_track'),
+    url(r'^search/$', api.SearchAPI.as_view(), name='search'),
+)
+
+
 urlpatterns = patterns(
     '',
     url(r'^vote-admin/', include(admin_patterns, namespace='admin')),
     url(r'^js/', include(js_patterns, namespace='js')),
+    url(r'^api/', include(api_patterns, namespace='api')),
 
     url(r'^$', views.IndexView.as_view(), name='index'),
 
@@ -83,6 +95,7 @@ urlpatterns = patterns(
     url(r'^stats/$', views.Stats.as_view(), name='stats'),
 
     url(r'^info/$', views.Info.as_view(), name='info'),
+    url(r'^info/api/$', views.APIDocs.as_view(), name='api_docs'),
 
     url(r'^request/$',
         views.RequestAddition.as_view(), name='request_addition'),
@@ -93,13 +106,4 @@ urlpatterns = patterns(
         views.TrackDetail.as_view(), name='track'),
     url(r'^(?P<pk>[0-9A-F]{16})/report/$',
         views.ReportBadMetadata.as_view(), name='report'),
-
-    # API
-    url(r'^info/api/$', views.APIDocs.as_view(), name='api_docs'),
-
-    url(r'^api/$', 'nkdsu.apps.vote.api.week', name='api'),
-    url(r'^api/week/(?P<date>[\d-]+)/$', 'nkdsu.apps.vote.api.week', name='api_week'),
-    url(r'^api/week/$', 'nkdsu.apps.vote.api.last_week', name='api_last_week'),
-    url(r'^api/track/(?P<track_id>[0-9A-F]{16})/$', 'nkdsu.apps.vote.api.track', name='api_track'),
-    url(r'^api/search/$', 'nkdsu.apps.vote.api.search', name='api_search'),
 )

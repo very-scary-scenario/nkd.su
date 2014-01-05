@@ -23,7 +23,7 @@ class CurrentShowMixin(object):
         return context
 
 
-class ShowDetail(DetailView):
+class ShowDetailMixin(object):
     """
     A view that will find a show for any date in the past, redirect to the
     showtime date if necessary, and then render a view with the correct show
@@ -31,6 +31,7 @@ class ShowDetail(DetailView):
     """
 
     model = Show
+    view_name = None
 
     @memoize
     def get_object(self):
@@ -71,14 +72,19 @@ class ShowDetail(DetailView):
             self.date is not None and
             self.object.showtime.date() == self.date.date()
         ):
-            return super(ShowDetail, self).get(request, *args, **kwargs)
+            return super(ShowDetailMixin, self).get(request, *args, **kwargs)
         else:
             new_kwargs = copy(kwargs)
-            name = ':'.join([request.resolver_match.namespace,
-                             request.resolver_match.url_name])
+            name = (self.view_name or
+                    ':'.join([request.resolver_match.namespace,
+                              request.resolver_match.url_name]))
             new_kwargs['date'] = self.object.showtime.date().strftime(date_fmt)
             url = reverse(name, kwargs=new_kwargs)
             return redirect(url)
+
+
+class ShowDetail(ShowDetailMixin, DetailView):
+    pass
 
 
 class MarkdownView(TemplateView):
