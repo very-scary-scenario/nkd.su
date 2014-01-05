@@ -10,11 +10,15 @@ def nkdsu_context_processor(request):
 
     active_section = None
 
-    for cell in request.resolver_match.func.__closure__:
-        thing = cell.cell_contents
-        if hasattr(thing, 'section'):
-            active_section = thing.section
-            break
+    if (
+        hasattr(request, 'resolver_match') and
+        hasattr(request.resolver_match, 'func')
+    ):
+        for cell in request.resolver_match.func.__closure__:
+            thing = cell.cell_contents
+            if hasattr(thing, 'section'):
+                active_section = thing.section
+                break
 
     sections = [{
         'name': section[0],
