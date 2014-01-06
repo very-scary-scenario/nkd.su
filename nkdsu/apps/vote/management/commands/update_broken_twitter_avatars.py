@@ -1,9 +1,14 @@
+import logging
+
 import requests
 from tweepy import TweepError
 
 from django.core.management.base import BaseCommand
 
 from nkdsu.apps.vote.models import TwitterUser
+
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -16,20 +21,9 @@ class Command(BaseCommand):
         for user in TwitterUser.objects.all():
             resp = requests.get(user.user_image)
             if resp.status_code != 200:
-                print (
-                    '\ngot HTTP {code} resolving image for {user} at {url}, '
-                    'updating...'.format(
-                        code=resp.status_code,
-                        user=user.screen_name,
-                        url=user.user_image,
-                    )
-                )
                 try:
                     user.update_from_api()
                 except TweepError:
-                    print (
-                        'error correcting user {user}; probably a deleted '
-                        'account'.format(user=user.screen_name)
-                    )
+                    pass  # this user probably does not exist
                 else:
-                    print 'updated image successfully'
+                    print 'updated {0}'.format(user)
