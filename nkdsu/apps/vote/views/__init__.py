@@ -202,8 +202,8 @@ class Stats(TemplateView):
     def get_context_data(self):
         context = super(Stats, self).get_context_data()
         context.update({
-            'batting_averages': self.batting_averages(),
-            'popular_tracks': self.popular_tracks(),
+            'batting_averages': self.batting_averages,
+            'popular_tracks': self.popular_tracks,
         })
         return context
 

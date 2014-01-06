@@ -21,6 +21,9 @@ _post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
 posting_tw_api = tweepy.API(_post_tw_auth)
 
 
+indefinitely = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
+
+
 def length_str(msec):
     """
     Convert a number of milliseconds into a human-readable representation of

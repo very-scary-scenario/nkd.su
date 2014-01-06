@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 
 from .models import Show
+from .utils import indefinitely
 
 
 def nkdsu_context_processor(request):
@@ -42,4 +43,5 @@ def nkdsu_context_processor(request):
         'current_show': current_show,
         'vote_show': current_show,
         'sections': sections,
+        'indefinitely': indefinitely,
     }

@@ -21,11 +21,8 @@ from django.templatetags.static import static
 
 from nkdsu.apps.vote.utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
-    posting_tw_api, memoize, split_query_into_keywords, pk_cached
+    posting_tw_api, memoize, split_query_into_keywords, pk_cached, indefinitely
 )
-
-
-indefinitely = 60*60*24*7
 
 
 class CleanOnSaveMixin(object):
@@ -327,8 +324,8 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
     @memoize
     def _batting_average(self, cutoff=None, minimum_weight=1):
-        @cached(60*60)
-        def ba(pk, cutoff):
+        @cached(indefinitely)
+        def ba(pk, current_show_pk, cutoff):
             score = 0
             weight = 0
 
@@ -340,7 +337,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
             return (score, weight)
 
-        score, weight = ba(self.pk, cutoff)
+        score, weight = ba(self.pk, Show.current().pk, cutoff)
 
         if weight >= minimum_weight:
             return score / weight
