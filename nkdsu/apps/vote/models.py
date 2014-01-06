@@ -8,6 +8,7 @@ from urlparse import urlparse
 from cache_utils.decorators import cached
 from dateutil import parser as date_parser
 
+from django.core.cache import cache
 from django.core.urlresolvers import resolve, Resolver404
 from django.db import models
 from django.utils import timezone
@@ -118,8 +119,10 @@ class Show(CleanOnSaveMixin, models.Model):
         in the process if necessary.
         """
 
-        if Show.objects.all().exists():
-            last_show = cls.objects.all().order_by('-end')[0]
+        all_shows = cls.objects.all()
+        if cache.get('all_shows:exists') or all_shows.exists():
+            cache.set('all_shows:exists', True, None)
+            last_show = all_shows.order_by('-end')[0]
         else:
             return cls._at(time)  # this is the first show!
 
@@ -769,6 +772,7 @@ class Vote(CleanOnSaveMixin, models.Model):
         return content
 
     @memoize
+    @pk_cached(indefinitely)
     def success(self):
         """
         Return how successful this vote is, as a float between 0 and 1, or None
@@ -786,6 +790,7 @@ class Vote(CleanOnSaveMixin, models.Model):
         return successes / self.weight()
 
     @memoize
+    @pk_cached(indefinitely)
     def weight(self):
         """
         Return how much we should take this vote into account when calculating

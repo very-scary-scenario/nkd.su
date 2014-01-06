@@ -1,6 +1,5 @@
 import datetime
 
-from cache_utils.decorators import cached
 import tweepy
 
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -171,8 +170,8 @@ class Artist(ListView):
 class Stats(TemplateView):
     section = 'stats'
     template_name = 'stats.html'
+    cache_key = 'stats:context'
 
-    @cached(60*60)
     def batting_averages(self):
         users = []
         minimum_weight = 4
@@ -190,7 +189,6 @@ class Stats(TemplateView):
             minimum_weight=minimum_weight
         ), reverse=True)
 
-    @cached(60*60)
     def popular_tracks(self):
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
         tracks = []
