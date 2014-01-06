@@ -459,7 +459,6 @@ class Track(CleanOnSaveMixin, models.Model):
         if self.last_play() is None:
             return
 
-        count = 0
         show = Show.current()
 
         return (show.end - self.last_play().date).days / 7
