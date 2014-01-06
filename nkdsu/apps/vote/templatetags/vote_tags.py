@@ -33,8 +33,10 @@ def when(date):
         return date.strftime('%I:%M %p').lower()
     elif today - our_day <= datetime.timedelta(days=6):
         return date.strftime('%A at %I:%M %p').lower()
-    else:
+    elif today - our_day <= datetime.timedelta(days=364):
         return date.strftime('%a %b %d at %I:%M %p').lower()
+    else:
+        return date.strftime('%a %b %d %Y at %I:%M %p').lower()
 
 
 @register.filter
