@@ -59,16 +59,30 @@ class ShowDetailMixin(object):
         date_fmt = '%Y-%m-%d'
         date_str = kwargs.get('date')
 
+        fell_back = False
+
         if date_str is None:
             self.date = None
         else:
-            naive_date = datetime.datetime.strptime(kwargs['date'], date_fmt)
+            try:
+                naive_date = datetime.datetime.strptime(kwargs['date'],
+                                                        date_fmt)
+            except ValueError:
+                try:
+                    naive_date = datetime.datetime.strptime(kwargs['date'],
+                                                            '%d-%m-%Y')
+                except ValueError:
+                    raise Http404
+                else:
+                    fell_back = True
+
             self.date = timezone.make_aware(naive_date,
                                             timezone.get_current_timezone())
 
         self.object = self.get_object()
 
         if (
+            not fell_back and
             self.date is not None and
             self.object.showtime.date() == self.date.date()
         ):
