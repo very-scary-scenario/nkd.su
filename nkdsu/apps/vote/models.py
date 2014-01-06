@@ -20,8 +20,11 @@ from django.templatetags.static import static
 
 from nkdsu.apps.vote.utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
-    posting_tw_api, memoize, split_query_into_keywords
+    posting_tw_api, memoize, split_query_into_keywords, pk_cached
 )
+
+
+indefinitely = 60*60*24*7
 
 
 class CleanOnSaveMixin(object):
@@ -60,7 +63,7 @@ class Show(CleanOnSaveMixin, models.Model):
                     self=self, overlap=overlap))
 
     @classmethod
-    @cached(1)
+    @cached(5)
     def current(cls):
         """
         Get (or create, if necessary) the show that will next end.
@@ -108,6 +111,7 @@ class Show(CleanOnSaveMixin, models.Model):
         return show
 
     @classmethod
+    @cached(indefinitely)
     def at(cls, time):
         """
         Get the show for the date specified, creating every intervening show
@@ -129,13 +133,11 @@ class Show(CleanOnSaveMixin, models.Model):
 
         return show
 
-    @classmethod
-    def broadcasting_any(cls, time=None):
-        """
-        Return True if a show is broadcasting.
-        """
-
-        return cls.at(time).broadcasting(time)
+    def _cache_if_not_current(self, func):
+        if self == Show.current():
+            return func(None)
+        else:
+            return cached(indefinitely)(func)(self.pk)
 
     @memoize
     def broadcasting(self, time=None):
@@ -187,11 +189,15 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     def votes(self):
-        return Vote.objects.filter(**self._date_kwargs())
+        def get_qs(pk):
+            return Vote.objects.filter(**self._date_kwargs())
+        return self._cache_if_not_current(get_qs)
 
     @memoize
     def plays(self):
-        return Play.objects.filter(**self._date_kwargs()).order_by('date')
+        def get_qs(pk):
+            return Play.objects.filter(**self._date_kwargs()).order_by('date')
+        return self._cache_if_not_current(get_qs)
 
     @memoize
     def playlist(self):
@@ -208,6 +214,7 @@ class Show(CleanOnSaveMixin, models.Model):
                       [p.track for p in self.discard_set.all()])
 
     @memoize
+    @pk_cached(5)
     def tracks_sorted_by_votes(self):
         """
         Return a list of tracks that have been voted for this week, in order of
@@ -230,6 +237,7 @@ class Show(CleanOnSaveMixin, models.Model):
                       reverse=True)
 
     @memoize
+    @pk_cached(60)
     def revealed(self, show_hidden=False):
         """
         Return a all public (unhidden, non-inudesu) tracks revealed in the
@@ -433,7 +441,8 @@ class Track(CleanOnSaveMixin, models.Model):
         Return the show that this track was revealed for.
         """
 
-        return Show.at(self.revealed)
+        if self.revealed:
+            return Show.at(self.revealed)
 
     def length_str(self):
         return length_str(self.msec)
@@ -451,6 +460,7 @@ class Track(CleanOnSaveMixin, models.Model):
         return self.play_set.order_by('date')
 
     @memoize
+    @pk_cached(5)
     def weeks_since_play(self):
         """
         Get the number of weeks since this track's last Play.
@@ -478,6 +488,7 @@ class Track(CleanOnSaveMixin, models.Model):
     def split_id3_title(self):
         return split_id3_title(self.id3_title)
 
+    @pk_cached(60)
     def artist_has_page(self):
         """
         Return True if this artist has an artist page worth showing.
@@ -494,6 +505,7 @@ class Track(CleanOnSaveMixin, models.Model):
         return not self.ineligible()
 
     @memoize
+    @pk_cached(5)
     def ineligible(self):
         """
         Return a string describing why a track is ineligible, or False if it
@@ -524,6 +536,7 @@ class Track(CleanOnSaveMixin, models.Model):
         return reason
 
     @memoize
+    @pk_cached(10)
     def votes_for(self, show):
         """
         Return votes for this track for a given show.
@@ -862,6 +875,7 @@ class Play(CleanOnSaveMixin, models.Model):
     tweet.alters_data = True
 
     @memoize
+    @pk_cached(indefinitely)
     def show(self):
         return Show.at(self.date)
 

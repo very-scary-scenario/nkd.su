@@ -1,6 +1,7 @@
 import re
 from functools import partial
 
+from cache_utils.decorators import cached
 import tweepy
 
 from django.conf import settings
@@ -157,3 +158,17 @@ class Memoize(object):
 
 
 memoize = Memoize
+
+
+def pk_cached(*args, **kwargs):
+    def wrapper(func):
+        def wrapped(obj, *a, **k):
+            @cached(*args, **kwargs)
+            def do_thing(func, pk, *a, **k):
+                return func(obj, *a, **k)
+
+            return do_thing(func, obj.pk, *a, **k)
+
+        return wrapped
+
+    return wrapper

@@ -172,6 +172,7 @@ class Stats(TemplateView):
     section = 'stats'
     template_name = 'stats.html'
 
+    @cached(60*60)
     def batting_averages(self):
         users = []
         minimum_weight = 4
