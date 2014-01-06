@@ -189,7 +189,7 @@ class Stats(TemplateView):
             minimum_weight=minimum_weight
         ), reverse=True)
 
-    @cached(60*5)
+    @cached(60*60)
     def popular_tracks(self):
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
         tracks = []
