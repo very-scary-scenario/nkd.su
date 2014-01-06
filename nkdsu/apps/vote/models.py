@@ -453,8 +453,7 @@ class Track(CleanOnSaveMixin, models.Model):
     @memoize
     def weeks_since_play(self):
         """
-        Get the number of shows that have ended since this track's most recent
-        Play.
+        Get the number of weeks since this track's last Play.
         """
 
         if self.last_play() is None:
@@ -462,11 +461,8 @@ class Track(CleanOnSaveMixin, models.Model):
 
         count = 0
         show = Show.current()
-        while show != self.last_play().show():
-            count += 1
-            show = show.prev()
 
-        return count
+        return (show.end - self.last_play().date).days / 7
 
     @property
     def title(self):
@@ -820,7 +816,7 @@ class Vote(CleanOnSaveMixin, models.Model):
 class Play(CleanOnSaveMixin, models.Model):
     date = models.DateTimeField()
     track = models.ForeignKey(Track)
-    tweet_id = models.IntegerField(blank=True, null=True)
+    tweet_id = models.BigIntegerField(blank=True, null=True)
 
     def __unicode__(self):
         return u'%s at %s' % (self.track, self.date)
