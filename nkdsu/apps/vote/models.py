@@ -19,10 +19,11 @@ from django.core.urlresolvers import reverse
 from django.templatetags.static import static
 
 
-from nkdsu.apps.vote.utils import (
+from .utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
     posting_tw_api, memoize, split_query_into_keywords, pk_cached, indefinitely
 )
+from ..vote import mixcloud
 
 
 class CleanOnSaveMixin(object):
@@ -246,6 +247,11 @@ class Show(CleanOnSaveMixin, models.Model):
 
         return Track.objects.filter(hidden=False, inudesu=False,
                                     **self._date_kwargs('revealed'))
+
+    @memoize
+    @pk_cached(60)
+    def cloudcasts(self):
+        return mixcloud.cloudcasts_for(self.showtime)
 
     def get_absolute_url(self):
         if self == Show.current():

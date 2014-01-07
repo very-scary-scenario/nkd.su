@@ -7,6 +7,7 @@
   {% if show.revealed %}
     <p class="subheading"><a href="{{ show.get_added_url }}">{{ show.revealed|length }} track{{ show.revealed|pluralize }} added this week</a></p>
   {% endif %}
+
   <p class="subheading">
     &lt;
     {% if show.prev %}
@@ -22,6 +23,15 @@
     {% endif %}
     &gt;
   </p>
+
+  {% if show.cloudcasts %}
+    <div class="cloudcasts">
+      <h3>listen on mixcloud</h3>
+      {% for cloudcast in show.cloudcasts %}
+        <p class="subheading"><a href="{{ cloudcast.url }}">{{ cloudcast.name }}</a></p>
+      {% endfor %}
+    </div>
+  {% endif %}
 
   <ul class="tracks">
     {% include "include/tracklist.html" with tracks=show.playlist vote_show=show %}
