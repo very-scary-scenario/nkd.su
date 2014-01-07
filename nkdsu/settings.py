@@ -190,9 +190,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
-PIPELINE_COMPILERS = (
-    'pipeline.compilers.less.LessCompiler',
-)
+PIPELINE_COMPILERS = ('pipeline.compilers.less.LessCompiler',)
 
 PIPELINE_CSS_COMPRESSOR = None
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'
@@ -206,6 +204,25 @@ PIPELINE_CSS = {
         ],
         'output_filename': 'css/main.min.css',
     }
+}
+
+PIPELINE_JS = {
+    'base': {
+        'source_filenames': [
+            'js/libs/jquery.js',
+            'js/libs/jquery.cookie.js',
+            'js/csrf.js',
+            'js/select.js',
+        ],
+        'output_filename': 'js/min/base.js',
+    },
+    'ui': {
+        'source_filenames': [
+            'js/libs/jquery-ui.js',
+            'js/libs/jquery.ui.sortable.js',
+        ],
+        'output_filename': 'js/min/ui.js',
+    },
 }
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
