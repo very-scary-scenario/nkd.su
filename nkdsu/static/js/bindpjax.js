@@ -1,9 +1,17 @@
 var $loading;
 var messages = ['loading…', 'hang on…', 'please hold…', 'one moment…', 'be ready…', 'sit tight…', 'matte~', '*spinner*'];
 var loadingTimeout;
+var lastMessage;
 
 function shuffleLoading() {
-  $loading.text(messages[Math.floor(Math.random() * messages.length)]);
+  var choice = messages[Math.floor(Math.random() * messages.length)];
+
+  if (choice === lastMessage) {
+    shuffleLoading();
+  } else {
+    $loading.text(choice);
+    lastMessage = choice;
+  }
 }
 
 $(document).ready(function(){
