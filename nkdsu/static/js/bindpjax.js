@@ -8,7 +8,7 @@ $(document).ready(function(){
     $body.addClass('loading');
   });
 
-  $(document).on('pjax:complete', function() {
+  $(document).on('pjax:success', function() {
     $body.removeClass('loading');
   });
 
