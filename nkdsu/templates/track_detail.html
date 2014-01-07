@@ -9,7 +9,7 @@
   {% include "include/track.html" %}
 </ul>
 
-<p class="aside">added to the library on <a href="{{ track.get_added_url }}">{{ track.added|date:"F"|lower }}&nbsp;{{ track.added|date:"jS, Y" }}</a></p>
+<p class="aside">added to the library on <a href="{{ track.get_added_url }}">{{ track.revealed|date:"F"|lower }}&nbsp;{{ track.revealed|date:"jS, Y" }}</a></p>
 
 {% if track.plays %}
   <h3>play history</h3>
