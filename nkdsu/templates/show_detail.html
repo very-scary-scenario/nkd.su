@@ -4,10 +4,6 @@
 
 {% block content %}
   <h2>playlist for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS Y" }}</h2>
-  {% if show.revealed %}
-    <p class="subheading"><a href="{{ show.get_added_url }}">{{ show.revealed|length }} track{{ show.revealed|pluralize }} added this week</a></p>
-  {% endif %}
-
   <p class="subheading">
     &lt;
     {% if show.prev %}
@@ -23,6 +19,10 @@
     {% endif %}
     &gt;
   </p>
+
+  {% if show.revealed %}
+    <p class="subheading"><a href="{{ show.get_added_url }}">{{ show.revealed|length }} track{{ show.revealed|pluralize }} added this week</a></p>
+  {% endif %}
 
   {% if show.cloudcasts %}
     <div class="cloudcasts">
