@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends parent %}
 {% load compressed vote_tags %}
   
 {% block content %}
@@ -52,7 +52,6 @@
 
 {% block footer_scripts %}
   {% if user.is_authenticated %}
-  {% compressed_js "ui" %}
     <script>
       var s = $('ul#shortlist');
       var shortlistOrderURL = "{% url 'vote:admin:shortlist_order' %}";

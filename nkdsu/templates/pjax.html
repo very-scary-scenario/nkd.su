@@ -1,0 +1,11 @@
+<title>
+  nkd.su | {% block title %}a neko desu request robot{% endblock %}
+</title>
+{% include "include/pre_content.html" %}
+<main>
+  {% block content %}{% endblock %}
+  <div id="selection"></div>
+  <div id="stick" class="invisible"></div>
+</main>
+{% include "include/post_content.html" %}
+{% block footer_scripts %}{% endblock %}

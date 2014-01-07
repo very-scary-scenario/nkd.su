@@ -4,11 +4,7 @@ from .models import Show
 from .utils import indefinitely
 
 
-def nkdsu_context_processor(request):
-    """
-    Add common stuff to context.
-    """
-
+def get_sections(request):
     active_section = None
 
     if (
@@ -21,7 +17,7 @@ def nkdsu_context_processor(request):
                 active_section = thing.section
                 break
 
-    sections = [{
+    return [{
         'name': section[0],
         'url': section[1],
         'active': section[0] == active_section
@@ -37,11 +33,25 @@ def nkdsu_context_processor(request):
         ('neko desu', 'http://thisisthecat.com/index.php/neko-desu'),
     ]]
 
+
+def get_parent(request):
+    if request.META.get('HTTP_X_PJAX', False):
+        return 'pjax.html'
+    else:
+        return 'base.html'
+
+
+def nkdsu_context_processor(request):
+    """
+    Add common stuff to context.
+    """
+
     current_show = Show.current()
 
     return {
         'current_show': current_show,
         'vote_show': current_show,
-        'sections': sections,
+        'sections': get_sections(request),
         'indefinitely': indefinitely,
+        'parent': get_parent(request),
     }

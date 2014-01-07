@@ -1,0 +1,29 @@
+<header>
+  <div id="header-content">
+    <div id="titles">
+      <h1><a href="{% url "vote:index" %}">nkd.su</a></h1>
+      {% if current_show.broadcasting %}
+        <p class="subtitle">on air! listen live at <a target="_blank" href="http://thisisthecat.com">the&nbsp;cat</a>
+      {% elif current_show %}
+        <p class="subtitle">taking requests for {{ current_show.showtime|date:"F"|lower }}&nbsp;{{ current_show.showtime|date:"jS" }}</p>
+      {% else %}
+        <p class="subtitle">a neko desu request robot</p>
+      {% endif %}
+    </div>
+    <div id="search">
+      <form name="search" action="{% url "vote:search" %}" method="get">
+        <input placeholder="search" id="query" type="text" name="q" value="{{ query }}">
+      </form>
+    </div>
+  </div>
+</header>
+<ul id="nav">
+  {% for s in sections %}
+  <li class="
+    {% if s.active %}active{% endif %}
+    {% if s.name == 'new tracks' and current_show.revealed %}lookatme{% endif %}
+  ">
+      <a href="{{ s.url }}">{% if s.name == 'new tracks' and current_show.revealed %}<span class="new_tracks">{{ current_show.revealed|length }}</span> {% endif %}{{ s.name }}</a>
+    </li>
+  {% endfor %}
+</ul>

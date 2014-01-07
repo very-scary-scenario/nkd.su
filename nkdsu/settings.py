@@ -211,7 +211,9 @@ PIPELINE_JS = {
         'source_filenames': [
             'js/libs/jquery.js',
             'js/libs/jquery.cookie.js',
+            'js/libs/jquery.pjax.js',
             'js/csrf.js',
+            'js/bindpjax.js',
             'js/select.js',
         ],
         'output_filename': 'js/min/base.js',
