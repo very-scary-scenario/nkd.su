@@ -9,7 +9,10 @@ $(document).ready(function(){
   });
 
   $(document).on('pjax:complete', function() {
-    bindSelection();
     $body.removeClass('loading');
+  });
+
+  $(document).on('pjax:end', function() {
+    bindSelection();
   });
 });
