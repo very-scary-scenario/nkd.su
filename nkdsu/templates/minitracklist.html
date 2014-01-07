@@ -9,9 +9,9 @@
         <p class="refusal actions">too many tracks</p>
       {% endif %}
       <p class="actions minor">
-        <span><a href="{% url "vote:js:clear_selection" %}" name="clear_selection">clear selection</a></span>
+        <span><a data-href="{% url "vote:js:clear_selection" %}" name="clear_selection">clear selection</a></span>
         {% if user.is_authenticated %}
-          <span><a class="select_all" href="{% url "vote:js:select" %}">select all</a></span>
+          <span><a class="select_all" data-href="{% url "vote:js:select" %}">select all</a></span>
         {% endif %}
       </p>
     </div> <!-- stuck -->
@@ -31,7 +31,7 @@
       </p>
       {% endif %}
     </div>
-    <p class="deselect"><a href="{% url "vote:js:clear_selection" %}">deselect</a></p>
+    <p class="deselect"><a data-href="{% url "vote:js:clear_selection" %}">deselect</a></p>
   </li>
 </ul>
 {% endfor %}

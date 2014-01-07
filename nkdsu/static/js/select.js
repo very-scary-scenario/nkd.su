@@ -39,7 +39,7 @@ function update_selection(data) {
       $(this).addClass('pending');
     });
     var pk_map = { track_pk: all_selectable };
-    $.post($(this).attr('href'), pk_map, function(data) {
+    $.post($(this).attr('data-href'), pk_map, function(data) {
       update_selection(data);
     });
   });
@@ -52,17 +52,17 @@ function update_selection(data) {
   });
 
   // do js-friendly actions without reloading if possible
-  $("a[href='" + deselectURL + "']").click(function(event) {
+  $("a[data-href='" + deselectURL + "']").click(function(event) {
     event.preventDefault();
     var pk_map = { track_pk: $(this).closest('div.minitrack').text() };
-    $.post($(this).attr('href'), id_map, function(data) {
+    $.post($(this).attr('data-href'), id_map, function(data) {
       update_selection(data);
     });
   });
 
-  $("a[href='" + clearSelectionURL + "']").click(function(event) {
+  $("a[data-href='" + clearSelectionURL + "']").click(function(event) {
     event.preventDefault();
-    $.post($(this).attr('href'), function(data) {
+    $.post($(this).attr('data-href'), function(data) {
       update_selection(data);
     });
   });

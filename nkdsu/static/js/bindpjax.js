@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  $(document).pjax('a', '#everything');
+  $(document).pjax('a[href]', '#everything');
   $.pjax.defaults.timeout = 5000;
 
   var $body = $('body');
