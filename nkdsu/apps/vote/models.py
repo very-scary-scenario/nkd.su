@@ -460,7 +460,6 @@ class Track(CleanOnSaveMixin, models.Model):
         return self.play_set.order_by('date')
 
     @memoize
-    @pk_cached(5)
     def weeks_since_play(self):
         """
         Get the number of weeks since this track's last Play.
@@ -505,7 +504,6 @@ class Track(CleanOnSaveMixin, models.Model):
         return not self.ineligible()
 
     @memoize
-    @pk_cached(5)
     def ineligible(self):
         """
         Return a string describing why a track is ineligible, or False if it
