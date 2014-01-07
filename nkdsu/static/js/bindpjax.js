@@ -1,5 +1,5 @@
 var $loading;
-var messages = ['loading…', 'hang on…', 'please hold…', 'one moment…', 'be ready…', 'sit tight…', '*spinner*'];
+var messages = ['loading…', 'hang on…', 'please hold…', 'one moment…', 'be ready…', 'sit tight…', 'matte~', '*spinner*'];
 var loadingTimeout;
 
 function shuffleLoading() {
