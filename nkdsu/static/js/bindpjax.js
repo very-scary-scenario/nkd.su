@@ -25,7 +25,7 @@ $(document).ready(function(){
     shuffleLoading();
     loadingTimeout = setTimeout(function() {
       $body.addClass('loading');
-    }, 500);
+    }, 2000);
   });
 
   $(document).on('pjax:success', function() {

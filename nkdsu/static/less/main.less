@@ -268,11 +268,13 @@ body {
     text-transform: uppercase;
     text-align: center;
     z-index: 100;
+    box-shadow: 0 0 0 1000em @bg;
+    background-color: @bg;
 
     top: 30%;
     font-weight: bold;
-    font-size: 2em;
-    text-shadow: none;
+    color: black;
+    font-size: 2.5em;
     @media (min-width: @breakpoint) {
       font-size: 5em;
     }
@@ -280,7 +282,7 @@ body {
 
   &.loading {
     #loading {
-      opacity: .9;
+      opacity: .6;
       transition: opacity 1s;
     }
   }
