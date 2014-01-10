@@ -202,7 +202,8 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     def playlist(self):
-        return [p.track for p in self.plays()]
+        return Track.objects.filter(**self._date_kwargs('play__date')
+                                    ).order_by('play__date')
 
     @memoize
     def shortlisted(self):
@@ -215,7 +216,7 @@ class Show(CleanOnSaveMixin, models.Model):
                       [p.track for p in self.discard_set.all()])
 
     @memoize
-    @pk_cached(5)
+    @pk_cached(20)
     def tracks_sorted_by_votes(self):
         """
         Return a list of tracks that have been voted for this week, in order of
@@ -224,10 +225,7 @@ class Show(CleanOnSaveMixin, models.Model):
 
         tracks_and_dates = {}
 
-        for vote in self.votes():
-            if not vote.is_manual and vote.twitter_user.is_abuser:
-                continue
-
+        for vote in self.votes().exclude(twitter_user__is_abuser=True):
             for track in vote.tracks.all():
                 date = tracks_and_dates.get(track)
                 if date is None or date < vote.date:

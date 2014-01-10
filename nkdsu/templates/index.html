@@ -7,7 +7,7 @@
     <div id="playlist">
       <h2>played</h2>
       <ul class="tracks playlist">
-        {% for track in show.playlist %}
+        {% for track in show.playlist reversed %}
           {% include "include/track.html" %}
         {% endfor %}
       </ul>
