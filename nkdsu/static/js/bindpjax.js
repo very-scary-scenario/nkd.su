@@ -15,7 +15,7 @@ function shuffleLoading() {
 }
 
 $(document).ready(function(){
-  $(document).pjax('a[href]', '#everything');
+  // $(document).pjax('a[href]', '#everything');
   $.pjax.defaults.timeout = 5000;
 
   var $body = $('body');
