@@ -176,13 +176,11 @@ class Stats(TemplateView):
         users = []
         minimum_weight = 4
 
-        for user in TwitterUser.objects.all():
-            cutoff = Show.at(timezone.now() -
-                             datetime.timedelta(days=7*5)).end
-            if (
-                user.vote_set.filter(date__gt=cutoff).exists() and
-                user.batting_average(minimum_weight=minimum_weight)
-            ):
+        cutoff = Show.at(timezone.now() -
+                         datetime.timedelta(days=7*5)).end
+
+        for user in set(TwitterUser.objects.filter(vote__date__gt=cutoff)):
+            if user.batting_average(minimum_weight=minimum_weight):
                 users.append(user)
 
         return sorted(users, key=lambda u: u.batting_average(
