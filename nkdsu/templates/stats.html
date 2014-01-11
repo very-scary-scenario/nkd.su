@@ -42,7 +42,7 @@
       {% for track, value in popular_tracks|slice:":10" %}
         <tr class="stat">
           <td class="summary">
-            <p class="artist"><a href="{# XXX artist URL #}">{{ track.title }}</a></p>
+            <p class="artist"><a href="{{ track.get_artist_url }}">{{ track.artist }}</a></p>
             <p class="title"><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
             <p class="role">{{ track.role }}</p>
           </td>
