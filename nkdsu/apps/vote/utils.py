@@ -111,6 +111,8 @@ def split_query_into_keywords(query):
     while '"' in query:
         first_quote = query.find('"')
         second_quote = query.find('"', first_quote + 1)
+        if second_quote == -1:
+            break
         quoted_keywords = query[first_quote:second_quote + 1]
         keywords.append(quoted_keywords.strip('"'))
         query = query.replace(quoted_keywords, ' ')
