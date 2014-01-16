@@ -19,12 +19,14 @@ class APIView(View):
         self.request = request
         self.kwargs = kwargs
 
-        return HttpResponse(
+        resp = HttpResponse(
             json.dumps(self.get_api_stuff(),
                        cls=DjangoJSONEncoder,
                        indent=2),
             content_type='application/json',
         )
+        resp['Access-Control-Allow-Origin'] = '*'
+        return resp
 
 
 class ShowAPI(ShowDetailMixin, APIView):
