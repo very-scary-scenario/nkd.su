@@ -39,6 +39,14 @@ admin_patterns = patterns(
     url(r'^reset/(?P<pk>.+)/$',
         admin.ResetShortlistAndDiscard.as_view(), name='reset'),
 
+    url(r'^shortlist-selection/$',
+        admin.ShortlistSelection.as_view(), name='shortlist-selection'),
+    url(r'^discard-selection/$',
+        admin.DiscardSelection.as_view(), name='discard-selection'),
+    url(r'^reset-shortlist-discard-selection/$',
+        admin.ResetShortlistAndDiscardSelection.as_view(),
+        name='reset-shortlist-discard-selection'),
+
     url(r'^abuse/(?P<user_id>.+)/$',
         admin.ToggleAbuser.as_view(), name='toggle_abuser'),
 )

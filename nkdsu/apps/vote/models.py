@@ -561,6 +561,38 @@ class Track(CleanOnSaveMixin, models.Model):
 
     play.alters_data = True
 
+    def shortlist(self):
+        shortlist = Shortlist(
+            track=self,
+            show=Show.current(),
+        )
+        shortlist.take_first_available_index()
+
+        try:
+            shortlist.save()
+        except ValidationError:
+            pass
+
+    shortlist.alters_data = True
+
+    def discard(self):
+        try:
+            Discard(
+                track=self,
+                show=Show.current(),
+            ).save()
+        except ValidationError:
+            pass
+
+    discard.alters_data = True
+
+    def reset_shortlist_discard(self):
+        qs_kwargs = {'track': self, 'show': Show.current()}
+        Discard.objects.filter(**qs_kwargs).delete()
+        Shortlist.objects.filter(**qs_kwargs).delete()
+
+    reset_shortlist_discard.alters_data = True
+
     def slug(self):
         return slugify(self.title)
 

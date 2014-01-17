@@ -11,8 +11,7 @@ from django.views.generic import (DetailView, CreateView, View, FormView,
 from django.views.generic.base import TemplateResponseMixin
 
 from ..forms import LibraryUploadForm
-from ..models import (Track, Vote, Block, Show, Shortlist, Discard,
-                      TwitterUser, Request)
+from ..models import Track, Vote, Block, Show, Shortlist, TwitterUser, Request
 from ..update_library import update_library
 from .js import JSApiMixin
 
@@ -92,11 +91,31 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
         return context
 
     def get(self, request, *args, **kwargs):
+        self.request = request()
         if request.GET.get('confirm') == 'true':
             return self.do_thing_and_redirect()
         else:
             return super(DestructiveAdminAction, self).get(request, *args,
                                                            **kwargs)
+
+
+class SelectionAdminAction(AdminAction, View):
+    """
+    Do something with the current selection and wipe it.
+    """
+
+    model = Track
+
+    def get_queryset(self):
+        pks = self.request.session['selection'] or []
+        return self.model.objects.filter(pk__in=pks)
+
+    def do_thing_and_redirect(self):
+        # we only want to clear the selection if the rest of this process is
+        # successful, or shillito will get understandably mad
+        resp = super(SelectionAdminAction, self).do_thing_and_redirect()
+        self.request.session['selection'] = []
+        return resp
 
 
 class Play(DestructiveAdminAction, DetailView):
@@ -187,22 +206,14 @@ class MakeShortlist(AdminAction, DetailView):
     model = Track
 
     def do_thing(self):
-        shortlist = Shortlist(
-            track=self.get_object(),
-            show=Show.current(),
-        )
-        shortlist.take_first_available_index()
-        shortlist.save()
+        self.get_object().shortlist()
 
 
 class MakeDiscard(AdminAction, DetailView):
     model = Track
 
     def do_thing(self):
-        Discard(
-            track=self.get_object(),
-            show=Show.current(),
-        ).save()
+        self.get_object().discard()
 
 
 class OrderShortlist(AdminMixin, JSApiMixin, View):
@@ -218,10 +229,7 @@ class ResetShortlistAndDiscard(AdminAction, DetailView):
     model = Track
 
     def do_thing(self):
-        qs_kwargs = {'track': self.get_object(),
-                     'show': Show.current()}
-        Discard.objects.filter(**qs_kwargs).delete()
-        Shortlist.objects.filter(**qs_kwargs).delete()
+        self.get_object().reset_shortlist_discard()
 
 
 class LibraryUploadView(AdminMixin, FormView):
@@ -295,3 +303,21 @@ class BadTrivia(AdminMixin, ListView):
 
     def get_queryset(self):
         return self.model.objects.all().order_by('-created')
+
+
+class ShortlistSelection(SelectionAdminAction):
+    def do_thing(self):
+        for track in self.get_queryset():
+            track.shortlist()
+
+
+class DiscardSelection(SelectionAdminAction):
+    def do_thing(self):
+        for track in self.get_queryset():
+            track.discard()
+
+
+class ResetShortlistAndDiscardSelection(SelectionAdminAction):
+    def do_thing(self):
+        for track in self.get_queryset():
+            track.reset_shortlist_discard()

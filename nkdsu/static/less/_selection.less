@@ -1,3 +1,5 @@
+@import "_mixins.less";
+
 div#stick {
   pointer-events: none;
   position: fixed;
@@ -38,11 +40,14 @@ div#stick {
     }
   }
 
-  p.actions.minor {
+  p.actions {
     .child-iter();
-    font-size: .8em;
-    margin-bottom: .3em;
-    clear: both;
+
+    &.minor {
+      font-size: .8em;
+      margin-bottom: .3em;
+      clear: both;
+    }
   }
 
   p.deselect {

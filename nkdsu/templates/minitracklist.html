@@ -3,10 +3,18 @@
   {% if selection %}
     <div class="stuck">
       <h3>{{ selection|length }} song{{ selection|pluralize }} selected</h3>
-      {% if vote_url %}
-        <p class="actions"><a class="mass_vote" href="{{ vote_url }}">vote for all</a></p>
+      {% if user.is_authenticated %}
+        <p class="actions">
+          <span><a href="{% url "vote:admin:shortlist-selection" %}">shortlist</a></span>
+          <span><a href="{% url "vote:admin:discard-selection" %}">discard</a></span>
+          <span><a href="{% url "vote:admin:reset-shortlist-discard-selection" %}">reset</a></span>
+        </p>
       {% else %}
-        <p class="refusal actions">too many tracks</p>
+        {% if vote_url %}
+          <p class="actions"><a class="mass_vote" href="{{ vote_url }}">vote for all</a></p>
+        {% else %}
+          <p class="refusal actions">too many tracks</p>
+        {% endif %}
       {% endif %}
       <p class="actions minor">
         <span><a data-href="{% url "vote:js:clear_selection" %}" name="clear_selection">clear selection</a></span>
