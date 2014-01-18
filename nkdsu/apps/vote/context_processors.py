@@ -1,11 +1,12 @@
 from django.core.urlresolvers import reverse
 
-from .models import Show
+from .models import Show, Track
 from .utils import indefinitely
 
 
 def get_sections(request):
     active_section = None
+    most_recent_track = Track.objects.public().order_by('-revealed')[0]
 
     if (
         hasattr(request, 'resolver_match') and
@@ -24,7 +25,7 @@ def get_sections(request):
     } for section in [
         ('home', reverse('vote:index')),
         ('archive', reverse('vote:archive')),
-        ('new tracks', reverse('vote:added')),
+        ('new tracks', most_recent_track.show_revealed().get_revealed_url()),
         ('roulette', reverse('vote:roulette', kwargs={'mode': 'hipster'})),
         ('stats', reverse('vote:stats')),
         ('irc', 'irc://irc.rizon.net/NekoDesu'),
