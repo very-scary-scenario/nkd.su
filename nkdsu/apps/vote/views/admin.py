@@ -91,7 +91,7 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
         return context
 
     def get(self, request, *args, **kwargs):
-        self.request = request()
+        self.request = request
         if request.GET.get('confirm') == 'true':
             return self.do_thing_and_redirect()
         else:
