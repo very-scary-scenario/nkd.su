@@ -11,7 +11,7 @@
           <span><a href="{{ show.get_absolute_url }}">{{ show.plays|length }} play{{ show.plays|length|pluralize }}</a></span>
           <span>{{ show.votes|length }} vote{{ show.votes|length|pluralize }}</span>
           {% if show.revealed.exists %}
-            <span><a href="{{ show.get_added_url }}">{{ show.revealed|length }} new track{{ show.revealed|length|pluralize }}</a></span>
+            <span><a href="{{ show.get_revealed_url }}">{{ show.revealed|length }} new track{{ show.revealed|length|pluralize }}</a></span>
           {% endif %}
         </p>
       </li>

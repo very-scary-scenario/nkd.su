@@ -21,7 +21,7 @@
   </p>
 
   {% if show.revealed %}
-    <p class="subheading"><a href="{{ show.get_added_url }}">{{ show.revealed|length }} track{{ show.revealed|pluralize }} added this week</a></p>
+    <p class="subheading"><a href="{{ show.get_revealed_url }}">{{ show.revealed|length }} track{{ show.revealed|pluralize }} added this week</a></p>
   {% endif %}
 
   {% if show.cloudcasts %}
