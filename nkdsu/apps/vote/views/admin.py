@@ -222,13 +222,17 @@ class OrderShortlist(AdminMixin, JSApiMixin, View):
         show_shortlist = Show.current().shortlist_set.all()
         pks = post.getlist('shortlist[]')
 
+        # fukken databases
+        min_placeholder_index = max([s.index for s in show_shortlist]) + 1
+
         if set(pks) != set([t.track.pk for t in show_shortlist]):
             return HttpResponse('reload')
 
-        for index, pk in enumerate(pks):
-            shortlist = show_shortlist.get(track__pk=pk)
-            shortlist.index = index
-            shortlist.save(force_save=True)
+        for delta in [min_placeholder_index, 0]:
+            for index, pk in enumerate(pks):
+                shortlist = show_shortlist.get(track__pk=pk)
+                shortlist.index = index + delta
+                shortlist.save()
 
 
 class ResetShortlistAndDiscard(AdminAction, DetailView):
