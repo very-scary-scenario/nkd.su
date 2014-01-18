@@ -4,6 +4,7 @@ import plistlib
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 from django.views.generic import (DetailView, CreateView, View, FormView,
@@ -11,7 +12,7 @@ from django.views.generic import (DetailView, CreateView, View, FormView,
 from django.views.generic.base import TemplateResponseMixin
 
 from ..forms import LibraryUploadForm
-from ..models import Track, Vote, Block, Show, Shortlist, TwitterUser, Request
+from ..models import Track, Vote, Block, Show, TwitterUser, Request
 from ..update_library import update_library
 from .js import JSApiMixin
 
@@ -218,9 +219,14 @@ class MakeDiscard(AdminAction, DetailView):
 
 class OrderShortlist(AdminMixin, JSApiMixin, View):
     def do_thing(self, post):
-        for index, pk in enumerate(post.getlist('shortlist[]')):
-            shortlist = Shortlist.objects.get(show=Show.current(),
-                                              track__pk=pk)
+        show_shortlist = Show.current().shortlist_set.all()
+        pks = post.getlist('shortlist[]')
+
+        if set(pks) != set([t.track.pk for t in show_shortlist]):
+            return HttpResponse('reload')
+
+        for index, pk in enumerate(pks):
+            shortlist = show_shortlist.get(track__pk=pk)
             shortlist.index = index
             shortlist.save(force_save=True)
 
