@@ -1,4 +1,5 @@
 import logging
+from time import sleep
 
 import requests
 from tweepy import TweepError
@@ -19,11 +20,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for user in TwitterUser.objects.all():
-            resp = requests.get(user.user_image)
-            if resp.status_code != 200:
-                try:
-                    user.update_from_api()
-                except TweepError:
-                    pass  # this user probably does not exist
-                else:
-                    print 'updated {0}'.format(user)
+            try:
+                user.update_from_api()
+            except TweepError as e:
+                # this user probably does not exist, but we might be getting
+                # rate limited
+                pass
+
+            sleep(5)
