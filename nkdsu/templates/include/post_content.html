@@ -1,5 +1,5 @@
 <div id="footer">
-  <a id="stamp" target="_blank" href="http://musicfortheblind.co.uk"><img alt="music for the blind" title="music for the blind" src="http://colons.co/stamp.png"></a>
+  <a id="stamp" target="_blank" href="http://colons.co"><img alt="the music for the blind logo" title="toats a colons joint" src="http://colons.co/stamp.png"></a>
   {% if user.is_authenticated %}
   <p class="credit"><a href="{% url "admin:index" %}">admin</a> | <a href="{% url "vote:admin:hidden" %}">hidden tracks</a> | <a href="{% url "vote:admin:inudesu" %}">inu desu</a> | <a href="{% url "vote:admin:upload_library" %}">update library</a> | <a href="{% url "vote:admin:bad_trivia" %}">bad trivia</a> | <a href="{% url "logout" %}?next={{ request.path|urlencode }}">log out</a></p>
   {% else %}
