@@ -431,7 +431,7 @@ class Track(CleanOnSaveMixin, models.Model):
         return type(self) == type(other) and self.id == other.id
 
     def clean(self):
-        if (not self.hidden) and (not self.revealed):
+        if (not self.inudesu) and (not self.hidden) and (not self.revealed):
             raise ValidationError('{track} is not hidden but has no revealed '
                                   'date'.format(track=self))
 
