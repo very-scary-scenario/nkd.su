@@ -50,10 +50,10 @@ class ShowDetailMixin(object):
             qs = self.model.objects.filter(showtime__gt=self.date)
             qs = qs.order_by('showtime')
 
-        if not qs.exists():
+        try:
+            return qs[0]
+        except IndexError:
             raise Http404
-
-        return qs[0]
 
     def get(self, request, *args, **kwargs):
         date_fmt = '%Y-%m-%d'
