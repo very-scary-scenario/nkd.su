@@ -108,7 +108,11 @@
         {% endfor %}
       </ul>
     </div>
-    {% if track.eligible and track|votes_for:vote_show %}
+    {% if user.is_authenticated %}
+      <div class="invitation">
+        {{ track|votes_for:vote_show|length }}
+      </div>
+    {% elif track.eligible and track|votes_for:vote_show %}
       <div class="invitation plusone"><a href="{{ track.get_vote_url }}">
         +1
       </a></div>
