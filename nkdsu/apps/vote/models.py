@@ -39,8 +39,8 @@ class Show(CleanOnSaveMixin, models.Model):
     A broadcast of the show and, by extention, the week leading up to it.
     """
 
-    showtime = models.DateTimeField()
-    end = models.DateTimeField()
+    showtime = models.DateTimeField(db_index=True)
+    end = models.DateTimeField(db_index=True)
 
     def __str__(self):
         return '<Show for %r>' % (self.showtime.date())
@@ -646,12 +646,13 @@ MANUAL_VOTE_KINDS = (
 
 class Vote(CleanOnSaveMixin, models.Model):
     # universal
-    tracks = models.ManyToManyField(Track)
-    date = models.DateTimeField()
+    tracks = models.ManyToManyField(Track, db_index=True)
+    date = models.DateTimeField(db_index=True)
     text = models.TextField(blank=True)
 
     # twitter only
-    twitter_user = models.ForeignKey(TwitterUser, blank=True, null=True)
+    twitter_user = models.ForeignKey(TwitterUser, blank=True, null=True,
+                                     db_index=True)
     tweet_id = models.BigIntegerField(blank=True, null=True)
 
     # manual only
@@ -864,8 +865,8 @@ class Vote(CleanOnSaveMixin, models.Model):
 
 
 class Play(CleanOnSaveMixin, models.Model):
-    date = models.DateTimeField()
-    track = models.ForeignKey(Track)
+    date = models.DateTimeField(db_index=True)
+    track = models.ForeignKey(Track, db_index=True)
     tweet_id = models.BigIntegerField(blank=True, null=True)
 
     def __unicode__(self):
