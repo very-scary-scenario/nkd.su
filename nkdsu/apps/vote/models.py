@@ -77,9 +77,13 @@ class Show(CleanOnSaveMixin, models.Model):
         """
 
         shows_after_time = cls.objects.filter(end__gt=time)
-        if shows_after_time.exists():
-            show = shows_after_time.order_by('showtime')[0]
-        elif create:
+
+        try:
+            return shows_after_time.order_by('showtime')[0]
+        except IndexError:
+            pass
+
+        if create:
             # We have to switch to naive and back to make relativedelta
             # look for the local showtime. If we did not, showtime would be
             # calculated against UTC.
@@ -104,10 +108,7 @@ class Show(CleanOnSaveMixin, models.Model):
             show.end = our_end
             show.showtime = our_showtime
             show.save()
-        else:
-            show = None
-
-        return show
+            return show
 
     @classmethod
     @cached(indefinitely)
@@ -167,10 +168,10 @@ class Show(CleanOnSaveMixin, models.Model):
 
         qs = Show.objects.filter(end__lt=self.end)
 
-        if qs.exists():
+        try:
             return qs.order_by('-showtime')[0]
-        else:
-            return
+        except IndexError:
+            return None
 
     def has_ended(self):
         return timezone.now() > self.end
@@ -311,7 +312,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
     @memoize
     def votes(self):
-        return self.vote_set.order_by('-date')
+        return self.vote_set.order_by('-date').prefetch_related('tracks')
 
     @memoize
     def votes_for(self, show):
@@ -334,7 +335,8 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             score = 0
             weight = 0
 
-            for vote in self.vote_set.filter(date__gt=cutoff):
+            for vote in self.vote_set.filter(date__gt=cutoff).prefetch_related(
+                    'tracks').select_related():
                 success = vote.success()
                 if success is not None:
                     score += success * vote.weight()
@@ -454,10 +456,9 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @memoize
     def last_play(self):
-        qs = self.play_set
-        if qs.exists():
+        try:
             return self.play_set.order_by('-date')[0]
-        else:
+        except IndexError:
             return
 
     @memoize
@@ -690,9 +691,9 @@ class Vote(CleanOnSaveMixin, models.Model):
         show = Show.at(created_at)
 
         user_qs = TwitterUser.objects.filter(user_id=tweet['user']['id'])
-        if user_qs.exists():
+        try:
             twitter_user = user_qs.get()
-        else:
+        except TwitterUser.DoesNotExist:
             twitter_user = TwitterUser(
                 user_id=tweet['user']['id'],
             )
@@ -718,10 +719,10 @@ class Vote(CleanOnSaveMixin, models.Model):
             ):
                 track_qs = Track.objects.public().filter(pk=match.kwargs['pk'])
 
-                if not track_qs.exists():
+                try:
+                    track = track_qs.get()
+                except Track.DoesNotExist:
                     continue
-
-                track = track_qs.get()
 
                 if (
                     track not in twitter_user.tracks_voted_for_for(show) and
