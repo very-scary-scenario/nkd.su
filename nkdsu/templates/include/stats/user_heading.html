@@ -1,0 +1,7 @@
+<a href="{{ voter.get_absolute_url }}">
+  <img alt="{{ voter.name }}" src="{{ voter.user_image }}">
+</a>
+<p class="name">{{ voter.name }}</p>
+<p><a class="screen_name" href="{{ voter.get_absolute_url }}">
+  @{{ voter.screen_name }}
+</a></p>

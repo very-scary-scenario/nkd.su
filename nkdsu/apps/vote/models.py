@@ -39,8 +39,8 @@ class Show(CleanOnSaveMixin, models.Model):
     A broadcast of the show and, by extention, the week leading up to it.
     """
 
-    showtime = models.DateTimeField()
-    end = models.DateTimeField()
+    showtime = models.DateTimeField(db_index=True)
+    end = models.DateTimeField(db_index=True)
 
     def __str__(self):
         return '<Show for %r>' % (self.showtime.date())
@@ -77,9 +77,13 @@ class Show(CleanOnSaveMixin, models.Model):
         """
 
         shows_after_time = cls.objects.filter(end__gt=time)
-        if shows_after_time.exists():
-            show = shows_after_time.order_by('showtime')[0]
-        elif create:
+
+        try:
+            return shows_after_time.order_by('showtime')[0]
+        except IndexError:
+            pass
+
+        if create:
             # We have to switch to naive and back to make relativedelta
             # look for the local showtime. If we did not, showtime would be
             # calculated against UTC.
@@ -104,10 +108,7 @@ class Show(CleanOnSaveMixin, models.Model):
             show.end = our_end
             show.showtime = our_showtime
             show.save()
-        else:
-            show = None
-
-        return show
+            return show
 
     @classmethod
     @cached(indefinitely)
@@ -152,6 +153,7 @@ class Show(CleanOnSaveMixin, models.Model):
         return (time >= self.showtime) and (time < self.end)
 
     @memoize
+    @pk_cached(indefinitely)
     def next(self, create=False):
         """
         Return the next Show.
@@ -160,6 +162,7 @@ class Show(CleanOnSaveMixin, models.Model):
         return Show._at(self.end + datetime.timedelta(microseconds=1), create)
 
     @memoize
+    @pk_cached(indefinitely)
     def prev(self):
         """
         Return the previous Show.
@@ -167,10 +170,10 @@ class Show(CleanOnSaveMixin, models.Model):
 
         qs = Show.objects.filter(end__lt=self.end)
 
-        if qs.exists():
+        try:
             return qs.order_by('-showtime')[0]
-        else:
-            return
+        except IndexError:
+            return None
 
     def has_ended(self):
         return timezone.now() > self.end
@@ -191,13 +194,14 @@ class Show(CleanOnSaveMixin, models.Model):
     @memoize
     def votes(self):
         def get_qs(pk):
-            return Vote.objects.filter(**self._date_kwargs())
+            return Vote.objects.filter(**self._date_kwargs()).select_related()
         return self._cache_if_not_current(get_qs)
 
     @memoize
     def plays(self):
         def get_qs(pk):
-            return Play.objects.filter(**self._date_kwargs()).order_by('date')
+            return Play.objects.filter(**self._date_kwargs()
+                                       ).order_by('date').select_related()
         return self._cache_if_not_current(get_qs)
 
     @memoize
@@ -225,7 +229,8 @@ class Show(CleanOnSaveMixin, models.Model):
 
         tracks_and_dates = {}
 
-        for vote in self.votes().exclude(twitter_user__is_abuser=True):
+        for vote in self.votes().exclude(twitter_user__is_abuser=True
+                                         ).prefetch_related('tracks'):
             for track in vote.tracks.all():
                 date = tracks_and_dates.get(track)
                 if date is None or date < vote.date:
@@ -310,7 +315,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
     @memoize
     def votes(self):
-        return self.vote_set.order_by('-date')
+        return self.vote_set.order_by('-date').prefetch_related('tracks')
 
     @memoize
     def votes_for(self, show):
@@ -326,14 +331,14 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
         return tracks
 
-    @memoize
     def _batting_average(self, cutoff=None, minimum_weight=1):
         @cached(indefinitely)
         def ba(pk, current_show_pk, cutoff):
             score = 0
             weight = 0
 
-            for vote in self.vote_set.filter(date__gt=cutoff):
+            for vote in self.vote_set.filter(date__gt=cutoff).prefetch_related(
+                    'tracks').select_related():
                 success = vote.success()
                 if success is not None:
                     score += success * vote.weight()
@@ -351,6 +356,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
         return score
 
+    @memoize
     def batting_average(self, minimum_weight=1):
         """
         Return a user's batting average for the past six months.
@@ -360,6 +366,27 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             cutoff=Show.at(timezone.now() - datetime.timedelta(days=31*6)).end,
             minimum_weight=minimum_weight
         )
+
+    def _streak(self, l=[]):
+        show = Show.current().prev()
+        streak = 0
+
+        while True:
+            if show.votes().filter(twitter_user=self).exists():
+                streak += 1
+                show = show.prev()
+            else:
+                break
+
+        return streak
+
+    @memoize
+    def streak(self):
+        @cached(indefinitely)
+        def streak(pk, current_show):
+            return self._streak()
+
+        return streak(self.pk, Show.current())
 
     def all_time_batting_average(self, minimum_weight=1):
         return self._batting_average(minimum_weight=minimum_weight)
@@ -453,10 +480,9 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @memoize
     def last_play(self):
-        qs = self.play_set
-        if qs.exists():
+        try:
             return self.play_set.order_by('-date')[0]
-        else:
+        except IndexError:
             return
 
     @memoize
@@ -644,12 +670,13 @@ MANUAL_VOTE_KINDS = (
 
 class Vote(CleanOnSaveMixin, models.Model):
     # universal
-    tracks = models.ManyToManyField(Track)
-    date = models.DateTimeField()
+    tracks = models.ManyToManyField(Track, db_index=True)
+    date = models.DateTimeField(db_index=True)
     text = models.TextField(blank=True)
 
     # twitter only
-    twitter_user = models.ForeignKey(TwitterUser, blank=True, null=True)
+    twitter_user = models.ForeignKey(TwitterUser, blank=True, null=True,
+                                     db_index=True)
     tweet_id = models.BigIntegerField(blank=True, null=True)
 
     # manual only
@@ -689,9 +716,9 @@ class Vote(CleanOnSaveMixin, models.Model):
         show = Show.at(created_at)
 
         user_qs = TwitterUser.objects.filter(user_id=tweet['user']['id'])
-        if user_qs.exists():
+        try:
             twitter_user = user_qs.get()
-        else:
+        except TwitterUser.DoesNotExist:
             twitter_user = TwitterUser(
                 user_id=tweet['user']['id'],
             )
@@ -717,10 +744,10 @@ class Vote(CleanOnSaveMixin, models.Model):
             ):
                 track_qs = Track.objects.public().filter(pk=match.kwargs['pk'])
 
-                if not track_qs.exists():
+                try:
+                    track = track_qs.get()
+                except Track.DoesNotExist:
                     continue
-
-                track = track_qs.get()
 
                 if (
                     track not in twitter_user.tracks_voted_for_for(show) and
@@ -862,8 +889,8 @@ class Vote(CleanOnSaveMixin, models.Model):
 
 
 class Play(CleanOnSaveMixin, models.Model):
-    date = models.DateTimeField()
-    track = models.ForeignKey(Track)
+    date = models.DateTimeField(db_index=True)
+    track = models.ForeignKey(Track, db_index=True)
     tweet_id = models.BigIntegerField(blank=True, null=True)
 
     def __unicode__(self):

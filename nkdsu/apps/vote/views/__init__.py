@@ -172,7 +172,18 @@ class Stats(TemplateView):
     template_name = 'stats.html'
     cache_key = 'stats:context'
 
+    def streaks(self):
+        print 'calculating streaks'  # XXX
+        return sorted(
+            TwitterUser.objects.filter(
+                **Show.current().prev()._date_kwargs('vote__date')
+            ).distinct(),
+            key=lambda u: u.streak(),
+            reverse=True
+        )
+
     def batting_averages(self):
+        print 'calculating batting averages'  # XXX
         users = []
         minimum_weight = 4
 
@@ -188,6 +199,7 @@ class Stats(TemplateView):
         ), reverse=True)
 
     def popular_tracks(self):
+        print 'calculating popular tracks'  # XXX
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
         tracks = []
 
@@ -200,6 +212,7 @@ class Stats(TemplateView):
     def get_context_data(self):
         context = super(Stats, self).get_context_data()
         context.update({
+            'streaks': self.streaks,
             'batting_averages': self.batting_averages,
             'popular_tracks': self.popular_tracks,
         })
