@@ -8,10 +8,10 @@
       <li class="show">
         <h2><a href="{{ show.get_absolute_url }}">{{ show.showtime|date:"F jS Y" }}</a></h2>
         <p class="subheading">
-          <span><a href="{{ show.get_absolute_url }}">{{ show.plays|length }} play{{ show.plays|length|pluralize }}</a></span>
-          <span>{{ show.votes|length }} vote{{ show.votes|length|pluralize }}</span>
+          <span><a href="{{ show.get_absolute_url }}">{{ show.plays.count }} play{{ show.plays.count|pluralize }}</a></span>
+          <span>{{ show.votes.count }} vote{{ show.votes.count|pluralize }}</span>
           {% if show.revealed.exists %}
-            <span><a href="{{ show.get_revealed_url }}">{{ show.revealed|length }} new track{{ show.revealed|length|pluralize }}</a></span>
+            <span><a href="{{ show.get_revealed_url }}">{{ show.revealed.count }} new track{{ show.revealed.count|pluralize }}</a></span>
           {% endif %}
         </p>
       </li>

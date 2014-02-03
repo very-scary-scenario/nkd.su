@@ -198,7 +198,8 @@ class Show(CleanOnSaveMixin, models.Model):
     @memoize
     def plays(self):
         def get_qs(pk):
-            return Play.objects.filter(**self._date_kwargs()).order_by('date')
+            return Play.objects.filter(**self._date_kwargs()
+                                       ).order_by('date').select_related()
         return self._cache_if_not_current(get_qs)
 
     @memoize
