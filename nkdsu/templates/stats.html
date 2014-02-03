@@ -5,31 +5,45 @@
 
 {% block content %}
   {% cache indefinitely stats current_show %}
-    <h2 id="most-successful-users">most successful users</h2>
-    <p class="subheading">in the last six months</p>
+    <h2 id="most-dedicated-users">most dedicated users</h2>
     <table class="stats users">
       <tr>
         <th class="summary"><span>user</span></th>
-        <th class="value">batting average</th>
+        <th class="value">current streak</th>
       </tr>
 
-      {% for voter in batting_averages|slice:":10" %}
-        {% include "include/stats/user_batting_average.html" %}
+      {% for voter in streaks|slice:":10" %}
+        {% include "include/stats/user_streak.html" %}
       {% endfor %}
     </table>
 
-    <h2 id="least-successful-users">least successful users</h2>
-    <p class="subheading">in the last six months</p>
-    <table class="stats users">
-      <tr>
-        <th class="summary"><span>user</span></th>
-        <th class="value">batting average</th>
-      </tr>
+    {% with batting_averages as ba %}
+      <h2 id="most-successful-users">most successful users</h2>
+      <p class="subheading">in the last six months</p>
+      <table class="stats users">
+        <tr>
+          <th class="summary"><span>user</span></th>
+          <th class="value">batting average</th>
+        </tr>
 
-      {% for voter in batting_averages|slice:":-10:-1" %}
-        {% include "include/stats/user_batting_average.html" %}
-      {% endfor %}
-    </table>
+        {% for voter in ba|slice:":10" %}
+          {% include "include/stats/user_batting_average.html" %}
+        {% endfor %}
+      </table>
+
+      <h2 id="least-successful-users">least successful users</h2>
+      <p class="subheading">in the last six months</p>
+      <table class="stats users">
+        <tr>
+          <th class="summary"><span>user</span></th>
+          <th class="value">batting average</th>
+        </tr>
+
+        {% for voter in ba|slice:":-10:-1" %}
+          {% include "include/stats/user_batting_average.html" %}
+        {% endfor %}
+      </table>
+    {% endwith %}
 
     <h2 id="most-popular-tracks">most popular tracks</h2>
     <p class="subheading">in the last six months</p>

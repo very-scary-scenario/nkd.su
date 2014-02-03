@@ -1,9 +1,8 @@
-{% load vote_tags %}
 <tr class="stat">
   <td class="summary">
     {% include "include/stats/user_heading.html" %}
   </td>
   <td class="value">
-    {{ voter.batting_average|percent }}
+    {{ voter.streak }}
   </td>
 </tr>

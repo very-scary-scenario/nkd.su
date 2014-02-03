@@ -153,6 +153,7 @@ class Show(CleanOnSaveMixin, models.Model):
         return (time >= self.showtime) and (time < self.end)
 
     @memoize
+    @pk_cached(indefinitely)
     def next(self, create=False):
         """
         Return the next Show.
@@ -161,6 +162,7 @@ class Show(CleanOnSaveMixin, models.Model):
         return Show._at(self.end + datetime.timedelta(microseconds=1), create)
 
     @memoize
+    @pk_cached(indefinitely)
     def prev(self):
         """
         Return the previous Show.
@@ -329,7 +331,6 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
         return tracks
 
-    @memoize
     def _batting_average(self, cutoff=None, minimum_weight=1):
         @cached(indefinitely)
         def ba(pk, current_show_pk, cutoff):
@@ -355,6 +356,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
         return score
 
+    @memoize
     def batting_average(self, minimum_weight=1):
         """
         Return a user's batting average for the past six months.
@@ -364,6 +366,27 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             cutoff=Show.at(timezone.now() - datetime.timedelta(days=31*6)).end,
             minimum_weight=minimum_weight
         )
+
+    def _streak(self, l=[]):
+        show = Show.current().prev()
+        streak = 0
+
+        while True:
+            if show.votes().filter(twitter_user=self).exists():
+                streak += 1
+                show = show.prev()
+            else:
+                break
+
+        return streak
+
+    @memoize
+    def streak(self):
+        @cached(indefinitely)
+        def streak(pk, current_show):
+            return self._streak()
+
+        return streak(self.pk, Show.current())
 
     def all_time_batting_average(self, minimum_weight=1):
         return self._batting_average(minimum_weight=minimum_weight)
