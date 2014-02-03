@@ -191,7 +191,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @memoize
     def votes(self):
         def get_qs(pk):
-            return Vote.objects.filter(**self._date_kwargs())
+            return Vote.objects.filter(**self._date_kwargs()).select_related()
         return self._cache_if_not_current(get_qs)
 
     @memoize
@@ -225,7 +225,8 @@ class Show(CleanOnSaveMixin, models.Model):
 
         tracks_and_dates = {}
 
-        for vote in self.votes().exclude(twitter_user__is_abuser=True):
+        for vote in self.votes().exclude(twitter_user__is_abuser=True
+                                         ).prefetch_related('tracks'):
             for track in vote.tracks.all():
                 date = tracks_and_dates.get(track)
                 if date is None or date < vote.date:
