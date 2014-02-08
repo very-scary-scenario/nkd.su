@@ -1,8 +1,19 @@
 <div id="footer">
   <a id="stamp" target="_blank" href="http://colons.co"><img alt="the music for the blind logo" title="toats a colons joint" src="http://colons.co/stamp.png"></a>
-  {% if user.is_authenticated %}
-  <p class="credit"><a href="{% url "admin:index" %}">admin</a> | <a href="{% url "vote:admin:hidden" %}">hidden tracks</a> | <a href="{% url "vote:admin:inudesu" %}">inu desu</a> | <a href="{% url "vote:admin:upload_library" %}">update library</a> | <a href="{% url "vote:admin:bad_trivia" %}">bad trivia</a> | <a href="{% url "logout" %}?next={{ request.path|urlencode }}">log out</a></p>
-  {% else %}
-    <p class="credit"><a href="{% url "vote:info" %}">help</a> | <a href="{% url "vote:api_docs" %}">api</a> | <a target="_blank" href="https://github.com/colons/nkdsu">source</a> | <a href="{% url "login" %}?next={{ request.path|urlencode }}">log in</a></p>
-  {% endif %}
+  <p class="credit">
+    {% if user.is_authenticated %}
+      <span><a href="{% url "admin:index" %}">admin</a></span>
+      <span><a href="{% url "vote:admin:hidden" %}">hidden tracks</a></span>
+      <span><a href="{% url "vote:admin:inudesu" %}">inu desu</a></span>
+      <span><a href="{% url "vote:admin:upload_library" %}">update library</a></span>
+      <span><a href="{% url "vote:admin:bad_trivia" %}">bad trivia</a></span>
+      <span><a href="{% url "logout" %}?next={{ request.path|urlencode }}">log out</a></span>
+    {% else %}
+      <span><a href="{% url "vote:info" %}">help</a></span>
+      <span><a href="{% url "vote:api_docs" %}">api</a></span>
+      <span><a target="_blank" href="https://github.com/colons/nkdsu">source</a></span>
+      <span><a target="_blank" href="https://github.com/colons/nkdsu/issues/new">report a bug</a></span>
+      <span><a href="{% url "login" %}?next={{ request.path|urlencode }}">log in</a></p></span>
+    {% endif %}
+  </p>
 </div>

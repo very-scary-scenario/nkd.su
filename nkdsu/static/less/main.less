@@ -258,6 +258,31 @@ body {
     }
   }
 
+  #footer {
+    position: absolute;
+    bottom: 1.5em;
+    width: 100%;
+    font-size: .8em;
+    text-align: center;
+    color: @light;
+    line-height: 1.5em;
+
+    a#stamp {
+      img {
+        width: 65px;
+        height: 65px;
+      }
+
+      &:hover {
+        border: none;
+      }
+    }
+
+    .credit {
+      .child-iter();
+    }
+  }
+
   #loading {
     opacity: 0;
     position: fixed;
@@ -384,33 +409,6 @@ form ul.errorlist li {
   color: @light;
   position: relative;
   top: .6em;
-}
-
-/* footer */
-
-#footer {
-  position: absolute;
-  bottom: 1.5em;
-  width: 100%;
-  font-size: .8em;
-  text-align: center;
-  color: @light;
-  line-height: 1.5em;
-}
-
-#footer .credit {
-  margin: .5em 2em;
-}
-
-a#stamp {
-  img {
-    width: 65px;
-    height: 65px;
-  }
-
-  &:hover {
-    border: none;
-  }
 }
 
 /* trivia */
