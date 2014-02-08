@@ -64,7 +64,7 @@ body {
 
          &:hover {
             border: none;
-            background-color: #d66;
+            background-color: @hl;
             .noise();
             color: #fff;
             text-shadow: none;
@@ -75,15 +75,15 @@ body {
               font-weight: bold;
               line-height: 1em;
               color: #fff;
-              text-shadow: #d66 0 0 .5em,
-                           #d66 0 0 1em,
-                           #d66 0 0 1.5em,
-                           #d66 0 0 .5em,
-                           #d66 0 0 1em,
-                           #d66 0 0 1.5em,
-                           #d66 0 0 .5em,
-                           #d66 0 0 1em,
-                           #d66 0 0 1.5em;
+              text-shadow: @hl 0 0 .5em,
+                           @hl 0 0 1em,
+                           @hl 0 0 1.5em,
+                           @hl 0 0 .5em,
+                           @hl 0 0 1em,
+                           @hl 0 0 1.5em,
+                           @hl 0 0 .5em,
+                           @hl 0 0 1em,
+                           @hl 0 0 1.5em;
               font-size: 2em;
               z-index: 4;
               position: absolute;
@@ -425,7 +425,7 @@ form ul.errorlist li {
 
   #trivia .successful .exchange .answer:after {
     content: '[correct]';
-    color: #d66;
+    color: @hl;
     margin-left: .5em;
   }
 
@@ -449,7 +449,7 @@ form ul.errorlist li {
 
     #trivia .trivia:hover p:before,
     #trivia .trivia:hover .created {
-      color: #d66;
+      color: @hl;
     }
 
     #trivia .exchange .question {
