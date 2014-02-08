@@ -15,6 +15,10 @@
     padding-bottom: .6em;
   }
 
+  .artist {
+    padding-left: 0 !important;  // override NEW! compensation
+  }
+
   &.new::before {
     left: auto !important;
     right: -.2em !important;
@@ -175,16 +179,22 @@ ul.tracks {
     }
 
     // NEW!
-    &.new::before {
-      content: 'New!';
-      color: #964 !important;
-      padding: .2em .5em .3em .2em;
-      font-size: 1.2em;
-      top: -.2em;
-      left: -.2em;
-      border-color: #ca6;
-      background-color: #feb;
-      font-family: 'Kaushan Script', cursive;
+    &.new {
+      .artist {
+        padding-left: 2.7em;
+      }
+
+      &::before {
+        content: 'New!';
+        color: #964 !important;
+        padding: .2em .5em .3em .2em;
+        font-size: 1.2em;
+        top: -.2em;
+        left: -.2em;
+        border-color: #ca6;
+        background-color: #feb;
+        font-family: 'Kaushan Script', cursive;
+      }
     }
 
     // bad metadata?
