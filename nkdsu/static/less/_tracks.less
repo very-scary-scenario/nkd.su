@@ -191,7 +191,7 @@ ul.tracks {
     .report {
       font-size: .8em;
       border-color: @hl;
-      background-color: #fdd;
+      background-color: @light_hl;
       opacity: 0;
       bottom: -.2em;
       right: -.2em;
@@ -233,13 +233,13 @@ ul.tracks {
     }
 
     &.selected {
-      background-color: #fee;
+      background-color: @light_hl;
 
       &.ineligible {
-        background-color: #422;
+        background-color: @dark_hl;
 
         &.inudesu {
-          background-color: #224;
+          background-color: @dark_inu_hl;
         }
       }
     }
