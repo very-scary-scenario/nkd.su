@@ -174,9 +174,9 @@ LOGGING = {
     }
 }
 
-LOGIN_URL = '/login'
-LOGOUT_URL = '/logout'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'vote:index'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
