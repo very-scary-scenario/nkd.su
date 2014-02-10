@@ -47,6 +47,13 @@ installed.
       nightly to a json file that Shillito has access to. Get that off him and
       replace `[fixtures]` with the path to that file.
 
+- Set up a `MEDIA_ROOT` directory and a `MEDIA_URL` that is pointed at it, then
+  run `python manage.py collectstatic`
+    - Requires less (the node app, not the pager; available on npm) to be
+      installed and for `lessc` to be accessible in your `PATH`.
+    - Not necessary for development instances where the `DEBUG` setting is
+      true; [Pipeline][pl] will host static media transparently in development.
+
 That *should* be enough that you can run `python manage.py runserver` or point
 your apache/nginx/whatever instance at the WSGI app defined in `nkdsu/wsgi.py`
 and have the site run. There's still some stuff to do if you want to be able
@@ -78,3 +85,4 @@ do that too.
 
 [db]: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 [vew]: http://virtualenvwrapper.readthedocs.org/
+[pl]: http://django-pipeline.readthedocs.org/
