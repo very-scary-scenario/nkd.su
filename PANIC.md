@@ -39,6 +39,8 @@ installed.
       although I do still use it for my local development instance.
 
 - `python manage.py syncdb`
+    - This will ask you to set up an account. Make yourself one. We'll make
+      Shillito's later (assuming you're not Shillito).
 
 - `python manage.py migrate`
 
@@ -76,6 +78,11 @@ to accept votes and generally be responsible, though:
     - It would be super considerate to run the `dumpdata vote` command piped to
       a file that is hosted such that Shillito can get to it, just in case you
       too are hit by a bus.
+
+- Make Shillito an account.
+    - You can do this from the admin interface at /admin. Make him a super
+      user. Do not make accounts for anyone else; any authenticated user can do
+      all the built-in admin stuff like updating the library and hiding tracks.
 
 ----
 
