@@ -11,8 +11,8 @@ with Django will help greatly. I'm assuming you have a server of some kind that
 has Python 2.7 and Apache or nginx or some httpd capable of hosting WSGI apps
 installed.
 
-- Talk to Shillito. He has a some passwords and keys and other things that
-  you'll want if you're going to set up a replacement instance.
+- Talk to Shillito. He has some passwords and keys and other things that you'll
+  want if you're going to set up a replacement instance.
 
 - Make and activate a virtualenv.
     - I use [virtualenvwrapper][vew]. I
