@@ -13,15 +13,11 @@ installed.
 
 - Talk to Peter. He has some passwords and keys and other things that you'll
   want if you're going to set up a replacement instance.
-
 - Make and activate a virtualenv.
     - I use [virtualenvwrapper][vew]. I
       strongly recommend you do the same.
-
 - Clone the repository.
-
 - `pip install -r requirements.txt` from the repository root.
-
 - Create a `nkdsu/settings_local.py` with `CONSUMER_KEY`, `CONSUMER_SECRET`,
   `READING_ACCESS_TOKEN`, `READING_ACCESS_TOKEN_SECRET`, `POSTING_ACCESS_TOKEN`
   and `POSTING_ACCESS_TOKEN_SECRET`.
@@ -32,23 +28,18 @@ installed.
       probably want to create a testing Twitter account and use that instead,
       for both `READING_` and `POSTING_`. You may or may not also want to
       override `READING_USERNAME` in your local settings.
-
 - Set up a database and add the [settings][db] for it to your
   `settings_local.py`.
     - I used to use sqlite but now use postgresql. sqlite has problems,
       although I do still use it for my local development instance.
-
 - `python manage.py syncdb`
     - This will ask you to set up an account. Make yourself one. We'll make
       Peter's later (assuming you're not Peter).
-
 - `python manage.py migrate`
-
 - `python manage.py loaddata [fixtures]`
     - I have a cron job that dumps the important parts of my instance of nkd.su
       nightly to a json file that Peter has access to. Get that off him and
       replace `[fixtures]` with the path to that file.
-
 - Set up a `MEDIA_ROOT` directory and a `MEDIA_URL` that is pointed at it, then
   run `python manage.py collectstatic`
     - Requires less (the node app, not the pager; available on npm) to be
@@ -66,7 +57,6 @@ to accept votes and generally be responsible, though:
       up with `python manage.py listen_for_votes`. I recommend setting up a
       [supervisor](http://supervisord.org/) instance to look after that, but
       running it in a screen or tmux session will probably do in a pinch.
-
 - Set up some more management commands (stuff you run by invoking `python
   manage.py [command]`) as cron jobs.
     - Just in case the streaming API misses stuff or goes down for a period of
@@ -78,7 +68,6 @@ to accept votes and generally be responsible, though:
     - It would be super considerate to run the `dumpdata vote` command piped to
       a file that is hosted such that Peter can get to it, just in case you
       too are hit by a bus.
-
 - Make Peter an account.
     - You can do this from the admin interface at /admin. Make him a super
       user. Do not make accounts for anyone else; any authenticated user can do
