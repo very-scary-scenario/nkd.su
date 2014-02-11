@@ -31,7 +31,7 @@ def get_sections(request):
         ('irc', 'irc://irc.rizon.net/NekoDesu'),
         ('webchat',
          'https://qchat.rizon.net/?channels=NekoDesu&uio=Mj10cnVlJjk9MAde'),
-        ('neko desu', 'http://thisisthecat.com/index.php/neko-desu'),
+        ('neko desu', 'http://nekodesu.co.uk/'),
     ]]
 
 
