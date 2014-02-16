@@ -24,7 +24,11 @@
     <p class="subheading"><a href="{{ show.get_revealed_url }}">{{ show.revealed|length }} track{{ show.revealed|pluralize }} added this week</a></p>
   {% endif %}
 
-  {% if show.cloudcasts %}
+  {% if show.cloudcasts == None %}
+    <div class="cloudcasts">
+      <p>There was a problem connecting to the Mixcloud API; I have no idea if this show is archived.</p>
+    </div>
+  {% elif show.cloudcasts %}
     <div class="cloudcasts">
       <h3>listen on mixcloud</h3>
       {% for cloudcast in show.cloudcasts %}

@@ -6,12 +6,23 @@ from django.conf import settings
 
 @cached(60*10)
 def _api_resp():
-    return requests.get(settings.MIXCLOUD_FEED_URL,
-                        params={'since': '0'}).json()
+    try:
+        return requests.get(
+            settings.MIXCLOUD_FEED_URL,
+            params={'since': '0'},
+            timeout=3,
+        ).json()
+    except requests.RequestException:
+        # problem with the Mixcloud API; panic
+        return None
 
 
 def cloudcasts_for(date):
     resp = _api_resp()
+
+    if resp is None:
+        return None
+
     hunting_for = date.strftime('%d/%m/%Y')
     cloudcasts = []
 
