@@ -3,6 +3,7 @@ import datetime
 import tweepy
 
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
@@ -260,6 +261,13 @@ class ReportBadMetadata(FormView):
             [settings.REQUEST_CURATOR],
         )
 
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            'Your disclosure is appreciated. '
+            'The metadata youkai been dispatched to address your concerns. '
+            'None will know of its passing.'
+        )
+
         return super(ReportBadMetadata, self).form_valid(form)
 
 
@@ -278,6 +286,13 @@ class RequestAddition(FormView):
             '\n\n'.join(fields),
             '"nkd.su" <nkdsu@bldm.us>',
             [settings.REQUEST_CURATOR],
+        )
+
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            'Your request has been dispatched. '
+            'May it glide strong and true through spam filters and '
+            'indifference.'
         )
 
         return super(RequestAddition, self).form_valid(form)

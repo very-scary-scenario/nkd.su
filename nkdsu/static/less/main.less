@@ -311,6 +311,59 @@ body {
   }
 }
 
+.messages {
+  text-align: center;
+  cursor: pointer;
+  .noise();
+  background-color: @inv_bg;
+  overflow: hidden;
+  text-shadow: none;
+  position: relative;
+
+  &::before, li {
+    .noise();
+    background-color: #ddd;
+    padding: .3em 1em;
+    transition: margin-bottom 3s;
+
+    &.success {
+      background-color: @green;
+    }
+  }
+
+  &::before {
+    content: 'okay cool i get it';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: opacity .2s;
+    opacity: 0;
+    width: 100%;
+    padding-top: 100%;
+    margin-top: -100%;
+  }
+
+  &:hover {
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &.dismissed {
+    cursor: default;
+
+    li {
+      &:last-child {
+        margin-bottom: -100%;  // it'd be cool if this were derived from the height of .messages, but alas it is not.
+      }
+    }
+
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
 header {
   width: 100%;
   .invert();
