@@ -10,11 +10,7 @@
       var getSelectionURL = "{% url 'vote:js:get_selection' %}";
       var clearSelectionURL = "{% url 'vote:js:clear_selection' %}";
     </script>
-    {% compressed_js "base" %}
     {% compressed_css "main" %}
-    {% if user.is_authenticated %}
-      {% compressed_js "ui" %}
-    {% endif %}
     <link href="http://fonts.googleapis.com/css?family=Bitter:700,400" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Gochi+Hand' rel='stylesheet' type='text/css'>
@@ -36,6 +32,11 @@
       {% include "include/post_content.html" %}
       {% block footer_scripts %}{% endblock %}
     </div>
+
+    {% compressed_js "base" %}
+    {% if user.is_authenticated %}
+      {% compressed_js "ui" %}
+    {% endif %}
     <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
   </body>
 </html>
