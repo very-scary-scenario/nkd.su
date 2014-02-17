@@ -264,8 +264,8 @@ class ReportBadMetadata(FormView):
         messages.add_message(
             self.request, messages.SUCCESS,
             'Your disclosure is appreciated. '
-            'The metadata youkai been dispatched to address your concerns. '
-            'None will know of its passing.'
+            'The metadata youkai has been dispatched to address your concerns.'
+            ' None will know of its passing.'
         )
 
         return super(ReportBadMetadata, self).form_valid(form)
