@@ -10,8 +10,8 @@
 {% endif %}
 
 <p class="aside confirm">
-  <span><a href="?confirm=true{% if next %}&amp;next={{ next }}{% endif %}">yep</a></span>
-  <span><a href="{% if next %}{{ next }}{% else %}{% url "vote:index" %}{% endif %}">NO SHIT NO NO NO NOT AT ALL</a></span>
+  <span><a href="?confirm=true{% if next %}&amp;next={{ next|urlencode }}{% endif %}">yep</a></span>
+  <span><a href="{% if next %}{{ next|urlencode }}{% else %}{% url "vote:index" %}{% endif %}">NO SHIT NO NO NO NOT AT ALL</a></span>
 </p>
 
 {% endblock %}

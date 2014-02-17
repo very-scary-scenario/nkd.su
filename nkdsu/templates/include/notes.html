@@ -1,0 +1,23 @@
+{% if notes %}
+  <ul class="notes">
+    {% for note in notes %}
+      <li
+        {% if user.is_authenticated and note.public%}
+          class="public-warn"
+        {% endif %}
+      >
+        {% if user.is_authenticated and note.show %}
+          <span class="show">for {{ note.show.showtime|date:"Y-m-d" }}:</span>
+        {% endif %}
+
+        <span class="note">{{ note }}</span>
+
+        {% if user.is_authenticated %}
+          <span class="admin">
+            <span><a href="{% url "vote:admin:remove_note" pk=note.pk %}">✗</a></span>
+          </span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

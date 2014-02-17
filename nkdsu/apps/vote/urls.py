@@ -40,15 +40,20 @@ admin_patterns = patterns(
         admin.ResetShortlistAndDiscard.as_view(), name='reset'),
 
     url(r'^shortlist-selection/$',
-        admin.ShortlistSelection.as_view(), name='shortlist-selection'),
+        admin.ShortlistSelection.as_view(), name='shortlist_selection'),
     url(r'^discard-selection/$',
-        admin.DiscardSelection.as_view(), name='discard-selection'),
+        admin.DiscardSelection.as_view(), name='discard_selection'),
     url(r'^reset-shortlist-discard-selection/$',
         admin.ResetShortlistAndDiscardSelection.as_view(),
-        name='reset-shortlist-discard-selection'),
+        name='reset_shortlist_discard_selection'),
 
     url(r'^abuse/(?P<user_id>.+)/$',
         admin.ToggleAbuser.as_view(), name='toggle_abuser'),
+
+    url(r'^make-note/(?P<pk>.+)/$',
+        admin.MakeNote.as_view(), name='make_note'),
+    url(r'^remove-note/(?P<pk>.+)/$',
+        admin.RemoveNote.as_view(), name='remove_note'),
 )
 
 

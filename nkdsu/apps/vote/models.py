@@ -551,6 +551,14 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return self.vote_set.filter(**show._date_kwargs())
 
+    @memoize
+    def notes(self):
+        return self.note_set.for_show_or_none(Show.current)
+
+    @memoize
+    def public_notes(self):
+        return self.note_set.for_show_or_none(Show.current).filter(public=True)
+
     def play(self):
         """
         Mark this track as played.
@@ -1006,3 +1014,6 @@ class Note(CleanOnSaveMixin, models.Model):
     content = models.TextField()
 
     objects = NoteManager()
+
+    def __unicode__(self):
+        return self.content

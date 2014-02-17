@@ -11,8 +11,8 @@ from django.views.generic import (DetailView, CreateView, View, FormView,
                                   TemplateView, ListView)
 from django.views.generic.base import TemplateResponseMixin
 
-from ..forms import LibraryUploadForm
-from ..models import Track, Vote, Block, Show, TwitterUser, Request
+from ..forms import LibraryUploadForm, NoteForm
+from ..models import Track, Vote, Block, Show, TwitterUser, Request, Note
 from ..update_library import update_library
 from .js import JSApiMixin
 
@@ -42,6 +42,14 @@ class AdminActionMixin(AdminMixin):
     url = reverse_lazy('vote:index')
 
     def get_redirect_url(self):
+        referer = self.request.META.get('HTTP_REFERER')
+        next_param = self.request.GET.get('next')
+
+        if next_param is not None:
+            self.url = next_param
+        elif referer is not None:
+            self.url = referer
+
         return self.url
 
     def do_thing_and_redirect(self):
@@ -53,17 +61,6 @@ class AdminAction(AdminActionMixin):
     """
     A view for an admin action that we can be comfortable doing immediately.
     """
-
-    def get_redirect_url(self):
-        referer = self.request.META.get('HTTP_REFERER')
-        next_param = self.request.GET.get('next')
-
-        if next_param is not None:
-            self.url = next_param
-        elif referer is not None:
-            self.url = referer
-
-        return super(AdminAction, self).get_redirect_url()
 
     def get(self, request, *args, **kwargs):
         return self.do_thing_and_redirect()
@@ -338,3 +335,39 @@ class ResetShortlistAndDiscardSelection(SelectionAdminAction):
     def do_thing(self):
         for track in self.get_queryset():
             track.reset_shortlist_discard()
+
+
+class MakeNote(TrackSpecificAdminMixin, FormView):
+    template_name = 'note.html'
+    form_class = NoteForm
+
+    def form_valid(self, form):
+        note = form.save(commit=False)
+        note.track = self.get_track()
+
+        if form.cleaned_data['just_for_current_show']:
+            note.show = Show.current()
+
+        note.save()
+        return redirect(reverse('vote:index'))
+
+
+class RemoveNote(DestructiveAdminAction, DetailView):
+    """
+    Remove this note.
+    """
+
+    model = Note
+
+    def get_deets(self):
+        obj = self.get_object()
+
+        print self.get_redirect_url()
+
+        return '"{content}"; {track}'.format(
+            track=obj.track,
+            content=obj.content,
+        )
+
+    def do_thing(self):
+        self.get_object().delete()

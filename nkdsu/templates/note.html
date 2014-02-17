@@ -1,0 +1,14 @@
+{% extends parent %}
+
+{% block title %}note{% endblock %}
+
+{% block content %}
+  <h2 class=message>Add note for <a href="{{ track.get_absolute_url }}">{{ track.title }}</a></h2>
+
+  <form class="login" method="post" action=".">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="submit">
+  </form>
+
+{% endblock %}

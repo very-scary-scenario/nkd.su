@@ -7,7 +7,7 @@ from django import forms
 from django.core.validators import validate_email
 from django.utils.safestring import mark_safe
 
-from .models import Request
+from .models import Request, Note
 from ..vote import trivia
 from .utils import reading_tw_api
 
@@ -115,3 +115,11 @@ class RequestForm(TriviaForm):
 class LibraryUploadForm(forms.Form):
     library_xml = forms.FileField(label='Library XML')
     inudesu = forms.BooleanField(label='Inu Desu', required=False)
+
+
+class NoteForm(forms.ModelForm):
+    just_for_current_show = forms.BooleanField(required=False)
+
+    class Meta:
+        model = Note
+        fields = ['content', 'public']

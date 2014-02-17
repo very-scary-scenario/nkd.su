@@ -3,8 +3,8 @@ from .utils import split_query_into_keywords
 
 
 class NoteManager(models.Manager):
-    def public(self):
-        return self.filter(public=True)
+    def for_show_or_none(self, show):
+        return self.filter(models.Q(show=show) | models.Q(show=None))
 
 
 class TrackManager(models.Manager):

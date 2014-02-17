@@ -5,9 +5,9 @@
       <h3>{{ selection|length }} song{{ selection|pluralize }} selected</h3>
       {% if user.is_authenticated %}
         <p class="actions">
-          <span><a href="{% url "vote:admin:shortlist-selection" %}">shortlist</a></span>
-          <span><a href="{% url "vote:admin:discard-selection" %}">discard</a></span>
-          <span><a href="{% url "vote:admin:reset-shortlist-discard-selection" %}">reset</a></span>
+          <span><a href="{% url "vote:admin:shortlist_selection" %}">shortlist</a></span>
+          <span><a href="{% url "vote:admin:discard_selection" %}">discard</a></span>
+          <span><a href="{% url "vote:admin:reset_shortlist_discard_selection" %}">reset</a></span>
         </p>
       {% else %}
         {% if vote_url %}

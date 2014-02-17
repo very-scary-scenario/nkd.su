@@ -56,6 +56,12 @@
         {% endif %}
 
         <span class="length">{{ track.length_str }}</span>
+
+        {% if user.is_authenticated %}
+          {% include "include/notes.html" with notes=track.notes %}
+        {% else %}
+          {% include "include/notes.html" with notes=track.public_notes %}
+        {% endif %}
       </p>
 
       {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
@@ -107,6 +113,7 @@
           {% else %}
             <span><a href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
             <span><a href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
+            <span><a href="{% url "vote:admin:make_note" pk=track.pk %}">add note</a></span>
           {% endif %}
         </p>
       {% endif %}
