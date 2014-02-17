@@ -37,6 +37,10 @@ class RequestAdmin(admin.ModelAdmin):
     list_filter = ('successful',)
 
 
+class NoteAdmin(admin.ModelAdmin):
+    list_display = ('track', 'show')
+
+
 for model, modeladmin in [
         (models.Show, ShowAdmin),
         (models.TwitterUser, TwitterUserAdmin),
@@ -47,5 +51,6 @@ for model, modeladmin in [
         (models.Shortlist, DiscardShortlistAdmin),
         (models.Discard, DiscardShortlistAdmin),
         (models.Request, RequestAdmin),
+        (models.Note, NoteAdmin),
 ]:
     admin.site.register(model, modeladmin)
