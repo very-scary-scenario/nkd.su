@@ -2,6 +2,11 @@ from django.db import models
 from .utils import split_query_into_keywords
 
 
+class NoteManager(models.Manager):
+    def public(self):
+        return self.filter(public=True)
+
+
 class TrackManager(models.Manager):
     def public(self):
         return self.filter(hidden=False, inudesu=False)

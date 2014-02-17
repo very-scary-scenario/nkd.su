@@ -19,11 +19,11 @@ from django.core.urlresolvers import reverse
 from django.templatetags.static import static
 
 
+from .managers import TrackManager, NoteManager
 from .utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
     posting_tw_api, memoize, pk_cached, indefinitely,
 )
-from .managers import TrackManager
 from ..vote import mixcloud
 
 
@@ -993,3 +993,16 @@ class Request(CleanOnSaveMixin, models.Model):
 
     def struct(self):
         return json.loads(self.blob)
+
+
+class Note(CleanOnSaveMixin, models.Model):
+    """
+    A note about whatever for a particular track.
+    """
+
+    track = models.ForeignKey(Track)
+    show = models.ForeignKey(Show, blank=True, null=True)
+    public = models.BooleanField(default=False)
+    content = models.TextField()
+
+    objects = NoteManager()
