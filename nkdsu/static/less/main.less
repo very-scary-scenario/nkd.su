@@ -14,7 +14,7 @@ body {
   background-color: @bg;
   .noise();
   color: @fg;
-  text-shadow: @bg 0 .1em 0;
+  text-shadow: fadeout(@bg, 40%) 0 .1em 0;
   height: 100%;
 
   #everything {
