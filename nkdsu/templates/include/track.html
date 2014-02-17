@@ -22,7 +22,9 @@
     "
     data-pk="{{ track.pk }}"
     data-shortlist-pk="shortlist_{{ track.pk }}">
-    <span class="report"><a href="{{ track.get_report_url }}">bad metadata?</a></span>
+    {% if not user.is_authenticated %}
+      <span class="report"><a href="{{ track.get_report_url }}">bad metadata?</a></span>
+    {% endif %}
 
     <div class="metadata">
       <p class="artist">
@@ -56,31 +58,6 @@
         <span class="length">{{ track.length_str }}</span>
       </p>
 
-      {% if user.is_authenticated %}
-        <p class="admin">
-          <span><a href="{% url "vote:admin:play" pk=track.pk %}">play</a></span>
-          <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
-          {% if track.ineligible %}
-            <span><a href="{% url "vote:admin:unblock" pk=track.pk %}">unblock</a></span>
-          {% elif track.eligible %}
-            <span><a href="{% url "vote:admin:block" pk=track.pk %}">block</a></span>
-            <span><a href="{% url "vote:admin:block_with_reason" pk=track.pk %}?reason=announced">announce</a></span>
-          {% endif %}
-        </p>
-        <p class="admin">
-          {% if track.hidden %}
-            <span><a href="{% url "vote:admin:unhide" pk=track.pk %}">unhide</a></span>
-          {% else %}
-            <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
-          {% endif %}
-          {% if track in current_show.discarded or track in current_show.shortlisted %}
-            <span><a href="{% url "vote:admin:reset" pk=track.pk %}">reset shortlist/discard</a></span>
-          {% else %}
-            <span><a href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
-            <span><a href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
-          {% endif %}
-        </p>
-      {% endif %}
       {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
         <p class="refusal">{{ track.ineligible }}</p>
       {% endif %}
@@ -107,6 +84,32 @@
           </li>
         {% endfor %}
       </ul>
+
+      {% if user.is_authenticated %}
+        <p class="admin">
+          <span><a href="{% url "vote:admin:play" pk=track.pk %}">play</a></span>
+          <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
+          {% if track.ineligible %}
+            <span><a href="{% url "vote:admin:unblock" pk=track.pk %}">unblock</a></span>
+          {% elif track.eligible %}
+            <span><a href="{% url "vote:admin:block" pk=track.pk %}">block</a></span>
+            <span><a href="{% url "vote:admin:block_with_reason" pk=track.pk %}?reason=announced">announce</a></span>
+          {% endif %}
+        </p>
+        <p class="admin">
+          {% if track.hidden %}
+            <span><a href="{% url "vote:admin:unhide" pk=track.pk %}">unhide</a></span>
+          {% else %}
+            <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
+          {% endif %}
+          {% if track in current_show.discarded or track in current_show.shortlisted %}
+            <span><a href="{% url "vote:admin:reset" pk=track.pk %}">reset shortlist/discard</a></span>
+          {% else %}
+            <span><a href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
+            <span><a href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
+          {% endif %}
+        </p>
+      {% endif %}
     </div>
     {% if user.is_authenticated %}
       <div class="invitation">
