@@ -21,8 +21,9 @@ from django.templatetags.static import static
 
 from .utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
-    posting_tw_api, memoize, split_query_into_keywords, pk_cached, indefinitely
+    posting_tw_api, memoize, pk_cached, indefinitely,
 )
+from .managers import TrackManager
 from ..vote import mixcloud
 
 
@@ -404,28 +405,6 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         self.updated = timezone.now()
 
         self.save()
-
-
-class TrackManager(CleanOnSaveMixin, models.Manager):
-    def public(self):
-        return self.filter(hidden=False, inudesu=False)
-
-    def search(self, query, show_secret_tracks=False):
-        keywords = split_query_into_keywords(query)
-
-        if len(keywords) == 0:
-            return []
-
-        if show_secret_tracks:
-            qs = self.all()
-        else:
-            qs = self.public()
-
-        for keyword in keywords:
-            qs = qs.exclude(~models.Q(id3_title__icontains=keyword) &
-                            ~models.Q(id3_artist__icontains=keyword))
-
-        return qs
 
 
 class Track(CleanOnSaveMixin, models.Model):
