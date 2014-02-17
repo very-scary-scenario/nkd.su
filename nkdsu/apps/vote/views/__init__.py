@@ -174,7 +174,6 @@ class Stats(TemplateView):
     cache_key = 'stats:context'
 
     def streaks(self):
-        print 'calculating streaks'  # XXX
         return sorted(
             TwitterUser.objects.filter(
                 **Show.current().prev()._date_kwargs('vote__date')
@@ -184,7 +183,6 @@ class Stats(TemplateView):
         )
 
     def batting_averages(self):
-        print 'calculating batting averages'  # XXX
         users = []
         minimum_weight = 4
 
@@ -200,7 +198,6 @@ class Stats(TemplateView):
         ), reverse=True)
 
     def popular_tracks(self):
-        print 'calculating popular tracks'  # XXX
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
         tracks = []
 
