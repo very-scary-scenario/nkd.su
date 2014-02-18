@@ -38,7 +38,7 @@ class RequestAdmin(admin.ModelAdmin):
 
 
 class NoteAdmin(admin.ModelAdmin):
-    list_display = ('track', 'show', 'public')
+    list_display = ('track', 'show', 'public', 'content')
 
 
 for model, modeladmin in [
