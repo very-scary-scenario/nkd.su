@@ -1,11 +1,13 @@
 {% if notes %}
   <ul class="notes">
     {% for note in notes %}
-      <li
-        {% if user.is_authenticated and note.public%}
-          class="public-warn"
+      <li class="
+        {% if not user.is_authenticated %}
+          public
+        {% elif user.is_authenticated and note.public%}
+          public-warn
         {% endif %}
-      >
+      ">
         {% if user.is_authenticated and note.show %}
           <span class="show">for {{ note.show.showtime|date:"Y-m-d" }}:</span>
         {% endif %}
