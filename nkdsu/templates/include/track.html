@@ -56,16 +56,16 @@
         {% endif %}
 
         <span class="length">{{ track.length_str }}</span>
-
-        {% if user.is_authenticated %}
-          {% include "include/notes.html" with notes=track.notes %}
-        {% else %}
-          {% include "include/notes.html" with notes=track.public_notes %}
-        {% endif %}
       </p>
 
       {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
         <p class="refusal">{{ track.ineligible }}</p>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+        {% include "include/notes.html" with notes=track.notes %}
+      {% else %}
+        {% include "include/notes.html" with notes=track.public_notes %}
       {% endif %}
     </div>
     <div class="voting">
