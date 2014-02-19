@@ -113,8 +113,8 @@
           {% else %}
             <span><a href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
             <span><a href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
-            <span><a href="{% url "vote:admin:make_note" pk=track.pk %}">add note</a></span>
           {% endif %}
+          <span><a href="{% url "vote:admin:make_note" pk=track.pk %}">add note</a></span>
         </p>
       {% endif %}
     </div>
