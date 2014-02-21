@@ -481,7 +481,7 @@ class Track(CleanOnSaveMixin, models.Model):
         Get the number of weeks since this track's last Play.
         """
 
-        if self.last_play() is None:
+        if not self.last_play():
             return
 
         show = Show.current()
