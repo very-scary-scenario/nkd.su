@@ -4,14 +4,13 @@
       <li class="
         {% if not user.is_authenticated %}
           public
-        {% elif user.is_authenticated and note.public%}
+        {% elif user.is_authenticated and note.public %}
           public-warn
         {% endif %}
-      ">
         {% if user.is_authenticated and note.show %}
-          <span class="show">for {{ note.show.showtime|date:"Y-m-d" }}:</span>
+          transient
         {% endif %}
-
+      ">
         <span class="note">{{ note }}</span>
 
         {% if user.is_authenticated %}
