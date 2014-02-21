@@ -8,9 +8,9 @@
       <li class="show">
         <h2><a href="{{ show.get_absolute_url }}">{{ show.showtime|date:"F jS Y" }}</a></h2>
         <p class="subheading">
-          <span><a href="{{ show.get_absolute_url }}">{{ show.plays.count }} play{{ show.plays.count|pluralize }}</a></span>
-          <span>{{ show.votes.count }} vote{{ show.votes.count|pluralize }}</span>
-          {% if show.revealed.exists %}
+          <span><a href="{{ show.get_absolute_url }}">{{ show.play_set.count }} play{{ show.play_set.count|pluralize }}</a></span>
+          <span>{{ show.vote_set.count }} vote{{ show.vote_set.count|pluralize }}</span>
+          {% if show.revealed.count %}
             <span><a href="{{ show.get_revealed_url }}">{{ show.revealed.count }} new track{{ show.revealed.count|pluralize }}</a></span>
           {% endif %}
         </p>

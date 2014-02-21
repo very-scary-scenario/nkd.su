@@ -54,7 +54,8 @@ class Archive(ListView):
 
     def get_queryset(self):
         qs = Show.objects.filter(end__lt=timezone.now())
-        return qs.order_by('-showtime')
+        return qs.order_by('-showtime').prefetch_related(
+            'play_set', 'vote_set')
 
 
 class ShowDetail(mixins.ShowDetail):
