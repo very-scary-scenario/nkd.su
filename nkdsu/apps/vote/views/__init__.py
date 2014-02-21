@@ -154,13 +154,12 @@ class Artist(ListView):
     context_object_name = 'tracks'
 
     def get_queryset(self):
-        qs = self.model.objects.filter(
-            id3_artist=self.kwargs['artist']).order_by('id3_title')
+        tracks = self.model.objects.by_artist(self.kwargs['artist'])
 
-        if not qs.exists():
-            raise Http404
+        if len(tracks) == 0:
+            raise Http404('No tracks for this artist')
         else:
-            return qs
+            return tracks
 
     def get_context_data(self):
         context = super(Artist, self).get_context_data()

@@ -8,8 +8,25 @@ class NoteManager(models.Manager):
 
 
 class TrackManager(models.Manager):
+    def _everything(self, show_secret_tracks=False):
+        if show_secret_tracks:
+            return self.all()
+        else:
+            return self.public()
+
     def public(self):
         return self.filter(hidden=False, inudesu=False)
+
+    def by_artist(self, artist, show_secret_tracks=False):
+        """
+        Filters with Python, so does not return a queryset and is not lazy.
+        """
+
+        base_qs = self._everything(show_secret_tracks)
+
+        qs = base_qs.filter(id3_artist__contains=artist).order_by('id3_title')
+
+        return [t for t in qs if artist in t.artist_names()]
 
     def search(self, query, show_secret_tracks=False):
         keywords = split_query_into_keywords(query)
@@ -17,10 +34,7 @@ class TrackManager(models.Manager):
         if len(keywords) == 0:
             return []
 
-        if show_secret_tracks:
-            qs = self.all()
-        else:
-            qs = self.public()
+        qs = self._everything(show_secret_tracks)
 
         for keyword in keywords:
             qs = qs.exclude(~models.Q(id3_title__icontains=keyword) &

@@ -493,17 +493,36 @@ class Track(CleanOnSaveMixin, models.Model):
     def artist(self):
         return self.id3_artist
 
+    @memoize
+    def artist_names(self):
+        artist_string = self.artist
+        separator = ', '
+        ultimate_separator = ' and '
+        if ultimate_separator not in artist_string:
+            return [artist_string]
+        else:
+            ultimate_split = artist_string.split(ultimate_separator)
+            last_artist = ultimate_split[-1]
+            pre_ultimate = ultimate_separator.join(ultimate_split[:-1])
+            everyone_else = pre_ultimate.split(separator)
+            return everyone_else + [last_artist]
+
+    @memoize
+    @pk_cached(90)
+    def artists(self):
+        return [
+            {
+                'url': reverse('vote:artist', kwargs={'artist': name}),
+                'name': name,
+                'worth_showing': bool(
+                    Track.objects.by_artist(name)
+                )
+            }
+            for name in self.artist_names()
+        ]
+
     def split_id3_title(self):
         return split_id3_title(self.id3_title)
-
-    @pk_cached(60)
-    def artist_has_page(self):
-        """
-        Return True if this artist has an artist page worth showing.
-        """
-
-        return Track.objects.filter(
-            id3_artist=self.id3_artist, hidden=False, inudesu=False).exists()
 
     def eligible(self):
         """
@@ -615,9 +634,6 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def get_public_url(self):
         return 'http://nkd.su' + self.get_absolute_url()
-
-    def get_artist_url(self):
-        return reverse('vote:artist', kwargs={'artist': self.artist})
 
     def get_report_url(self):
         return reverse('vote:report', kwargs={'pk': self.pk})
