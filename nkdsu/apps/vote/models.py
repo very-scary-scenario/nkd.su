@@ -35,6 +35,12 @@ class CleanOnSaveMixin(object):
         return super(CleanOnSaveMixin, self).save()
 
 
+class SetShowBasedOnDateMixin(object):
+    def save(self, force_save=False):
+        self.show = Show.at(self.date)
+        return super(CleanOnSaveMixin, self).save()
+
+
 class Show(CleanOnSaveMixin, models.Model):
     """
     A broadcast of the show and, by extention, the week leading up to it.
@@ -182,7 +188,8 @@ class Show(CleanOnSaveMixin, models.Model):
     def _date_kwargs(self, attr='date'):
         """
         The kwargs you would hand to a queryset to find objects applicable to
-        this show.
+        this show. Should not be used unless you're doing something that
+        can't use a .show ForeignKey.
         """
 
         kw = {'%s__lte' % attr: self.end}
@@ -194,21 +201,15 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     def votes(self):
-        def get_qs(pk):
-            return Vote.objects.filter(**self._date_kwargs()).select_related()
-        return self._cache_if_not_current(get_qs)
+        return self.vote_set.all()
 
     @memoize
     def plays(self):
-        def get_qs(pk):
-            return Play.objects.filter(**self._date_kwargs()
-                                       ).order_by('date').select_related()
-        return self._cache_if_not_current(get_qs)
+        return self.play_set.order_by('date')
 
     @memoize
     def playlist(self):
-        return Track.objects.filter(**self._date_kwargs('play__date')
-                                    ).order_by('play__date')
+        return [p.track for p in self.plays().select_related('track')]
 
     @memoize
     def shortlisted(self):
@@ -228,18 +229,24 @@ class Show(CleanOnSaveMixin, models.Model):
         when they were last voted for, starting from the most recent.
         """
 
-        tracks_and_dates = {}
+        track_set = set()
+        tracks = []
 
-        for vote in self.votes().exclude(twitter_user__is_abuser=True
-                                         ).prefetch_related('tracks'):
-            for track in vote.tracks.all():
-                date = tracks_and_dates.get(track)
-                if date is None or date < vote.date:
-                    tracks_and_dates[track] = vote.date
+        votes = Vote.objects.filter(
+            show=self,
+            twitter_user__is_abuser=False,
+        ).prefetch_related('tracks').order_by('-date')
 
-        return sorted(tracks_and_dates.iterkeys(),
-                      key=lambda t: tracks_and_dates[t],
-                      reverse=True)
+        for track in (
+            track for vote in votes for track in vote.tracks.all()
+        ):
+            if track in track_set:
+                continue
+
+            track_set.add(track)
+            tracks.append(track)
+
+        return tracks
 
     @memoize
     @pk_cached(60)
@@ -320,7 +327,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
     @memoize
     def votes_for(self, show):
-        return self.votes().filter(**show._date_kwargs())
+        return self.votes().filter(show=show)
 
     @memoize
     def tracks_voted_for_for(self, show):
@@ -462,7 +469,7 @@ class Track(CleanOnSaveMixin, models.Model):
         try:
             return self.play_set.order_by('-date')[0]
         except IndexError:
-            return
+            return False
 
     @memoize
     def plays(self):
@@ -538,8 +545,8 @@ class Track(CleanOnSaveMixin, models.Model):
         is not
         """
 
-        show = Show.current()
-        block_qs = show.block_set.filter(track=self)
+        current_show = Show.current()
+        block_qs = current_show.block_set.filter(track=self)
 
         if self.inudesu:
             reason = 'inu desu'
@@ -547,10 +554,10 @@ class Track(CleanOnSaveMixin, models.Model):
         elif self.hidden:
             reason = 'hidden'
 
-        elif self.play_set.filter(**show._date_kwargs()).exists():
+        elif self.play_set.filter(show=current_show).exists():
             reason = 'played this week'
 
-        elif self.play_set.filter(**show.prev()._date_kwargs()).exists():
+        elif self.play_set.filter(show=current_show.prev()).exists():
             reason = 'played last week'
 
         elif block_qs.exists():
@@ -568,7 +575,7 @@ class Track(CleanOnSaveMixin, models.Model):
         Return votes for this track for a given show.
         """
 
-        return self.vote_set.filter(**show._date_kwargs())
+        return self.vote_set.filter(show=show).order_by('date')
 
     @memoize
     def notes(self):
@@ -671,10 +678,11 @@ MANUAL_VOTE_KINDS = (
 )
 
 
-class Vote(CleanOnSaveMixin, models.Model):
+class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     # universal
     tracks = models.ManyToManyField(Track, db_index=True)
     date = models.DateTimeField(db_index=True)
+    show = models.ForeignKey(Show, related_name='vote_set')
     text = models.TextField(blank=True)
 
     # twitter only
@@ -860,10 +868,6 @@ class Vote(CleanOnSaveMixin, models.Model):
 
         return float(self.tracks.all().count())
 
-    @memoize
-    def show(self):
-        return Show.at(self.date)
-
     def api_dict(self, verbose=False):
         tracks = self.tracks.all()
         the_vote = {
@@ -891,8 +895,9 @@ class Vote(CleanOnSaveMixin, models.Model):
         )
 
 
-class Play(CleanOnSaveMixin, models.Model):
+class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     date = models.DateTimeField(db_index=True)
+    show = models.ForeignKey(Show)
     track = models.ForeignKey(Track, db_index=True)
     tweet_id = models.BigIntegerField(blank=True, null=True)
 
@@ -939,11 +944,6 @@ class Play(CleanOnSaveMixin, models.Model):
         self.save()
 
     tweet.alters_data = True
-
-    @memoize
-    @pk_cached(indefinitely)
-    def show(self):
-        return Show.at(self.date)
 
     def api_dict(self, verbose=False):
         return {
