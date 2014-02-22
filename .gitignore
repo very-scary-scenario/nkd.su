@@ -1,4 +1,3 @@
-.*
 *.pyc
 nkdsu/settings_local.py
 nkdsu/db*
