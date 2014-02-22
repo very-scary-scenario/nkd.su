@@ -32,7 +32,7 @@ installed.
   `settings_local.py`.
     - I used to use sqlite but now use postgresql. sqlite has problems,
       although I do still use it for my local development instance.
-- `python manage.py syncdb`
+- `python manage.py syncdb --all`
     - This will ask you to set up an account. Make yourself one. We'll make
       Peter's later (assuming you're not Peter).
 - `python manage.py migrate`
