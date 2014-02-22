@@ -4,16 +4,10 @@ from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
-from ..models import Vote, Play
-
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        print 'presaving everything...'
-        for model in [Vote, Play]:
-            for instance in model.objects.all():
-                instance.save()
 
         # Changing field 'Vote.show'
         db.alter_column(u'vote_vote', 'show_id', self.gf('django.db.models.fields.related.ForeignKey')(default=None, to=orm['vote.Show']))
