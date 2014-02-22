@@ -346,7 +346,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             weight = 0
 
             for vote in self.vote_set.filter(date__gt=cutoff).prefetch_related(
-                    'tracks').select_related():
+                    'tracks'):
                 success = vote.success()
                 if success is not None:
                     score += success * vote.weight()
@@ -848,12 +848,12 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         if we don't know yet.
         """
 
-        if not self.show().has_ended():
+        if not self.show.has_ended():
             return
 
         successes = 0
         for track in self.tracks.all():
-            if track in self.show().playlist():
+            if track in self.show.playlist():
                 successes += 1
 
         return successes / self.weight()

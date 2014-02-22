@@ -176,7 +176,7 @@ class Stats(TemplateView):
     def streaks(self):
         return sorted(
             TwitterUser.objects.filter(
-                **Show.current().prev()._date_kwargs('vote__date')
+                vote__show=Show.current().prev()
             ).distinct(),
             key=lambda u: u.streak(),
             reverse=True
