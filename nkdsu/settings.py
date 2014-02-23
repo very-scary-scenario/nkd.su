@@ -234,11 +234,6 @@ PIPELINE_JS = {
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
-INTERNAL_URLS = [
-    '/',
-    '/vote-admin/upload/',
-]
-
 try:
     from nkdsu.settings_local import *  # noqa
 except ImportError:
