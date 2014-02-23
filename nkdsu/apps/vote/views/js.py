@@ -6,9 +6,13 @@ from ..utils import vote_tweet, tweet_url, tweet_len
 
 
 class JSApiMixin(object):
+    # Yes, it's traversed like HTML, but it's *not* HTML. None of these even
+    # have <html> elements.
+    content_type = 'text/plain'
+
     def post(self, request):
         result = self.do_thing(request.POST)
-        return HttpResponse(result)
+        return HttpResponse(result, content_type=self.content_type)
 
 
 class SelectionView(JSApiMixin, TemplateView):

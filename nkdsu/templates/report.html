@@ -1,8 +1,7 @@
 {% extends parent %}
 
-
 {% block content %}
-  <h2 class=message">Report bad metadata</h2>
+  <h2 class="message">Report bad metadata</h2>
   <p class=subheading><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
 
   <form class="reqeust" method="post" enctype="multipart/form-data" action=".">
@@ -10,5 +9,4 @@
     {{ form.as_p }}
     <input type="submit" value="submit">
   </form>
-
 {% endblock %}
