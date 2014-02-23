@@ -362,8 +362,6 @@ class RemoveNote(DestructiveAdminAction, DetailView):
     def get_deets(self):
         obj = self.get_object()
 
-        print self.get_redirect_url()
-
         return '"{content}"; {track}'.format(
             track=obj.track,
             content=obj.content,
