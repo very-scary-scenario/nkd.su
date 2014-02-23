@@ -100,7 +100,6 @@ USE_TZ = True
 MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 # MEDIA_URL = 'http://m.nkd.su/user/'
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
-STATIC_URL = '/static/'
 # STATIC_URL = 'http://m.nkd.su/'
 
 STATICFILES_DIRS = (
