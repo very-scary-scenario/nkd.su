@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from instant_coverage import InstantCoverageMixin
+from instant_coverage import InstantCoverageMixin, optional
 
 
-class EverythingTest(InstantCoverageMixin, TestCase):
+class EverythingTest(
+    optional.ValidJSON, InstantCoverageMixin, TestCase
+):
     fixtures = ['vote.json']
 
     covered_urls = [
