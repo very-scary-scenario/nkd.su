@@ -11,4 +11,4 @@ slimit
 django-nose
 requests
 django-cache-utils
-django-instant-coverage>=0.0.2
+django-instant-coverage>=0.0.5
