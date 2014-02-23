@@ -68,7 +68,6 @@ class EverythingTest(InstantCoverageMixin, TestCase):
     uncovered_urls = [
         # some urls that require stuff to be in the session
         '/vote-admin/upload/confirm/',
-        '/vote-admin/upload/confirm/',
         '/vote-admin/shortlist-selection/',
         '/vote-admin/discard-selection/',
         '/vote-admin/reset-shortlist-discard-selection/',
