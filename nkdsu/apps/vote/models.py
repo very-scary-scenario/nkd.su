@@ -654,6 +654,9 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return vote_tweet_intent_url([self])
 
+    def update_background_art(self):
+        print self
+
     def api_dict(self, verbose=False):
         the_track = {
             'id': self.id,

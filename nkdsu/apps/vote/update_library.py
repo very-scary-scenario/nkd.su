@@ -58,6 +58,7 @@ def update_library(tree, dry_run=False, inudesu=False):
             changes.append('to:\n%s' % unicode(db_track))
 
         if (new or changed) and (not dry_run):
+            db_track.update_background_art()
             db_track.save()
 
         tracks_kept.append(db_track)

@@ -65,9 +65,11 @@ to accept votes and generally be responsible, though:
     - So that we don't start getting broken images for Twitter users who've
       changed their avatar since they last voted, you should run the
       `update_broken_twitter_avatars` management command daily.
+    - To keep track album art up to date, you should run the
+      `update_background_art` command at least once a week.
     - It would be super considerate to run the `dumpdata vote` command piped to
-      a file that is hosted such that Peter can get to it, just in case you
-      too are hit by a bus.
+      a file that is hosted such that Peter can get to it, just in case you too
+      are hit by a bus.
 - Make Peter an account.
     - You can do this from the admin interface at /admin. Make him a super
       user. Do not make accounts for anyone else; any authenticated user can do
