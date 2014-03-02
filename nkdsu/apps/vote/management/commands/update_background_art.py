@@ -34,6 +34,7 @@ class Command(BaseCommand):
             covered += 1
 
             if track.background_art and options.get('quick'):
+                has_art += 1
                 continue
 
             if int(options['verbosity']) > 1:
