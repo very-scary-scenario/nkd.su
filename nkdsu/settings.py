@@ -100,10 +100,12 @@ USE_I18N = False
 USE_L10N = False
 USE_TZ = True
 
-MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
-# MEDIA_URL = 'http://m.nkd.su/user/'
+# these URLs will not work when DEBUG is False; set up your webserver to serve
+# static files from appropriate places and make liberal use of collectstatic
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
-# STATIC_URL = 'http://m.nkd.su/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, 'static'),

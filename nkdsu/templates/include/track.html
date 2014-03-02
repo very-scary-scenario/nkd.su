@@ -20,8 +20,14 @@
       inudesu 
     {% endif %}
     "
+
     data-pk="{{ track.pk }}"
     data-shortlist-pk="shortlist_{{ track.pk }}">
+
+    {% if track.background_art %}
+      <div class="art" style="background-image: url('{{ track.background_art.url }}');"></div>
+    {% endif %}
+
     {% if not user.is_authenticated %}
       <span class="report"><a href="{{ track.get_report_url }}">bad metadata?</a></span>
     {% endif %}
