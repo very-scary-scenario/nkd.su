@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from cStringIO import StringIO
 import datetime
 import re
 import json
@@ -8,6 +9,7 @@ from urlparse import urlparse
 from cache_utils.decorators import cached
 from dateutil import parser as date_parser
 import requests
+from PIL import Image, ImageFilter
 
 from django.core.cache import cache
 from django.core.files import File
@@ -433,7 +435,8 @@ class Track(CleanOnSaveMixin, models.Model):
     hidden = models.BooleanField()
     inudesu = models.BooleanField()
     background_art = models.ImageField(
-        blank=True, null=True, upload_to=lambda i, f: 'art/bg/%s' % i.pk)
+        blank=True, null=True, upload_to=lambda i, f: 'art/background/%s/%s'
+        % (i.pk, f))
 
     def __unicode__(self):
         """
@@ -676,32 +679,56 @@ class Track(CleanOnSaveMixin, models.Model):
         ).get('album')
 
         if album is not None:
+            return album
+        else:
             track = self.get_lastfm_track()
 
             if track is not None:
                 return track.get('album')
 
     def get_lastfm_artist(self):
-        return lastfm(artist=self.artist).get('artist')
+        return lastfm(method='artist.getInfo', artist=self.artist
+                      ).get('artist')
+
+    def get_biggest_lastfm_image_url(self):
+        for getter in [self.get_lastfm_album, self.get_lastfm_artist]:
+            thing = getter()
+
+            if thing is None:
+                continue
+
+            images = thing.get('image')
+
+            if images is None:
+                continue
+
+            image_url = images[-1]['#text']
+
+            if image_url:
+                return image_url
 
     def update_background_art(self):
-        thing = self.get_lastfm_album() or self.get_lastfm_artist()
+        image_url = self.get_biggest_lastfm_image_url()
 
-        if thing is None:
-            return  # :<
+        if image_url is None:
+            return
 
-        images = thing.get('image')
+        input_image = Image.open(StringIO(requests.get(image_url).content))
 
-        for image in images:
-            if image['size'] == 'extralarge':
-                image_url = image['#text']
-                break
+        # in almost all circumstances, it will be width that determines display
+        # size, so we should set our blur radius relative to that.
+        radius = input_image.size[0] / 130
 
-        temp = NamedTemporaryFile(delete=True)
-        temp.write(requests.get(image_url).content)
-        temp.flush()
+        blurred = input_image.filter(ImageFilter.GaussianBlur(radius=radius))
 
-        self.background_art.save(image_url.split('/')[-1], File(temp))
+        suffix = '.jpg'
+        temp_file = NamedTemporaryFile(delete=True, suffix=suffix)
+        blurred.save(temp_file)
+
+        temp_file.flush()
+
+        self.background_art.save(image_url.split('/')[-1] + suffix,
+                                 File(temp_file))
 
     def api_dict(self, verbose=False):
         the_track = {

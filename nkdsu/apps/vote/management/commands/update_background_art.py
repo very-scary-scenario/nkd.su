@@ -12,13 +12,21 @@ class Command(BaseCommand):
     def handle(self, track_id=None, *args, **options):
         if track_id is None:
             tracks = Track.objects.all()
+            total = tracks.count()
         else:
             tracks = [Track.objects.get(pk=track_id)]
+            total = len(tracks)
 
         has_art = 0
         missing_art = 0
+        covered = 0
 
         for track in tracks:
+            covered += 1
+
+            if int(options['verbosity']) > 1:
+                print '{covered}/{total} - {track}'.format(**locals())
+
             track.update_background_art()
 
             if track.background_art:
@@ -26,5 +34,4 @@ class Command(BaseCommand):
             else:
                 missing_art += 1
 
-        print 'art found for %i of %i tracks' % (has_art,
-                                                 has_art + missing_art)
+        print 'art found for %i of %i tracks' % (has_art, total)
