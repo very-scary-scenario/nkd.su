@@ -714,13 +714,15 @@ class Track(CleanOnSaveMixin, models.Model):
             return
 
         input_image = Image.open(StringIO(requests.get(image_url).content))
-        rgb_image = input_image.convert('RGB')
+
+        if input_image.mode not in ['L', 'RGB']:
+            input_image = input_image.convert('RGB')
 
         # in almost all circumstances, it will be width that determines display
         # size, so we should set our blur radius relative to that.
-        radius = rgb_image.size[0] / 130
+        radius = input_image.size[0] / 130
 
-        blurred = rgb_image.filter(ImageFilter.GaussianBlur(radius=radius))
+        blurred = input_image.filter(ImageFilter.GaussianBlur(radius=radius))
 
         suffix = '.jpg'
         temp_file = NamedTemporaryFile(delete=True, suffix=suffix)
