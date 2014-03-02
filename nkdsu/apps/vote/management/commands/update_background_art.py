@@ -1,3 +1,5 @@
+from optparse import make_option
+
 from django.core.management.base import BaseCommand
 
 from ...models import Track
@@ -8,6 +10,13 @@ class Command(BaseCommand):
         "Update background art for tracks. You can specify a track ID as an "
         "argument if you only want to do one track."
     )
+
+    option_list = BaseCommand.option_list + (
+        make_option(
+            '--quick',
+            action='store_true',
+            default=False,
+            help="Don't get art for tracks that already have art"),)
 
     def handle(self, track_id=None, *args, **options):
         if track_id is None:
@@ -23,6 +32,9 @@ class Command(BaseCommand):
 
         for track in tracks:
             covered += 1
+
+            if track.background_art and options.get('quick'):
+                continue
 
             if int(options['verbosity']) > 1:
                 print '{covered}/{total} - {track}'.format(**locals())
