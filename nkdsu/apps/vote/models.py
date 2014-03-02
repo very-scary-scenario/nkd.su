@@ -723,7 +723,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
         suffix = '.jpg'
         temp_file = NamedTemporaryFile(delete=True, suffix=suffix)
-        blurred.save(temp_file)
+        blurred.save(temp_file, 'JPEG', quality=60)
 
         temp_file.flush()
 
