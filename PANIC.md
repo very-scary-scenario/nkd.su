@@ -14,20 +14,23 @@ installed.
 - Talk to Peter. He has some passwords and keys and other things that you'll
   want if you're going to set up a replacement instance.
 - Make and activate a virtualenv.
-    - I use [virtualenvwrapper][vew]. I
-      strongly recommend you do the same.
+    - I use [virtualenvwrapper][vew]. I strongly recommend you do the same.
 - Clone the repository.
 - `pip install -r requirements.txt` from the repository root.
-- Create a `nkdsu/settings_local.py` with `CONSUMER_KEY`, `CONSUMER_SECRET`,
-  `READING_ACCESS_TOKEN`, `READING_ACCESS_TOKEN_SECRET`, `POSTING_ACCESS_TOKEN`
-  and `POSTING_ACCESS_TOKEN_SECRET`.
-    - `READING_` is for @nkdsu, `POSTING_` is for @NekoDesuRadio. Peter has
-      keys for all of these already, but you should be able to create a new app
-      and get him to reauthenticate them if you want to use your own app keys.
-    - If you're setting up an instance for local development and testing, you
-      probably want to create a testing Twitter account and use that instead,
-      for both `READING_` and `POSTING_`. You may or may not also want to
-      override `READING_USERNAME` in your local settings.
+- Create a `nkdsu/settings_local.py`
+    - Add Twitter API keys as `CONSUMER_KEY`, `CONSUMER_SECRET`,
+      `READING_ACCESS_TOKEN`, `READING_ACCESS_TOKEN_SECRET`,
+      `POSTING_ACCESS_TOKEN` and `POSTING_ACCESS_TOKEN_SECRET`.
+        - `READING_` is for @nkdsu, `POSTING_` is for @NekoDesuRadio. Peter has
+          keys for all of these already, but you should be able to create a new
+          app and get him to reauthenticate them if you want to use your own
+          app keys.
+        - If you're setting up an instance for local development and testing,
+          you probably want to create a testing Twitter account and use that
+          instead, for both `READING_` and `POSTING_`. You may or may not also
+          want to override `READING_USERNAME` in your local settings.
+    - [Make some last.fm API keys][lastfmapikeys] and add them as
+      `LASTFM_API_KEY` and `LASTFM_API_SECRET`.
 - Set up a database and add the [settings][db] for it to your
   `settings_local.py`.
     - I used to use sqlite but now use postgresql. sqlite has problems,
@@ -81,6 +84,7 @@ As well as the stuff noted above, Peter has auth details for my nic.ru
 account, so if you want to point nkd.su at your server, you should be able to
 do that too.
 
+[lastfmapikeys]: http://www.last.fm/api/account/create
 [db]: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 [vew]: http://virtualenvwrapper.readthedocs.org/
 [pl]: http://django-pipeline.readthedocs.org/
