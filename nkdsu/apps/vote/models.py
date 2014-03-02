@@ -7,8 +7,11 @@ from urlparse import urlparse
 
 from cache_utils.decorators import cached
 from dateutil import parser as date_parser
+import requests
 
 from django.core.cache import cache
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 from django.core.urlresolvers import resolve, Resolver404
 from django.db import models
 from django.utils import timezone
@@ -22,7 +25,7 @@ from django.templatetags.static import static
 from .managers import TrackManager, NoteManager
 from .utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
-    posting_tw_api, memoize, pk_cached, indefinitely,
+    posting_tw_api, memoize, pk_cached, indefinitely, lastfm,
 )
 from ..vote import mixcloud
 
@@ -430,7 +433,7 @@ class Track(CleanOnSaveMixin, models.Model):
     hidden = models.BooleanField()
     inudesu = models.BooleanField()
     background_art = models.ImageField(
-        blank=True, null=True, upload_to=lambda i, f: 'art/bg/%s' & i.pk)
+        blank=True, null=True, upload_to=lambda i, f: 'art/bg/%s' % i.pk)
 
     def __unicode__(self):
         """
@@ -493,6 +496,10 @@ class Track(CleanOnSaveMixin, models.Model):
     @property
     def title(self):
         return self.split_id3_title()[0]
+
+    @property
+    def album(self):
+        return self.id3_album
 
     @property
     def role(self):
@@ -654,8 +661,47 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return vote_tweet_intent_url([self])
 
+    def get_lastfm_track(self):
+        return lastfm(
+            method='track.getInfo',
+            track=self.title,
+            artist=self.artist,
+        ).get('track')
+
+    def get_lastfm_album(self):
+        album = lastfm(
+            method='album.getInfo',
+            artist=self.artist,
+            album=self.album,
+        ).get('album')
+
+        if album is not None:
+            track = self.get_lastfm_track()
+
+            if track is not None:
+                return track.get('album')
+
+    def get_lastfm_artist(self):
+        return lastfm(artist=self.artist).get('artist')
+
     def update_background_art(self):
-        print self
+        thing = self.get_lastfm_album() or self.get_lastfm_artist()
+
+        if thing is None:
+            return  # :<
+
+        images = thing.get('image')
+
+        for image in images:
+            if image['size'] == 'extralarge':
+                image_url = image['#text']
+                break
+
+        temp = NamedTemporaryFile(delete=True)
+        temp.write(requests.get(image_url).content)
+        temp.flush()
+
+        self.background_art.save(image_url.split('/')[-1], File(temp))
 
     def api_dict(self, verbose=False):
         the_track = {

@@ -3,4 +3,5 @@ nkdsu/settings_local.py
 nkdsu/db*
 songlibrary*.xml
 nkdsu/static/less/*.css
+nkdsu/media/
 nkdsu/static/admin/

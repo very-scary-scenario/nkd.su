@@ -2,6 +2,7 @@ import re
 from functools import partial
 
 from cache_utils.decorators import cached
+import requests
 import tweepy
 
 from django.conf import settings
@@ -177,3 +178,14 @@ def pk_cached(*args, **kwargs):
         return wrapped
 
     return wrapper
+
+
+def lastfm(**kwargs):
+    params = {'api_key': settings.LASTFM_API_KEY,
+              'api_secret': settings.LASTFM_API_SECRET,
+              'format': 'json'}
+
+    params.update(kwargs)
+
+    resp = requests.get('http://ws.audioscrobbler.com/2.0/', params=params)
+    return resp.json()
