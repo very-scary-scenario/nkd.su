@@ -1,0 +1,9 @@
+{% extends parent %}
+
+{% block content %}
+  <h2>artless tracks</h2>
+  <ul class="tracks">
+    {% include "include/tracklist.html" %}
+  </ul>
+  {% include "include/paginator.html" %}
+{% endblock %}

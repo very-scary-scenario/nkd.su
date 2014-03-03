@@ -310,6 +310,16 @@ class InuDesuTracks(AdminMixin, ListView):
         return self.model.objects.filter(hidden=False, inudesu=True)
 
 
+class ArtlessTracks(AdminMixin, ListView):
+    model = Track
+    template_name = 'artless.html'
+    context_object_name = 'tracks'
+    paginate_by = 20
+
+    def get_queryset(self):
+        return self.model.objects.filter(background_art=None)
+
+
 class BadTrivia(AdminMixin, ListView):
     model = Request
     template_name = 'trivia.html'

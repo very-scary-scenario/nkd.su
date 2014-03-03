@@ -28,6 +28,7 @@ admin_patterns = patterns(
     url(r'^unhide/(?P<pk>.+)/$', admin.Unhide.as_view(), name='unhide'),
 
     url(r'^inudesu/$', admin.InuDesuTracks.as_view(), name='inudesu'),
+    url(r'^artless/$', admin.ArtlessTracks.as_view(), name='artless'),
 
     url(r'^trivia/$', admin.BadTrivia.as_view(), name='bad_trivia'),
 
