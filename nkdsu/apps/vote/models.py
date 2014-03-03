@@ -680,7 +680,11 @@ class Track(CleanOnSaveMixin, models.Model):
             artist=self.artist,
         ).get('release-list')
 
-        if releases:
+        official_releases = [r for r in releases if r['status'] == 'Official']
+
+        if official_releases:
+            return official_releases[0]
+        elif releases:
             return releases[0]
 
     def _get_lastfm_album_from_album_tag(self):
