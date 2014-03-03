@@ -714,13 +714,15 @@ class Track(CleanOnSaveMixin, models.Model):
 
             image_url = images[-1]['#text']
 
-            if image_url:
+            if image_url and not image_url.endswith('lastfm_wrongtag.png'):
                 return image_url
 
     def update_background_art(self):
         image_url = self.get_biggest_lastfm_image_url()
 
         if image_url is None:
+            self.background_art = None
+            self.save()
             return
 
         input_image = Image.open(StringIO(requests.get(image_url).content))
