@@ -671,27 +671,37 @@ class Track(CleanOnSaveMixin, models.Model):
             artist=self.artist,
         ).get('track')
 
-    def get_lastfm_album(self):
-        album = lastfm(
+    def _get_lastfm_album_from_album_tag(self):
+        return lastfm(
             method='album.getInfo',
             artist=self.artist,
             album=self.album,
         ).get('album')
 
+    def _get_lastfm_album_from_track_tag(self):
+        track = self.get_lastfm_track()
+
+        if track is not None:
+            return track.get('album')
+
+    def get_lastfm_album(self):
+        album = self._get_lastfm_album_from_album_tag()
+
         if album is not None:
             return album
         else:
-            track = self.get_lastfm_track()
-
-            if track is not None:
-                return track.get('album')
+            return self._get_lastfm_album_from_track_tag()
 
     def get_lastfm_artist(self):
         return lastfm(method='artist.getInfo', artist=self.artist
                       ).get('artist')
 
     def get_biggest_lastfm_image_url(self):
-        for getter in [self.get_lastfm_album, self.get_lastfm_artist]:
+        for getter in [
+            self._get_lastfm_album_from_album_tag,
+            self._get_lastfm_album_from_track_tag,
+            self.get_lastfm_artist,
+        ]:
             thing = getter()
 
             if thing is None:
