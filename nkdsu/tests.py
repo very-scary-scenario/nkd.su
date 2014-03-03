@@ -23,6 +23,7 @@ class EverythingTest(
         '/vote-admin/remove-note/2/',
         '/vote-admin/hidden/',
         '/vote-admin/inudesu/',
+        '/vote-admin/artless/',
         '/vote-admin/add-manual-vote/0007C3F2760E0541/',
         '/vote-admin/upload/',
         '/vote-admin/trivia/',
