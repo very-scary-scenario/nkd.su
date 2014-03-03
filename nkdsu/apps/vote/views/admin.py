@@ -317,7 +317,7 @@ class ArtlessTracks(AdminMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return self.model.objects.filter(background_art=None)
+        return self.model.objects.filter(background_art='')
 
 
 class BadTrivia(AdminMixin, ListView):

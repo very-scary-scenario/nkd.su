@@ -435,7 +435,7 @@ class Track(CleanOnSaveMixin, models.Model):
     hidden = models.BooleanField()
     inudesu = models.BooleanField()
     background_art = models.ImageField(
-        blank=True, null=True, upload_to=lambda i, f: 'art/bg/%s.%s'
+        blank=True, upload_to=lambda i, f: 'art/bg/%s.%s'
         % (i.pk, f.split('.')[-1]))
 
     def __unicode__(self):
