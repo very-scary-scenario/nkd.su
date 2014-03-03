@@ -2,6 +2,7 @@ import re
 from functools import partial
 
 from cache_utils.decorators import cached
+import musicbrainzngs
 import requests
 import tweepy
 
@@ -189,3 +190,6 @@ def lastfm(**kwargs):
 
     resp = requests.get('http://ws.audioscrobbler.com/2.0/', params=params)
     return resp.json()
+
+
+musicbrainzngs.set_useragent('nkd.su', '0', 'http://nkd.su/')

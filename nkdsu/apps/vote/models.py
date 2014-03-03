@@ -27,7 +27,7 @@ from django.templatetags.static import static
 from .managers import TrackManager, NoteManager
 from .utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
-    posting_tw_api, memoize, pk_cached, indefinitely, lastfm,
+    posting_tw_api, memoize, pk_cached, indefinitely, lastfm, musicbrainzngs
 )
 from ..vote import mixcloud
 
@@ -671,11 +671,31 @@ class Track(CleanOnSaveMixin, models.Model):
             artist=self.artist,
         ).get('track')
 
+    @memoize
+    @pk_cached(3600)
+    def musicbrainz_release(self):
+        releases = musicbrainzngs.search_releases(
+            tracks=self.title,
+            release=self.album,
+            artist=self.artist,
+        ).get('release-list')
+
+        if releases:
+            return releases[0]
+
     def _get_lastfm_album_from_album_tag(self):
         return lastfm(
             method='album.getInfo',
             artist=self.artist,
             album=self.album,
+        ).get('album')
+
+    def _get_lastfm_album_from_musicbrainz_release(self):
+        release = self.musicbrainz_release()
+        return lastfm(
+            method='album.getInfo',
+            artist=release['artist-credit-phrase'],
+            album=release['title'],
         ).get('album')
 
     def _get_lastfm_album_from_track_tag(self):
@@ -701,6 +721,7 @@ class Track(CleanOnSaveMixin, models.Model):
             self._get_lastfm_album_from_album_tag,
             self._get_lastfm_album_from_track_tag,
             self.get_lastfm_artist,
+            self._get_lastfm_album_from_musicbrainz_release,
         ]:
             thing = getter()
 

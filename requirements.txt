@@ -13,3 +13,4 @@ requests
 django-cache-utils
 django-instant-coverage>=0.0.5
 pillow
+musicbrainzngs
