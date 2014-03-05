@@ -1,5 +1,12 @@
 @import "_vars.less";
 
+.transform(@value) {
+    -webkit-transform: @value;
+    -moz-transform: @value;
+    -ms-transform: @value;
+    -o-transform: @value;
+}
+
 .noise() {
   background-image: url('../i/noise.png');
 }

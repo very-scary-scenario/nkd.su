@@ -1,9 +1,14 @@
 {% load vote_tags %}
-<li class="vote {% if vote.content %}content{% endif %}">
+<li class="vote
+  {% if vote.content %}content{% endif %}
+  {% if not vote.is_manual and vote.twitter_user.is_abuser %}abuser{% endif %}"
+  >
   <a {% if not vote.is_manual %}href="{{ vote.twitter_user.get_absolute_url }}"{% endif %}>
     <img class="avatar thumb" src="{{ vote.get_image_url }}" alt="{{ vote.twitter_user.screen_name }}"/>
+
     <div class="deets">
       <img class="avatar" src="{{ vote.get_image_url }}" alt="{{ vote.twitter_user.screen_name }}"/>
+
       {% if vote.is_manual %}
         <p class="meta full_name">{{ vote.name }}</p>
         <p class="meta kind">via {{ vote.kind }}</p>
@@ -11,8 +16,11 @@
         <p class="meta full_name">{{ vote.twitter_user.name }}</p>
         <p class="meta screen_name">@{{ vote.twitter_user.screen_name }}</p>
       {% endif %}
-      <p class="meta when"> {{ vote.date|when }}
+
+      <p class="meta when">{{ vote.date|when }}</p>
+
       {% if vote.content %}<p class="text">{{ vote.content|safe }}</p>{% endif %}
+
     </div>
   </a>
 </li>
