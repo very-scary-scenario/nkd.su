@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<div class="user">
+<div class="user {% if voter.is_abuser %}abuser{% endif %}">
   <div class="user_meta">
     <h2>{{ voter.name }}</h2>
     <p class="subheading">
@@ -16,11 +16,11 @@
     {% if voter.batting_average == None %}
       <p class="subheading">needs to vote more</p>
     {% else %}
-      <p class="subheading">batting at {{ voter.batting_average|percent }} over the last six months</p>
+      <p class="subheading">batting at <strong>{{ voter.batting_average|percent }}</strong> over the last six months</p>
     {% endif %}
 
-    {% if voter.streak %}
-      <p class="subheading">voted for the last {{ voter.streak }} consecutive show{{ voter.streak|pluralize }}</p>
+    {% if voter.streak > 1 %}
+      <p class="subheading">voted for the last <strong>{{ voter.streak }}</strong> consecutive shows</p>
     {% endif %}
 
     {% if user.is_authenticated %}
@@ -38,6 +38,12 @@
         <img class="avatar" src="{{ voter.user_image }}" alt="{{ voter.name }}">
       </a>
     </p>
+
+    {% if voter.is_abuser %}
+      <p class="subheading"><strong>{{ voter.name }} is condemned until further notice.</strong></p>
+      <p class="subheading">Votes will still appear on tracks, but will not influence their position on the front page.</p>
+    {% endif %}
+
   </div>
 
   <h2>votes</h2>
