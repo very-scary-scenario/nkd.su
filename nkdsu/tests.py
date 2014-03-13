@@ -5,7 +5,8 @@ from instant_coverage import InstantCoverageMixin, optional
 
 
 class EverythingTest(
-    optional.ValidHTML5, optional.ValidJSON, InstantCoverageMixin, TestCase
+    optional.ExternalLinks, optional.ValidHTML5, optional.ValidJSON,
+    InstantCoverageMixin, TestCase
 ):
     fixtures = ['vote.json']
 

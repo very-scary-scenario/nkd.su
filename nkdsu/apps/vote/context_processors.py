@@ -28,10 +28,6 @@ def get_sections(request):
         ('new tracks', most_recent_track.show_revealed().get_revealed_url()),
         ('roulette', reverse('vote:roulette', kwargs={'mode': 'hipster'})),
         ('stats', reverse('vote:stats')),
-        ('irc', 'irc://irc.rizon.net/NekoDesu'),
-        ('webchat',
-         'https://qchat.rizon.net/?channels=NekoDesu&uio=Mj10cnVlJjk9MAde'),
-        ('neko desu', 'http://nekodesu.co.uk/'),
     ]]
 
 
