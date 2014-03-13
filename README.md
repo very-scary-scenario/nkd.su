@@ -35,14 +35,14 @@ text or something.
 
 Short answer: [Django](https://www.djangoproject.com).
 
-Long answer: [GitHub](https://github.com/colons/nkdsu).
+Long answer: [GitHub](https://github.com/colons/nkd.su).
 [Suggestions][new_issue] welcome.
 
 ## Does it work?
 
 Hopefully! Only Travis knows for sure:
 
-[![Build Status](https://travis-ci.org/colons/nkdsu.png)](https://travis-ci.org/colons/nkdsu)
+[![Build Status](https://travis-ci.org/colons/nkd.su.png)](https://travis-ci.org/colons/nkd.su)
 
 ## Can I build things with this data?
 
@@ -58,4 +58,4 @@ know][new_issue].
 ([@EuricaeriS](http://twitter.com/EuricaeriS)) and
 [Peter Shillito](http://twitter.com/theshillito) himself.
 
-[new_issue]: https://github.com/colons/nkdsu/issues/new
+[new_issue]: https://github.com/colons/nkd.su/issues/new

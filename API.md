@@ -50,7 +50,7 @@ track objects.
 If there is something else you want added or changed, or if you find something
 that's broken, [file a bug][new_issue] or just [yell at me][pester] on Twitter.
 
-[new_issue]: https://github.com/colons/nkdsu/issues/new
+[new_issue]: https://github.com/colons/nkd.su/issues/new
 [api_root]: http://nkd.su/api/
 [eg_track]: http://nkd.su/api/track/7C4D7B4B394E0E59/
 [eg_latest_week]: http://nkd.su/api/week/

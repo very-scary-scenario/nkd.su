@@ -71,8 +71,8 @@ class TriviaForm(forms.Form):
         if not human:
             hint = (
                 "That's not right, sorry. There are hints <a href='https://"
-                "github.com/colons/nkdsu/blob/master/nkdsu/apps/vote/trivia.py"
-                "'>here</a>."
+                "github.com/colons/nkd.su/blob/master/nkdsu/apps/vote/"
+                "trivia.py'>here</a>."
             )
             raise forms.ValidationError([mark_safe(hint)])
 
