@@ -4,7 +4,12 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 
-from models import Show
+from models import Show, Track, Play
+
+
+def mkutc(*args, **kwargs):
+    return timezone.make_aware(datetime.datetime(*args, **kwargs),
+                               timezone.utc)
 
 
 class ShowTest(TestCase):
@@ -67,10 +72,6 @@ class ShowTest(TestCase):
             self.assertEqual(ours.end.date(), datetime.date(3010, 1, 6))
 
     def test_cannot_make_overlapping_shows(self):
-        def mkutc(*args, **kwargs):
-            return timezone.make_aware(datetime.datetime(*args, **kwargs),
-                                       timezone.utc)
-
         Show(showtime=mkutc(2010, 1, 1),
              end=mkutc(2011, 1, 1)).save()
 
@@ -97,3 +98,24 @@ class ShowTest(TestCase):
     def test_calling_next_or_prev_on_only_show_returns_none(self):
         self.assertIs(None, Show.current().next())
         self.assertIs(None, Show.current().prev())
+
+
+class PlayTest(TestCase):
+    fixtures = ['vote.json']
+
+    def setUp(self):
+        Play.objects.all().delete()
+
+    def test_plays_for_already_played_tracks_can_not_be_added(self):
+        track_1, track_2 = Track.objects.all()[:2]
+        track_1.play(tweet=False)
+        track_2.play(tweet=False)
+
+        self.assertEqual(Play.objects.all().count(), 2)
+        self.assertRaises(ValidationError, lambda: track_2.play(tweet=False))
+        self.assertEqual(Play.objects.all().count(), 2)
+
+    def test_plays_can_be_edited_after_the_fact(self):
+        play = Track.objects.all()[0].play(tweet=False)
+        play.date = mkutc(2009, 1, 1)
+        play.save()

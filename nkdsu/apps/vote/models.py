@@ -41,9 +41,9 @@ class CleanOnSaveMixin(object):
 
 
 class SetShowBasedOnDateMixin(object):
-    def save(self, force_save=False):
+    def save(self, *args, **kwargs):
         self.show = Show.at(self.date)
-        return super(CleanOnSaveMixin, self).save()
+        return super(SetShowBasedOnDateMixin, self).save(*args, **kwargs)
 
 
 class Show(CleanOnSaveMixin, models.Model):
@@ -597,7 +597,7 @@ class Track(CleanOnSaveMixin, models.Model):
     def public_notes(self):
         return self.note_set.for_show_or_none(Show.current).filter(public=True)
 
-    def play(self):
+    def play(self, tweet=True):
         """
         Mark this track as played.
         """
@@ -608,7 +608,11 @@ class Track(CleanOnSaveMixin, models.Model):
         )
 
         play.save()
-        play.tweet()
+
+        if tweet:
+            play.tweet()
+
+        return play
 
     play.alters_data = True
 
@@ -1042,16 +1046,13 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         return u'%s at %s' % (self.track, self.date)
 
     def clean(self):
-        if not settings.DEBUG:
-            if (not self.show().broadcasting(self.date)):
-                raise ValidationError('It is not currently showtime.')
-
-        if self.track in self.show().playlist():
-            raise ValidationError(
-                '{track} already played during {show}.'.format(
-                    track=self.track, show=self.show(),
+        for play in self.show.play_set.all():
+            if play != self and play.track == self.track:
+                raise ValidationError(
+                    '{track} already played during {show}.'.format(
+                        track=self.track, show=self.show,
+                    )
                 )
-            )
 
     def save(self, *args, **kwargs):
         super(Play, self).save(*args, **kwargs)
