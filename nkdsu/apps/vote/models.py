@@ -713,11 +713,13 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def _get_lastfm_album_from_musicbrainz_release(self):
         release = self.musicbrainz_release()
-        return lastfm(
-            method='album.getInfo',
-            artist=release['artist-credit-phrase'],
-            album=release['title'],
-        ).get('album')
+
+        if release is not None:
+            return lastfm(
+                method='album.getInfo',
+                artist=release['artist-credit-phrase'],
+                album=release['title'],
+            ).get('album')
 
     def _get_lastfm_album_from_track_tag(self):
         track = self.get_lastfm_track()
