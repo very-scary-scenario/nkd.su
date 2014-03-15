@@ -149,9 +149,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
 
     'django_nose',
+    'django_orphaned',
     'djcelery',
     'pipeline',
     'south',
+    'debug_toolbar',
 
     'nkdsu.apps.vote',
 )
@@ -237,6 +239,12 @@ PIPELINE_JS = {
 }
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+ORPHANED_APPS_MEDIABASE_DIRS = {
+    'vote': {
+        'root': MEDIA_ROOT,
+    }
+}
 
 try:
     from nkdsu.settings_local import *  # noqa

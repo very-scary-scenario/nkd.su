@@ -14,3 +14,5 @@ django-cache-utils
 django-instant-coverage>=0.0.5
 pillow
 musicbrainzngs
+django-orphaned
+django-debug-toolbar
