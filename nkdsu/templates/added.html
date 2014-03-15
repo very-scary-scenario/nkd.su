@@ -24,10 +24,12 @@
     <p class="subheading"><a href="{{ show.get_absolute_url }}">{{ show.plays|length }} track{{ show.plays|pluralize }} played this week</a></p>
   {% endif %}
 
-  {% if show.revealed %}
+  {% if object_list %}
     <ul class="tracks">
-      {% include "include/tracklist.html" with tracks=show.revealed %}
+      {% include "include/tracklist.html" with tracks=object_list %}
     </ul>
+
+    {% include "include/paginator.html" %}
   {% else %}
     <p class="aside">no tracks added this week ( ´· _ ·`)<p>
   {% endif %}

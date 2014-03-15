@@ -63,9 +63,13 @@ class ShowDetail(mixins.ShowDetail):
     template_name = 'show_detail.html'
 
 
-class Added(mixins.ShowDetail):
+class Added(mixins.ShowDetailMixin, ListView):
     section = 'new tracks'
     template_name = 'added.html'
+    paginate_by = 50
+
+    def get_queryset(self):
+        return self.get_object().revealed()
 
 
 class Roulette(ListView):

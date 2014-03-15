@@ -96,6 +96,13 @@ class ShowDetailMixin(object):
             url = reverse(name, kwargs=new_kwargs)
             return redirect(url)
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(ShowDetailMixin, self).get_context_data(*args,
+                                                                **kwargs)
+
+        context['show'] = self.get_object()
+        return context
+
 
 class ShowDetail(ShowDetailMixin, DetailView):
     pass
