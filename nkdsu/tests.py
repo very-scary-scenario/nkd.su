@@ -74,6 +74,8 @@ class EverythingTest(
         '/vote-admin/upload/confirm/',
         '/vote-admin/shortlist-selection/',
         '/vote-admin/discard-selection/',
+        '/vote-admin/hide-selection/',
+        '/vote-admin/unhide-selection/',
         '/vote-admin/reset-shortlist-discard-selection/',
 
         # only accepts POST
