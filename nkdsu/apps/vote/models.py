@@ -644,6 +644,22 @@ class Track(CleanOnSaveMixin, models.Model):
 
     reset_shortlist_discard.alters_data = True
 
+    def hide(self):
+        self.hidden = True
+        self.save()
+
+    hide.alters_data = True
+
+    def unhide(self):
+        self.hidden = False
+
+        if not self.revealed:
+            self.revealed = timezone.now()
+
+        self.save()
+
+    unhide.alters_data = True
+
     def slug(self):
         return slugify(self.title)
 

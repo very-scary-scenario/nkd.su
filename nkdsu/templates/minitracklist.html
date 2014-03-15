@@ -9,6 +9,10 @@
           <span><a href="{% url "vote:admin:discard_selection" %}">discard</a></span>
           <span><a href="{% url "vote:admin:reset_shortlist_discard_selection" %}">reset</a></span>
         </p>
+        <p class="actions">
+          <span><a href="{% url "vote:admin:hide_selection" %}">hide</a></span>
+          <span><a href="{% url "vote:admin:unhide_selection" %}">unhide</a></span>
+        </p>
       {% else %}
         {% if vote_url %}
           <p class="actions"><a class="mass_vote" href="{{ vote_url }}">vote for all</a></p>

@@ -134,22 +134,14 @@ class Hide(AdminAction, DetailView):
     model = Track
 
     def do_thing(self):
-        track = self.get_object()
-        track.hidden = True
-        track.save()
+        self.get_object().hide()
 
 
 class Unhide(AdminAction, DetailView):
     model = Track
 
     def do_thing(self):
-        track = self.get_object()
-        track.hidden = False
-
-        if not track.revealed:
-            track.revealed = timezone.now()
-
-        track.save()
+        self.get_object().unhide()
 
 
 class ManualVote(TrackSpecificAdminMixin, CreateView):
@@ -333,6 +325,18 @@ class ShortlistSelection(SelectionAdminAction):
     def do_thing(self):
         for track in self.get_queryset():
             track.shortlist()
+
+
+class HideSelection(SelectionAdminAction):
+    def do_thing(self):
+        for track in self.get_queryset():
+            track.hide()
+
+
+class UnhideSelection(SelectionAdminAction):
+    def do_thing(self):
+        for track in self.get_queryset():
+            track.unhide()
 
 
 class DiscardSelection(SelectionAdminAction):
