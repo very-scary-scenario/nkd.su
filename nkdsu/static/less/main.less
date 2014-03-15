@@ -257,8 +257,18 @@ body {
       .paginator {
         text-align: center;
 
-        &.objects {
-          font-size: .8em;
+        .counts {
+          margin: 0 .5em;
+
+          .count {
+            &.current {
+              font-weight: bold;
+            }
+          }
+        }
+
+        .objects {
+          font-size: .9em;
         }
       }
     }

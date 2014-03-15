@@ -1,16 +1,27 @@
 {% if page_obj.has_other_pages %}
-  <p class="paginator pages">
-    {% if page_obj.has_previous %}
-      <a href="?{% if query %}q={{ query|urlencode }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">&lt;&lt;</a>
-    {% else %}
-      &mdash; 
-    {% endif %}
-    <span>{{ page_obj.number }}</span> / <span>{{ page_obj.paginator.num_pages }}</span>
-    {% if page_obj.has_next %}
-      <a href="?{% if query %}q={{ query|urlencode }}&amp;{% endif %}page={{ page_obj.next_page_number }}">&gt;&gt;</a>
-    {% else %}
-      &mdash; 
-    {% endif %}
-  </p>
-  <p class="paginator objects"><span>{{ page_obj.start_index }}-{{ page_obj.end_index }}</span> / <span>{{ page_obj.paginator.count }}</span></p>
+  <div class="paginator">
+    <p class="pages">
+      {% if page_obj.has_previous %}
+        <a href="?{% if query %}q={{ query|urlencode }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">« prev</a>
+      {% else %}
+        <span class="unavailable">« prev</span>
+      {% endif %}
+
+      <span class="counts">
+        <span class="count current">{{ page_obj.number }}</span> of <span class="count">{{ page_obj.paginator.num_pages }}</span>
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?{% if query %}q={{ query|urlencode }}&amp;{% endif %}page={{ page_obj.next_page_number }}">next »</a>
+      {% else %}
+        <span class="unavailable">next »</span>
+      {% endif %}
+    </p>
+
+    <p class="objects">
+      <span class="counts">
+        <span class="count current">{{ page_obj.start_index }}-{{ page_obj.end_index }}</span> of <span>{{ page_obj.paginator.count }}</span>
+      </span>
+    </p>
+  </div>
 {% endif %}
