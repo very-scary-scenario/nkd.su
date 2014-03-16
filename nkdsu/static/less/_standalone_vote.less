@@ -1,9 +1,13 @@
 .standalone-vote {
   display: inline-block;
   vertical-align: top;
-  width: 50%;
-
   margin-bottom: 1em;
+
+  width: 100%;
+
+  @media (min-width: @breakpoint) {
+    width: 50%;
+  }
   
   .tracks {
     clear: both;
