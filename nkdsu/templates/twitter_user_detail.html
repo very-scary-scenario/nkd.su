@@ -49,7 +49,7 @@
 
   <h2>votes</h2>
   <div class="user-votes">
-    {% cache 300 user_detail:votes voter.user_id page_obj.page %}
+    {% cache 300 user_detail:votes voter.user_id page_obj.number %}
       {% regroup votes by show as votes_by_show %}
       {% for group in votes_by_show %}
         <h3><a href="{{ group.grouper.get_absolute_url }}">{{ group.grouper.showtime|date:"F jS Y" }}</a></h3>
