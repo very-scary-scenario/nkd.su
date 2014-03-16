@@ -1030,7 +1030,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         return the_vote
 
     def twitter_url(self):
-        return 'http://twitter.com/%s/status/%s/' % (
+        return 'https://twitter.com/%s/status/%s/' % (
             self.twitter_user.screen_name,
             self.tweet_id,
         )
