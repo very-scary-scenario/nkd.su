@@ -3,6 +3,7 @@ import datetime
 import tweepy
 
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.paginator import Paginator, InvalidPage
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
@@ -12,6 +13,7 @@ from django.core.mail import send_mail
 from django.views.generic import TemplateView, ListView, DetailView, FormView
 
 from ..forms import RequestForm, BadMetadataForm
+from ..utils import memoize
 from ...vote import mixins
 from ...vote.models import Show, Track, TwitterUser
 
@@ -135,7 +137,9 @@ class TwitterUserDetail(DetailView):
     model = TwitterUser
     template_name = 'twitter_user_detail.html'
     context_object_name = 'voter'
+    paginate_by = 100
 
+    @memoize
     def get_object(self):
         users = self.model.objects.filter(
             screen_name__iexact=self.kwargs['screen_name'])
@@ -151,6 +155,25 @@ class TwitterUserDetail(DetailView):
             return user
         else:
             raise Http404
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(TwitterUserDetail, self).get_context_data(*args,
+                                                                  **kwargs)
+
+        votes = self.get_object().votes_with_liberal_preselection()
+        paginator = Paginator(votes, self.paginate_by)
+
+        try:
+            votes = paginator.page(self.request.GET.get('page', 1))
+        except InvalidPage:
+            raise Http404('Not a page')
+
+        context.update({
+            'votes': votes,
+            'page_obj': votes,
+        })
+
+        return context
 
 
 class Artist(ListView):
