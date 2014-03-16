@@ -413,7 +413,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
         self.name = api_user.name
         self.screen_name = api_user.screen_name
-        self.user_image = api_user.profile_image_url
+        self.user_image = api_user.profile_image_url_https
         self.updated = timezone.now()
 
         self.save()
