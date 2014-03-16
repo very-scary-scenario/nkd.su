@@ -1,3 +1,5 @@
+@standalone-vote-border-radius: .4em;
+
 .standalone-vote {
   display: inline-block;
   vertical-align: top;
@@ -13,8 +15,7 @@
     clear: both;
 
     border: 1px solid @border;
-    border-radius: .4em;
-    overflow: hidden;
+    border-radius: @standalone-vote-border-radius;
 
     @media (min-width: @breakpoint) {
       margin: .1em;
@@ -22,9 +23,17 @@
 
     > * {
       border-top: 1px solid @border;
+      overflow: hidden;
 
       &:first-child {
         border-top: none;
+        border-top-left-radius: @standalone-vote-border-radius;
+        border-top-right-radius: @standalone-vote-border-radius;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: @standalone-vote-border-radius;
+        border-bottom-right-radius: @standalone-vote-border-radius;
       }
     }
   }
