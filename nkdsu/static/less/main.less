@@ -4,6 +4,8 @@
 @import "_archive.less";
 @import "_selection.less";
 @import "_tracks.less";
+@import "_nanotrack.less";
+@import "_standalone_vote.less";
 
 html {
   height: 100%;
@@ -145,45 +147,9 @@ body {
           .transform(rotate(180deg));
         }
 
-        ul.user-votes {
-          list-style: none;
-
-          li.vote {
-            padding: 0 0 2em;
-            border-radius: .5em;
-
-            > p {
-              padding: 0 1.5%;
-              font-size: .8em;
-            }
-
-            p.content {
-              font-style: italic;
-            }
-
-            p.when a {
-              color: @light;
-            }
-
-            ul.vote-tracks {
-              list-style: none;
-
-              li.vote-track {
-                margin: 0 3% .2em;
-                padding: .4em 0;
-
-                p.title {
-                  font-size: 1.2em;
-                  font-weight: bold;
-                }
-              }
-            }
-
-            &:hover {
-              p.when a {
-                color: @hl;
-              }
-            }
+        .user-votes {
+          > ul {
+            .clearfix();
           }
         }
       }

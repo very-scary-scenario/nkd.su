@@ -331,6 +331,14 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         return self.vote_set.order_by('-date').prefetch_related('tracks')
 
     @memoize
+    def votes_with_liberal_preselection(self):
+        return self.votes().prefetch_related(
+            'show',
+            'show__play_set',
+            'show__play_set__track',  # doesn't actually appear to work :<
+        )
+
+    @memoize
     def votes_for(self, show):
         return self.votes().filter(show=show)
 

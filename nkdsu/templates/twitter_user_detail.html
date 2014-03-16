@@ -13,6 +13,7 @@
         @{{ voter.screen_name }}
       </a>
     </p>
+
     {% if voter.batting_average == None %}
       <p class="subheading">needs to vote more</p>
     {% else %}
@@ -47,29 +48,21 @@
   </div>
 
   <h2>votes</h2>
-  <ul class="user-votes">
+  <div class="user-votes">
     {% cache 300 user_detail:votes voter.user_id %}
-      {% for vote in voter.votes %}
-        <li class="vote">
-          <p class="when"><a href="{{ vote.twitter_url }}">{{ vote.date|when }}</a></p>
-          {% if vote.content %}
-            <p class="content">‘{{ vote.content }}’</p>
-          {% endif %}
-          <ul class="vote-tracks">
-            {% for track in vote.tracks.all %}
-              <li class="vote-track">
-                <p class="artist"><a href="{{ track.get_artist_url }}">{{ track.artist }}</a></p>
-                <p class="title"><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
-                {% if track.role %}
-                  <p class="role">{{ track.role }}</p>
-                {% endif %}
-              </li>
+      {% regroup voter.votes_with_liberal_preselection by show as votes_by_show %}
+      {% for group in votes_by_show %}
+        <h3><a href="{{ group.grouper.get_absolute_url }}">{{ group.grouper.showtime|date:"F jS Y" }}</a></h3>
+        {% spaceless %}
+          <ul>
+            {% for vote in group.list %}
+              {% include "include/vote.html" with show=group.grouper %}
             {% endfor %}
           </ul>
-        </li>
+        {% endspaceless %}
       {% endfor %}
     {% endcache %}
-  </ul>
+  </div>
 </div>
 
 {% endblock %}

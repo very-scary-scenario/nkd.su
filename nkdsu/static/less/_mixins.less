@@ -1,5 +1,14 @@
 @import "_vars.less";
 
+.clearfix() {
+  &::after {
+    content: ' ';
+    display: block;
+    clear: both;
+    height: 0;
+    line-height: 0;
+  }
+}
 .transform(@value) {
     -webkit-transform: @value;
     -moz-transform: @value;

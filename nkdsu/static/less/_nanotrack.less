@@ -1,0 +1,53 @@
+.nanotrack {
+  > a {
+    overflow: hidden;
+    position: relative;
+    display: block;
+    padding: .2em .4em .3em;
+    background-color: @track_background;
+    .noise();
+
+    .art {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-position: center center;
+      background-size: cover;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: .08;
+    }
+
+    p {
+      position: relative;
+      z-index: 1;
+
+      &.role {
+        font-size: .8em;
+      }
+
+      &.title {
+        font-weight: bold;
+      }
+    }
+  }
+
+  &.successful a {
+    background-color: fadeout(@green, 60%);
+
+    &::after {
+      content: '[played]';
+      text-transform: uppercase;
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-weight: bold;
+      font-size: 2em;
+      opacity: .4;
+      color: darken(@green, 40%);
+      .transform(rotate(20deg));
+    }
+  }
+
+}

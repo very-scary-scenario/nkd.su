@@ -1,0 +1,18 @@
+{% load vote_tags %}
+<li class="standalone-vote
+  {% if vote.content %}content{% endif %}
+  {% if not vote.is_manual and vote.twitter_user.is_abuser %}abuser{% endif %}"
+  >
+
+  <ul class="tracks">
+    {% for track in vote.tracks.all %}
+      {% include "include/nanotrack.html" with tiny=True %}
+    {% endfor %}
+  </ul>
+
+
+  <p class="text">
+    <span class="meta when"><a href="{{ vote.twitter_url }}">{{ vote.date|when }}</a></span>
+    {{ vote.content|safe }}
+  </p>
+</li>

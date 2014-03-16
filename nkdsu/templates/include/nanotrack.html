@@ -1,0 +1,16 @@
+<li
+  class="
+    nanotrack
+    {% if track in show.playlist %}
+      successful
+    {% endif %}
+  "
+  >
+  <a href="{{ track.get_absolute_url }}">
+    {% if track.background_art %}
+      <div class="art" style="background-image: url('{{ track.background_art.url }}');"></div>
+    {% endif %}
+    <p class="title">{{ track.title }}</p>
+    <p class="role">{{ track.role }}</p>
+  </a>
+</li>

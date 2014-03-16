@@ -1,0 +1,33 @@
+.standalone-vote {
+  display: inline-block;
+  vertical-align: top;
+  width: 50%;
+
+  margin-bottom: 1em;
+  
+  .tracks {
+    clear: both;
+    margin: .1em;
+    border: 1px solid @border;
+    border-radius: .4em;
+    overflow: hidden;
+
+    > * {
+      border-top: 1px solid @border;
+
+      &:first-child {
+        border-top: none;
+      }
+    }
+  }
+
+  .text {
+    padding: .2em .5em;
+
+    .when {
+      float: right;
+      font-size: .8em;
+      padding-left: .5em;
+    }
+  }
+}
