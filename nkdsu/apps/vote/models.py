@@ -885,7 +885,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         twitter_user.screen_name = tweet['user']['screen_name']
         twitter_user.name = tweet['user']['name']
-        twitter_user.user_image = tweet['user']['profile_image_url']
+        twitter_user.user_image = tweet['user']['profile_image_url_https']
         twitter_user.updated = created_at
         twitter_user.save()
 
