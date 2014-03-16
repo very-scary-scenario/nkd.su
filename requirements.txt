@@ -16,3 +16,5 @@ pillow
 musicbrainzngs
 django-orphaned
 django-debug-toolbar
+ndg-httpsclient
+pyasn1
