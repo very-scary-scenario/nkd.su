@@ -5,19 +5,19 @@
 {% block content %}
   <h2>playlist for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS Y" }}</h2>
   <p class="subheading">
-    &lt;
-    {% if show.prev %}
-      <a href="{{ show.prev.get_absolute_url }}">{{ show.prev.showtime|date:"Y-m-d" }}</a>
-    {% else %}
-      —
-    {% endif %}
-    · <a href="{% url "vote:archive" %}">all shows</a> ·
     {% if show.next and show.next.has_ended %}
-      <a href="{{ show.next.get_absolute_url }}">{{ show.next.showtime|date:"Y-m-d" }}</a>
+      <a href="{{ show.next.get_absolute_url }}">« {{ show.next.showtime|date:"Y-m-d" }}</a>
     {% else %}
-      —
+      <a href="{% url "vote:index" %}">« current</a>
     {% endif %}
-    &gt;
+
+    · <a href="{% url "vote:archive" %}">all shows</a> ·
+
+    {% if show.prev %}
+      <a href="{{ show.prev.get_absolute_url }}">{{ show.prev.showtime|date:"Y-m-d" }} »</a>
+    {% else %}
+      no older show
+    {% endif %}
   </p>
 
   {% if show.revealed %}

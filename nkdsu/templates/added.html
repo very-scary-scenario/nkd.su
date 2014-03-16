@@ -5,19 +5,19 @@
 {% block content %}
   <h2>tracks added for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS Y" }}</h2>
   <p class="subheading">
-    &lt;
-    {% if show.prev %}
-      <a href="{{ show.prev.get_revealed_url }}">{{ show.prev.showtime|date:"Y-m-d" }}</a>
+    {% if show.next and show.next.has_ended %}
+      <a href="{{ show.next.get_revealed_url }}">« {{ show.next.showtime|date:"Y-m-d" }}</a>
     {% else %}
-      —
+      <a href="{% url "vote:index" %}">« current</a>
     {% endif %}
+
     · <a href="{% url "vote:archive" %}">all shows</a> ·
-    {% if show.has_ended and show.next %}
-      <a href="{{ show.next.get_revealed_url }}">{{ show.next.showtime|date:"Y-m-d" }}</a>
+
+    {% if show.prev %}
+      <a href="{{ show.prev.get_revealed_url }}">{{ show.prev.showtime|date:"Y-m-d" }} »</a>
     {% else %}
-      —
+      no older show
     {% endif %}
-    &gt;
   </p>
 
   {% if show.plays %}
