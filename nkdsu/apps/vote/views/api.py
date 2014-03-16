@@ -16,9 +16,6 @@ class APIView(View):
         return self.get_object().api_dict(verbose=True)
 
     def get(self, request, *args, **kwargs):
-        self.request = request
-        self.kwargs = kwargs
-
         resp = HttpResponse(
             json.dumps(self.get_api_stuff(),
                        cls=DjangoJSONEncoder,
