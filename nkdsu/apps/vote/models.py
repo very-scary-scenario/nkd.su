@@ -413,7 +413,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
         self.name = api_user.name
         self.screen_name = api_user.screen_name
-        self.user_image = api_user.profile_image_url
+        self.user_image = api_user.profile_image_url_https
         self.updated = timezone.now()
 
         self.save()
@@ -1030,7 +1030,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         return the_vote
 
     def twitter_url(self):
-        return 'http://twitter.com/%s/status/%s/' % (
+        return 'https://twitter.com/%s/status/%s/' % (
             self.twitter_user.screen_name,
             self.tweet_id,
         )
