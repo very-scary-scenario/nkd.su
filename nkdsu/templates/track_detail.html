@@ -3,6 +3,13 @@
 
 {% block title %}{{ track.title }}{% endblock %}
 
+{% block twitter_card %}
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@nkdsu">
+  <meta name="twitter:title" content="{{ track.title }}">
+  <meta name="twitter:description" content="{{ track.role }}. Requested by {% for vote in track|votes_for:vote_show %}{% if forloop.first %}{% elif forloop.last %} and {% else %}, {% endif %}{{ vote.either_name }}{% endfor %}.">
+{% endblock %}
+
 {% block content %}
 
 <ul class="tracks">

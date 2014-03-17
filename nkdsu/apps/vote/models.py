@@ -947,6 +947,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
                 raise ValidationError(
                     'Twitter attributes missing from Twitter vote')
 
+    def either_name(self):
+        return self.name or '@{0}'.format(self.twitter_user.screen_name)
+
     @property
     def is_manual(self):
         return not bool(self.tweet_id)

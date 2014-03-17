@@ -17,6 +17,10 @@
     <title>
       {% block title %}a neko desu request robot{% endblock %} | nkd.su
     </title>
+
+    {% block twitter_card %}{% endblock %}
+    <meta name="twitter:domain" content="nkd.su">
+
   </head>
   <body>
     {% csrf_token %}
