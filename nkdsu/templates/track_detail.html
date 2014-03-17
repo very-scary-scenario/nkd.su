@@ -7,7 +7,7 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@nkdsu">
   <meta name="twitter:title" content="{{ track.title }}">
-  <meta name="twitter:description" content="{{ track.role }}. Requested by {% for vote in track|votes_for:vote_show %}{% if forloop.first %}{% elif forloop.last %} and {% else %}, {% endif %}{{ vote.either_name }}{% endfor %}.">
+  <meta name="twitter:description" content="{{ track.role }}.{% if track|votes_for:vote_show %} Requested by {% for vote in track|votes_for:vote_show %}{% if forloop.first %}{% elif forloop.last %} and {% else %}, {% endif %}{{ vote.either_name }}{% endfor %}.{% endif %}">
 {% endblock %}
 
 {% block content %}
