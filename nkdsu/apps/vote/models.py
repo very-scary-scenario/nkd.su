@@ -680,7 +680,7 @@ class Track(CleanOnSaveMixin, models.Model):
                                              'pk': self.pk})
 
     def get_public_url(self):
-        return 'http://nkd.su' + self.get_absolute_url()
+        return 'https://nkd.su' + self.get_absolute_url()
 
     def get_report_url(self):
         return reverse('vote:report', kwargs={'pk': self.pk})
