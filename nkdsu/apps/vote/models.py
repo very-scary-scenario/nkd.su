@@ -680,7 +680,7 @@ class Track(CleanOnSaveMixin, models.Model):
                                              'pk': self.pk})
 
     def get_public_url(self):
-        return 'http://nkd.su' + self.get_absolute_url()
+        return 'https://nkd.su' + self.get_absolute_url()
 
     def get_report_url(self):
         return reverse('vote:report', kwargs={'pk': self.pk})
@@ -946,6 +946,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             if not (self.tweet_id and self.twitter_user_id):
                 raise ValidationError(
                     'Twitter attributes missing from Twitter vote')
+
+    def either_name(self):
+        return self.name or '@{0}'.format(self.twitter_user.screen_name)
 
     @property
     def is_manual(self):
