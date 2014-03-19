@@ -6,7 +6,7 @@ from .utils import indefinitely
 
 def get_sections(request):
     active_section = None
-    most_recent_track = Track.objects.public().order_by('-revealed')[0]
+    most_recent_track = Track.objects.public().latest('revealed')
 
     if (
         hasattr(request, 'resolver_match') and

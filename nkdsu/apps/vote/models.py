@@ -439,7 +439,7 @@ class Track(CleanOnSaveMixin, models.Model):
     added = models.DateTimeField()
 
     # nkdsu-specific
-    revealed = models.DateTimeField(blank=True, null=True)
+    revealed = models.DateTimeField(blank=True, null=True, db_index=True)
     hidden = models.BooleanField()
     inudesu = models.BooleanField()
     background_art = models.ImageField(
