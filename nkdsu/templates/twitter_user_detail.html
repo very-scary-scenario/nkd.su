@@ -42,12 +42,12 @@
 
     {% if voter.is_abuser %}
       <p class="subheading"><strong>{{ voter.name }} is condemned until further notice.</strong></p>
-      <p class="subheading">Votes will still appear on tracks, but will not influence their position on the front page.</p>
+      <p class="subheading">requests will still appear on tracks, but will not influence their position on the front page.</p>
     {% endif %}
 
   </div>
 
-  <h2>votes</h2>
+  <h2>requests</h2>
   <div class="user-votes">
     {% cache 300 user_detail:votes voter.user_id page_obj.number %}
       {% regroup votes by show as votes_by_show %}
