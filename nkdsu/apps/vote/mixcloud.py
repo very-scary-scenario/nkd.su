@@ -27,7 +27,7 @@ def cloudcasts_for(date):
     cloudcasts = []
 
     for datum in resp['data']:
-        for cloudcast in datum['cloudcasts']:
+        for cloudcast in datum.get('cloudcasts', []):
             if hunting_for in cloudcast['name']:
                 cloudcasts.append(cloudcast)
 
