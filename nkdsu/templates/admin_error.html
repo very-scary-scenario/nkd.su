@@ -1,0 +1,18 @@
+{% extends parent %}
+
+{% block title %}{{ action }}{% endblock %}
+{% block content %}
+
+<h2 class="aligned">Failed to {{ action|lower }} :&lt;</h2>
+
+{% if deets %}
+  {{ deets|linebreaks }}
+{% endif %}
+
+{% for field, messages in error.iteritems %}
+  {% for message in messages %}
+    <p>{{ message }}</p>
+  {% endfor %}
+{% endfor %}
+
+{% endblock %}

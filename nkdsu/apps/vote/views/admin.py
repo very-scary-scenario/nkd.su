@@ -3,9 +3,11 @@
 import plistlib
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
+from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.generic import (DetailView, CreateView, View, FormView,
                                   TemplateView, ListView)
@@ -21,6 +23,13 @@ class AdminMixin(object):
     """
     A mixin we should apply to all admin views.
     """
+
+    def handle_validation_error(self, error):
+        context = {
+            'action': self.__doc__.strip('\n .'),
+            'error': error.error_dict,
+        }
+        return TemplateResponse(self.request, 'admin_error.html', context)
 
     @classmethod
     def as_view(cls):
@@ -53,8 +62,12 @@ class AdminActionMixin(AdminMixin):
         return self.url
 
     def do_thing_and_redirect(self):
-        self.do_thing()
-        return redirect(self.get_redirect_url())
+        try:
+            self.do_thing()
+        except ValidationError as e:
+            return self.handle_validation_error(e)
+        else:
+            return redirect(self.get_redirect_url())
 
 
 class AdminAction(AdminActionMixin):
@@ -160,6 +173,10 @@ class ManualVote(TrackSpecificAdminMixin, CreateView):
 
 
 class MakeBlock(TrackSpecificAdminMixin, CreateView):
+    """
+    Block a track.
+    """
+
     model = Block
     fields = ['reason']
     template_name = 'block.html'
@@ -168,7 +185,12 @@ class MakeBlock(TrackSpecificAdminMixin, CreateView):
         block = form.save(commit=False)
         block.track = self.get_track()
         block.show = Show.current()
-        block.save()
+
+        try:
+            block.save()
+        except ValidationError as e:
+            return self.handle_validation_error(e)
+
         return redirect(reverse('vote:index'))
 
 
