@@ -8,13 +8,13 @@
       <span><a href="{% url "vote:admin:artless" %}">artless</a></span>
       <span><a href="{% url "vote:admin:upload_library" %}">update library</a></span>
       <span><a href="{% url "vote:admin:bad_trivia" %}">bad trivia</a></span>
-      <span><a href="{% url "logout" %}?next={{ request.path|urlencode }}">log out</a></span>
+      <span><a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a></span>
     {% else %}
       <span><a href="{% url "vote:info" %}">help</a></span>
       <span><a href="{% url "vote:api_docs" %}">api</a></span>
       <span><a target="_blank" href="https://github.com/colons/nkd.su">source</a></span>
       <span><a target="_blank" href="https://github.com/colons/nkd.su/issues/new">report a bug</a></span>
-      <span><a href="{% url "login" %}?next={{ request.path|urlencode }}">log in</a></span>
+      <span><a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a></span>
     {% endif %}
   </p>
 </div>
