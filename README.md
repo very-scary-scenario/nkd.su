@@ -15,7 +15,7 @@ song’ (or ‘+1’ if it has already been voted for). If you can't find what y
 looking for, fill out the [request an addition](https://nkd.su/request) form.
 
 You can personalise your vote with a message that will appear when people hover
-over your user icon. All text that is not either a valid song ID number or the
+over your user icon. All text that is not either a valid song URL or the
 [@nkdsu](https://twitter.com/nkdsu) mention at the start of the tweet will be
 displayed.
 
