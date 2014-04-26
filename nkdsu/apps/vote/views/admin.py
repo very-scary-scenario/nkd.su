@@ -204,6 +204,10 @@ class Unblock(AdminAction, DetailView):
 
 
 class MakeBlockWithReason(AdminAction, DetailView):
+    """
+    Block a track for a particular reason.
+    """
+
     model = Track
 
     def do_thing(self):
@@ -215,6 +219,10 @@ class MakeBlockWithReason(AdminAction, DetailView):
 
 
 class MakeShortlist(AdminAction, DetailView):
+    """
+    Add a track to the shortlist.
+    """
+
     model = Track
 
     def do_thing(self):
@@ -222,6 +230,10 @@ class MakeShortlist(AdminAction, DetailView):
 
 
 class MakeDiscard(AdminAction, DetailView):
+    """
+    Discard a track.
+    """
+
     model = Track
 
     def do_thing(self):
