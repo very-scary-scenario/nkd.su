@@ -19,11 +19,10 @@
 
   .artist {
     padding-left: 0 !important;  // override NEW! compensation
+    padding-right: @new-compensation;
   }
 
   &.new {
-    padding-right: @new-compensation;
-
     &::before {
       left: auto !important;
       right: -.2em !important;
