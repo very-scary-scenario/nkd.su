@@ -1,6 +1,7 @@
 @import "_mixins.less"; 
 
 @metadata-width: 60%;
+@new-compensation: 2.7em;
 
 .tinytrack() {
   display: block;
@@ -20,9 +21,13 @@
     padding-left: 0 !important;  // override NEW! compensation
   }
 
-  &.new::before {
-    left: auto !important;
-    right: -.2em !important;
+  &.new {
+    padding-right: @new-compensation;
+
+    &::before {
+      left: auto !important;
+      right: -.2em !important;
+    }
   }
 }
 
@@ -212,7 +217,7 @@
   // NEW!
   &.new {
     .artist {
-      padding-left: 2.7em;
+      padding-left: @new-compensation;
     }
 
     &::before {
@@ -225,6 +230,7 @@
       border-color: #ca6;
       background-color: #feb;
       font-family: 'Kaushan Script', cursive;
+      z-index: 2;
     }
   }
 
