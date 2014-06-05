@@ -203,16 +203,11 @@
 
   // stamps
   .report, &::before {
-    .uninvert() !important;
     padding: .3em .3em .2em;
     border-radius: .3em;
     border: 1px solid @border;
     line-height: 1em;
     position: absolute;
-
-    a:hover {
-      border: none;
-    }
   }
 
   // NEW!
@@ -243,6 +238,7 @@
     opacity: 0;
     bottom: -.2em;
     right: -.2em;
+    z-index: 5;
   }
   &:hover .report {
     opacity: 1;

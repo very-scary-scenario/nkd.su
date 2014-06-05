@@ -32,7 +32,7 @@
     {% endif %}
 
     {% if not user.is_authenticated %}
-      <span class="report"><a href="{{ track.get_report_url }}">bad metadata?</a></span>
+      <a class="report" href="{{ track.get_report_url }}">bad metadata?</a>
     {% endif %}
 
     <div class="metadata">
