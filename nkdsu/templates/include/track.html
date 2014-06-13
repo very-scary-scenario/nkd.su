@@ -31,10 +31,6 @@
       <div class="art" style="background-image: url('{{ track.background_art.url }}');"></div>
     {% endif %}
 
-    {% if not user.is_authenticated %}
-      <a class="report" href="{{ track.get_report_url }}">bad metadata?</a>
-    {% endif %}
-
     <div class="metadata">
       <p class="artist">
         {% for artist in track.artists %}{% if forloop.first %}

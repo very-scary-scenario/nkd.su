@@ -202,7 +202,7 @@
   }
 
   // stamps
-  .report, &::before {
+  &::before {
     padding: .3em .3em .2em;
     border-radius: .3em;
     border: 1px solid @border;
@@ -228,20 +228,6 @@
       font-family: 'Kaushan Script', cursive;
       z-index: 2;
     }
-  }
-
-  // bad metadata?
-  .report {
-    font-size: .8em;
-    border-color: @hl;
-    background-color: @light_hl;
-    opacity: 0;
-    bottom: -.2em;
-    right: -.2em;
-    z-index: 5;
-  }
-  &:hover .report {
-    opacity: 1;
   }
 
   // art
