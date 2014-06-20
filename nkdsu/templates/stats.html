@@ -56,7 +56,19 @@
       {% for track, value in popular_tracks|slice:":10" %}
         <tr class="stat">
           <td class="summary">
-            <p class="artist"><a href="{{ track.get_artist_url }}">{{ track.artist }}</a></p>
+            <p class="artist">
+              {% for artist in track.artists %}{% if forloop.first %}
+                {% elif forloop.last %} and
+                {% else %},
+                {% endif %}
+                {% spaceless %}
+                  {% if artist.worth_showing %}
+                    <a href="{{ artist.url }}">{{ artist.name }}</a>
+                  {% else %}
+                    {{ artist.name }}
+                  {% endif %}
+                {% endspaceless %}{% endfor %}
+            </p>
             <p class="title"><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
             <p class="role">{{ track.role }}</p>
           </td>
