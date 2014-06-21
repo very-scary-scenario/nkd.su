@@ -33,17 +33,7 @@
 
     <div class="metadata">
       <p class="artist">
-        {% for artist in track.artists %}{% if forloop.first %}
-          {% elif forloop.last %} and
-          {% else %},
-          {% endif %}
-          {% spaceless %}
-            {% if artist.worth_showing %}
-              <a href="{{ artist.url }}">{{ artist.name }}</a>
-            {% else %}
-              {{ artist.name }}
-            {% endif %}
-          {% endspaceless %}{% endfor %}
+        {% include "include/linked_artists.html" with artists=track.artists %}
       </p>
       <p class="title">
         <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
