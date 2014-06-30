@@ -113,68 +113,80 @@
             }
           }
 
+          @media (min-width: @breakpoint) {
+            &:hover {
+              img.thumb {
+                opacity: 0;
+                // long enough that we're never going to see it, and only
+                // applicable on hover, so it'll reappear immediately:
+                transition: opacity 1s;
+              }
+            }
+
+            .deets {
+              position: absolute;
+              right: -.8em;
+              top: -.8em;
+              pointer-events: none;
+              text-align: right;
+              z-index: 1;
+
+              .uninvert();
+              padding: .4em;
+              background-color: @bg;
+              .noise();
+              box-shadow: inset #ddd 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
+              border: 1px solid @border;
+              max-width: 17em;
+              border-radius: .4em;
+
+              img {
+                float: right;
+                width: 48px;
+                height: 48px;
+              }
+
+              .meta {
+                margin-right: 55px;
+                color: #666;
+                font-size: .8em;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                &.full_name {
+                  font-weight: bold;
+                  font-size: 1em;
+                  margin-top: -.2em;
+                }
+                &.when {
+                  color: @light;
+                }
+              }
+
+              .text {
+                padding-top: .3em;
+                margin-top: .4em;
+                border-top: 1px solid #ddd;
+                clear: both;
+                text-align: center;
+                word-wrap: break-word;
+                overflow: hidden;
+              }
+            }
+          }
+
           .deets {
-            display: none;
+            opacity: 0;
+            transition: opacity .1s, transform .1s;
+            transform: scale(0.9, 0.9);
+            transform-origin: 85% 2em;
           }
 
           &:hover {
-            @media (min-width: @breakpoint) {
-              img.thumb {
-                opacity: 0;
-              }
-
-              .deets {
-                display: block;
-                position: absolute;
-                right: -.8em;
-                top: -.8em;
-                pointer-events: none;
-                text-align: right;
-                z-index: 1;
-
-                .uninvert();
-                padding: .4em;
-                background-color: @bg;
-                .noise();
-                box-shadow: inset #ddd 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
-                border: 1px solid @border;
-                max-width: 17em;
-                border-radius: .4em;
-
-                img {
-                  float: right;
-                  width: 48px;
-                  height: 48px;
-                }
-
-                .meta {
-                  margin-right: 55px;
-                  color: #666;
-                  font-size: .8em;
-                  white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-
-                  &.full_name {
-                    font-weight: bold;
-                    font-size: 1em;
-                    margin-top: -.2em;
-                  }
-                  &.when {
-                    color: @light;
-                  }
-                }
-
-                .text {
-                  padding-top: .3em;
-                  margin-top: .4em;
-                  border-top: 1px solid #ddd;
-                  clear: both;
-                  text-align: center;
-                  word-wrap: break-word;
-                  overflow: hidden;
-                }
-              }
+            .deets {
+              opacity: 1;
+              transform: scale(1, 1);
             }
           }
         }
