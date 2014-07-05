@@ -20,7 +20,11 @@
     <meta name="twitter:domain" content="nkd.su">
 
   </head>
-  <body>
+  <body class="
+    {% if user.is_authenticated %}
+      authenticated
+    {% endif %}
+  ">
     {% csrf_token %}
     <p id="loading"></p>
     <div id="everything">
