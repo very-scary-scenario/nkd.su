@@ -14,6 +14,12 @@
       </a>
     </p>
 
+    <p class="subheading">
+      <a class="avatar" href="{{ voter.twitter_url }}">
+        <img class="avatar" src="{{ voter.user_image }}" alt="{{ voter.name }}">
+      </a>
+    </p>
+
     {% if voter.batting_average == None %}
       <p class="subheading">needs to vote more</p>
     {% else %}
@@ -33,12 +39,6 @@
         {% endif %}
       </a></p>
     {% endif %}
-
-    <p class="subheading">
-      <a class="avatar" href="{{ voter.twitter_url }}">
-        <img class="avatar" src="{{ voter.user_image }}" alt="{{ voter.name }}">
-      </a>
-    </p>
 
     {% if voter.is_abuser %}
       <p class="subheading"><strong>{{ voter.name }} is condemned until further notice.</strong></p>
