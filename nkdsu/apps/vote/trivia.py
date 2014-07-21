@@ -11,8 +11,8 @@ questions = {
     'Do you ____ online?':
     r'(shop)|(wub)',
 
-    'Ever hosted a fun-filled ____?':
-    r'parta?y',
+    '____ Daikazoku':
+    'dango',
 
     'BA BA BA BADIADIA BA BA ____':
     r'[BADIYUH !]+',
