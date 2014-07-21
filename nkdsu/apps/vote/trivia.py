@@ -12,7 +12,7 @@ questions = {
     r'(shop)|(wub)',
 
     '____ Daikazoku':
-    'dango',
+    r'dango',
 
     'BA BA BA BADIADIA BA BA ____':
     r'[BADIYUH !]+',
