@@ -53,6 +53,7 @@ class Show(CleanOnSaveMixin, models.Model):
 
     showtime = models.DateTimeField(db_index=True)
     end = models.DateTimeField(db_index=True)
+    message = models.TextField(blank=True)
 
     def __str__(self):
         return '<Show for %r>' % (self.showtime.date())
