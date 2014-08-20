@@ -30,10 +30,10 @@ they're also following [@nkdsu].
 [request an addition]: https://nkd.su/request
 [@nkdsu]: https://twitter.com/nkdsu
 
-### All this is well and good but I don't have a Twitter account
+### All this is well and good but I don't like Twitter.
 
-You should! It's a neat thing! If you're determined not to join, though, you
-could just send Peter an [email] or a text or something.
+Yeah, I get it. In that case, just send Peter an [email] or a text or
+something.
 
 [email]: mailto:peter.shillito@thisisthecat.com
 
