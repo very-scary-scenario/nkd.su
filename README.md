@@ -1,4 +1,4 @@
-## What is this?
+z# What is this?
 
 [nkd.su] is a request-gathering and voting service for [The Cat]'s [Neko Desu]
 radio show. Songs are sorted according to which was voted for most recently on
@@ -63,11 +63,13 @@ know][Suggestions].
 
 ## Who's to blame?
 
-[Iain Dawson][Iain] ([@mftb]), with design contributions from [Chris
-Walden][Chris] ([@EuricaeriS]) and [Peter Shillito] himself.
+[Iain Dawson] ([@mftb]) and [contributors] including [Thomas Moore], with
+design help from [Chris Walden] ([@EuricaeriS]) and [Peter Shillito] himself.
 
-[Iain]: https://colons.co/
+[Iain Dawson]: https://colons.co/
 [@mftb]: https://twitter.com/mftb
-[Chris]: http://www.chriswalden.co.uk/
+[contributors]: https://github.com/colons/nkd.su/graphs/contributors
+[Thomas Moore]: https://github.com/Tomo-san
+[Chris Walden]: http://www.chriswalden.co.uk/
 [@EuricaeriS]: https://twitter.com/EuricaeriS
 [Peter Shillito]: https://twitter.com/theshillito
