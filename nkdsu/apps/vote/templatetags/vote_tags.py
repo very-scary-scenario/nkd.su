@@ -1,7 +1,10 @@
 import datetime
 
+from markdown import markdown as md
+
 from django.template import Library
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 
 from ..utils import length_str
 
@@ -54,3 +57,8 @@ def percent(flt):
 @register.filter
 def total_length(tracks):
     return length_str(sum([t.msec for t in tracks]))
+
+
+@register.filter
+def markdown(text):
+    return mark_safe(md(text))

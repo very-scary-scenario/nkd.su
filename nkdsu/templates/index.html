@@ -2,6 +2,12 @@
 {% load compressed vote_tags %}
   
 {% block content %}
+  
+  {% if show.message %}
+    <div class="show-message markdown">
+      {{ show.message|markdown }}
+    </div>
+  {% endif %}
 
   {% if show.playlist %}
     <div id="playlist">
