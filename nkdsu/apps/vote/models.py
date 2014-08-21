@@ -297,6 +297,7 @@ class Show(CleanOnSaveMixin, models.Model):
             'showtime': self.showtime,
             'finish': self.end,
             'start': start,
+            'broadcasting': self.broadcasting(),
         }
 
 

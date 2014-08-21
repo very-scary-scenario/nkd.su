@@ -16,6 +16,7 @@ Includes:
 - `start`: the date and time at which this week started
 - `finish`: the date and time at which this week ended 
 - `showtime`: the date and time at which this week's show began
+- `broadcasting`: if this show is on the air at the time of the request
 
 ### [`/week/`][eg_latest_week]
 
