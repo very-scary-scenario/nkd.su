@@ -432,7 +432,12 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         self.save()
 
     def api_dict(self, verbose=False):
-        return {}
+        return {
+            'user_name': self.name,
+            'user_screen_name': self.screen_name,
+            'user_image': self.user_image,
+            'user_id': self.user_id,
+        }
 
 
 class Track(CleanOnSaveMixin, models.Model):
@@ -1039,12 +1044,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         if not self.is_manual:
             the_vote.update({
-                'user_name': self.twitter_user.name,
-                'user_screen_name': self.twitter_user.screen_name,
-                'user_image': self.twitter_user.user_image,
-                'user_id': self.twitter_user.user_id,
                 'tweet_id': self.tweet_id,
             })
+            the_vote.update(self.twitter_user.api_dict())
 
         return the_vote
 
