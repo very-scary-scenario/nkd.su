@@ -1,8 +1,7 @@
 # What is this?
 
 [nkd.su] is a request-gathering and voting service for [The Cat]'s [Neko Desu]
-radio show. Songs are sorted according to which was voted for most recently on
-the front page.
+radio show.
 
 [nkd.su]: https://nkd.su
 [The Cat]: http://thisisthecat.com
