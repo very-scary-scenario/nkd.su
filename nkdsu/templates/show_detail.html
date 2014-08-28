@@ -3,6 +3,7 @@
 {% block title %}{{ show.showtime|date:"F"|lower }} {{ show.showtime|date:"jS Y" }}{% endblock %}
 
 {% block content %}
+
   <h2>playlist for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS Y" }}</h2>
   <p class="subheading">
     {% if show.next and show.next.has_ended %}
@@ -24,6 +25,8 @@
     <p class="subheading"><a href="{{ show.get_revealed_url }}">{{ show.revealed|length }} track{{ show.revealed|pluralize }} added this week</a></p>
   {% endif %}
 
+  {% include "include/show_message.html" %}
+
   {% if show.cloudcasts == None %}
     <div class="cloudcasts">
       <p>There was a problem connecting to the Mixcloud API; I have no idea if this show is archived.</p>
@@ -40,4 +43,5 @@
   <ul class="tracks">
     {% include "include/tracklist.html" with tracks=show.playlist vote_show=show %}
   </ul>
+
 {% endblock %}

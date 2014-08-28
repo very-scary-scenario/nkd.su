@@ -1,13 +1,9 @@
 {% extends parent %}
-{% load compressed vote_tags %}
+{% load vote_tags %}
   
 {% block content %}
-  
-  {% if show.message %}
-    <div class="show-message markdown">
-      {{ show.message|markdown }}
-    </div>
-  {% endif %}
+
+  {% include "include/show_message.html" %}
 
   {% if show.playlist %}
     <div id="playlist">

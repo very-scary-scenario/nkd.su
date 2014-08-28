@@ -1,0 +1,7 @@
+{% load vote_tags %}
+
+{% if show.message %}
+  <div class="show-message markdown">
+    {{ show.message|markdown }}
+  </div>
+{% endif %}
