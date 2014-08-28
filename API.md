@@ -17,6 +17,8 @@ Includes:
 - `finish`: the date and time at which this week ended 
 - `showtime`: the date and time at which this week's show began
 - `broadcasting`: if this show is on the air at the time of the request
+- `message_markdown` and `message_html`: the message shown on the front page
+  during the week containing this show
 
 ### [`/week/`][eg_latest_week]
 

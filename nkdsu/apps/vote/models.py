@@ -8,6 +8,7 @@ from urlparse import urlparse
 
 from cache_utils.decorators import cached
 from dateutil import parser as date_parser
+from markdown import markdown
 import requests
 from PIL import Image, ImageFilter
 
@@ -298,6 +299,8 @@ class Show(CleanOnSaveMixin, models.Model):
             'finish': self.end,
             'start': start,
             'broadcasting': self.broadcasting(),
+            'message_markdown': self.message or None,
+            'message_html': markdown(self.message) if self.message else None,
         }
 
 
