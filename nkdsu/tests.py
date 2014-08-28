@@ -41,6 +41,7 @@ class EverythingTest(
         '/api/track/0007C3F2760E0541/',
         '/api/track/0007C3F2760E0541/',
         '/api/search/?q=Canpeki',
+        '/api/user/EuricaeriS/',
 
         '/',
         '/info/',
