@@ -13,7 +13,6 @@ from django.core.mail import send_mail
 from django.views.generic import TemplateView, ListView, DetailView, FormView
 
 from ..forms import RequestForm, BadMetadataForm
-from ..utils import memoize
 from ...vote import mixins
 from ...vote.models import Show, Track, TwitterUser
 
@@ -133,28 +132,10 @@ class TrackDetail(DetailView):
             return super(TrackDetail, self).get(request, *args, **kwargs)
 
 
-class TwitterUserDetail(DetailView):
-    model = TwitterUser
+class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
     template_name = 'twitter_user_detail.html'
     context_object_name = 'voter'
     paginate_by = 100
-
-    @memoize
-    def get_object(self):
-        users = self.model.objects.filter(
-            screen_name__iexact=self.kwargs['screen_name'])
-
-        if not users.exists():
-            raise Http404
-        elif users.count() == 1:
-            user = users[0]
-        else:
-            user = users.order_by('-updated')[0]
-
-        if user.vote_set.exists():
-            return user
-        else:
-            raise Http404
 
     def get_context_data(self, *args, **kwargs):
         context = super(TwitterUserDetail, self).get_context_data(*args,

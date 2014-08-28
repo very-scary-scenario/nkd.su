@@ -431,6 +431,9 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
         self.save()
 
+    def api_dict(self, verbose=False):
+        return {}
+
 
 class Track(CleanOnSaveMixin, models.Model):
     objects = TrackManager()

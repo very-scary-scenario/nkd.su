@@ -7,7 +7,8 @@ from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 
 from ..models import Track
-from ..mixins import ShowDetailMixin, ThisShowDetailMixin
+from ..mixins import (
+    ShowDetailMixin, ThisShowDetailMixin, TwitterUserDetailMixin)
 from ..views import Search
 
 
@@ -41,3 +42,7 @@ class TrackAPI(SingleObjectMixin, APIView):
 class SearchAPI(APIView, Search):
     def get_api_stuff(self):
         return [t.api_dict() for t in self.get_queryset()]
+
+
+class TwitterUserAPI(TwitterUserDetailMixin, APIView):
+    pass

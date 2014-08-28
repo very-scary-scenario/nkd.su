@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.generic import DetailView, TemplateView
 
-from .models import Show
+from .models import Show, TwitterUser
 from .utils import memoize
 
 
@@ -143,3 +143,24 @@ class MarkdownView(TemplateView):
         })
 
         return context
+
+
+class TwitterUserDetailMixin(object):
+    model = TwitterUser
+
+    @memoize
+    def get_object(self):
+        users = self.model.objects.filter(
+            screen_name__iexact=self.kwargs['screen_name'])
+
+        if not users.exists():
+            raise Http404
+        elif users.count() == 1:
+            user = users[0]
+        else:
+            user = users.order_by('-updated')[0]
+
+        if user.vote_set.exists():
+            return user
+        else:
+            raise Http404

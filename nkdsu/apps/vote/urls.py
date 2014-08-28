@@ -78,6 +78,8 @@ api_patterns = patterns(
     url(r'^$', api.ShowAPI.as_view(), name='show'),
     url(r'^week/(?P<date>[\d-]+)/$', api.ShowAPI.as_view(), name='show'),
     url(r'^week/$', api.PrevShowAPI.as_view(), name='last_week'),
+    url(r'^user/(?P<screen_name>[_0-9a-zA-Z]+)/$',
+        api.TwitterUserAPI.as_view(), name='user'),
     url(r'^track/(?P<pk>[0-9A-F]{16})/$',
         api.TrackAPI.as_view(), name='api_track'),
     url(r'^search/$', api.SearchAPI.as_view(), name='search'),
