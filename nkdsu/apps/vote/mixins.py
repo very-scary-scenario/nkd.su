@@ -104,6 +104,24 @@ class ShowDetailMixin(object):
         return context
 
 
+class ThisShowDetailMixin(ShowDetailMixin):
+    """
+    Like ShowDetailMixin, but defaults to the show in progress when no date is
+    provided.
+    """
+
+    @memoize
+    def get_object(self):
+        if self.date is None:
+            qs = self.model.objects.order_by('-end')
+            try:
+                return qs[0]
+            except IndexError:
+                raise Http404
+        else:
+            return super(ThisShowDetailMixin, self).get_object()
+
+
 class ShowDetail(ShowDetailMixin, DetailView):
     pass
 

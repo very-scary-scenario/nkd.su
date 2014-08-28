@@ -7,7 +7,7 @@ from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 
 from ..models import Track
-from ..mixins import ShowDetailMixin
+from ..mixins import ShowDetailMixin, ThisShowDetailMixin
 from ..views import Search
 
 
@@ -26,15 +26,12 @@ class APIView(View):
         return resp
 
 
-class ShowAPI(ShowDetailMixin, APIView):
+class ShowAPI(ThisShowDetailMixin, APIView):
     pass
 
 
-class PrevShowAPI(ShowAPI):
+class PrevShowAPI(ShowDetailMixin, APIView):
     view_name = 'vote:api:show'
-
-    def get_object(self):
-        return super(PrevShowAPI, self).get_object().prev()
 
 
 class TrackAPI(SingleObjectMixin, APIView):
