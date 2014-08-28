@@ -51,9 +51,9 @@ Long answer: [GitHub]. [Suggestions] welcome.
 
 Hopefully! Only Travis knows for sure:
 
-[![Build Status]](https://travis-ci.org/colons/nkd.su)
+[![Build Status](https://travis-ci.org/colons/nkd.su.svg)][build status]
 
-[Build status]: https://travis-ci.org/colons/nkd.su.svg
+[build status]: https://travis-ci.org/colons/nkd.su
 
 ## Can I build things with this data?
 
