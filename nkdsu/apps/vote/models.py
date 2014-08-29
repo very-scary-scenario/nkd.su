@@ -820,6 +820,8 @@ class Track(CleanOnSaveMixin, models.Model):
             'title': self.title,
             'role': self.role,
             'artist': self.artist,
+            'eligible': self.eligible(),
+            'ineligibility_reason': self.ineligible() or None,
             'length': self.msec,
             'inu desu': self.inudesu,
             'url': self.get_public_url(),
