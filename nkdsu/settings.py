@@ -102,6 +102,7 @@ USE_TZ = True
 
 # these URLs will not work when DEBUG is False; set up your webserver to serve
 # static files from appropriate places and make liberal use of collectstatic
+SITE_URL = 'https://nkd.su'
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
 MEDIA_URL = '/media/'

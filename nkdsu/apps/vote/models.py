@@ -693,7 +693,7 @@ class Track(CleanOnSaveMixin, models.Model):
                                              'pk': self.pk})
 
     def get_public_url(self):
-        return 'https://nkd.su' + self.get_absolute_url()
+        return settings.SITE_URL + self.get_absolute_url()
 
     def get_report_url(self):
         return reverse('vote:report', kwargs={'pk': self.pk})
@@ -823,6 +823,11 @@ class Track(CleanOnSaveMixin, models.Model):
             'length': self.msec,
             'inu desu': self.inudesu,
             'url': self.get_public_url(),
+            'background': (
+                self.background_art.url
+                if self.background_art
+                else None
+            ),
         }
 
         if verbose:
