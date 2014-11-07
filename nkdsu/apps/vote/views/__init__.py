@@ -266,8 +266,8 @@ class ReportBadMetadata(FormView):
             [settings.REQUEST_CURATOR],
         )
 
-        messages.add_message(
-            self.request, messages.SUCCESS,
+        messages.success(
+            self.request,
             'Your disclosure is appreciated. '
             'The metadata youkai has been dispatched to address your concerns.'
             ' None will know of its passing.'
@@ -293,8 +293,8 @@ class RequestAddition(FormView):
             [settings.REQUEST_CURATOR],
         )
 
-        messages.add_message(
-            self.request, messages.SUCCESS,
+        messages.success(
+            self.request,
             'Your request has been dispatched. '
             'May it glide strong and true through spam filters and '
             'indifference.'
