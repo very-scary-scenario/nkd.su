@@ -3,6 +3,7 @@
 import plistlib
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponse
@@ -116,6 +117,7 @@ class SelectionAdminAction(AdminAction, View):
     """
 
     model = Track
+    fmt = '{} modified'
 
     def get_queryset(self):
         pks = self.request.session['selection'] or []
@@ -125,6 +127,13 @@ class SelectionAdminAction(AdminAction, View):
         # we only want to clear the selection if the rest of this process is
         # successful, or shillito will get understandably mad
         resp = super(SelectionAdminAction, self).do_thing_and_redirect()
+
+        count = self.get_queryset().count()
+        tracks = (
+            '{} track' if count == 1 else '{} tracks'
+        ).format(count)
+        messages.success(self.request, self.fmt.format(tracks))
+
         self.request.session['selection'] = []
         return resp
 
@@ -148,6 +157,8 @@ class Hide(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().hide()
+        messages.success(self.request,
+                         "'{}' hidden".format(self.get_object().title))
 
 
 class Unhide(AdminAction, DetailView):
@@ -155,6 +166,8 @@ class Unhide(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().unhide()
+        messages.success(self.request,
+                         "'{}' unhidden".format(self.get_object().title))
 
 
 class ManualVote(TrackSpecificAdminMixin, CreateView):
@@ -169,6 +182,7 @@ class ManualVote(TrackSpecificAdminMixin, CreateView):
         vote.save()
         vote.tracks.add(track)
         vote.save()
+        messages.success(self.request, 'vote added')
         return redirect(reverse('vote:index'))
 
 
@@ -191,6 +205,9 @@ class MakeBlock(TrackSpecificAdminMixin, CreateView):
         except ValidationError as e:
             return self.handle_validation_error(e)
 
+        messages.success(self.request,
+                         "'{}' blocked".format(self.get_object().title))
+
         return redirect(reverse('vote:index'))
 
 
@@ -200,6 +217,8 @@ class Unblock(AdminAction, DetailView):
     def do_thing(self):
         block = get_object_or_404(Block, track=self.get_object(),
                                   show=Show.current())
+        messages.success(self.request,
+                         "'{}' unblocked".format(self.get_object().title))
         block.delete()
 
 
@@ -216,6 +235,8 @@ class MakeBlockWithReason(AdminAction, DetailView):
             track=self.get_object(),
             show=Show.current(),
         ).save()
+        messages.success(self.request,
+                         "'{}' blocked".format(self.get_object().title))
 
 
 class MakeShortlist(AdminAction, DetailView):
@@ -227,6 +248,8 @@ class MakeShortlist(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().shortlist()
+        messages.success(self.request,
+                         "'{}' shortlisted".format(self.get_object().title))
 
 
 class MakeDiscard(AdminAction, DetailView):
@@ -238,6 +261,8 @@ class MakeDiscard(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().discard()
+        messages.success(self.request,
+                         "'{}' discarded".format(self.get_object().title))
 
 
 class OrderShortlist(AdminMixin, JSApiMixin, View):
@@ -270,6 +295,8 @@ class ResetShortlistAndDiscard(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().reset_shortlist_discard()
+        messages.success(self.request,
+                         "'{}' reset".format(self.get_object().title))
 
 
 class LibraryUploadView(AdminMixin, FormView):
@@ -303,7 +330,9 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
         return '\n\n'.join(self.update_library(dry_run=True))
 
     def do_thing(self):
-        return self.update_library(dry_run=False)
+        changes = self.update_library(dry_run=False)
+        messages.success(self.request, 'library updated')
+        return changes
 
 
 class ToggleAbuser(AdminAction, DetailView):
@@ -315,6 +344,8 @@ class ToggleAbuser(AdminAction, DetailView):
     def do_thing(self):
         user = self.get_object()
         user.is_abuser = not user.is_abuser
+        fmt = "{} condemned" if user.is_abuser else "{} redeemed"
+        messages.success(self.request, fmt.format(self.get_object()))
         user.save()
 
 
@@ -356,30 +387,40 @@ class BadTrivia(AdminMixin, ListView):
 
 
 class ShortlistSelection(SelectionAdminAction):
+    fmt = '{} shortlisted'
+
     def do_thing(self):
         for track in self.get_queryset():
             track.shortlist()
 
 
 class HideSelection(SelectionAdminAction):
+    fmt = '{} hidden'
+
     def do_thing(self):
         for track in self.get_queryset():
             track.hide()
 
 
 class UnhideSelection(SelectionAdminAction):
+    fmt = '{} unhidden'
+
     def do_thing(self):
         for track in self.get_queryset():
             track.unhide()
 
 
 class DiscardSelection(SelectionAdminAction):
+    fmt = '{} discarded'
+
     def do_thing(self):
         for track in self.get_queryset():
             track.discard()
 
 
 class ResetShortlistAndDiscardSelection(SelectionAdminAction):
+    fmt = '{} reset'
+
     def do_thing(self):
         for track in self.get_queryset():
             track.reset_shortlist_discard()
@@ -395,8 +436,9 @@ class MakeNote(TrackSpecificAdminMixin, FormView):
 
         if form.cleaned_data['just_for_current_show']:
             note.show = Show.current()
-
         note.save()
+
+        messages.success(self.request, 'note added')
         return redirect(reverse('vote:index'))
 
 
@@ -417,3 +459,4 @@ class RemoveNote(DestructiveAdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().delete()
+        messages.success(self.request, 'note removed')
