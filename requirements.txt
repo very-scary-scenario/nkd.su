@@ -6,7 +6,7 @@ tweepy
 markdown
 ujson
 python-dateutil
-django-pipeline
+django-pipeline>1.3,<=1.4
 slimit
 django-nose
 requests
