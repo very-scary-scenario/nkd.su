@@ -117,7 +117,7 @@ class SelectionAdminAction(AdminAction, View):
     """
 
     model = Track
-    fmt = '{} modified'
+    fmt = u'{} modified'
 
     def get_queryset(self):
         pks = self.request.session['selection'] or []
@@ -130,7 +130,7 @@ class SelectionAdminAction(AdminAction, View):
 
         count = self.get_queryset().count()
         tracks = (
-            '{} track' if count == 1 else '{} tracks'
+            u'{} track' if count == 1 else u'{} tracks'
         ).format(count)
         messages.success(self.request, self.fmt.format(tracks))
 
@@ -158,7 +158,7 @@ class Hide(AdminAction, DetailView):
     def do_thing(self):
         self.get_object().hide()
         messages.success(self.request,
-                         "'{}' hidden".format(self.get_object().title))
+                         u"'{}' hidden".format(self.get_object().title))
 
 
 class Unhide(AdminAction, DetailView):
@@ -167,7 +167,7 @@ class Unhide(AdminAction, DetailView):
     def do_thing(self):
         self.get_object().unhide()
         messages.success(self.request,
-                         "'{}' unhidden".format(self.get_object().title))
+                         u"'{}' unhidden".format(self.get_object().title))
 
 
 class ManualVote(TrackSpecificAdminMixin, CreateView):
@@ -206,7 +206,7 @@ class MakeBlock(TrackSpecificAdminMixin, CreateView):
             return self.handle_validation_error(e)
 
         messages.success(self.request,
-                         "'{}' blocked".format(self.get_object().title))
+                         u"'{}' blocked".format(self.get_object().title))
 
         return redirect(reverse('vote:index'))
 
@@ -218,7 +218,7 @@ class Unblock(AdminAction, DetailView):
         block = get_object_or_404(Block, track=self.get_object(),
                                   show=Show.current())
         messages.success(self.request,
-                         "'{}' unblocked".format(self.get_object().title))
+                         u"'{}' unblocked".format(self.get_object().title))
         block.delete()
 
 
@@ -236,7 +236,7 @@ class MakeBlockWithReason(AdminAction, DetailView):
             show=Show.current(),
         ).save()
         messages.success(self.request,
-                         "'{}' blocked".format(self.get_object().title))
+                         u"'{}' blocked".format(self.get_object().title))
 
 
 class MakeShortlist(AdminAction, DetailView):
@@ -249,7 +249,7 @@ class MakeShortlist(AdminAction, DetailView):
     def do_thing(self):
         self.get_object().shortlist()
         messages.success(self.request,
-                         "'{}' shortlisted".format(self.get_object().title))
+                         u"'{}' shortlisted".format(self.get_object().title))
 
 
 class MakeDiscard(AdminAction, DetailView):
@@ -262,7 +262,7 @@ class MakeDiscard(AdminAction, DetailView):
     def do_thing(self):
         self.get_object().discard()
         messages.success(self.request,
-                         "'{}' discarded".format(self.get_object().title))
+                         u"'{}' discarded".format(self.get_object().title))
 
 
 class OrderShortlist(AdminMixin, JSApiMixin, View):
@@ -296,7 +296,7 @@ class ResetShortlistAndDiscard(AdminAction, DetailView):
     def do_thing(self):
         self.get_object().reset_shortlist_discard()
         messages.success(self.request,
-                         "'{}' reset".format(self.get_object().title))
+                         u"'{}' reset".format(self.get_object().title))
 
 
 class LibraryUploadView(AdminMixin, FormView):
@@ -344,7 +344,7 @@ class ToggleAbuser(AdminAction, DetailView):
     def do_thing(self):
         user = self.get_object()
         user.is_abuser = not user.is_abuser
-        fmt = "{} condemned" if user.is_abuser else "{} redeemed"
+        fmt = u"{} condemned" if user.is_abuser else u"{} redeemed"
         messages.success(self.request, fmt.format(self.get_object()))
         user.save()
 
@@ -387,7 +387,7 @@ class BadTrivia(AdminMixin, ListView):
 
 
 class ShortlistSelection(SelectionAdminAction):
-    fmt = '{} shortlisted'
+    fmt = u'{} shortlisted'
 
     def do_thing(self):
         for track in self.get_queryset():
@@ -395,7 +395,7 @@ class ShortlistSelection(SelectionAdminAction):
 
 
 class HideSelection(SelectionAdminAction):
-    fmt = '{} hidden'
+    fmt = u'{} hidden'
 
     def do_thing(self):
         for track in self.get_queryset():
@@ -403,7 +403,7 @@ class HideSelection(SelectionAdminAction):
 
 
 class UnhideSelection(SelectionAdminAction):
-    fmt = '{} unhidden'
+    fmt = u'{} unhidden'
 
     def do_thing(self):
         for track in self.get_queryset():
@@ -411,7 +411,7 @@ class UnhideSelection(SelectionAdminAction):
 
 
 class DiscardSelection(SelectionAdminAction):
-    fmt = '{} discarded'
+    fmt = u'{} discarded'
 
     def do_thing(self):
         for track in self.get_queryset():
@@ -419,7 +419,7 @@ class DiscardSelection(SelectionAdminAction):
 
 
 class ResetShortlistAndDiscardSelection(SelectionAdminAction):
-    fmt = '{} reset'
+    fmt = u'{} reset'
 
     def do_thing(self):
         for track in self.get_queryset():
