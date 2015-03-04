@@ -1,7 +1,7 @@
 db:
-  image: postgres
   environment:
     POSTGRES_PASSWORD: password
+  image: postgres:9.3
 web:
   build: .
   command: python manage.py runserver 0.0.0.0:8000
