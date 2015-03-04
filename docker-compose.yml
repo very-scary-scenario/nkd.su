@@ -2,6 +2,7 @@ db:
   environment:
     POSTGRES_PASSWORD: password
   image: postgres:9.3
+  restart: always
 web:
   build: .
   command: python manage.py runserver 0.0.0.0:8000
@@ -11,3 +12,4 @@ web:
     - "8000:8000"
   links:
     - db
+  restart: always
