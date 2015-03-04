@@ -3,7 +3,7 @@
 The root of the API is [nkd.su/api/][api_root]. The following endpoints are
 available:
 
-### [`/week/<dd>-<mm>-<yyyy>/`][eg_week]
+### [`/week/<yyyy>-<mm>-<dd>/`][eg_week]
 
 Information from a particular week. The week returned will be the week that was
 in progress at midnight on the morning of the day specified.
@@ -57,6 +57,6 @@ that's broken, [file a bug][new_issue] or just [yell at me][pester] on Twitter.
 [api_root]: https://nkd.su/api/
 [eg_track]: https://nkd.su/api/track/7C4D7B4B394E0E59/
 [eg_latest_week]: https://nkd.su/api/week/
-[eg_week]: https://nkd.su/api/week/05-01-2013/
+[eg_week]: https://nkd.su/api/week/2013-01-05/
 [eg_search]: https://nkd.su/api/search/?q=character%20song
 [pester]: https://twitter.com/intent/tweet?text=%40mftb
