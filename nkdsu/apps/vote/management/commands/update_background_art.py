@@ -46,5 +46,3 @@ class Command(BaseCommand):
                 has_art += 1
             else:
                 missing_art += 1
-
-        print 'art found for %i of %i tracks' % (has_art, total)
