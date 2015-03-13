@@ -1,6 +1,6 @@
 db:
   environment:
-    POSTGRES_PASSWORD: password
+    - POSTGRES_PASSWORD=password
   image: postgres:9.3
   restart: always
 web:
