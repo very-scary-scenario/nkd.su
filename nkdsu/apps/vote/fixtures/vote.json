@@ -1,5 +1,62 @@
 [
 {
+  "pk": 1,
+  "model": "vote.show",
+  "fields": {
+    "showtime": "2012-08-25T21:00:00Z",
+    "end": "2012-08-25T23:00:00Z"
+  }
+},
+{
+  "pk": 4,
+  "model": "vote.show",
+  "fields": {
+    "showtime": "2012-09-15T21:00:00Z",
+    "end": "2012-09-15T23:00:00Z"
+  }
+},
+{
+  "pk": 5,
+  "model": "vote.show",
+  "fields": {
+    "showtime": "2012-09-22T21:00:00Z",
+    "end": "2012-09-22T23:00:00Z"
+  }
+},
+{
+  "pk": 6,
+  "model": "vote.show",
+  "fields": {
+    "showtime": "2012-09-29T21:00:00Z",
+    "end": "2012-09-29T23:00:00Z"
+  }
+},
+{
+  "pk": 7,
+  "model": "vote.show",
+  "fields": {
+    "showtime": "2012-10-06T21:00:00Z",
+    "end": "2012-10-06T23:00:00Z"
+  }
+},
+{
+  "pk": 8,
+  "model": "vote.show",
+  "fields": {
+    "showtime": "2012-10-13T21:00:00Z",
+    "end": "2012-10-13T23:00:00Z"
+  }
+},
+{
+  "pk": 73,
+  "model": "vote.show",
+  "fields": {
+    "showtime": "2013-12-21T21:00:00Z",
+    "end": "2013-12-21T23:00:00Z"
+  }
+},
+
+{
   "pk": 77,
   "model": "vote.show",
   "fields": {
@@ -145,6 +202,308 @@
     "revealed": "2012-11-16T00:05:05Z"
   }
 },
+
+{
+  "pk": "5F15E02D65C1DD39",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "God knows...",
+    "id3_artist": "Hirano Aya",
+    "id3_album": "The Melancholy of Haruhi Suzumiya Insert",
+    "msec": 279092,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/5F15E02D65C1DD39_44.jpg"
+  }
+},
+{
+  "pk": "4E248065F8D91EBC",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "STRIKE WITCHES 2 ~Egao no Mahou~",
+    "id3_artist": "Ishida Yoko",
+    "id3_album": "Strike Witches 2 OP",
+    "msec": 252943,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/4E248065F8D91EBC_35.jpg"
+  }
+},
+{
+  "pk": "F88E37ADFBDBF489",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Koi Boudou",
+    "id3_artist": "HAPPY BIRTHDAY",
+    "id3_album": "Binbougami ga! ED",
+    "msec": 247431,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/F88E37ADFBDBF489_45.jpg"
+  }
+},
+{
+  "pk": "CA86F22211C8F408",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "BLAZE",
+    "id3_artist": "KOTOKO",
+    "id3_album": "Shakugan no Shana II OP2",
+    "msec": 306442,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/CA86F22211C8F408_54.jpg"
+  }
+},
+{
+  "pk": "110E36B1F89E408B",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Rise",
+    "id3_artist": "Origa",
+    "id3_album": "Ghost in the Shell Stand Alone Complex 2nd Gig OP",
+    "msec": 329116,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/110E36B1F89E408B_52.jpg"
+  }
+},
+{
+  "pk": "D94EDF94088D80B7",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Tokkou Yoraou",
+    "id3_artist": "Toshihiko Sahashi",
+    "id3_album": "Full Metal Panic insert/BGM",
+    "msec": 76408,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/D94EDF94088D80B7_53.jpg"
+  }
+},
+{
+  "pk": "7CE03695A95CB801",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Yume ~Mugen no Kanata~",
+    "id3_artist": "ViViD",
+    "id3_album": "Level E ED",
+    "msec": 228310,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/7CE03695A95CB801_35.jpg"
+  }
+},
+{
+  "pk": "4871E43CBD44115E",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Eternal Blaze",
+    "id3_artist": "Nana Mizuki",
+    "id3_album": "Mahou Shoujo Lyrical Nanoha A's OP",
+    "msec": 310857,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/4871E43CBD44115E_44.jpg"
+  }
+},
+{
+  "pk": "85EAF9B2978A9EB5",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Calendrier -Yuuko-",
+    "id3_artist": "Hara Yumi",
+    "id3_album": "Tasogare Otome x Amnesia ED2",
+    "msec": 241815,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/85EAF9B2978A9EB5_53.jpg"
+  }
+},
+{
+  "pk": "FEADD8D78F379400",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "LOST CHILD",
+    "id3_artist": "Momoiro Clover Z",
+    "id3_album": "Mouretsu Uchuu Kaizoku/Bodacious Space Pirates ED",
+    "msec": 305737,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/FEADD8D78F379400_42.jpg"
+  }
+},
+{
+  "pk": "A42AF277F046DBC1",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Boku ni Invitation",
+    "id3_artist": "JP",
+    "id3_album": "Shirokuma Cafe/Polar Bear Caf\u00e9 OP",
+    "msec": 280424,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/A42AF277F046DBC1_45.jpg"
+  }
+},
+{
+  "pk": "1B76A0F5B177841F",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "sky's the limit",
+    "id3_artist": "Shihoko Hirata",
+    "id3_album": "Persona 4 the Animation OP2",
+    "msec": 254458,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/1B76A0F5B177841F_36.jpg"
+  }
+},
+{
+  "pk": "EBE7330516D016B2",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Marionette",
+    "id3_artist": "ROLLY and Zetsubou Shoujo-tachi",
+    "id3_album": "Zoku Sayonara Zetsubou-sensei S2 ED2",
+    "msec": 209214,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": null
+  }
+},
+{
+  "pk": "C673D28E86983DEC",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Omae no Tou-chan Chome-Chome",
+    "id3_artist": "Tsu Terakado",
+    "id3_album": "Gintama EP6, 30, 159 Insert",
+    "msec": 224809,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/C673D28E86983DEC_44.jpg"
+  }
+},
+{
+  "pk": "84F1A69A5C6E75E7",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Donten",
+    "id3_artist": "DOES",
+    "id3_album": "Gintama OP5",
+    "msec": 190641,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/84F1A69A5C6E75E7_51.jpg"
+  }
+},
+{
+  "pk": "4084164616C23ED4",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Wo Ai Ni",
+    "id3_artist": "Takahashi Hitomi and BEAT CRUSADERS",
+    "id3_album": "Gintama ED14",
+    "msec": 242886,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": null
+  }
+},
+{
+  "pk": "345EC65DD7CB5A02",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Speed of flow",
+    "id3_artist": "RODEO CARBURETTOR",
+    "id3_album": "Gintama ED8",
+    "msec": 229067,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/345EC65DD7CB5A02_45.jpg"
+  }
+},
+{
+  "pk": "9A67DD4550BA842E",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Omae no Nii\u2013chan XX hikikomori",
+    "id3_artist": "Tsu Terakado",
+    "id3_album": "Gintama EP30, 92, 158, 160 Insert",
+    "msec": 276558,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/9A67DD4550BA842E_35.jpg"
+  }
+},
+{
+  "pk": "E0A6606F4AC1F820",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Little Princess",
+    "id3_artist": "Lilpri",
+    "id3_album": "Lilpri OP1",
+    "msec": 229485,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": "https://m.nkd.su/user/art/bg/E0A6606F4AC1F820_44.jpg"
+  }
+},
+{
+  "pk": "EA06304123C70829",
+  "model": "vote.track",
+  "fields": {
+    "id3_title": "Preserved Roses",
+    "id3_artist": "T.M.Revolution and Mizuki Nana",
+    "id3_album": "Kakumeiki Valvrave OP",
+    "msec": 213028,
+    "added": "2012-11-16T00:05:05Z",
+    "revealed": "2012-11-16T00:05:05Z",
+    "hidden": false,
+    "inudesu": false,
+    "background_art": null
+  }
+},
+
 {
   "pk": 1,
   "model": "vote.vote",
