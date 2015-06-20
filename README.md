@@ -68,7 +68,7 @@ design help from [Chris Walden] ([@EuricaeriS]) and [Peter Shillito] himself.
 [Iain Dawson]: https://colons.co/
 [@mftb]: https://twitter.com/mftb
 [contributors]: https://github.com/colons/nkd.su/graphs/contributors
-[Thomas Moore]: https://github.com/Tomo-san
+[Thomas Moore]: https://github.com/tomopagu
 [Chris Walden]: http://www.chriswalden.co.uk/
 [@EuricaeriS]: https://twitter.com/EuricaeriS
 [Peter Shillito]: https://twitter.com/theshillito
