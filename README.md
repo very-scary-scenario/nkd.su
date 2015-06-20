@@ -62,10 +62,10 @@ know][Suggestions].
 
 ## Who's to blame?
 
-[Iain Dawson] ([@mftb]) and [contributors] including [Thomas Moore], with
+[colons] ([@mftb]) and [contributors] including [Thomas Moore], with
 design help from [Chris Walden] ([@EuricaeriS]) and [Peter Shillito] himself.
 
-[Iain Dawson]: https://colons.co/
+[colons]: https://colons.co/
 [@mftb]: https://twitter.com/mftb
 [contributors]: https://github.com/colons/nkd.su/graphs/contributors
 [Thomas Moore]: https://github.com/tomopagu
