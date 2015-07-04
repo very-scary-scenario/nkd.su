@@ -64,8 +64,8 @@ def update_library(tree, dry_run=False, inudesu=False):
 
         tracks_kept.append(db_track)
 
-    for track in [t for t in alltracks
-                  if t not in tracks_kept and not t.hidden]:
+    for track in [tr for tr in alltracks
+                  if tr not in tracks_kept and not tr.hidden]:
         changes.append('hide:\n%s' % unicode(track))
         if not dry_run:
             track.hidden = True
