@@ -31,7 +31,7 @@ def update_library(tree, dry_run=False, inudesu=False):
                     or (db_track.id3_artist != t['Artist'])
                     or (db_track.id3_album != t['Album'])
                     or (db_track.msec != t['Total Time'])
-                    or (db_track.composer != t['Composer'])
+                    or (db_track.composer != t.get('Composer'))
                     or (db_track.added != added)):
                 # we need to update an existing track
                 changed = True
