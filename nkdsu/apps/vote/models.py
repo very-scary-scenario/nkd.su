@@ -545,7 +545,7 @@ class Track(CleanOnSaveMixin, models.Model):
         else:
             ultimate_split = re.split(ultimate_separator, artist_string)
             last_artist = ultimate_split[-1]
-            pre_ultimate = ultimate_separator.join(ultimate_split[:-1])
+            pre_ultimate = ' and '.join(ultimate_split[:-1])
             everyone_else = re.split(separator, pre_ultimate)
             return everyone_else + [last_artist]
 
