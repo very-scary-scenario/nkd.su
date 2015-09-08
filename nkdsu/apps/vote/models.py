@@ -538,15 +538,15 @@ class Track(CleanOnSaveMixin, models.Model):
     @memoize
     def artist_names(self):
         artist_string = self.artist
-        separator = ', '
-        ultimate_separator = ' and '
-        if ultimate_separator not in artist_string:
+        separator = r', '
+        ultimate_separator = r'(?<!,) and '
+        if not re.search(ultimate_separator, artist_string):
             return [artist_string]
         else:
-            ultimate_split = artist_string.split(ultimate_separator)
+            ultimate_split = re.split(ultimate_separator, artist_string)
             last_artist = ultimate_split[-1]
             pre_ultimate = ultimate_separator.join(ultimate_split[:-1])
-            everyone_else = pre_ultimate.split(separator)
+            everyone_else = re.split(separator, pre_ultimate)
             return everyone_else + [last_artist]
 
     @memoize
