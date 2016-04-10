@@ -62,8 +62,8 @@ know][Suggestions].
 
 ## Who's to blame?
 
-[colons] ([@mftb]) and [contributors] including [Thomas Moore], with
-design help from [Chris Walden] ([@EuricaeriS]) and [Peter Shillito] himself.
+[colons] ([@mftb]) and [contributors] including [Thomas Moore], with design
+help from [Chris Walden] ([@EuricaeriS]) and, of course, [Peter Shillito].
 
 [colons]: https://colons.co/
 [@mftb]: https://twitter.com/mftb
