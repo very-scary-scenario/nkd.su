@@ -846,6 +846,7 @@ MANUAL_VOTE_KINDS = (
     ('email', 'email'),
     ('text', 'text'),
     ('tweet', 'tweet'),
+    ('person', 'in person'),
 )
 
 

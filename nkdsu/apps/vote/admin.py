@@ -13,7 +13,7 @@ class TwitterUserAdmin(admin.ModelAdmin):
 
 class VoteAdmin(admin.ModelAdmin):
     list_display = ('twitter_user', 'date')
-    list_filter = ('twitter_user',)
+    list_filter = ('kind', 'twitter_user')
 
 
 class TrackAdmin(admin.ModelAdmin):
