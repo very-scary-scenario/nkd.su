@@ -75,7 +75,7 @@ LASTFM_API_SECRET = ''  # secret
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = ('Iain Dawson', 'i@bldm.us'),
+ADMINS = ('colons', 'nkdsu@colons.co'),
 
 MANAGERS = ADMINS
 
