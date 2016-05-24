@@ -199,8 +199,14 @@
         }
 
         &.content {
-          img.thumb {
-            border-color: @hl;
+          &::after {
+            .fa;
+            content: @fa-var-comment;
+            display: block;
+            position: absolute;
+            bottom: -.1em;
+            right: -.1em;
+            text-shadow: @bg -.1em -.1em .1em;
           }
         }
 
