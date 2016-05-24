@@ -159,6 +159,10 @@ INSTALLED_APPS = (
     'nkdsu.apps.vote',
 )
 
+SOUTH_MIGRATION_MODULES = {
+    'djcelery': 'djcelery.south_migrations',
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
