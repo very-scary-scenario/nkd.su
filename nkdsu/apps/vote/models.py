@@ -439,6 +439,17 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             'user_id': self.user_id,
         }
 
+    @memoize
+    def is_new(self):
+        return not self.vote_set.exclude(show=Show.current()).exists()
+
+    @memoize
+    def is_placated(self):
+        return self.vote_set.filter(
+            tracks__play__show=Show.current(),
+            show=Show.current(),
+        ).exists()
+
 
 class Track(CleanOnSaveMixin, models.Model):
     objects = TrackManager()

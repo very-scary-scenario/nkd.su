@@ -198,13 +198,33 @@
           }
         }
 
+        &::before, &::after {
+          pointer-events: none;
+          .fa;
+          display: block;
+          position: absolute;
+        }
+
+        &.new-user {
+          &::before {
+            color: @hl;
+            content: @fa-var-star;
+            top: -.2em;
+            left: -.2em;
+            text-shadow: @bg .1em .1em .1em;
+          }
+        }
+
+        &.placated {
+          filter: grayscale(100%);
+          img {
+            opacity: 0.5;
+          }
+        }
+
         &.content {
           &::after {
-            pointer-events: none;
-            .fa;
             content: @fa-var-comment;
-            display: block;
-            position: absolute;
             bottom: -.1em;
             right: -.1em;
             text-shadow: @bg -.1em -.1em .1em;

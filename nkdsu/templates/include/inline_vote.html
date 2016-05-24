@@ -1,7 +1,12 @@
 {% load vote_tags %}
 <li class="vote
   {% if vote.content %}content{% endif %}
-  {% if not vote.is_manual and vote.twitter_user.is_abuser %}abuser{% endif %}"
+  {% if not vote.is_manual and vote.twitter_user.is_abuser %}abuser{% endif %}
+  {% if user.is_authenticated %}
+    {% if vote.twitter_user.is_new %}new-user{% endif %}
+    {% if vote.twitter_user.is_placated %}placated{% endif %}
+  {% endif %}
+  "
   >
   <a {% if not vote.is_manual %}href="{{ vote.twitter_user.get_absolute_url }}"{% endif %}>
     <img class="avatar thumb" src="{{ vote.get_image_url }}" alt="{{ vote.twitter_user.screen_name }}"/>
