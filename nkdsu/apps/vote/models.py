@@ -9,8 +9,8 @@ from urlparse import urlparse
 from cache_utils.decorators import cached
 from dateutil import parser as date_parser
 from markdown import markdown
-import requests
 from PIL import Image, ImageFilter
+import requests
 
 from django.core.cache import cache
 from django.core.files import File
@@ -308,7 +308,6 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     # Twitter stuff
     screen_name = models.CharField(max_length=100)
     user_id = models.BigIntegerField(unique=True)
-    user_image = models.URLField()
     name = models.CharField(max_length=20)
 
     # nkdsu stuff
@@ -330,6 +329,22 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     def get_toggle_abuser_url(self):
         return reverse('vote:admin:toggle_abuser',
                        kwargs={'user_id': self.user_id})
+
+    def get_avatar_url(self):
+        return reverse('vote:avatar', kwargs={'user_id': self.user_id})
+
+    @memoize
+    @pk_cached(60*60*5)
+    def get_avatar(self, size=None):
+        url = self.get_twitter_user().profile_image_url_https
+        if size is not None:
+            if size != 'original':
+                size = '_{}'.format(size)
+            else:
+                size = ''
+            url = re.sub(r'_normal(?=\.[^.]+$)', size, url)
+        resp = requests.get(url)
+        return (resp.headers['content-type'], resp.content)
 
     @memoize
     def votes(self):
@@ -417,16 +432,20 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     def all_time_batting_average(self, minimum_weight=1):
         return self._batting_average(minimum_weight=minimum_weight)
 
+    @memoize
+    @pk_cached(60*60*1)
+    def get_twitter_user(self):
+        return reading_tw_api.get_user(user_id=self.user_id)
+
     def update_from_api(self):
         """
         Update this user's database object based on the Twitter API.
         """
 
-        api_user = reading_tw_api.get_user(user_id=self.user_id)
+        api_user = self.get_twitter_user()
 
         self.name = api_user.name
         self.screen_name = api_user.screen_name
-        self.user_image = api_user.profile_image_url_https
         self.updated = timezone.now()
 
         self.save()
@@ -435,7 +454,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         return {
             'user_name': self.name,
             'user_screen_name': self.screen_name,
-            'user_image': self.user_image,
+            'user_image': self.get_avatar_url(),
             'user_id': self.user_id,
         }
 
@@ -919,7 +938,6 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         twitter_user.screen_name = tweet['user']['screen_name']
         twitter_user.name = tweet['user']['name']
-        twitter_user.user_image = tweet['user']['profile_image_url_https']
         twitter_user.updated = created_at
         twitter_user.save()
 
@@ -989,10 +1007,10 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         return not bool(self.tweet_id)
 
     def get_image_url(self):
-        if self.is_manual:
-            return static('i/vote-kinds/{0}.png'.format(self.kind))
+        if self.twitter_user:
+            return self.twitter_user.get_avatar_url()
         else:
-            return self.twitter_user.user_image
+            return static('i/vote-kinds/{0}.png'.format(self.kind))
 
     def __unicode__(self):
         tracks = u', '.join([t.title for t in self.tracks.all()])

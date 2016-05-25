@@ -16,7 +16,7 @@
 
     <p class="subheading">
       <a class="avatar" href="{{ voter.twitter_url }}">
-        <img class="avatar" src="{{ voter.user_image }}" alt="{{ voter.name }}">
+        <img class="avatar" src="{{ voter.get_avatar_url }}?size=original" alt="{{ voter.name }}">
       </a>
     </p>
 

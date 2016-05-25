@@ -5,7 +5,7 @@ import tweepy
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.core.paginator import Paginator, InvalidPage
 from django.contrib import messages
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 from django.conf import settings
@@ -156,6 +156,17 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
         })
 
         return context
+
+
+class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
+    def get(self, *a, **k):
+        try:
+            content_type, image = self.get_object().get_avatar(
+                size=self.request.GET.get('size'))
+        except tweepy.TweepError:
+            raise Http404('No such user found')
+
+        return HttpResponse(image, content_type=content_type)
 
 
 class Artist(ListView):

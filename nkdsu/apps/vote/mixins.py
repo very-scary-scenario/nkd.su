@@ -8,7 +8,7 @@ from markdown import markdown
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 from django.views.generic import DetailView, TemplateView
 
@@ -156,6 +156,13 @@ class TwitterUserDetailMixin(object):
 
     @memoize
     def get_object(self):
+        user_id = self.kwargs.get('user_id')
+
+        if user_id:
+            return get_object_or_404(
+                self.model, user_id=self.kwargs['user_id'],
+            )
+
         users = self.model.objects.filter(
             screen_name__iexact=self.kwargs['screen_name'])
 
