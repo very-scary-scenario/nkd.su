@@ -172,13 +172,36 @@
               }
 
               .text {
-                padding-top: .3em;
-                margin-top: .4em;
-                border-top: 1px solid #ddd;
                 clear: both;
                 text-align: center;
                 word-wrap: break-word;
                 overflow: hidden;
+                position: relative;
+
+                &::before {
+                  font-family: FontAwesome;
+                  content: @fa-var-comment;
+                  display: block;
+                  margin: 0 auto;
+                  width: 2.5em;
+                  padding: .1em 0;
+                  position: relative;
+                  z-index: 3;
+                  background-color: @track_background;
+                  .noise();
+                }
+
+                &::after {
+                  content: ' ';
+                  box-sizing: border-box;
+                  display: block;
+                  width: 80%;
+                  border-top: 1px solid @light;
+                  position: absolute;
+                  top: 0.6em;
+                  left: 10%;
+                  z-index: 2;
+                }
               }
             }
           }
@@ -211,7 +234,7 @@
             content: @fa-var-star;
             top: -.2em;
             left: -.2em;
-            text-shadow: @bg .1em 0 .1em, @bg 0 .1em .1em;
+            text-shadow: @bg .1em .1em .1em;
           }
         }
 
@@ -227,16 +250,7 @@
             content: @fa-var-comment;
             bottom: -.1em;
             right: -.1em;
-            text-shadow: @bg -.1em 0 .1em, @bg 0 -.1em .1em;
-          }
-
-          .deets::after {
-            .fa;
-            content: @fa-var-comment;
-            display: block;
-            position: absolute;
-            bottom: -.4em;
-            right: -.4em;
+            text-shadow: @bg -.15em 0 .1em, @bg 0 -.15em .1em;
           }
         }
 
@@ -310,6 +324,10 @@
 
     div.metadata {
       border-color: #222;
+    }
+
+    .vote.content::after {
+      text-shadow: @inv_bg -.15em 0 .1em, @inv_bg 0 -.15em .1em !important;
     }
 
     &.inudesu {
