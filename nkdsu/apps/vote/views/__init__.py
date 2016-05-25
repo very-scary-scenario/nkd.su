@@ -163,8 +163,10 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
         try:
             content_type, image = self.get_object().get_avatar(
                 size=self.request.GET.get('size'))
-        except tweepy.TweepError:
-            raise Http404('No such user found')
+        except tweepy.TweepError as e:
+            if e.api_code == 50:
+                raise Http404('No such user :<')
+            raise
 
         return HttpResponse(image, content_type=content_type)
 
