@@ -65,6 +65,7 @@ class ShowDetail(mixins.ShowDetail):
 
 
 class Added(mixins.ShowDetailMixin, ListView):
+    default_to_current = True
     section = 'new tracks'
     template_name = 'added.html'
     paginate_by = 50

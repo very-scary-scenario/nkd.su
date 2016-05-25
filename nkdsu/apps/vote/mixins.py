@@ -32,19 +32,25 @@ class ShowDetailMixin(object):
 
     model = Show
     view_name = None
+    default_to_current = False
 
     @memoize
     def get_object(self):
         """
         Get the show relating to self.date or, if self.date is None, the most
-        recent complete show.
+        recent complete show. If self.default_to_current is True, get the show
+        in progress rather than the most recent complete show.
 
         Doesn't use Show.at() because I don't want views creating Shows in the
         database.
         """
 
         if self.date is None:
-            qs = self.model.objects.filter(end__lt=timezone.now())
+            qs = self.model.objects.all()
+
+            if not self.default_to_current:
+                qs = qs.filter(end__lt=timezone.now())
+
             qs = qs.order_by('-end')
         else:
             qs = self.model.objects.filter(showtime__gt=self.date)
