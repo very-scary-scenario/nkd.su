@@ -92,180 +92,9 @@
     }
   }
 
-  div.voting {
-    ul.votes {
-      li.vote {
-        position: relative;
-        display: inline-block;
-
-        a {
-          border: none;
-
-          .avatar {
-            border-radius: .3em;
-
-            &.thumb {
-              padding: 1px;
-              border: 1px solid rgba(128,128,128,0);
-              width: 32px;
-              height: 32px;
-              border-radius: .4em;
-            }
-          }
-
-          @media (max-width: @breakpoint) {
-            .deets {
-              display: none;
-            }
-          }
-
-          @media (min-width: @breakpoint) {
-            &:hover {
-              img.thumb {
-                opacity: 0;
-                // long enough that we're never going to see it, and only
-                // applicable on hover, so it'll reappear immediately:
-                transition: opacity 1s;
-              }
-            }
-
-            .deets {
-              position: absolute;
-              right: -.8em;
-              top: -.8em;
-              pointer-events: none;
-              text-align: right;
-              z-index: 3;
-
-              .uninvert();
-              padding: .4em;
-              background-color: @bg;
-              .noise();
-              box-shadow: inset #ddd 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
-              border: 1px solid @border;
-              min-width: 9em;
-              max-width: 17em;
-              border-radius: .4em;
-
-              img {
-                float: right;
-                width: 48px;
-                height: 48px;
-              }
-
-              .meta {
-                margin-right: 55px;
-                color: #666;
-                font-size: .8em;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-
-                &.full_name {
-                  font-weight: bold;
-                  font-size: 1em;
-                  margin-top: -.2em;
-                }
-                &.when {
-                  color: @light;
-                }
-              }
-
-              .text {
-                clear: both;
-                text-align: center;
-                word-wrap: break-word;
-                overflow: hidden;
-                position: relative;
-
-                &::before {
-                  font-family: FontAwesome;
-                  content: @fa-var-comment;
-                  display: block;
-                  margin: 0 auto;
-                  width: 2.5em;
-                  padding: .2em 0;
-                  position: relative;
-                  z-index: 3;
-                  background-color: @bg;
-                  .noise();
-                }
-
-                &::after {
-                  content: ' ';
-                  box-sizing: border-box;
-                  display: block;
-                  width: 80%;
-                  border-top: 1px solid @light;
-                  position: absolute;
-                  top: 0.7em;
-                  left: 10%;
-                  z-index: 2;
-                }
-              }
-            }
-          }
-
-          .deets {
-            opacity: 0;
-            transition: opacity .1s, transform .1s;
-            transform: scale(0.9, 0.9);
-            transform-origin: 85% 2em;
-          }
-
-          &:hover {
-            .deets {
-              opacity: 1;
-              transform: scale(1, 1);
-            }
-          }
-        }
-
-        &::before, &::after {
-          pointer-events: none;
-          .fa;
-          display: block;
-          position: absolute;
-        }
-
-        &.new-user {
-          &::before {
-            color: @hl;
-            content: @fa-var-star;
-            top: -.2em;
-            left: -.2em;
-            text-shadow: @bg .1em .1em .1em;
-          }
-        }
-
-        &.placated {
-          filter: grayscale(100%);
-          img {
-            opacity: 0.5;
-          }
-        }
-
-        &.content {
-          &::after {
-            content: @fa-var-comment;
-            bottom: -.1em;
-            right: -.1em;
-            text-shadow: @bg -.15em 0 .1em, @bg 0 -.15em .1em;
-          }
-        }
-
-        &.abuser {
-          .avatar {
-            .transform(rotate(180deg));
-          }
-        }
-      }
-    }
-
-    .admin {
-      font-size: .8em;
-      .child-iter();
-    }
+  .admin {
+    font-size: .8em;
+    .child-iter();
   }
 
   .invitation {
@@ -372,6 +201,204 @@
     .tinytrack();
   }
 }
+
+li.vote {
+  .avatar {
+    border-radius: .3em;
+  }
+
+  .deets .meta {
+    font-size: .8em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.full_name {
+      font-weight: bold;
+      font-size: 1em;
+      margin-top: -.2em;
+    }
+    &.when {
+      color: @light;
+    }
+  }
+}
+
+body.tracks-expanded li.vote {
+  display: block;
+  margin-bottom: 1em;
+  clear: both;
+
+  .avatar {
+    float: right;
+    margin-left: .5em;
+
+    &.thumb {
+      display: none;
+    }
+  }
+
+  .deets {
+    color: @fg !important;
+  }
+}
+
+body.tracks-expanded .track.ineligible li.vote .deets {
+  color: @inv_fg !important;
+}
+
+body.tracks-collapsed li.vote {
+  position: relative;
+  display: inline-block;
+
+  a {
+    border: none;
+
+    .avatar {
+      &.thumb {
+        padding: 1px;
+        border: 1px solid rgba(128,128,128,0);
+        width: 32px;
+        height: 32px;
+        border-radius: .4em;
+      }
+    }
+
+    @media (max-width: @breakpoint) {
+      .deets {
+        display: none;
+      }
+    }
+
+    @media (min-width: @breakpoint) {
+      &:hover {
+        img.thumb {
+          opacity: 0;
+          // long enough that we're never going to see it, and only
+          // applicable on hover, so it'll reappear immediately:
+          transition: opacity 1s;
+        }
+      }
+
+      .deets {
+        position: absolute;
+        right: -.8em;
+        top: -.8em;
+        pointer-events: none;
+        text-align: right;
+        z-index: 3;
+
+        .uninvert();
+        padding: .4em;
+        background-color: @bg;
+        .noise();
+        box-shadow: inset #ddd 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
+        border: 1px solid @border;
+        min-width: 9em;
+        max-width: 17em;
+        border-radius: .4em;
+
+        img {
+          float: right;
+          width: 48px;
+          height: 48px;
+        }
+
+        .meta {
+          margin-right: 55px;
+          color: #666;
+        }
+
+        .text {
+          clear: both;
+          text-align: center;
+          word-wrap: break-word;
+          overflow: hidden;
+          position: relative;
+
+          &::before {
+            font-family: FontAwesome;
+            content: @fa-var-comment;
+            display: block;
+            margin: 0 auto;
+            width: 2.5em;
+            padding: .2em 0;
+            position: relative;
+            z-index: 3;
+            background-color: @bg;
+            .noise();
+          }
+
+          &::after {
+            content: ' ';
+            box-sizing: border-box;
+            display: block;
+            width: 80%;
+            border-top: 1px solid @light;
+            position: absolute;
+            top: 0.7em;
+            left: 10%;
+            z-index: 2;
+          }
+        }
+      }
+    }
+
+    .deets {
+      opacity: 0;
+      transition: opacity .1s, transform .1s;
+      transform: scale(0.9, 0.9);
+      transform-origin: 85% 2em;
+    }
+
+    &:hover {
+      .deets {
+        opacity: 1;
+        transform: scale(1, 1);
+      }
+    }
+  }
+
+  &::before, &::after {
+    pointer-events: none;
+    .fa;
+    display: block;
+    position: absolute;
+  }
+
+  &.new-user {
+    &::before {
+      color: @hl;
+      content: @fa-var-star;
+      top: -.2em;
+      left: -.2em;
+      text-shadow: @bg .1em .1em .1em;
+    }
+  }
+
+  &.placated {
+    filter: grayscale(100%);
+    img {
+      opacity: 0.5;
+    }
+  }
+
+  &.content {
+    &::after {
+      content: @fa-var-comment;
+      bottom: -.1em;
+      right: -.1em;
+      text-shadow: @bg -.15em 0 .1em, @bg 0 -.15em .1em;
+    }
+  }
+
+  &.abuser {
+    .avatar {
+      .transform(rotate(180deg));
+    }
+  }
+}
+
 
 #shortlist, #discarded {
   width: 90%;

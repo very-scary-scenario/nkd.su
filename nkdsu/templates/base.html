@@ -24,6 +24,11 @@
     {% if user.is_authenticated %}
       authenticated
     {% endif %}
+    {% if tracks_expanded %}
+      tracks-expanded
+    {% else %}
+      tracks-collapsed
+    {% endif %}
   ">
     {% csrf_token %}
     <p id="loading"></p>

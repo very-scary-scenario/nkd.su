@@ -228,6 +228,7 @@ PIPELINE_JS = {
             'js/libs/jquery.cookie.js',
             'js/libs/jquery.pjax.js',
             'js/csrf.js',
+            'js/collapse-toggle.js',
             'js/bindpjax.js',
             'js/select.js',
             'js/messages.js',
