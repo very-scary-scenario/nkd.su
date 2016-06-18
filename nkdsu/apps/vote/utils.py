@@ -45,7 +45,10 @@ def length_str(msec):
 
 
 def tweet_url(tweet):
-    return 'https://twitter.com/intent/tweet?text=%s' % urlquote(tweet)
+    return (
+        'https://twitter.com/intent/tweet?in_reply_to={reply_id}&text={text}'
+        .format(reply_id='744237593164980224', text=urlquote(tweet))
+    )
 
 
 def vote_url(tracks):
@@ -63,7 +66,7 @@ def vote_tweet(tracks):
 
 def vote_tweet_intent_url(tracks):
     tweet = vote_tweet(tracks)
-    return 'https://twitter.com/intent/tweet?text=%s' % urlquote(tweet)
+    return tweet_url(tweet)
 
 
 def tweet_len(tweet):
