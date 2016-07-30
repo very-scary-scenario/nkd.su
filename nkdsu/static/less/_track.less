@@ -207,6 +207,24 @@ li.vote {
     border-radius: .3em;
   }
 
+  &.new-user {
+    &::before {
+      color: @hl;
+      content: @fa-var-star;
+      top: -.2em;
+      left: -.2em;
+      text-shadow: @bg .1em .1em .1em;
+    }
+  }
+
+  &.placated {
+    img {
+      filter: grayscale(100%);
+      opacity: 0.5;
+    }
+  }
+
+
   .deets .meta {
     font-size: .8em;
     white-space: nowrap;
@@ -364,23 +382,6 @@ body.tracks-collapsed li.vote {
     .fa;
     display: block;
     position: absolute;
-  }
-
-  &.new-user {
-    &::before {
-      color: @hl;
-      content: @fa-var-star;
-      top: -.2em;
-      left: -.2em;
-      text-shadow: @bg .1em .1em .1em;
-    }
-  }
-
-  &.placated {
-    img {
-      filter: grayscale(100%);
-      opacity: 0.5;
-    }
   }
 
   &.content {
