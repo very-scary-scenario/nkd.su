@@ -6,7 +6,6 @@
     {% if vote.twitter_user.is_new %}new-user{% endif %}
     {% if vote.twitter_user.is_placated %}placated{% endif %}
   {% endif %}
-  placated
   "
   >
   <a class="vote-link" {% if not vote.is_manual %}href="{{ vote.twitter_user.get_absolute_url }}"{% endif %}>
