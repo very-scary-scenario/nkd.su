@@ -11,7 +11,7 @@ with Django will help greatly. I'm assuming you have a server of some kind that
 has Python 2.7 and Apache or nginx or some httpd capable of hosting WSGI apps
 installed.
 
-- Talk to Peter. He has some passwords and keys and other things that you'll
+- Talk to Peter. They have some passwords and keys and other things that you'll
   want if you're going to set up a replacement instance.
 - Make and activate a virtualenv.
     - I use [virtualenvwrapper][vew]. I strongly recommend you do the same.
@@ -23,7 +23,7 @@ installed.
       `POSTING_ACCESS_TOKEN` and `POSTING_ACCESS_TOKEN_SECRET`.
         - `READING_` is for @nkdsu, `POSTING_` is for @NekoDesuRadio. Peter has
           keys for all of these already, but you should be able to create a new
-          app and get him to reauthenticate them if you want to use your own
+          app and get them to reauthenticate them if you want to use your own
           app keys.
         - If you're setting up an instance for local development and testing,
           you probably want to create a testing Twitter account and use that
@@ -41,7 +41,7 @@ installed.
 - `python manage.py migrate`
 - `python manage.py loaddata [fixtures]`
     - I have a cron job that dumps the important parts of my instance of nkd.su
-      nightly to a json file that Peter has access to. Get that off him and
+      nightly to a json file that Peter has access to. Get that off them and
       replace `[fixtures]` with the path to that file.
 - Set up a `MEDIA_ROOT` directory and a `MEDIA_URL` that is pointed at it, then
   run `python manage.py collectstatic`
@@ -74,7 +74,7 @@ to accept votes and generally be responsible, though:
       a file that is hosted such that Peter can get to it, just in case you too
       are hit by a bus.
 - Make Peter an account.
-    - You can do this from the admin interface at /admin. Make him a super
+    - You can do this from the admin interface at /admin. Make them a super
       user. Do not make accounts for anyone else; any authenticated user can do
       all the built-in admin stuff like updating the library and hiding tracks.
 
