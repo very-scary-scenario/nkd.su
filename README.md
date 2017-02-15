@@ -68,7 +68,7 @@ help from [Chris Walden] ([@EuricaeriS]) and, of course, [Peter Shillito].
 [colons]: https://colons.co/
 [@mftb]: https://twitter.com/mftb
 [contributors]: https://github.com/colons/nkd.su/graphs/contributors
-[Thomas Moore]: https://github.com/tomopagu
+[Thomas Moore]: https://github.com/tomouchuu
 [Chris Walden]: http://www.chriswalden.co.uk/
 [@EuricaeriS]: https://twitter.com/EuricaeriS
 [Peter Shillito]: https://twitter.com/theshillito
