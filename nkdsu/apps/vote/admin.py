@@ -3,7 +3,7 @@ from django.contrib import admin
 
 
 class ShowAdmin(admin.ModelAdmin):
-    list_display = ('showtime', 'end')
+    list_display = ('showtime', 'end', 'voting_allowed')
 
 
 class TwitterUserAdmin(admin.ModelAdmin):

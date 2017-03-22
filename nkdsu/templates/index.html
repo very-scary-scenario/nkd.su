@@ -6,7 +6,11 @@
   {% include "include/show_message.html" %}
 
   {% if show.playlist %}
-    <div id="playlist">
+    <div id="playlist"
+      {% if user.is_authenticated or show.voting_allowed %}
+        class="secondary"
+      {% endif %}
+    >
       <h2>played</h2>
       <ul class="tracks playlist">
         {% for track in show.playlist reversed %}
@@ -16,7 +20,13 @@
     </div>
   {% endif %}
 
-  <div {% if show.playlist %}class="defer-to-playlist"{% endif %}>
+  <div
+    {% if show.playlist %}
+      {% if user.is_authenticated or show.voting_allowed %}
+        class="defer-to-playlist"
+      {% endif %}
+    {% endif %}
+  >
     {% if user.is_authenticated and show.shortlisted %}
       <h2>shortlist</h2>
       <p class="subheading">{{ show.shortlisted|total_length }}</p>
@@ -33,12 +43,21 @@
         {% include "include/tracklist.html" %}
       </ul>
 
-      <p class="aside">Want to vote for something else?</p>
-    {% else %}
+      {% if show.voting_allowed %}
+        <p class="aside">Want to vote for something else?</p>
+      {% endif %}
+
+    {% elif show.voting_allowed %}
       <h2 class="message">No requests yet</h2>
+
+    {% else %}
+      <h2 class="message">We're not taking requests this week, sorry</h2>
+      <p class="aside">Don't worry, your <a href="{% url "vote:stats" %}#most-dedicated-users">impressive streaks</a> will not be considered broken, as long as you're back next week.</p>
     {% endif %}
 
-    <p class="aside">Search, browse the <a href="{% url "vote:archive" %}">playlist archive</a> or just <a href="{% url "vote:roulette" %}">throw darts at the wall</a>.</p>
+    {% if show.voting_allowed %}
+      <p class="aside">Search, browse the <a href="{% url "vote:archive" %}">playlist archive</a> or just <a href="{% url "vote:roulette" %}">throw darts at the wall</a>.</p>
+    {% endif %}
 
     {% if user.is_authenticated and show.discarded %}
       <h2>discarded</h2>
