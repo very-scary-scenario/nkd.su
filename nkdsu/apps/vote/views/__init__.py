@@ -196,9 +196,16 @@ class Stats(TemplateView):
     cache_key = 'stats:context'
 
     def streaks(self):
+        last_votable_show = Show.current().prev()
+        while (
+            last_votable_show is not None and
+            not last_votable_show.voting_allowed
+        ):
+            last_votable_show = last_votable_show.prev()
+
         return sorted(
             TwitterUser.objects.filter(
-                vote__show=Show.current().prev()
+                vote__show=last_votable_show,
             ).distinct(),
             key=lambda u: u.streak(),
             reverse=True
