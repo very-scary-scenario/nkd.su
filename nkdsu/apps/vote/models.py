@@ -613,31 +613,29 @@ class Track(CleanOnSaveMixin, models.Model):
         is not
         """
 
+        if self.inudesu:
+            return 'inu desu'
+
+        if self.hidden:
+            return 'hidden'
+
         current_show = Show.current()
+
+        if not current_show.voting_allowed:
+            return 'no requests allowed this week'
+
+        if self.play_set.filter(show=current_show).exists():
+            return 'played this week'
+
+        if self.play_set.filter(show=current_show.prev()).exists():
+            return 'played last week'
+
         block_qs = current_show.block_set.filter(track=self)
 
-        if self.inudesu:
-            reason = 'inu desu'
+        if block_qs.exists():
+            return block_qs.get().reason
 
-        elif not current_show.voting_allowed:
-            reason = 'no requests allowed this week'
-
-        elif self.hidden:
-            reason = 'hidden'
-
-        elif self.play_set.filter(show=current_show).exists():
-            reason = 'played this week'
-
-        elif self.play_set.filter(show=current_show.prev()).exists():
-            reason = 'played last week'
-
-        elif block_qs.exists():
-            reason = block_qs.get().reason
-
-        else:
-            reason = False
-
-        return reason
+        return False
 
     @memoize
     @pk_cached(10)
