@@ -1034,7 +1034,10 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         content = self.text
 
         if not self.is_manual:
-            if content.startswith('@'):
+            while (
+                content.lower()
+                .startswith('@{}'.format(settings.READING_USERNAME).lower())
+            ):
                 content = content.split(' ', 1)[1]
 
             content = content.strip('- ')
