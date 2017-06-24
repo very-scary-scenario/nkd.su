@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import os
+
 import plistlib
 
 from django.contrib.auth.decorators import login_required
@@ -67,6 +69,7 @@ class AdminActionMixin(AdminMixin):
         context = self.get_context_data()
         context.update({
             'track': self.object,
+            'cache_invalidator': os.urandom(16),
         })
         return TemplateResponse(
             self.request, 'include/track.html',

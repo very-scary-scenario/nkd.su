@@ -1,7 +1,7 @@
 {% load vote_tags %}
 {% load cache %}
 
-{% cache 20 track track.pk vote_show.pk user.is_authenticated %}
+{% cache 20 track track.pk vote_show.pk user.is_authenticated cache_invalidator %}
   <li class="track
     {% if track.eligible %}
       eligible
