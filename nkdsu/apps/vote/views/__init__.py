@@ -79,6 +79,11 @@ class Roulette(ListView):
     model = Track
     template_name = 'roulette.html'
     context_object_name = 'tracks'
+    modes = [
+        ('hipster', 'hipster'),
+        ('indiscriminate', 'indiscriminate'),
+        ('almost-100', 'almost 100'),
+    ]
 
     def get(self, request, *args, **kwargs):
         if kwargs.get('mode') is None:
@@ -90,15 +95,21 @@ class Roulette(ListView):
     def get_queryset(self):
         qs = self.model.objects.public()
 
-        if self.kwargs.get('mode') != 'indiscriminate':
+        if self.kwargs.get('mode') == 'hipster':
             qs = qs.filter(play=None)
+        elif self.kwargs.get('mode') == 'almost-100':
+            qs = qs.exclude(
+                play__date__gt=Show.current().end -
+                datetime.timedelta(days=(7 * 100)),
+            )
 
         return qs.order_by('?')[:5]
 
     def get_context_data(self):
         context = super(Roulette, self).get_context_data()
         context['mode'] = self.kwargs.get('mode') or 'hipster'
-        context['modes'] = ['hipster', 'indiscriminate']
+        context['mode_name'] = dict(self.modes)[context['mode']]
+        context['modes'] = self.modes
         return context
 
 

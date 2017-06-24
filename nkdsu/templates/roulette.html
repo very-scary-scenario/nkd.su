@@ -1,17 +1,17 @@
 {% extends parent %}
 
-{% block title %}{{ mode }} roulette{% endblock %}
+{% block title %}{{ mode_name }} roulette{% endblock %}
 
 {% block content %}
 
   <h2>roulette</h2>
   <p class="subheading roulette-mode-switch">
-    {% for m in modes %}
+    {% for slug, name in modes %}
       <span>
-      {% if mode == m %}
-        {{ m }}
+      {% if mode == slug %}
+        {{ name }}
       {% else %}
-        <a href="{% url "vote:roulette" mode=m %}">{{ m }}</a>
+        <a href="{% url "vote:roulette" mode=slug %}">{{ name }}</a>
       {% endif %}
     </span>
     {% endfor %}

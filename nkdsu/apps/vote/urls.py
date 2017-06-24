@@ -102,7 +102,7 @@ urlpatterns = patterns(
     url(r'^added/(?P<date>[\d-]+)/$', views.Added.as_view(), name='added'),
     url(r'^added/$', views.Added.as_view(), name='added'),
 
-    url(r'^roulette/(?P<mode>indiscriminate|hipster)/$',
+    url(r'^roulette/(?P<mode>indiscriminate|hipster|almost-100)/$',
         views.Roulette.as_view(), name='roulette'),
     url(r'^roulette/$', views.Roulette.as_view(), name='roulette'),
 
