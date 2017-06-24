@@ -100,8 +100,8 @@ class Roulette(ListView):
         elif self.kwargs.get('mode') == 'almost-100':
             qs = qs.exclude(
                 play__date__gt=Show.current().end -
-                datetime.timedelta(days=(7 * 100)),
-            )
+                datetime.timedelta(days=(7 * 80)),
+            ).exclude(play=None)
 
         return qs.order_by('?')[:5]
 
