@@ -94,10 +94,10 @@
             <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
           {% endif %}
           {% if track in current_show.discarded or track in current_show.shortlisted %}
-            <span><a href="{% url "vote:admin:reset" pk=track.pk %}">reset shortlist/discard</a></span>
+            <span><a class="ajaxable" href="{% url "vote:admin:reset" pk=track.pk %}">reset shortlist/discard</a></span>
           {% else %}
-            <span><a href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
-            <span><a href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
+            <span><a class="ajaxable" href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
+            <span><a class="ajaxable" href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
           {% endif %}
           <span><a href="{% url "vote:admin:make_note" pk=track.pk %}">add note</a></span>
         </p>

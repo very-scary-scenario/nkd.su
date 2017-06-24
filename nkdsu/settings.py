@@ -232,6 +232,7 @@ PIPELINE_JS = {
             'js/bindpjax.js',
             'js/select.js',
             'js/messages.js',
+            'js/ajax-actions.js',
         ],
         'output_filename': 'js/min/base.js',
     },

@@ -62,12 +62,25 @@ class AdminActionMixin(AdminMixin):
 
         return self.url
 
+    def get_ajax_success_message(self):
+        self.object = self.get_object()
+        context = self.get_context_data()
+        context.update({
+            'track': self.object,
+        })
+        return TemplateResponse(
+            self.request, 'include/track.html',
+            context,
+        )
+
     def do_thing_and_redirect(self):
         try:
             self.do_thing()
         except ValidationError as e:
             return self.handle_validation_error(e)
         else:
+            if self.request.GET.get('ajax'):
+                return self.get_ajax_success_message()
             return redirect(self.get_redirect_url())
 
 
