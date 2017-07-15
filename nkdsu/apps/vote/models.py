@@ -881,6 +881,7 @@ MANUAL_VOTE_KINDS = (
     ('text', 'text'),
     ('tweet', 'tweet'),
     ('person', 'in person'),
+    ('phone', 'on the phone'),
 )
 
 
