@@ -574,7 +574,7 @@ class Track(CleanOnSaveMixin, models.Model):
             r'^(?P<anime>.*?) ?(?P<role>('
 
             r'(\b(ED|OP)\d*\b.*)|'
-            r'(\bcharacter song\b.*)|'
+            r'(\b(character|image) song\b.*)|'
             r'(\bep\d+\b.*)|'
             r'(\binsert (track|song)\b.*)|'
             r'(\bins\b)|'
