@@ -1,0 +1,35 @@
+{% extends "confirm.html" %}
+
+{% block deets %}
+  {% if deets %}
+    <ul class="changes">
+      {% for change in deets %}
+        <li>
+
+          <p class="title"><strong>{{ change.item }}</strong></p>
+
+          {% if change.type == 'new' %}
+            <p>Has been added</p>
+          {% elif change.type == 'hide' %}
+            <p>Has been removed and will be hidden</p>
+          {% elif change.type == 'change' %}
+            <ul class="diff">
+              {% for item in change.changes %}
+                <li>
+                  <p><em>{{ item.field }}</em> used to be:</p>
+                  <p>{% if item.from %}<code>{{ item.from }}</code>{% else %}<em>empty</em>{% endif %}</p>
+                  <p>and has been changed to:</p>
+                  <p>{% if item.to %}<code>{{ item.to }}</code>{% else %}<em>empty</em>{% endif %}</p>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p>Unknown change; please file a bug.</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </li>
+  {% else %}
+    <p class="aside">Nothing changed.</p>
+  {% endif %}
+{% endblock %}

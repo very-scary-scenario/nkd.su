@@ -333,6 +333,8 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
     Update the library.
     """
 
+    template_name = 'library_update.html'
+
     def update_library(self, dry_run):
         library_update = self.request.session['library_update']
         return update_library(
@@ -343,7 +345,7 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
         )
 
     def get_deets(self):
-        return '\n\n'.join(self.update_library(dry_run=True))
+        return self.update_library(dry_run=True)
 
     def do_thing(self):
         changes = self.update_library(dry_run=False)

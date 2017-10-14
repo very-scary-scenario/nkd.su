@@ -457,6 +457,36 @@ form ul.errorlist li {
   top: .6em;
 }
 
+/* library updates */
+
+.changes {
+  > li {
+    p {
+      margin-left: 1em;
+
+      &.title {
+        margin-left: 0;
+      }
+    }
+
+    margin-bottom: 1em;
+
+    ul.diff {
+      li {
+        code {
+          display: inline-block;
+          color: @pink;
+          background-color: fade(@pink, 10%);
+          padding: 0 .2em;
+          border-radius: .2em;
+        }
+
+        margin: .3em 0 .7em;
+      }
+    }
+  }
+}
+
 /* trivia */
 
 #trivia {

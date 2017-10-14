@@ -27,15 +27,31 @@ def update_library(tree, dry_run=False, inudesu=False):
             db_track = Track()
 
         else:
-            if ((db_track.id3_title != t['Name'])
-                    or (db_track.id3_artist != t['Artist'])
-                    or (db_track.id3_album != t['Album'])
-                    or (db_track.msec != t['Total Time'])
-                    or (db_track.composer != t.get('Composer'))
-                    or (db_track.added != added)):
+            db_dict = {
+                'title': db_track.id3_title,
+                'artist': db_track.id3_artist,
+                'album': db_track.id3_album,
+                'msec': db_track.msec,
+                'composer': db_track.composer,
+                'added': db_track.added,
+            }
+            track_dict = {
+                'title': t['Name'],
+                'artist': t['Artist'],
+                'album': t['Album'],
+                'msec': t['Total Time'],
+                'composer': t.get('Composer', ''),
+                'added': added,
+            }
+
+            if db_dict != track_dict:
                 # we need to update an existing track
                 changed = True
-                pre_change = unicode(db_track)
+                field_alterations = [{
+                    'field': k,
+                    'from': db_dict[k],
+                    'to': track_dict[k],
+                } for k in db_dict.keys() if db_dict[k] != track_dict[k]]
 
         if new or changed:
             db_track.id = t['Persistent ID']
@@ -43,7 +59,7 @@ def update_library(tree, dry_run=False, inudesu=False):
             db_track.id3_artist = t['Artist']
             db_track.id3_album = t['Album']
             db_track.msec = t['Total Time']
-            db_track.msec = t['Total Time']
+            db_track.composer = t.get('Composer', '')
             db_track.added = added
             db_track.inudesu = inudesu
 
@@ -53,11 +69,17 @@ def update_library(tree, dry_run=False, inudesu=False):
             else:
                 db_track.hidden = False
 
-            changes.append('new:\n%s' % unicode(db_track))
+            changes.append({
+                'type': 'new',
+                'item': unicode(db_track),
+            })
 
         if changed:
-            changes.append('change:\n%s' % pre_change)
-            changes.append('to:\n%s' % unicode(db_track))
+            changes.append({
+                'type': 'change',
+                'item': unicode(db_track),
+                'changes': field_alterations,
+            })
 
         if (new or changed) and (not dry_run):
             db_track.save()
@@ -66,7 +88,10 @@ def update_library(tree, dry_run=False, inudesu=False):
 
     for track in [tr for tr in alltracks
                   if tr not in tracks_kept and not tr.hidden]:
-        changes.append('hide:\n%s' % unicode(track))
+        changes.append({
+            'type': 'hide',
+            'item': unicode(track),
+        })
         if not dry_run:
             track.hidden = True
             track.save()

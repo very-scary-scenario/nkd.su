@@ -5,9 +5,11 @@
 
 <h2 class="aligned">Are you sure you want to {{ action|lower }}?</h2>
 
-{% if deets %}
-  {{ deets|linebreaks }}
-{% endif %}
+{% block deets %}
+  {% if deets %}
+    {{ deets|linebreaks }}
+  {% endif %}
+{% endblock %}
 
 <p class="aside confirm">
   <span><a href="?confirm=true{% if next %}&amp;next={{ next|urlencode }}{% endif %}">yep</a></span>
