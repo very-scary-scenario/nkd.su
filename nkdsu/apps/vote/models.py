@@ -579,10 +579,10 @@ class Track(CleanOnSaveMixin, models.Model):
             r'((character|image) song\b.*)|'
             r'(ep\d+\b.*)|'
             r'(insert (track|song)\b.*)|'
-            r'(ins\b)|'
-            r'(theme ?\d*\b)|'
+            r'(ins)|'
+            r'(theme ?\d*)|'
             r'(bgm\b.*)|'
-            r'(ost\b)|'
+            r'(ost)|'
 
             r'()))$',
             self.role,
