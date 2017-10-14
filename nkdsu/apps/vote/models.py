@@ -576,8 +576,11 @@ class Track(CleanOnSaveMixin, models.Model):
             r'(\b(ED|OP)\d*\b.*)|'
             r'(\bcharacter song\b.*)|'
             r'(\bep\d+\b.*)|'
-            r'(\binsert song\b)|'
+            r'(\binsert (track|song)\b.*)|'
             r'(\bins\b)|'
+            r'(\btheme ?\d*\b)|'
+            r'(\bbgm\b)|'
+            r'(\bost\b)|'
 
             r'()))$',
             self.role,
