@@ -41,7 +41,7 @@
 
       <p class="meta">
         {% if track.role %}
-          <span class="role">{{ track.role }}</span>
+          <span class="role"><strong>{{ track.role_detail.show }}</strong> {{ track.role_detail.role }}</span>
         {% endif %}
 
         {% if track.last_play %}

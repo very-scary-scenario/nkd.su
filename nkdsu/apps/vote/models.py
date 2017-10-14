@@ -7,6 +7,7 @@ import json
 from urlparse import urlparse
 
 from cache_utils.decorators import cached
+from classtools import reify
 from dateutil import parser as date_parser
 from markdown import markdown
 from PIL import Image, ImageFilter
@@ -552,19 +553,37 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return (show.end - self.last_play().date).days / 7
 
-    @property
+    @reify
     def title(self):
         return self.split_id3_title()[0]
 
-    @property
+    @reify
     def album(self):
         return self.id3_album
 
-    @property
+    @reify
     def role(self):
         return self.split_id3_title()[1]
 
-    @property
+    @reify
+    def role_detail(self):
+        if self.role is None:
+            return {}
+
+        return re.match(
+            r'^(?P<show>.*?) ?(?P<role>('
+
+            r'((ED|OP)\d*\b.*)|'
+            r'(character song\b.*)|'
+            r'(ep\d+\b.*)|'
+            r'(insert song)|'
+
+            r'()))$',
+            self.role,
+            flags=re.IGNORECASE,
+        ).groupdict()
+
+    @reify
     def artist(self):
         return self.id3_artist
 
@@ -1007,7 +1026,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     def either_name(self):
         return self.name or '@{0}'.format(self.twitter_user.screen_name)
 
-    @property
+    @reify
     def is_manual(self):
         return not bool(self.tweet_id)
 

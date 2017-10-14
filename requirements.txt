@@ -19,3 +19,4 @@ django-orphaned==0.1
 django-debug-toolbar==1.0
 ndg-httpsclient
 pyasn1
+classtools
