@@ -201,6 +201,25 @@ class Artist(ListView):
         return context
 
 
+class Anime(ListView):
+    model = Track
+    template_name = 'anime_detail.html'
+    context_object_name = 'tracks'
+
+    def get_queryset(self):
+        tracks = self.model.objects.by_anime(self.kwargs['anime'])
+
+        if len(tracks) == 0:
+            raise Http404('No tracks for this anime')
+        else:
+            return tracks
+
+    def get_context_data(self):
+        context = super(Anime, self).get_context_data()
+        context['anime'] = self.kwargs['anime']
+        return context
+
+
 class Stats(TemplateView):
     section = 'stats'
     template_name = 'stats.html'

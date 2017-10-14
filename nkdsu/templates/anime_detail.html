@@ -1,0 +1,13 @@
+{% extends parent %}
+
+{% block title %}{{ anime }}{% endblock %}
+
+{% block content %}
+
+  <h2>{{ anime }}</h2>
+
+  <ul class="tracks">
+    {% include "include/tracklist.html" %}
+  </ul>
+
+{% endblock %}

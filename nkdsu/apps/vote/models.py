@@ -571,12 +571,13 @@ class Track(CleanOnSaveMixin, models.Model):
             return {}
 
         return re.match(
-            r'^(?P<show>.*?) ?(?P<role>('
+            r'^(?P<anime>.*?) ?(?P<role>('
 
-            r'((ED|OP)\d*\b.*)|'
-            r'(character song\b.*)|'
-            r'(ep\d+\b.*)|'
-            r'(insert song)|'
+            r'(\b(ED|OP)\d*\b.*)|'
+            r'(\bcharacter song\b.*)|'
+            r'(\bep\d+\b.*)|'
+            r'(\binsert song\b)|'
+            r'(\bins\b)|'
 
             r'()))$',
             self.role,

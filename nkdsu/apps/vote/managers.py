@@ -23,10 +23,17 @@ class TrackManager(models.Manager):
         """
 
         base_qs = self._everything(show_secret_tracks)
-
         qs = base_qs.filter(id3_artist__contains=artist).order_by('id3_title')
-
         return [t for t in qs if artist in t.artist_names()]
+
+    def by_anime(self, anime, show_secret_tracks=False):
+        """
+        Behaves similarly to by_artist.
+        """
+
+        base_qs = self._everything(show_secret_tracks)
+        qs = base_qs.filter(id3_title__contains=anime).order_by('id3_title')
+        return [t for t in qs if t.role_detail['anime'] == anime]
 
     def search(self, query, show_secret_tracks=False):
         keywords = split_query_into_keywords(query)
@@ -37,7 +44,10 @@ class TrackManager(models.Manager):
         qs = self._everything(show_secret_tracks)
 
         for keyword in keywords:
-            qs = qs.exclude(~models.Q(id3_title__icontains=keyword) &
-                            ~models.Q(id3_artist__icontains=keyword))
+            qs = qs.exclude(~models.Q(
+                id3_title__icontains=keyword,
+            ) & ~models.Q(
+                id3_artist__icontains=keyword,
+            ))
 
         return qs
