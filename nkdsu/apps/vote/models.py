@@ -579,7 +579,7 @@ class Track(CleanOnSaveMixin, models.Model):
             r'(\binsert (track|song)\b.*)|'
             r'(\bins\b)|'
             r'(\btheme ?\d*\b)|'
-            r'(\bbgm\b)|'
+            r'(\bbgm\b.*)|'
             r'(\bost\b)|'
 
             r'()))$',
