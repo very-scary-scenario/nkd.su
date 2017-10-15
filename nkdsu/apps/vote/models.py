@@ -580,7 +580,7 @@ class Track(CleanOnSaveMixin, models.Model):
             r'(ep\d+\b.*)|'
             r'(insert (track|song)\b.*)|'
             r'(ins)|'
-            r'(theme ?\d*)|'
+            r'((main )?theme ?\d*)|'
             r'(bgm\b.*)|'
             r'(ost)|'
 
