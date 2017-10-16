@@ -482,9 +482,10 @@ class RemoveNote(DestructiveAdminAction, DetailView):
 
 class AllAnimeView(View):
     def get(self, request):
+        names = set(
+            (t.role_detail.get('anime', '') for t in Track.objects.all())
+        )
         return HttpResponse(
-            '\n'.join(sorted(set(
-                (t.role_detail.get('anime', '') for t in Track.objects.all())
-            ))),
+            '\n'.join(sorted(names, key=lambda n: n.lower())),
             content_type='text/plain',
         )
