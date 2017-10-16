@@ -153,9 +153,31 @@ body {
           border-radius: .4em;
         }
 
-
         &.abuser .avatar img {
           .transform(rotate(180deg));
+        }
+
+        .badges {
+          text-align: center;
+          margin: .5em 0;
+
+          &::before {
+            display: block;
+            content: '•';
+            margin-bottom: .5em;
+          }
+
+          li {
+            padding: .5em 0;
+
+            i, p {
+              margin-bottom: .3em;
+            }
+
+            i.fa {
+              font-size: 1.5em;
+            }
+          }
         }
 
         .user-votes {

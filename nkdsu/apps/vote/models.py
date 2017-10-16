@@ -1264,3 +1264,30 @@ class Note(CleanOnSaveMixin, models.Model):
 
     def __unicode__(self):
         return self.content
+
+
+BADGES = [(
+    'charity-2017',
+    '{user.name} donated to the Very Scary Scenario charity streams and Neko '
+    'Desu All-Nighter 2017',
+    'heart',
+    'https://www.justgiving.com/fundraising/very-charity-scenario-2017',
+)]
+
+
+class UserBadge(CleanOnSaveMixin, models.Model):
+    badge = models.CharField(
+        choices=[b[:2] for b in BADGES],
+        max_length=max((len(b[0]) for b in BADGES)),
+    )
+    user = models.ForeignKey(TwitterUser)
+
+    @reify
+    def get_badge_info(self):
+        badge, = (b for b in BADGES if b[0] == self.badge)
+        return {
+            'slug': badge[0],
+            'description': badge[1].format(user=self.user),
+            'icon': badge[2],
+            'url': badge[3],
+        }

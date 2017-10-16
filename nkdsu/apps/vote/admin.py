@@ -11,6 +11,11 @@ class TwitterUserAdmin(admin.ModelAdmin):
     list_filter = ('is_abuser',)
 
 
+class UserBadgeAdmin(admin.ModelAdmin):
+    list_display = ('user', 'badge')
+    list_filter = ('user', 'badge')
+
+
 class VoteAdmin(admin.ModelAdmin):
     list_display = ('twitter_user', 'date')
     list_filter = ('kind', 'twitter_user')
@@ -44,6 +49,7 @@ class NoteAdmin(admin.ModelAdmin):
 for model, modeladmin in [
         (models.Show, ShowAdmin),
         (models.TwitterUser, TwitterUserAdmin),
+        (models.UserBadge, UserBadgeAdmin),
         (models.Track, TrackAdmin),
         (models.Vote, VoteAdmin),
         (models.Play, PlayAdmin),
