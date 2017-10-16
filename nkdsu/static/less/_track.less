@@ -3,8 +3,8 @@
 @metadata-width: 60%;
 @new-compensation: 2.7em;
 
-.heavy-glow() {
-  text-shadow: @bg 0 0 .2em, @bg 0 0 .2em, @bg 0 0 .2em, @bg 0 0 .2em;
+.heavy-glow(@color) {
+  text-shadow: @color 0 0 .2em, @color 0 0 .2em, @color 0 0 .2em, @color 0 0 .2em;
 }
 
 .tinytrack() {
@@ -159,8 +159,10 @@
       border-color: #222;
     }
 
-    .vote.content::after {
-      text-shadow: @inv_bg -.15em 0 .1em, @inv_bg 0 -.15em .1em !important;
+    .vote.content {
+      &::after, .hat {
+        .heavy-glow(@inv_bg) !important;
+      }
     }
 
     &.inudesu {
@@ -412,7 +414,7 @@ body.tracks-collapsed li.vote {
       content: @fa-var-comment;
       bottom: -.1em;
       right: -.1em;
-      .heavy-glow();
+      .heavy-glow(@bg);
     }
 
     &.birthday {
@@ -430,7 +432,7 @@ body.tracks-collapsed li.vote {
     color: @badge-colour;
     top: -.1em;
     right: -.1em;
-    .heavy-glow();
+    .heavy-glow(@bg);
   }
 
   &.abuser {
