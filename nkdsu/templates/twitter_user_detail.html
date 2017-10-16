@@ -49,14 +49,12 @@
       <ul class="badges">
         {% for badge in voter.userbadge_set.all %}
           <li>
-            <a {% if badge.get_badge_info.url %} href="{{ badge.get_badge_info.url }}" {% endif %}>
-              <i class="fa fa-{{ badge.get_badge_info.icon }}"></i>
-            </a>
+            <i class="fa fa-{{ badge.badge_info.icon }}"></i>
 
-            <p>{{ badge.get_badge_info.description }}</p>
+            <p>{{ badge.badge_info.description }}</p>
 
-            {% if badge.get_badge_info.url %}
-              <p><a href="{{ badge.get_badge_info.url }}">More info&hellip;</a></p>
+            {% if badge.badge_info.url %}
+              <p><a href="{{ badge.badge_info.url }}">More info&hellip;</a></p>
             {% endif %}
           </li>
         {% endfor %}

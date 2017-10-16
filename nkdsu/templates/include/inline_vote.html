@@ -9,6 +9,10 @@
   "
   >
   <a class="vote-link" {% if not vote.is_manual %}href="{{ vote.twitter_user.get_absolute_url }}"{% endif %}>
+    {% if vote.hat %}
+      <i class="hat fa fa-{{ vote.hat.badge_info.icon }}"></i>
+    {% endif %}
+
     <img class="avatar thumb" src="{{ vote.get_image_url }}" alt="{{ vote.twitter_user.screen_name }}"/>
 
     <div class="deets">
@@ -25,6 +29,13 @@
       <p class="meta when">{{ vote.date|when }}</p>
 
       {% if vote.content %}<p class="text">{{ vote.content|safe }}</p>{% endif %}
+
+      {% if vote.hat %}
+        <p class="hat-info">
+          <i class="fa fa-{{ vote.hat.badge_info.icon }}"></i>
+          {{ vote.hat.badge_info.summary }}
+        </p>
+      {% endif %}
 
     </div>
   </a>

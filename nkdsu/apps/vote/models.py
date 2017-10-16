@@ -24,6 +24,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.templatetags.static import static
+from django.utils.timezone import get_default_timezone
 
 
 from .managers import TrackManager, NoteManager
@@ -286,20 +287,23 @@ class Show(CleanOnSaveMixin, models.Model):
             'date': self.showtime.date().strftime('%Y-%m-%d')
         })
 
-    def api_dict(self, verbose=False):
+    @reify
+    def start(self):
         prev = self.prev()
-        if prev is None:
-            start = None
-        else:
-            start = prev.end
 
+        if prev is None:
+            return None
+        else:
+            return prev.end
+
+    def api_dict(self, verbose=False):
         return {
             'playlist': [p.api_dict() for p in self.plays()],
             'added': [t.api_dict() for t in self.revealed()],
             'votes': [v.api_dict() for v in self.votes()],
             'showtime': self.showtime,
             'finish': self.end,
-            'start': start,
+            'start': self.start,
             'broadcasting': self.broadcasting(),
             'message_markdown': self.message or None,
             'message_html': markdown(self.message) if self.message else None,
@@ -1077,6 +1081,32 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         return content
 
+    @reify
+    @pk_cached(20)
+    def hat(self):
+        """
+        Get the most important badge for a given vote, where the most important
+        badge is the last one defined in `BADGES`.
+        """
+
+        badge_order = [b[0] for b in BADGES]
+
+        for badge in sorted(
+            (
+                b for b in self.twitter_user.userbadge_set.all()
+                if (
+                    b.badge_info['start'] is None or
+                    b.badge_info['start'] <= self.show.end
+                ) and (
+                    b.badge_info['finish'] is None or
+                    b.badge_info['finish'] >= self.show.end
+                )
+            ),
+            key=lambda b: badge_order.index(b.badge),
+            reverse=True,
+        ):
+            return badge
+
     @memoize
     @pk_cached(indefinitely)
     def success(self):
@@ -1266,12 +1296,33 @@ class Note(CleanOnSaveMixin, models.Model):
         return self.content
 
 
-BADGES = [(
+class Badge(tuple):
+    def __new__(cls, *args):
+        return super(Badge, cls).__new__(cls, args)
+
+    def info(self, user):
+        slug, description, summary, icon, url, start, finish = self
+
+        return {
+            'slug': slug,
+            'description': description.format(user=user),
+            'summary': summary,
+            'icon': icon,
+            'url': url,
+            'start': Show.at(start).showtime,
+            'finish': Show.at(finish).end,
+        }
+
+
+BADGES = [Badge(
     'charity-2017',
     '{user.name} donated to the Very Scary Scenario charity streams and Neko '
     'Desu All-Nighter 2017',
+    'Donated',
     'heart',
     'https://www.justgiving.com/fundraising/very-charity-scenario-2017',
+    datetime.datetime(2017, 10, 1, tzinfo=get_default_timezone()),
+    datetime.datetime(2017, 11, 20, tzinfo=get_default_timezone()),
 )]
 
 
@@ -1283,11 +1334,6 @@ class UserBadge(CleanOnSaveMixin, models.Model):
     user = models.ForeignKey(TwitterUser)
 
     @reify
-    def get_badge_info(self):
+    def badge_info(self):
         badge, = (b for b in BADGES if b[0] == self.badge)
-        return {
-            'slug': badge[0],
-            'description': badge[1].format(user=self.user),
-            'icon': badge[2],
-            'url': badge[3],
-        }
+        return badge.info(self.user)
