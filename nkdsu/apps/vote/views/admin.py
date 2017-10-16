@@ -487,5 +487,5 @@ class AllAnimeView(View):
         )
         return HttpResponse(
             '\n'.join(sorted(names, key=lambda n: n.lower())),
-            content_type='text/plain',
+            content_type='text/plain; charset=utf-8',
         )
