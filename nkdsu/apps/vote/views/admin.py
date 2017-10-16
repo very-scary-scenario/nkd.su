@@ -478,3 +478,13 @@ class RemoveNote(DestructiveAdminAction, DetailView):
     def do_thing(self):
         self.get_object().delete()
         messages.success(self.request, 'note removed')
+
+
+class AllAnimeView(View):
+    def get(self, request):
+        return HttpResponse(
+            '\n'.join(sorted(set(
+                (t.role_detail.get('anime', '') for t in Track.objects.all())
+            ))),
+            content_type='text/plain',
+        )

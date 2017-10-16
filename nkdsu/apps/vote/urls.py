@@ -11,6 +11,9 @@ admin_patterns = patterns(
     url(r'^upload/confirm/$',
         admin.LibraryUploadConfirmView.as_view(), name='confirm_upload'),
 
+    url(r'^all-the-anime/$',
+        admin.AllAnimeView.as_view(), name='all_anime'),
+
     url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
 
     url(r'^add-manual-vote/(?P<pk>.+)/$',
