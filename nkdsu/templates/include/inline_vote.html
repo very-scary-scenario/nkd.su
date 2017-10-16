@@ -1,6 +1,7 @@
 {% load vote_tags %}
 <li class="vote
   {% if vote.content %}content{% endif %}
+  {% if vote.birthday %}birthday{% endif %}
   {% if not vote.is_manual and vote.twitter_user.is_abuser %}abuser{% endif %}
   {% if user.is_authenticated %}
     {% if vote.twitter_user.is_new %}new-user{% endif %}

@@ -414,6 +414,16 @@ body.tracks-collapsed li.vote {
       right: -.1em;
       .heavy-glow();
     }
+
+    &.birthday {
+      &::after {
+        content: @fa-var-birthday-cake;
+      }
+
+      .deets .text::before {
+        content: @fa-var-birthday-cake !important;
+      }
+    }
   }
 
   .hat {

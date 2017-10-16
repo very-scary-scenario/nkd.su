@@ -1081,6 +1081,14 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         return content
 
+    @memoize
+    def birthday(self):
+        content = self.content()
+        return (
+            content and
+            re.search(r'\bbirthday\b', content, flags=re.IGNORECASE)
+        )
+
     @reify
     @pk_cached(20)
     def hat(self):
