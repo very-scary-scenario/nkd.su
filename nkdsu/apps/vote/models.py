@@ -1325,7 +1325,7 @@ class Badge(tuple):
 BADGES = [
     Badge(
         'tblc',
-        '{user.name} bought Take Back Love City for the RSPCA.',
+        u'{user.name} bought Take Back Love City for the RSPCA.',
         'Bought some bad music',
         'headphones',
         'https://desus.bandcamp.com/album/take-back-love-city',
@@ -1334,8 +1334,8 @@ BADGES = [
     ),
     Badge(
         'charity-2016',
-        '{user.name} donated to the Very Scary Scenario charity streams for '
-        'Special Effect in 2016.',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'Special Effect in 2016.',
         'Donated',
         'heart',
         'https://www.justgiving.com/fundraising/very-scary-scenario',
@@ -1344,8 +1344,8 @@ BADGES = [
     ),
     Badge(
         'charity-2017',
-        '{user.name} donated to the Very Scary Scenario charity streams and '
-        'Neko Desu All-Nighter for Cancer Research UK in 2017.',
+        u'{user.name} donated to the Very Scary Scenario charity streams and '
+        u'Neko Desu All-Nighter for Cancer Research UK in 2017.',
         'Donated',
         'heart',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2017',
