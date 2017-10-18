@@ -1335,7 +1335,7 @@ BADGES = [
     Badge(
         'charity-2016',
         '{user.name} donated to the Very Scary Scenario charity streams for '
-        'Special Effect in 2016.'
+        'Special Effect in 2016.',
         'Donated',
         'heart',
         'https://www.justgiving.com/fundraising/very-scary-scenario',
