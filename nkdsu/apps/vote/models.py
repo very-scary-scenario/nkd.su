@@ -1090,7 +1090,6 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         )
 
     @reify
-    @pk_cached(20)
     def hat(self):
         """
         Get the most important badge for a given vote, where the most important
