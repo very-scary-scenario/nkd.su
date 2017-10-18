@@ -1316,8 +1316,8 @@ class Badge(tuple):
             'summary': summary,
             'icon': icon,
             'url': url,
-            'start': Show.at(start).showtime,
-            'finish': Show.at(finish).end,
+            'start': Show.at(start).showtime if start is not None else None,
+            'finish': Show.at(finish).end if finish is not None else None,
         }
 
 
