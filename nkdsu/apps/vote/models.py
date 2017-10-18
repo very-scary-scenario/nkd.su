@@ -1322,16 +1322,37 @@ class Badge(tuple):
         }
 
 
-BADGES = [Badge(
-    'charity-2017',
-    '{user.name} donated to the Very Scary Scenario charity streams and Neko '
-    'Desu All-Nighter 2017',
-    'Donated',
-    'heart',
-    'https://www.justgiving.com/fundraising/very-charity-scenario-2017',
-    datetime.datetime(2017, 10, 1, tzinfo=get_default_timezone()),
-    datetime.datetime(2017, 11, 20, tzinfo=get_default_timezone()),
-)]
+BADGES = [
+    Badge(
+        'tblc',
+        '{user.name} bought Take Back Love City for the RSPCA.',
+        'Bought some bad music',
+        'headphones',
+        'https://desus.bandcamp.com/album/take-back-love-city',
+        None,
+        datetime.datetime(1990, 1, 1, tzinfo=get_default_timezone()),
+    ),
+    Badge(
+        'charity-2016',
+        '{user.name} donated to the Very Scary Scenario charity streams for '
+        'Special Effect in 2016.'
+        'Donated',
+        'heart',
+        'https://www.justgiving.com/fundraising/very-scary-scenario',
+        datetime.datetime(2016, 10, 15, tzinfo=get_default_timezone()),
+        datetime.datetime(2016, 11, 15, tzinfo=get_default_timezone()),
+    ),
+    Badge(
+        'charity-2017',
+        '{user.name} donated to the Very Scary Scenario charity streams and '
+        'Neko Desu All-Nighter for Cancer Research UK in 2017.',
+        'Donated',
+        'heart',
+        'https://www.justgiving.com/fundraising/very-charity-scenario-2017',
+        datetime.datetime(2017, 10, 1, tzinfo=get_default_timezone()),
+        datetime.datetime(2017, 11, 20, tzinfo=get_default_timezone()),
+    ),
+]
 
 
 class UserBadge(CleanOnSaveMixin, models.Model):
