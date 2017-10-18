@@ -1366,3 +1366,6 @@ class UserBadge(CleanOnSaveMixin, models.Model):
     def badge_info(self):
         badge, = (b for b in BADGES if b[0] == self.badge)
         return badge.info(self.user)
+
+    class Meta:
+        unique_together = [['badge', 'user']]
