@@ -28,6 +28,7 @@ class EverythingTest(
         '/vote-admin/add-manual-vote/0007C3F2760E0541/',
         '/vote-admin/upload/',
         '/vote-admin/trivia/',
+        '/vote-admin/all-the-anime/',
         '/vote-admin/play/0007C3F2760E0541/',
 
         '/js/deselect/',
