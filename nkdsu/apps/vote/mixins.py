@@ -119,10 +119,9 @@ class ThisShowDetailMixin(ShowDetailMixin):
     @memoize
     def get_object(self):
         if self.date is None:
-            qs = self.model.objects.order_by('-end')
             try:
-                return qs[0]
-            except IndexError:
+                return self.model.at(timezone.now())
+            except self.model.DoesNotExist:
                 raise Http404
         else:
             return super(ThisShowDetailMixin, self).get_object()
