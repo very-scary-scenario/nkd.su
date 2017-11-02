@@ -1325,7 +1325,7 @@ BADGES = [
     Badge(
         'tblc',
         u'{user.name} bought Take Back Love City for the RSPCA.',
-        'Bought some bad music',
+        'put up with bad music for animals',
         'headphones',
         'https://desus.bandcamp.com/album/take-back-love-city',
         None,
@@ -1335,7 +1335,7 @@ BADGES = [
         'charity-2016',
         u'{user.name} donated to the Very Scary Scenario charity streams for '
         u'Special Effect in 2016.',
-        'Donated',
+        'likes fun, hates exclusion',
         'heart',
         'https://www.justgiving.com/fundraising/very-scary-scenario',
         datetime.datetime(2016, 10, 15, tzinfo=get_default_timezone()),
@@ -1345,7 +1345,7 @@ BADGES = [
         'charity-2017',
         u'{user.name} donated to the Very Scary Scenario charity streams and '
         u'Neko Desu All-Nighter for Cancer Research UK in 2017.',
-        'Donated',
+        'likes depriving people of sleep, hates cancer',
         'heart',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2017',
         datetime.datetime(2017, 10, 1, tzinfo=get_default_timezone()),
