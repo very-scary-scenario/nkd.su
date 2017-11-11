@@ -314,7 +314,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     # Twitter stuff
     screen_name = models.CharField(max_length=100)
     user_id = models.BigIntegerField(unique=True)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=100)
 
     # nkdsu stuff
     is_abuser = models.BooleanField(default=False)
