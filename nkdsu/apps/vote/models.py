@@ -1349,7 +1349,7 @@ BADGES = [
         'heart',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2017',
         datetime.datetime(2017, 10, 1, tzinfo=get_default_timezone()),
-        datetime.datetime(2017, 11, 20, tzinfo=get_default_timezone()),
+        datetime.datetime(2017, 11, 27, tzinfo=get_default_timezone()),
     ),
 ]
 
