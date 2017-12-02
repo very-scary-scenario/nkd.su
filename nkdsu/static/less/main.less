@@ -104,7 +104,7 @@ body {
     main {
       display: block;
       margin: 0 auto;
-      max-width: 50em;
+      max-width: @max-width;
       min-width: 200px;
       padding: 1em;
       position: relative;
@@ -193,7 +193,9 @@ body {
 
         .summary {
           text-align: right;
-          width: 67%;
+          width: 67% !important;
+          overflow: hidden;
+          text-overflow: ellipsis;
 
           img {
             border-radius: .4em;
@@ -208,6 +210,10 @@ body {
         @media (max-width: @breakpoint) {
           .summary {
             width: 80%;
+
+            p {
+              max-width: 70vw !important;
+            }
           }
 
           .value {
@@ -230,6 +236,13 @@ body {
 
             p {
               font-size: .9em;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              max-width: 50vw;
+
+              @media (min-width: @max-width) {
+                max-width: @max-width/2;
+              }
 
               &.name, &.title {
                 font-size: 1.2em;
