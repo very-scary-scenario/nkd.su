@@ -116,7 +116,7 @@ urlpatterns = patterns(
     url(r'^pic/(?P<user_id>\d+)/$', views.TwitterAvatarView.as_view(),
         name='avatar'),
 
-    url(r'^artist/(?P<artist>.+)/$', views.Artist.as_view(), name='artist'),
+    url(r'^artist/(?P<artist>.*)/$', views.Artist.as_view(), name='artist'),
     url(r'^anime/(?P<anime>.+)/$', views.Anime.as_view(), name='anime'),
 
     url(r'^stats/$', views.Stats.as_view(), name='stats'),
