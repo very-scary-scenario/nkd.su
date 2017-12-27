@@ -10,7 +10,8 @@ def get_sections(request):
 
     if (
         hasattr(request, 'resolver_match') and
-        hasattr(request.resolver_match, 'func')
+        hasattr(request.resolver_match, 'func') and
+        request.resolver_match.func.__closure__
     ):
         for cell in request.resolver_match.func.__closure__:
             thing = cell.cell_contents
