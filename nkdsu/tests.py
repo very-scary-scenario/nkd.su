@@ -90,7 +90,7 @@ class EverythingTest(
     ]
 
     uncovered_includes = [
-        ('^admin/',)
+        (r'^admin\/',)
     ]
 
     # instant_tracebacks = True

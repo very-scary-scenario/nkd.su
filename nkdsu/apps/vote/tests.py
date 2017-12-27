@@ -24,7 +24,7 @@ class ShowTest(TestCase):
     def test_make_show(self, wipe=True):
         # this may seem overly thorough, but it has already found bugs that
         # would otherwise have been missed:
-        for hours in xrange(366*24, 0, -1):
+        for hours in range(366*24, 0, -1):
             if wipe:
                 Show.objects.all().delete()
 
@@ -58,7 +58,7 @@ class ShowTest(TestCase):
         def make_current(t):
             return timezone.make_aware(t, timezone.get_current_timezone())
 
-        for x in xrange(2):
+        for x in range(2):
             # these functions do different things depending on if shows already
             # exist, but there should be no visible difference between the
             # results of these different things
@@ -66,7 +66,7 @@ class ShowTest(TestCase):
             self.assertEqual(Show.objects.all().count(), 1)
             self.assertEqual(ours.end.date(), datetime.date(3000, 1, 4))
 
-        for x in xrange(2):
+        for x in range(2):
             ours = Show.at(make_current(datetime.datetime(3010, 1, 1)))
             self.assertEqual(Show.objects.all().count(), 523)
             self.assertEqual(ours.end.date(), datetime.date(3010, 1, 6))
