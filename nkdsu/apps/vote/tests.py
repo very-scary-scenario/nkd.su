@@ -1,5 +1,6 @@
 import datetime
 
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
@@ -20,6 +21,7 @@ class ShowTest(TestCase):
 
     def setUp(self):
         Show.objects.all().delete()
+        cache.clear()
 
     def test_make_show(self, wipe=True):
         # this may seem overly thorough, but it has already found bugs that
