@@ -5,3 +5,4 @@ songlibrary*.xml
 nkdsu/static/less/*.css
 nkdsu/media/
 nkdsu/static/admin/
+nkdsu/staticfiles/
