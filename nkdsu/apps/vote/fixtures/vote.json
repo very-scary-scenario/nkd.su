@@ -149,7 +149,7 @@
   "fields": {
     "kind": "email",
     "twitter_user": null,
-    "show": 7,
+    "show": 78,
     "text": "",
     "tweet_id": null,
     "tracks": [
@@ -165,7 +165,7 @@
   "fields": {
     "kind": "email",
     "twitter_user": null,
-    "show": 7,
+    "show": 78,
     "text": "",
     "tweet_id": null,
     "tracks": [
@@ -181,7 +181,7 @@
   "fields": {
     "kind": "tweet",
     "twitter_user": null,
-    "show": 7,
+    "show": 79,
     "text": "",
     "tweet_id": null,
     "tracks": [
@@ -197,7 +197,7 @@
   "fields": {
     "kind": "tweet",
     "twitter_user": null,
-    "show": 7,
+    "show": 79,
     "text": "",
     "tweet_id": null,
     "tracks": [
@@ -213,7 +213,7 @@
   "fields": {
     "kind": "email",
     "twitter_user": null,
-    "show": 7,
+    "show": 79,
     "text": "",
     "tweet_id": null,
     "tracks": [
@@ -228,9 +228,9 @@
   "model": "vote.play",
   "fields": {
     "date": "2012-08-25T20:59:27Z",
-    "track": "D94EDF94088D80B7",
+    "track": "0007C3F2760E0541",
     "tweet_id": null,
-    "show": 1
+    "show": 78
   }
 },
 {
@@ -238,39 +238,9 @@
   "model": "vote.play",
   "fields": {
     "date": "2012-09-15T20:22:47Z",
-    "track": "7CE03695A95CB801",
+    "track": "00340A1B035648A9",
     "tweet_id": null,
-    "show": 4
-  }
-},
-{
-  "pk": 3,
-  "model": "vote.play",
-  "fields": {
-    "date": "2012-09-29T21:36:37Z",
-    "track": "4871E43CBD44115E",
-    "tweet_id": null,
-    "show": 6
-  }
-},
-{
-  "pk": 4,
-  "model": "vote.play",
-  "fields": {
-    "date": "2012-09-15T20:17:29Z",
-    "track": "85EAF9B2978A9EB5",
-    "tweet_id": null,
-    "show": 4
-  }
-},
-{
-  "pk": 5,
-  "model": "vote.play",
-  "fields": {
-    "date": "2012-09-29T21:07:05Z",
-    "track": "FEADD8D78F379400",
-    "tweet_id": null,
-    "show": 6
+    "show": 79
   }
 },
 {
@@ -279,7 +249,7 @@
   "fields": {
     "kind": "",
     "twitter_user": 2,
-    "show": 5,
+    "show": 79,
     "text": "@nkdsu A42AF277F046DBC1 PANDA CAR BITCHES",
     "tweet_id": 249530389985644544,
     "tracks": [
@@ -295,7 +265,7 @@
   "fields": {
     "kind": "",
     "twitter_user": 2,
-    "show": 7,
+    "show": 79,
     "text": "@nkdsu 1B76A0F5B177841F",
     "tweet_id": 253621085164163072,
     "tracks": [
@@ -311,7 +281,7 @@
   "fields": {
     "kind": "",
     "twitter_user": 1,
-    "show": 7,
+    "show": 79,
     "text": "@nkdsu EBE7330516D016B2 TEACHERS PET",
     "tweet_id": 254368298580463616,
     "tracks": [
@@ -325,62 +295,26 @@
   "pk": 1,
   "model": "vote.block",
   "fields": {
-    "track": "C673D28E86983DEC",
-    "reason": "there was a lot of gintama last week",
-    "show": 8
-  }
-},
-{
-  "pk": 2,
-  "model": "vote.block",
-  "fields": {
-    "track": "84F1A69A5C6E75E7",
-    "reason": "there was a lot of gintama last week",
-    "show": 8
-  }
-},
-{
-  "pk": 3,
-  "model": "vote.block",
-  "fields": {
-    "track": "4084164616C23ED4",
-    "reason": "there was a lot of gintama last week",
-    "show": 8
-  }
-},
-{
-  "pk": 4,
-  "model": "vote.block",
-  "fields": {
-    "track": "345EC65DD7CB5A02",
-    "reason": "there was a lot of gintama last week",
-    "show": 8
-  }
-},
-{
-  "pk": 5,
-  "model": "vote.block",
-  "fields": {
-    "track": "9A67DD4550BA842E",
-    "reason": "there was a lot of gintama last week",
-    "show": 8
+    "track": "0007C3F2760E0541",
+    "reason": "there was a lot of rkb last week",
+    "show": 79
   }
 },
 {
   "pk": 1,
   "model": "vote.shortlist",
   "fields": {
-    "track": "E0A6606F4AC1F820",
+    "track": "001D8E8B3A5DDDB9",
     "index": 0,
-    "show": 73
+    "show": 79 
   }
 },
 {
   "pk": 1,
   "model": "vote.discard",
   "fields": {
-    "track": "EA06304123C70829",
-    "show": 73
+    "track": "0028E1FE6D1141B7",
+    "show": 79
   }
 },
 {

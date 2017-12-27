@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 
-from models import Show, Track, Play
+from .models import Show, Track, Play
 
 
 def mkutc(*args, **kwargs):
@@ -29,8 +29,8 @@ class ShowTest(TestCase):
                 Show.objects.all().delete()
 
             starter = (
-                timezone.now().replace(tzinfo=timezone.get_current_timezone())
-                -
+                timezone.now()
+                .replace(tzinfo=timezone.get_current_timezone()) -
                 datetime.timedelta(hours=hours)
             )
 
@@ -55,8 +55,8 @@ class ShowTest(TestCase):
         self.assertLess(show_count, 55)
 
     def test_get_show_far_in_future(self):
-        make_current = lambda t: timezone.make_aware(
-            t, timezone.get_current_timezone())
+        def make_current(t):
+            return timezone.make_aware(t, timezone.get_current_timezone())
 
         for x in xrange(2):
             # these functions do different things depending on if shows already
