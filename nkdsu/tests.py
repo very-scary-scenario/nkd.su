@@ -93,7 +93,7 @@ class EverythingTest(
         (r'^admin\/',)
     ]
 
-    # instant_tracebacks = True
+    instant_tracebacks = True
 
 
 class LoggedInEverythingTest(EverythingTest):

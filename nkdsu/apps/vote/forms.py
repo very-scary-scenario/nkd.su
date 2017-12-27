@@ -45,11 +45,11 @@ class TriviaForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(TriviaForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder.append(self.fields.keyOrder.pop(1))
+        self.fields.move_to_end('trivia')
         self.fields['trivia_question'].initial = self.new_question()
 
     def new_question(self):
-        question = choice(trivia.questions.keys())
+        question = choice(list(trivia.questions.keys()))
         self.fields['trivia'].label = 'Captcha: %s' % question
         return question
 
@@ -66,14 +66,16 @@ class TriviaForm(forms.Form):
         request.serialise(self.cleaned_data)
         request.save()
 
-        self.data['trivia_question'] = self.new_question()
-
         if not human:
             hint = (
                 "That's not right, sorry. There are hints <a href='https://"
                 "github.com/colons/nkd.su/blob/master/nkdsu/apps/vote/"
                 "trivia.py'>here</a>."
             )
+            mutable = self.data._mutable
+            self.data._mutable = True
+            self.data['trivia_question'] = self.new_question()
+            self.data._mutable = mutable
             raise forms.ValidationError([mark_safe(hint)])
 
         return self.cleaned_data['trivia']

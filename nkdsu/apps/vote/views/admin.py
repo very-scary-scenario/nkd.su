@@ -162,7 +162,7 @@ class Play(DestructiveAdminAction, DetailView):
     model = Track
 
     def get_deets(self):
-        return unicode(self.get_object())
+        return str(self.get_object())
 
     def do_thing(self):
         self.get_object().play()
