@@ -2,7 +2,7 @@ import datetime
 
 import tweepy
 
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.core.paginator import Paginator, InvalidPage
 from django.contrib import messages
 from django.http import Http404, HttpResponse

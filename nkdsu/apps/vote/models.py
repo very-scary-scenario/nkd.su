@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from cStringIO import StringIO
+from io import StringIO
 import datetime
 import re
 import json
-from urlparse import urlparse
+from urllib.parse import urlparse
 
-from cache_utils.decorators import cached
 from classtools import reify
 from dateutil import parser as date_parser
 from markdown import markdown
@@ -16,13 +15,13 @@ import requests
 from django.core.cache import cache
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
-from django.core.urlresolvers import resolve, Resolver404
+from django.urls import resolve, Resolver404
 from django.db import models
 from django.utils import timezone
 from django.template.defaultfilters import slugify
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.templatetags.static import static
 from django.utils.timezone import get_default_timezone
 
@@ -79,7 +78,6 @@ class Show(CleanOnSaveMixin, models.Model):
                     self=self, overlap=overlap))
 
     @classmethod
-    @cached(5)
     def current(cls):
         """
         Get (or create, if necessary) the show that will next end.
@@ -128,7 +126,6 @@ class Show(CleanOnSaveMixin, models.Model):
             return show
 
     @classmethod
-    @cached(indefinitely)
     def at(cls, time):
         """
         Get the show for the date specified, creating every intervening show
@@ -151,12 +148,6 @@ class Show(CleanOnSaveMixin, models.Model):
             show = show.next(create=True)
 
         return show
-
-    def _cache_if_not_current(self, func):
-        if self == Show.current():
-            return func(None)
-        else:
-            return cached(indefinitely)(func)(self.pk)
 
     @memoize
     def broadcasting(self, time=None):
@@ -379,7 +370,6 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         return tracks
 
     def _batting_average(self, cutoff=None, minimum_weight=1):
-        @cached(indefinitely)
         def ba(pk, current_show_pk, cutoff):
             score = 0
             weight = 0
@@ -431,7 +421,6 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
     @memoize
     def streak(self):
-        @cached(indefinitely)
         def streak(pk, current_show):
             return self._streak()
 
@@ -918,12 +907,13 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     # universal
     tracks = models.ManyToManyField(Track, db_index=True)
     date = models.DateTimeField(db_index=True)
-    show = models.ForeignKey(Show, related_name='vote_set')
+    show = models.ForeignKey(Show, related_name='vote_set',
+                             on_delete=models.CASCADE)
     text = models.TextField(blank=True)
 
     # twitter only
     twitter_user = models.ForeignKey(TwitterUser, blank=True, null=True,
-                                     db_index=True)
+                                     db_index=True, on_delete=models.SET_NULL)
     tweet_id = models.BigIntegerField(blank=True, null=True)
 
     # manual only
@@ -1168,8 +1158,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
 class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     date = models.DateTimeField(db_index=True)
-    show = models.ForeignKey(Show)
-    track = models.ForeignKey(Track, db_index=True)
+    show = models.ForeignKey(Show, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, db_index=True, on_delete=models.CASCADE)
     tweet_id = models.BigIntegerField(blank=True, null=True)
 
     def __unicode__(self):
@@ -1226,17 +1216,17 @@ class Block(CleanOnSaveMixin, models.Model):
     particular show.
     """
 
-    track = models.ForeignKey(Track)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
     reason = models.CharField(max_length=256)
-    show = models.ForeignKey(Show)
+    show = models.ForeignKey(Show, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = [['show', 'track']]
 
 
 class Shortlist(CleanOnSaveMixin, models.Model):
-    show = models.ForeignKey(Show)
-    track = models.ForeignKey(Track)
+    show = models.ForeignKey(Show, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
     index = models.IntegerField(default=0)
 
     class Meta:
@@ -1263,8 +1253,8 @@ class Discard(CleanOnSaveMixin, models.Model):
     that we're not going to play.
     """
 
-    show = models.ForeignKey(Show)
-    track = models.ForeignKey(Track)
+    show = models.ForeignKey(Show, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = [['show', 'track']]
@@ -1292,8 +1282,9 @@ class Note(CleanOnSaveMixin, models.Model):
     A note about whatever for a particular track.
     """
 
-    track = models.ForeignKey(Track)
-    show = models.ForeignKey(Show, blank=True, null=True)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    show = models.ForeignKey(Show, blank=True, null=True,
+                             on_delete=models.CASCADE)
     public = models.BooleanField(default=False)
     content = models.TextField()
 
@@ -1359,7 +1350,7 @@ class UserBadge(CleanOnSaveMixin, models.Model):
         choices=[b[:2] for b in BADGES],
         max_length=max((len(b[0]) for b in BADGES)),
     )
-    user = models.ForeignKey(TwitterUser)
+    user = models.ForeignKey(TwitterUser, on_delete=models.CASCADE)
 
     @reify
     def badge_info(self):

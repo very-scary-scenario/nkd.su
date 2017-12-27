@@ -1,4 +1,4 @@
-{% load compressed static %}<!doctype html>
+{% load pipeline static %}<!doctype html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -9,7 +9,7 @@
       var getSelectionURL = "{% url 'vote:js:get_selection' %}";
       var clearSelectionURL = "{% url 'vote:js:clear_selection' %}";
     </script>
-    {% compressed_css "main" %}
+    {% stylesheet "main" %}
     <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico" type="image/vnd.microsoft.icon">
     <title>
       {% block title %}a neko desu request robot{% endblock %} | nkd.su
@@ -41,9 +41,9 @@
       {% include "include/post_content.html" %}
     </div>
 
-    {% compressed_js "base" %}
+    {% javascript "base" %}
     {% if user.is_authenticated %}
-      {% compressed_js "ui" %}
+      {% javascript "ui" %}
     {% endif %}
     {% block footer_scripts %}{% endblock %}
     <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>

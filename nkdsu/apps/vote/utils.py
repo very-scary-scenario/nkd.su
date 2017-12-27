@@ -1,7 +1,6 @@
 import re
 from functools import partial
 
-from cache_utils.decorators import cached
 import musicbrainzngs
 import requests
 import tweepy
@@ -171,9 +170,9 @@ memoize = Memoize
 
 
 def pk_cached(*args, **kwargs):
+    # does nothing rn
     def wrapper(func):
         def wrapped(obj, *a, **k):
-            @cached(*args, **kwargs)
             def do_thing(func, pk, *a, **k):
                 return func(obj, *a, **k)
 

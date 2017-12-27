@@ -7,10 +7,10 @@ import plistlib
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.template.response import TemplateResponse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import (DetailView, CreateView, View, FormView,
                                   TemplateView, ListView)

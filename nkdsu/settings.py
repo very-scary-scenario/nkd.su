@@ -1,6 +1,6 @@
 import os
 
-import djcelery
+from dateutil.relativedelta import SA, relativedelta
 
 # note the sensitive settings marked as 'secret' below; these must be
 # replicated in settings_local.py in any functional nkd.su instance. Settings
@@ -13,8 +13,6 @@ import djcelery
 # Note that this settings file assumes that nkd.su will continue to be a
 # single-site website; the email acounts and stuff would need to be changed
 # were someone to set up some kind of fork.
-
-djcelery.setup_loader()
 
 PROJECT_DIR = os.path.realpath(os.path.join(__file__, '..'))
 PROJECT_ROOT = os.path.realpath(os.path.join(PROJECT_DIR, '..'))
@@ -30,7 +28,6 @@ EMAIL_HOST_USER = 'nivi@musicfortheblind.co.uk'
 EMAIL_USE_TLS = True
 
 # stuff about when the show is
-from dateutil.relativedelta import SA, relativedelta
 SHOWTIME = relativedelta(
     weekday=SA,
     hour=21,
@@ -58,12 +55,12 @@ OPTIONS = {'timeout': 20}
 CONSUMER_KEY = ''  # secret
 CONSUMER_SECRET = ''  # secret
 
-#@nkdsu
+# @nkdsu
 READING_ACCESS_TOKEN = ''  # secret
 READING_ACCESS_TOKEN_SECRET = ''  # secret
 READING_USERNAME = "nkdsu"
 
-#@nekodesuradio
+# @nekodesuradio
 POSTING_ACCESS_TOKEN = ''  # secret
 POSTING_ACCESS_TOKEN_SECRET = ''  # secret
 
@@ -74,6 +71,25 @@ LASTFM_API_SECRET = ''  # secret
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(PROJECT_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'nkdsu.apps.vote.context_processors.nkdsu_context_processor',
+            ],
+        },
+    },
+]
 
 ADMINS = ('colons', 'nkdsu@colons.co'),
 
@@ -119,27 +135,19 @@ STATICFILES_FINDERS = (
 
 SECRET_KEY = 'please replace me with something decent in production'  # secret
 
-TEMPLATE_LOADERS = (
-    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-    )),
-)
-
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'nkdsu.urls'
 
 WSGI_APPLICATION = 'nkdsu.wsgi.application'
-
-TEMPLATE_DIRS = os.path.join(PROJECT_DIR, 'templates')
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -151,17 +159,11 @@ INSTALLED_APPS = (
 
     'django_nose',
     'django_orphaned',
-    'djcelery',
     'pipeline',
-    'south',
     'debug_toolbar',
 
     'nkdsu.apps.vote',
 )
-
-SOUTH_MIGRATION_MODULES = {
-    'djcelery': 'djcelery.south_migrations',
-}
 
 LOGGING = {
     'version': 1,
@@ -191,57 +193,46 @@ LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'vote:index'
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.debug',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.core.context_processors.request',
-    'django.contrib.auth.context_processors.auth',
-    'django.contrib.messages.context_processors.messages',
-    'nkdsu.apps.vote.context_processors.nkdsu_context_processor',
-)
-
-## STATIC
+# STATIC
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
-PIPELINE_COMPILERS = ('pipeline.compilers.less.LessCompiler',)
+PIPELINE = {
+    'CSS_COMPRESSOR': None,
+    'JS_COMPRESSOR': 'pipeline.compressors.slimit.SlimItCompressor',
+    'COMPILERS': ['pipeline.compilers.less.LessCompiler'],
+    'DISABLE_WRAPPER': True,
 
-PIPELINE_CSS_COMPRESSOR = None
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.slimit.SlimItCompressor'
-
-PIPELINE_DISABLE_WRAPPER = True
-
-PIPELINE_CSS = {
-    'main': {
-        'source_filenames': [
-            'less/main.less',
-        ],
-        'output_filename': 'css/main.min.css',
-    }
-}
-
-PIPELINE_JS = {
-    'base': {
-        'source_filenames': [
-            'js/libs/jquery.js',
-            'js/libs/jquery.cookie.js',
-            'js/libs/jquery.pjax.js',
-            'js/csrf.js',
-            'js/collapse-toggle.js',
-            'js/bindpjax.js',
-            'js/select.js',
-            'js/messages.js',
-            'js/ajax-actions.js',
-        ],
-        'output_filename': 'js/min/base.js',
+    'STYLESHEETS': {
+        'main': {
+            'source_filenames': [
+                'less/main.less',
+            ],
+            'output_filename': 'css/main.min.css',
+        }
     },
-    'ui': {
-        'source_filenames': [
-            'js/libs/jquery-ui.js',
-            'js/libs/jquery.ui.sortable.js',
-        ],
-        'output_filename': 'js/min/ui.js',
+    'JAVASCRIPT': {
+        'base': {
+            'source_filenames': [
+                'js/libs/jquery.js',
+                'js/libs/jquery.cookie.js',
+                'js/libs/jquery.pjax.js',
+                'js/csrf.js',
+                'js/collapse-toggle.js',
+                'js/bindpjax.js',
+                'js/select.js',
+                'js/messages.js',
+                'js/ajax-actions.js',
+            ],
+            'output_filename': 'js/min/base.js',
+        },
+        'ui': {
+            'source_filenames': [
+                'js/libs/jquery-ui.js',
+                'js/libs/jquery.ui.sortable.js',
+            ],
+            'output_filename': 'js/min/ui.js',
+        },
     },
 }
 

@@ -1,24 +1,28 @@
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.urls import include, re_path as url, path
 from django.contrib import admin
+from django.contrib.auth.views import logout, login
+from django.views.static import serve
 
 from nkdsu.apps.vote import urls as vote_urls
 
 admin.autodiscover()
 
-urlpatterns = patterns(
-    '',
-    url(r'^', include(vote_urls, namespace='vote')),
-    url(r'^admin/', include(admin.site.urls)),
+urlpatterns = [
+    url(r'^', include(vote_urls)),
+    path('admin/', admin.site.urls),
 
     # registration
-    url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'},
-        name='logout'),
-    url(r'^login/', 'django.contrib.auth.views.login', name='login'),
-)
+    url(r'^logout/', logout, {'next_page': '/'}, name='logout'),
+    url(r'^login/', login, name='login'),
+]
 
 if settings.DEBUG:
-    urlpatterns += patterns(
-        '',
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-            'document_root': settings.MEDIA_ROOT}))
+    import debug_toolbar
+
+    urlpatterns += [
+        url(r'^media/(?P<path>.*)$', serve, {
+            'document_root': settings.MEDIA_ROOT,
+        }),
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]

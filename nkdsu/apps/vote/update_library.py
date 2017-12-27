@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from models import Track
 from django.utils.timezone import utc, make_aware
+
+from .models import Track
 
 
 def update_library(tree, dry_run=False, inudesu=False):

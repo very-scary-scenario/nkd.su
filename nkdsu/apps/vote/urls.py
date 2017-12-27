@@ -1,11 +1,12 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import re_path as url, include
 
 from nkdsu.apps.vote import views
 from nkdsu.apps.vote.views import admin, js, api
 
 
-admin_patterns = patterns(
-    '',
+app_name = 'vote'
+
+admin_patterns = ([
     url(r'^upload/$',
         admin.LibraryUploadView.as_view(), name='upload_library'),
     url(r'^upload/confirm/$',
@@ -63,21 +64,19 @@ admin_patterns = patterns(
         admin.MakeNote.as_view(), name='make_note'),
     url(r'^remove-note/(?P<pk>.+)/$',
         admin.RemoveNote.as_view(), name='remove_note'),
-)
+], 'admin')
 
 
-js_patterns = patterns(
-    '',
+js_patterns = ([
     url(r'^select/$', js.Select.as_view(), name='select'),
     url(r'^deselect/$', js.Deselect.as_view(), name='deselect'),
     url(r'^selection/$', js.GetSelection.as_view(), name='get_selection'),
     url(r'^clear_selection/$',
         js.ClearSelection.as_view(), name='clear_selection'),
-)
+], 'js')
 
 
-api_patterns = patterns(
-    '',
+api_patterns = ([
     url(r'^$', api.ShowAPI.as_view(), name='show'),
     url(r'^week/(?P<date>[\d-]+)/$', api.ShowAPI.as_view(), name='show'),
     url(r'^week/$', api.PrevShowAPI.as_view(), name='last_week'),
@@ -86,14 +85,13 @@ api_patterns = patterns(
     url(r'^track/(?P<pk>[0-9A-F]{16})/$',
         api.TrackAPI.as_view(), name='api_track'),
     url(r'^search/$', api.SearchAPI.as_view(), name='search'),
-)
+], 'api')
 
 
-urlpatterns = patterns(
-    '',
-    url(r'^vote-admin/', include(admin_patterns, namespace='admin')),
-    url(r'^js/', include(js_patterns, namespace='js')),
-    url(r'^api/', include(api_patterns, namespace='api')),
+urlpatterns = [
+    url(r'^vote-admin/', include(admin_patterns)),
+    url(r'^js/', include(js_patterns)),
+    url(r'^api/', include(api_patterns)),
 
     url(r'^$', views.IndexView.as_view(), name='index'),
 
@@ -133,4 +131,4 @@ urlpatterns = patterns(
         views.TrackDetail.as_view(), name='track'),
     url(r'^(?P<pk>[0-9A-F]{16})/report/$',
         views.ReportBadMetadata.as_view(), name='report'),
-)
+]

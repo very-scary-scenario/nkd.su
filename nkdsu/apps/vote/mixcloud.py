@@ -1,10 +1,9 @@
-from cache_utils.decorators import cached
 import requests
 
 from django.conf import settings
 
 
-@cached(60*10)
+# @cached(60*10)
 def _api_resp():
     try:
         return requests.get(
