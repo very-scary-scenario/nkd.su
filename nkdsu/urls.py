@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.urls import include, re_path as url, path
 from django.contrib import admin
-from django.contrib.auth.views import logout, login
+from django.contrib.auth.views import LogoutView, login
 from django.views.static import serve
 
 from nkdsu.apps.vote import urls as vote_urls
@@ -13,7 +13,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # registration
-    url(r'^logout/', logout, {'next_page': '/'}, name='logout'),
+    url(r'^logout/', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
     url(r'^login/', login, name='login'),
 ]
 
