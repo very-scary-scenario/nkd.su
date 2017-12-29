@@ -10,7 +10,8 @@ from ...models import Vote
 class Command(BaseCommand):
     def handle(self, *args, **options):
         t = tweepy.API(_read_tw_auth, parser=JSONParser())
-        mentions = t.mentions_timeline(count=200, include_entities=True)
+        mentions = t.mentions_timeline(count=200, include_entities=True,
+                                       tweet_mode='extended')
 
         for tweet in mentions:
             Vote.handle_tweet(tweet)

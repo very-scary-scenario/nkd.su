@@ -928,7 +928,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         come to represent (or None if it's not a valid vote).
         """
 
-        if 'text' not in tweet:
+        text = tweet.get('full_text', None) or tweet.get('text', None)
+
+        if text is None:
             if 'delete' in tweet:
                 Vote.objects.filter(
                     tweet_id=tweet['delete']['status']['id']
@@ -966,7 +968,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         twitter_user.save()
 
         tracks = []
-        for url in tweet['entities']['urls']:
+        for url in (
+            tweet.get('extended_entities') or tweet.get('entities')
+        )['urls']:
             parsed = urlparse(url['expanded_url'])
 
             try:
@@ -996,7 +1000,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
                 tweet_id=tweet['id'],
                 twitter_user=twitter_user,
                 date=created_at,
-                text=tweet['text'],
+                text=text,
             )
 
             vote.save()
