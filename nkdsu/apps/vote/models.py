@@ -477,6 +477,13 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             show=Show.current(),
         ).exists()
 
+    @memoize
+    def is_shortlisted(self):
+        return self.vote_set.filter(
+            tracks__shortlist__show=Show.current(),
+            show=Show.current(),
+        ).exists()
+
 
 class Track(CleanOnSaveMixin, models.Model):
     objects = TrackManager()

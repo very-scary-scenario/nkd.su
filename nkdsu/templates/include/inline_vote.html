@@ -6,6 +6,7 @@
   {% if user.is_authenticated %}
     {% if vote.twitter_user.is_new %}new-user{% endif %}
     {% if vote.twitter_user.is_placated %}placated{% endif %}
+    {% if vote.twitter_user.is_shortlisted %}shortlisted{% endif %}
   {% endif %}
   "
   >
