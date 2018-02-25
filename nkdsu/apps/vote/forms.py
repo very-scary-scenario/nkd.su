@@ -11,6 +11,15 @@ from .models import Request, Note
 from ..vote import trivia
 from .utils import reading_tw_api
 
+_disable_autocorrect = {
+    "autocomplete": "off",
+    "autocorrect": "off",
+    "spellcheck": "false"
+    }
+
+_proper_noun_textinput = forms.TextInput(attrs=dict(_disable_autocorrect,
+                                                    autocapitalize="words"))
+
 
 def email_or_twitter(address):
     try:
@@ -24,7 +33,7 @@ def email_or_twitter(address):
 
 
 class EmailOrTwitterField(forms.EmailField):
-    widget = forms.TextInput
+    widget = forms.TextInput(attrs=dict(_disable_autocorrect, autocapitalize="off"))
     default_error_messages = {
         'invalid': u'Enter a valid email address or Twitter username',
     }
@@ -87,12 +96,13 @@ class BadMetadataForm(TriviaForm):
 
 
 class RequestForm(TriviaForm):
-    title = forms.CharField(required=False)
-    artist = forms.CharField(required=False)
-    show = forms.CharField(label="Source Anime", required=False)
+    title = forms.CharField(widget=_proper_noun_textinput, required=False)
+    artist = forms.CharField(widget=_proper_noun_textinput, required=False)
+    show = forms.CharField(label="Source Anime", required=False,
+                           widget=_proper_noun_textinput)
     role = forms.CharField(label="Role (OP/ED/Insert/Character/etc.)",
                            required=False)
-    details = forms.CharField(widget=forms.Textarea,
+    details = forms.CharField(widget=forms.Textarea(attrs=_disable_autocorrect),
                               label="Additional Details", required=False)
     contact = EmailOrTwitterField(label="Email Address/Twitter name",
                                   required=True)
