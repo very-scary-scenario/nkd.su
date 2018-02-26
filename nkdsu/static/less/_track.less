@@ -3,6 +3,8 @@
 @metadata-width: 60%;
 @new-compensation: 2.7em;
 
+@fhl: fade(@hl, 0%);
+
 .heavy-glow(@color) {
   text-shadow: @color 0 0 .2em, @color 0 0 .2em, @color 0 0 .2em, @color 0 0 .2em;
 }
@@ -223,13 +225,20 @@ li.vote {
     }
   }
 
-  &.placated {
+  &.shortlisted, &.placated {
     img {
       filter: grayscale(100%);
       opacity: 0.5;
     }
+
+    &::after, &::before {
+      opacity: 0.5;
+    }
   }
 
+  &.placated {
+    background: linear-gradient(to right top, @fhl 48%, @hl 48%, @hl 52%, @fhl 52%);
+  }
 
   .deets .meta {
     font-size: .8em;
@@ -454,6 +463,12 @@ body.tracks-collapsed li.vote {
 #shortlist, #discarded {
   width: 90%;
   margin: 0 auto;
+
+  li.vote {
+    img {
+      filter: grayscale(0%) !important;
+    }
+  }
 }
 
 @media (min-width: @breakpoint) {
