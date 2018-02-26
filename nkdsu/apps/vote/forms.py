@@ -15,7 +15,7 @@ _disable_autocorrect = {
     "autocomplete": "off",
     "autocorrect": "off",
     "spellcheck": "false"
-    }
+}
 
 _proper_noun_textinput = forms.TextInput(attrs=dict(_disable_autocorrect,
                                                     autocapitalize="words"))
