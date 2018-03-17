@@ -373,7 +373,8 @@ class HiddenTracks(AdminMixin, ListView):
     context_object_name = 'tracks'
 
     def get_queryset(self):
-        return self.model.objects.filter(hidden=True, inudesu=False)
+        qs = self.model.objects.filter(hidden=True, inudesu=False)
+        return qs.order_by('-added')
 
 
 class InuDesuTracks(AdminMixin, ListView):
