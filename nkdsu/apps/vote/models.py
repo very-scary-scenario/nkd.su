@@ -986,8 +986,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         tracks = []
         for url in (
-            tweet.get('extended_entities') or tweet.get('entities')
-        )['urls']:
+            tweet.get('extended_entities') or tweet.get('entities', {})
+        ).get('urls', ()):
             parsed = urlparse(url['expanded_url'])
 
             try:
