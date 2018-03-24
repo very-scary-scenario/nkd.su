@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
@@ -33,7 +34,7 @@ class SelectionView(JSApiMixin, TemplateView):
         context['selection'] = selection
 
         tweet = vote_tweet(selection)
-        if tweet_len(tweet) <= 140:
+        if tweet_len(tweet) <= settings.TWEET_LENGTH:
             context['vote_url'] = tweet_url(tweet)
 
         return self.render_to_response(context)

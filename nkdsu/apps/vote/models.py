@@ -1214,8 +1214,8 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         canon = unicode(self.track)
         hashtag = settings.HASHTAG
 
-        if len(canon) > 140 - (len(hashtag) + 1):
-            canon = canon[0:140-(len(hashtag)+2)]+u'…'
+        if len(canon) > settings.TWEET_LENGTH - (len(hashtag) + 1):
+            canon = canon[0:settings.TWEET_LENGTH-(len(hashtag)+2)]+u'…'
 
         status = u'%s %s' % (canon, hashtag)
         tweet = posting_tw_api.update_status(status)
