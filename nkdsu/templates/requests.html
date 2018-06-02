@@ -4,31 +4,39 @@
 {% block content %}
   <h2>requests</h2>
   <ul id="requests">
-    {% for request in object_list %}
+    {% for object in object_list %}
       <li class="
-        {% if request.claimant %} claimed {% endif %}
+        {% if object.claimant %}
+          claimed
+          {% if object.claimant == request.user %}
+            mine
+          {% endif %}
+        {% endif %}
       ">
-        <h3>{{ request.created }}</h3>
+        <h3>{{ object.created }}</h3>
 
-        {% if request.claimant %}
-          <p class="claimant">claimed by <strong>{{ request.claimant.username }}</strong></p>
+        {% if object.claimant %}
+          <p class="claimant">claimed by <strong>{{ object.claimant.username }}</strong></p>
         {% endif %}
 
         <dl>
-          {% for k, v in request.non_metadata.items %}
+          {% for k, v in object.non_metadata.items %}
             <dt>{{ k }}</dt>
             <dd>{{ v }}</dd>
           {% endfor %}
         </dl>
 
-        {% if not request.claimant %}
-          <form action="{% url "vote:admin:claim_request" pk=request.pk %}" method="post">
-            {% csrf_token %}
-            <input type="submit" value="Claim">
-          </form>
-        {% endif %}
+        <form action="{% url "vote:admin:claim_request" pk=object.pk %}" method="post">
+          {% csrf_token %}
 
-        <form action="{% url "vote:admin:fill_request" pk=request.pk %}" method="post">
+          {% if not object.claimant %}
+            <input type="submit" name="claim" value="Claim">
+          {% elif object.claimant == request.user %}
+            <input type="submit" name="unclaim" value="Unclaim">
+          {% endif %}
+        </form>
+
+        <form action="{% url "vote:admin:fill_request" pk=object.pk %}" method="post">
           {% csrf_token %}
           <input type="submit" value="Mark as filled">
         </form>

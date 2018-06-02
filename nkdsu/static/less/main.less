@@ -571,6 +571,17 @@ form ul.errorlist li {
 #requests {
   > li {
     margin: 1em 0 2em;
+    &.claimed {
+      opacity: .5;
+
+      &.mine {
+        opacity: 1;
+        background-color: fadeout(@pink, 75%);
+        .noise();
+        border-radius: .5em;
+        padding: .5em;
+      }
+    }
 
     > h3 {
       font-size: 1em;

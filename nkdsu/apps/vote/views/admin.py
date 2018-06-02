@@ -533,13 +533,24 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
     form_class = Form
 
     def form_valid(self, form):
-        request = get_object_or_404(
-            Request, pk=self.kwargs['pk'],
-            successful=True, filled__isnull=True, claimant=None,
-        )
+        if 'unclaim' in self.request.POST:
+            request = get_object_or_404(
+                Request, pk=self.kwargs['pk'],
+                filled__isnull=True, claimant=self.request.user,
+            )
 
-        request.claimant = self.request.user
-        request.save()
-        messages.success(self.request, u"request claimed")
+            request.claimant = None
+            request.save()
+            messages.success(self.request, u"request unclaimed")
+
+        elif 'claim' in self.request.POST:
+            request = get_object_or_404(
+                Request, pk=self.kwargs['pk'],
+                successful=True, filled__isnull=True, claimant=None,
+            )
+
+            request.claimant = self.request.user
+            request.save()
+            messages.success(self.request, u"request claimed")
 
         return redirect(reverse('vote:admin:requests'))
