@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.forms import Form
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.template.response import TemplateResponse
@@ -505,6 +506,23 @@ class RequestList(AnyLoggedInUserMixin, ListView):
     model = Request
 
     def get_queryset(self):
-        qs = super(RequestList, self).get_queryset()
-        qs.filter(successful=True)
-        return qs
+        return super(RequestList, self).get_queryset().filter(
+            successful=True, filled=None)
+
+
+class FillRequest(AnyLoggedInUserMixin, FormView):
+    allowed_methods = ['post']
+    form_class = Form
+
+    def form_valid(self, form):
+        request = get_object_or_404(
+            Request, pk=self.kwargs['pk'],
+            successful=True, filled__isnull=True,
+        )
+
+        request.filled = timezone.now()
+        request.filled_by = self.request.user
+        request.save()
+        messages.success(self.request, u"request marked as filled")
+
+        return redirect(reverse('vote:admin:requests'))

@@ -13,6 +13,7 @@ from markdown import markdown
 from PIL import Image, ImageFilter
 import requests
 
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -26,13 +27,15 @@ from django.core.urlresolvers import reverse
 from django.templatetags.static import static
 from django.utils.timezone import get_default_timezone
 
-
 from .managers import TrackManager, NoteManager
 from .utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
     posting_tw_api, memoize, pk_cached, indefinitely, lastfm, musicbrainzngs
 )
 from ..vote import mixcloud
+
+
+User = get_user_model()
 
 
 class CleanOnSaveMixin(object):
@@ -1292,6 +1295,8 @@ class Request(CleanOnSaveMixin, models.Model):
     created = models.DateTimeField(auto_now_add=True)
     successful = models.BooleanField()
     blob = models.TextField()
+    filled = models.DateTimeField(blank=True, null=True)
+    filled_by = models.ForeignKey(User, blank=True, null=True)
 
     def serialise(self, struct):
         self.blob = json.dumps(struct)
@@ -1302,7 +1307,10 @@ class Request(CleanOnSaveMixin, models.Model):
     def non_metadata(self):
         return {
             k: v for k, v in self.struct().items()
-            if k not in Request.METADATA_KEYS and v.strip()
+            if (
+                k not in Request.METADATA_KEYS or
+                k == 'contact'
+            ) and v.strip()
         }
 
     class Meta:

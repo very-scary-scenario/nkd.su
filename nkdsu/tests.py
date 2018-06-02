@@ -83,6 +83,7 @@ class EverythingTest(
 
         # only accepts POST
         '/vote-admin/shortlist-order/',
+        '/vote-admin/requests/fill/1/',
 
         # would require me to put twitter credentials in the public settings
         # file
