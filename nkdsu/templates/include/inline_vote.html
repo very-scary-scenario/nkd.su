@@ -3,7 +3,7 @@
   {% if vote.content %}content{% endif %}
   {% if vote.birthday %}birthday{% endif %}
   {% if not vote.is_manual and vote.twitter_user.is_abuser %}abuser{% endif %}
-  {% if user.is_authenticated %}
+  {% if user.is_staff %}
     {% if vote.twitter_user.is_new %}new-user{% endif %}
     {% if vote.twitter_user.is_placated %}placated{% endif %}
     {% if vote.twitter_user.is_shortlisted %}shortlisted{% endif %}

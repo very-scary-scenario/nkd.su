@@ -30,7 +30,7 @@
       <p class="subheading">voted for the last <strong>{{ voter.streak }}</strong> consecutive shows</p>
     {% endif %}
 
-    {% if user.is_authenticated %}
+    {% if user.is_staff %}
       <p class="subheading"><a href="{{ voter.get_toggle_abuser_url }}">
         {% if voter.is_abuser %}
           redeem {{ voter }}

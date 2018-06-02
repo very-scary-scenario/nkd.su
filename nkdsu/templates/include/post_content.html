@@ -2,6 +2,9 @@
   <a id="stamp" target="_blank" href="http://colons.co"><img alt="the music for the blind logo" title="toats a colons joint" src="https://colons.co/stamp.png"></a>
   <p class="credit">
     {% if user.is_authenticated %}
+      <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
+    {% endif %}
+    {% if user.is_staff %}
       <span><a href="{% url "admin:index" %}">admin</a></span>
       <span><a href="{% url "vote:admin:hidden" %}">hidden tracks</a></span>
       <span><a href="{% url "vote:admin:all_anime" %}">all the anime</a></span>

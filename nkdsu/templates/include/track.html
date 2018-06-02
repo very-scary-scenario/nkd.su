@@ -1,14 +1,14 @@
 {% load vote_tags %}
 {% load cache %}
 
-{% cache 20 track track.pk vote_show.pk user.is_authenticated cache_invalidator %}
+{% cache 20 track track.pk vote_show.pk user.is_staff cache_invalidator %}
   <li class="track
     {% if track.eligible %}
       eligible
     {% else %}
       ineligible
     {% endif %}
-    {% if user.is_authenticated or track.eligible %}
+    {% if user.is_staff or track.eligible %}
       selectable
     {% else %}
       unselectable
@@ -69,7 +69,7 @@
         <p class="refusal">{{ track.ineligible }}</p>
       {% endif %}
 
-      {% if user.is_authenticated %}
+      {% if user.is_staff %}
         {% include "include/notes.html" with notes=track.notes %}
       {% else %}
         {% include "include/notes.html" with notes=track.public_notes %}
@@ -82,7 +82,7 @@
         {% endfor %}
       </ul>
 
-      {% if user.is_authenticated %}
+      {% if user.is_staffi%}
         <p class="admin">
           <span><a href="{% url "vote:admin:play" pk=track.pk %}">play</a></span>
           <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
@@ -109,7 +109,7 @@
         </p>
       {% endif %}
     </div>
-    {% if user.is_authenticated %}
+    {% if user.is_staff %}
       <div class="invitation">
         {{ track|votes_for:vote_show|length }}
       </div>

@@ -33,7 +33,10 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
         show = context['show']
 
         def track_should_be_in_main_list(track):
-            if self.request.user.is_authenticated():
+            if (
+                self.request.user.is_authenticated() and
+                self.request.user.is_staff
+            ):
                 if track in show.shortlisted() or track in show.discarded():
                     return False
 
@@ -122,7 +125,10 @@ class Search(ListView):
     def get_queryset(self):
         return self.model.objects.search(
             self.request.GET.get('q', ''),
-            show_secret_tracks=self.request.user.is_authenticated(),
+            show_secret_tracks=(
+                self.request.user.is_authenticated() and
+                self.request.user.is_staff
+            ),
         )
 
     def get_context_data(self):

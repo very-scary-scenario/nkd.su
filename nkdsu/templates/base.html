@@ -20,8 +20,8 @@
 
   </head>
   <body class="
-    {% if user.is_authenticated %}
-      authenticated
+    {% if user.is_staff %}
+      staff
     {% endif %}
     {% if tracks_expanded %}
       tracks-expanded
@@ -42,7 +42,7 @@
     </div>
 
     {% compressed_js "base" %}
-    {% if user.is_authenticated %}
+    {% if user.is_staff %}
       {% compressed_js "ui" %}
     {% endif %}
     {% block footer_scripts %}{% endblock %}

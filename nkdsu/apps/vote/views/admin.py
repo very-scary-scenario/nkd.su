@@ -4,7 +4,7 @@ import os
 
 import plistlib
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -36,7 +36,15 @@ class AdminMixin(object):
 
     @classmethod
     def as_view(cls):
-        return login_required(super(AdminMixin, cls).as_view())
+        return user_passes_test(
+            lambda u: u.is_authenticated() and u.is_staff,
+        )(super(AdminMixin, cls).as_view())
+
+
+class AnyLoggedInUserMixin(object):
+    @classmethod
+    def as_view(cls):
+        return login_required(super(AnyLoggedInUserMixin, cls).as_view())
 
 
 class TrackSpecificAdminMixin(AdminMixin):
@@ -491,7 +499,7 @@ class AllAnimeView(View):
         )
 
 
-class RequestList(AdminMixin, ListView):
+class RequestList(AnyLoggedInUserMixin, ListView):
     template_name = 'requests.html'
     model = Request
 
