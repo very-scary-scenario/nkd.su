@@ -1,0 +1,19 @@
+{% extends parent %}
+{% load vote_tags %}
+
+{% block content %}
+  <h2>requests</h2>
+  <ul id="requests">
+    {% for request in object_list %}
+      <li>
+        <p>{{ request.created }}</p>
+        <dl>
+          {% for k, v in request.non_metadata.items %}
+            <dt>{{ k }}</dt>
+            <dd>{{ v }}</dd>
+          {% endfor %}
+        </dl>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

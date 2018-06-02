@@ -1287,6 +1287,8 @@ class Request(CleanOnSaveMixin, models.Model):
     hilarious spam.
     """
 
+    METADATA_KEYS = ['trivia', 'trivia_question', 'contact']
+
     created = models.DateTimeField(auto_now_add=True)
     successful = models.BooleanField()
     blob = models.TextField()
@@ -1296,6 +1298,15 @@ class Request(CleanOnSaveMixin, models.Model):
 
     def struct(self):
         return json.loads(self.blob)
+
+    def non_metadata(self):
+        return {
+            k: v for k, v in self.struct().items()
+            if k not in Request.METADATA_KEYS and v.strip()
+        }
+
+    class Meta:
+        ordering = ['-created']
 
 
 class Note(CleanOnSaveMixin, models.Model):

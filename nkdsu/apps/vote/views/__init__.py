@@ -13,8 +13,8 @@ from django.core.mail import send_mail
 from django.views.generic import TemplateView, ListView, DetailView, FormView
 
 from ..forms import RequestForm, BadMetadataForm
+from ..models import Show, Track, TwitterUser
 from ...vote import mixins
-from ...vote.models import Show, Track, TwitterUser
 
 
 post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,

@@ -489,3 +489,13 @@ class AllAnimeView(View):
             '\n'.join(sorted(names, key=lambda n: n.lower())),
             content_type='text/plain; charset=utf-8',
         )
+
+
+class RequestList(AdminMixin, ListView):
+    template_name = 'requests.html'
+    model = Request
+
+    def get_queryset(self):
+        qs = super(RequestList, self).get_queryset()
+        qs.filter(successful=True)
+        return qs
