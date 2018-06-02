@@ -1,23 +1,26 @@
 <div id="footer">
   <a id="stamp" target="_blank" href="http://colons.co"><img alt="the music for the blind logo" title="toats a colons joint" src="https://colons.co/stamp.png"></a>
   <p class="credit">
-    {% if user.is_authenticated %}
-      <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
-    {% endif %}
     {% if user.is_staff %}
       <span><a href="{% url "admin:index" %}">admin</a></span>
       <span><a href="{% url "vote:admin:hidden" %}">hidden tracks</a></span>
-      <span><a href="{% url "vote:admin:all_anime" %}">all the anime</a></span>
       <span><a href="{% url "vote:admin:inudesu" %}">inu desu</a></span>
       <span><a href="{% url "vote:admin:artless" %}">artless</a></span>
       <span><a href="{% url "vote:admin:upload_library" %}">update library</a></span>
       <span><a href="{% url "vote:admin:bad_trivia" %}">bad trivia</a></span>
-      <span><a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a></span>
     {% else %}
       <span><a href="{% url "vote:info" %}">help</a></span>
       <span><a href="{% url "vote:api_docs" %}">api</a></span>
       <span><a target="_blank" href="https://github.com/colons/nkd.su">source</a></span>
       <span><a target="_blank" href="https://github.com/colons/nkd.su/issues/new">report a bug</a></span>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+      <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
+      <span><a href="{% url "vote:admin:all_anime" %}">all the anime</a></span>
+      <span><a href="{% url "password_change" %}">change password</a></span>
+      <span><a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a></span>
+    {% else %}
       <span><a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a></span>
     {% endif %}
   </p>
