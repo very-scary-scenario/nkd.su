@@ -66,6 +66,8 @@ class EverythingTest(
         '/user/EuricaeriS/',
 
         '/login/',
+        '/cpw/',
+        '/cpw-done/',
 
         # it's important that logout be last since we have a sublcass of this
         # test that logs in at the start, and we want it to stay logged in
