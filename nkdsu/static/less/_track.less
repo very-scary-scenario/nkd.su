@@ -228,7 +228,7 @@ li.vote {
   &.shortlisted, &.placated {
     img {
       filter: grayscale(100%);
-      opacity: 0.3;
+      opacity: 0.5;
     }
 
     &::after, &::before {
@@ -463,6 +463,12 @@ body.tracks-collapsed li.vote {
 #shortlist, #discarded {
   width: 90%;
   margin: 0 auto;
+
+  li.vote {
+    img {
+      filter: grayscale(0%) !important;
+    }
+  }
 }
 
 @media (min-width: @breakpoint) {
