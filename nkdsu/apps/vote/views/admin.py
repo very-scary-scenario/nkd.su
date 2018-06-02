@@ -526,3 +526,20 @@ class FillRequest(AnyLoggedInUserMixin, FormView):
         messages.success(self.request, u"request marked as filled")
 
         return redirect(reverse('vote:admin:requests'))
+
+
+class ClaimRequest(AnyLoggedInUserMixin, FormView):
+    allowed_methods = ['post']
+    form_class = Form
+
+    def form_valid(self, form):
+        request = get_object_or_404(
+            Request, pk=self.kwargs['pk'],
+            successful=True, filled__isnull=True, claimant=None,
+        )
+
+        request.claimant = self.request.user
+        request.save()
+        messages.success(self.request, u"request claimed")
+
+        return redirect(reverse('vote:admin:requests'))

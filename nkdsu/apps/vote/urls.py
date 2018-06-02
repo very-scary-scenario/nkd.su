@@ -17,6 +17,8 @@ admin_patterns = patterns(
         admin.RequestList.as_view(), name='requests'),
     url(r'^requests/fill/(?P<pk>[^/]+)/$',
         admin.FillRequest.as_view(), name='fill_request'),
+    url(r'^requests/claim/(?P<pk>[^/]+)/$',
+        admin.ClaimRequest.as_view(), name='claim_request'),
 
     url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
 

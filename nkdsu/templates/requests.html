@@ -5,14 +5,29 @@
   <h2>requests</h2>
   <ul id="requests">
     {% for request in object_list %}
-      <li>
-        <p>{{ request.created }}</p>
+      <li class="
+        {% if request.claimant %} claimed {% endif %}
+      ">
+        <h3>{{ request.created }}</h3>
+
+        {% if request.claimant %}
+          <p class="claimant">claimed by <strong>{{ request.claimant.username }}</strong></p>
+        {% endif %}
+
         <dl>
           {% for k, v in request.non_metadata.items %}
             <dt>{{ k }}</dt>
             <dd>{{ v }}</dd>
           {% endfor %}
         </dl>
+
+        {% if not request.claimant %}
+          <form action="{% url "vote:admin:claim_request" pk=request.pk %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Claim">
+          </form>
+        {% endif %}
+
         <form action="{% url "vote:admin:fill_request" pk=request.pk %}" method="post">
           {% csrf_token %}
           <input type="submit" value="Mark as filled">
