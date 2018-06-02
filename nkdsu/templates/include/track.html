@@ -82,7 +82,7 @@
         {% endfor %}
       </ul>
 
-      {% if user.is_staffi%}
+      {% if user.is_staff %}
         <p class="admin">
           <span><a href="{% url "vote:admin:play" pk=track.pk %}">play</a></span>
           <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
