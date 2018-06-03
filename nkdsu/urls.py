@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.views.generic.base import RedirectView
 
 from nkdsu.apps.vote import urls as vote_urls
 
@@ -17,7 +18,7 @@ urlpatterns = patterns(
     url(r'^login/', 'django.contrib.auth.views.login', name='login'),
     url(r'^cpw/', 'django.contrib.auth.views.password_change',
         name='password_change'),
-    url(r'^cpw-done/', 'django.contrib.auth.views.password_change_done',
+    url(r'^cpw-done/', RedirectView.as_view(url='/'),
         name='password_change_done'),
 )
 
