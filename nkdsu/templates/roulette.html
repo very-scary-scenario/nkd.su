@@ -5,7 +5,7 @@
 {% block content %}
 
   <h2>roulette</h2>
-  <p class="subheading roulette-mode-switch">
+  <p class="subheading roulette-mode-switch selected-{{ mode }}">
     {% for slug, name in modes %}
       <span class="roulette-{{ slug }}">
         {% if mode == slug %}
