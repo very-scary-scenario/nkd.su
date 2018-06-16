@@ -23,6 +23,8 @@ post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
                               settings.POSTING_ACCESS_TOKEN_SECRET)
 tw_api = tweepy.API(post_tw_auth)
 
+PRO_ROULETTE = 'pro-roulette-{}'
+
 
 class IndexView(mixins.CurrentShowMixin, TemplateView):
     section = 'home'
@@ -86,19 +88,51 @@ class Roulette(ListView):
         ('hipster', 'hipster'),
         ('indiscriminate', 'indiscriminate'),
         ('almost-100', 'almost 100'),
+        ('pro', 'pro (only for pros)'),
     ]
 
     def get(self, request, *args, **kwargs):
-        if kwargs.get('mode') is None:
+        if (
+            kwargs.get('mode') != 'pro' and
+            self.request.session.get(self.pro_roulette_session_key())
+        ):
+            return redirect(reverse('vote:roulette',
+                                    kwargs={'mode': 'pro'}))
+
+        elif kwargs.get('mode') is None:
             return redirect(reverse('vote:roulette',
                                     kwargs={'mode': 'hipster'}))
+
         else:
             return super(Roulette, self).get(request, *args, **kwargs)
 
-    def get_queryset(self):
-        qs = self.model.objects.public()
+    def pro_roulette_session_key(self):
+        return PRO_ROULETTE.format(Show.current().pk)
 
-        if self.kwargs.get('mode') == 'hipster':
+    def pro_pk(self):
+        sk = self.pro_roulette_session_key()
+        pk = self.request.session.get(self.pro_roulette_session_key())
+
+        if pk is None:
+            pk = self.get_base_queryset().order_by('?')[0].pk
+            session = self.request.session
+            session[sk] = pk
+            session.save()
+
+        return pk
+
+    def pro_queryset(self, qs):
+        return qs.filter(pk=self.pro_pk())
+
+    def get_base_queryset(self):
+        return self.model.objects.public()
+
+    def get_queryset(self):
+        qs = self.get_base_queryset()
+
+        if self.kwargs.get('mode') == 'pro':
+            qs = self.pro_queryset(qs)
+        elif self.kwargs.get('mode') == 'hipster':
             qs = qs.filter(play=None)
         elif self.kwargs.get('mode') == 'almost-100':
             qs = qs.exclude(

@@ -132,6 +132,16 @@ body {
         .child-iter();
       }
 
+      .roulette-mode-switch {
+        .roulette-pro {
+          &::before {
+            color: @fg;
+            .fa();
+            content: @fa-var-warning;
+          }
+        }
+      }
+
       ul.plays {
         text-align: center;
       }
