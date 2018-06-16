@@ -114,7 +114,14 @@ class Roulette(ListView):
         pk = self.request.session.get(self.pro_roulette_session_key())
 
         if pk is None:
-            pk = self.get_base_queryset().order_by('?')[0].pk
+            for i in xrange(100):
+                track = self.get_base_queryset().order_by('?')[0]
+                if track.eligible():
+                    break
+            else:
+                raise RuntimeError('are you sure anything is eligible')
+
+            pk = track.pk
             session = self.request.session
             session[sk] = pk
             session.save()
