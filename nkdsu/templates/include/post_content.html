@@ -18,6 +18,7 @@
     {% if user.is_authenticated %}
       <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
       <span><a href="{% url "vote:admin:all_anime" %}">all the anime</a></span>
+      <span><a href="{% url "vote:admin:all_artists" %}">all the artists</a></span>
       <span><a href="{% url "password_change" %}">change password</a></span>
       <span><a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a></span>
     {% else %}

@@ -13,6 +13,8 @@ admin_patterns = patterns(
 
     url(r'^all-the-anime/$',
         admin.AllAnimeView.as_view(), name='all_anime'),
+    url(r'^all-the-artists/$',
+        admin.AllArtistsView.as_view(), name='all_artists'),
     url(r'^requests/$',
         admin.RequestList.as_view(), name='requests'),
     url(r'^requests/fill/(?P<pk>[^/]+)/$',

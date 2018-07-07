@@ -30,6 +30,7 @@ class EverythingTest(
         '/vote-admin/requests/',
         '/vote-admin/trivia/',
         '/vote-admin/all-the-anime/',
+        '/vote-admin/all-the-artists/',
         '/vote-admin/play/0007C3F2760E0541/',
 
         '/js/deselect/',
