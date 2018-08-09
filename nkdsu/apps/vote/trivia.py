@@ -12,5 +12,5 @@ questions = {
     r'(((ha)+)|(yes)|(no)|(yeah)|(nope))[\.!]?',
 
     'Anime music with a ____ presenter':
-    r'(human)|(tired)|(3dpd)|(humous)',
+    r'(human)|(tired)|(3dpd)|(humous)|(ojou?[ ]?sama)',
 }
