@@ -9,7 +9,7 @@ questions = {
     r'dango',
 
     'Does Peter have good taste in anime?':
-    r'(((ha)+)|(yes)|(no)|(yeah)|(nope))[\.!]',
+    r'(((ha)+)|(yes)|(no)|(yeah)|(nope))[\.!]?',
 
     'Anime music with a ____ presenter':
     r'(human)|(tired)|(3dpd)|(humous)',
