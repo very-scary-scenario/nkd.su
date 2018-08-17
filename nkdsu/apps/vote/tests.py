@@ -32,7 +32,7 @@ class ShowTest(TestCase):
 
             starter = (
                 timezone.now()
-                .replace(tzinfo=timezone.get_current_timezone()) -
+                .astimezone(timezone.get_current_timezone()) -
                 datetime.timedelta(hours=hours)
             )
 
