@@ -900,6 +900,9 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return the_track
 
+    class Meta:
+        ordering = ['-id']
+
 
 MANUAL_VOTE_KINDS = (
     ('email', 'email'),
