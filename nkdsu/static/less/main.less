@@ -132,6 +132,22 @@ body {
         .child-iter();
       }
 
+      .roulette-mode-switch {
+        &.selected-pro {
+          a {
+            color: @fg;
+            opacity: 0.5;
+          }
+        }
+        .roulette-pro {
+          &::before {
+            color: @fg;
+            .fa();
+            content: @fa-var-warning;
+          }
+        }
+      }
+
       ul.plays {
         text-align: center;
       }
@@ -567,6 +583,45 @@ form ul.errorlist li {
     #trivia .exchange .answer:before {
       content: '>'
     }
+
+#requests {
+  > li {
+    margin: 1em 0 2em;
+    &.claimed {
+      opacity: .5;
+
+      &.mine {
+        opacity: 1;
+        background-color: fadeout(@pink, 75%);
+        .noise();
+        border-radius: .5em;
+        padding: .5em;
+      }
+    }
+
+    > h3 {
+      font-size: 1em;
+      text-align: left;
+      margin: 0;
+    }
+
+    > dl {
+      margin: .5em 1em;
+
+      > dt {
+        font-weight: bold;
+      }
+
+      > dd {
+        margin-left: 1em;
+      }
+    }
+
+    > form {
+      display: inline-block;
+    }
+  }
+}
 
 
 @media (min-width:551px) {

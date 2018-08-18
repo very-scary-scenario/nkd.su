@@ -3,7 +3,7 @@
   {% if selection %}
     <div class="stuck">
       <h3>{{ selection|length }} song{{ selection|pluralize }} selected</h3>
-      {% if user.is_authenticated %}
+      {% if user.is_staff %}
         <p class="actions">
           <span><a href="{% url "vote:admin:shortlist_selection" %}">shortlist</a></span>
           <span><a href="{% url "vote:admin:discard_selection" %}">discard</a></span>
@@ -22,7 +22,7 @@
       {% endif %}
       <p class="actions minor">
         <span><a data-href="{% url "vote:js:clear_selection" %}" name="clear_selection">clear selection</a></span>
-        {% if user.is_authenticated %}
+        {% if user.is_staff %}
           <span><a class="select_all" data-href="{% url "vote:js:select" %}">select all</a></span>
         {% endif %}
       </p>

@@ -4,9 +4,11 @@ import os
 
 import plistlib
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.forms import Form
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.template.response import TemplateResponse
@@ -36,7 +38,15 @@ class AdminMixin(object):
 
     @classmethod
     def as_view(cls):
-        return login_required(super(AdminMixin, cls).as_view())
+        return user_passes_test(
+            lambda u: u.is_authenticated() and u.is_staff,
+        )(super(AdminMixin, cls).as_view())
+
+
+class AnyLoggedInUserMixin(object):
+    @classmethod
+    def as_view(cls):
+        return login_required(super(AnyLoggedInUserMixin, cls).as_view())
 
 
 class TrackSpecificAdminMixin(AdminMixin):
@@ -373,7 +383,8 @@ class HiddenTracks(AdminMixin, ListView):
     context_object_name = 'tracks'
 
     def get_queryset(self):
-        return self.model.objects.filter(hidden=True, inudesu=False)
+        qs = self.model.objects.filter(hidden=True, inudesu=False)
+        return qs.order_by('-added')
 
 
 class InuDesuTracks(AdminMixin, ListView):
@@ -481,11 +492,77 @@ class RemoveNote(DestructiveAdminAction, DetailView):
 
 
 class AllAnimeView(View):
-    def get(self, request):
-        names = set(
+    def get_names(self):
+        return set(
             (t.role_detail.get('anime', '') for t in Track.objects.all())
         )
+
+    def get(self, request):
         return HttpResponse(
-            '\n'.join(sorted(names, key=lambda n: n.lower())),
+            '\n'.join(sorted(self.get_names(), key=lambda n: n.lower())),
             content_type='text/plain; charset=utf-8',
         )
+
+
+class AllArtistsView(AllAnimeView):
+    def get_names(self):
+        return set(
+            a['name']
+            for t in Track.objects.all()
+            for a in t.artists()
+        )
+
+
+class RequestList(AnyLoggedInUserMixin, ListView):
+    template_name = 'requests.html'
+    model = Request
+
+    def get_queryset(self):
+        return super(RequestList, self).get_queryset().filter(
+            successful=True, filled=None)
+
+
+class FillRequest(AnyLoggedInUserMixin, FormView):
+    allowed_methods = ['post']
+    form_class = Form
+
+    def form_valid(self, form):
+        request = get_object_or_404(
+            Request, pk=self.kwargs['pk'],
+            successful=True, filled__isnull=True,
+        )
+
+        request.filled = timezone.now()
+        request.filled_by = self.request.user
+        request.save()
+        messages.success(self.request, u"request marked as filled")
+
+        return redirect(reverse('vote:admin:requests'))
+
+
+class ClaimRequest(AnyLoggedInUserMixin, FormView):
+    allowed_methods = ['post']
+    form_class = Form
+
+    def form_valid(self, form):
+        if 'unclaim' in self.request.POST:
+            request = get_object_or_404(
+                Request, pk=self.kwargs['pk'],
+                filled__isnull=True, claimant=self.request.user,
+            )
+
+            request.claimant = None
+            request.save()
+            messages.success(self.request, u"request unclaimed")
+
+        elif 'claim' in self.request.POST:
+            request = get_object_or_404(
+                Request, pk=self.kwargs['pk'],
+                successful=True, filled__isnull=True, claimant=None,
+            )
+
+            request.claimant = self.request.user
+            request.save()
+            messages.success(self.request, u"request claimed")
+
+        return redirect(reverse('vote:admin:requests'))

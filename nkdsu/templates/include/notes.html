@@ -2,16 +2,16 @@
   <ul class="notes">
     {% for note in notes %}
       <li class="
-        {% if user.is_authenticated and note.public %}
+        {% if user.is_staff and note.public %}
           public-warn
         {% endif %}
-        {% if user.is_authenticated and note.show %}
+        {% if user.is_staff and note.show %}
           transient
         {% endif %}
       ">
         <span class="note">{{ note }}</span>
 
-        {% if user.is_authenticated %}
+        {% if user.is_staff %}
           <span class="admin">
             <span><a href="{% url "vote:admin:remove_note" pk=note.pk %}">✗</a></span>
           </span>

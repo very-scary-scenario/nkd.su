@@ -1,0 +1,46 @@
+{% extends parent %}
+{% load vote_tags %}
+
+{% block content %}
+  <h2>requests</h2>
+  <ul id="requests">
+    {% for object in object_list %}
+      <li class="
+        {% if object.claimant %}
+          claimed
+          {% if object.claimant == request.user %}
+            mine
+          {% endif %}
+        {% endif %}
+      ">
+        <h3>{{ object.created }}</h3>
+
+        {% if object.claimant %}
+          <p class="claimant">claimed by <strong>{{ object.claimant.username }}</strong></p>
+        {% endif %}
+
+        <dl>
+          {% for k, v in object.non_metadata.items %}
+            <dt>{{ k }}</dt>
+            <dd>{{ v }}</dd>
+          {% endfor %}
+        </dl>
+
+        <form action="{% url "vote:admin:claim_request" pk=object.pk %}" method="post">
+          {% csrf_token %}
+
+          {% if not object.claimant %}
+            <input type="submit" name="claim" value="Claim">
+          {% elif object.claimant == request.user %}
+            <input type="submit" name="unclaim" value="Unclaim">
+          {% endif %}
+        </form>
+
+        <form action="{% url "vote:admin:fill_request" pk=object.pk %}" method="post">
+          {% csrf_token %}
+          <input type="submit" value="Mark as filled">
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

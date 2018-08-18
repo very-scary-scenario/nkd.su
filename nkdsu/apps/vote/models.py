@@ -12,6 +12,7 @@ from markdown import markdown
 from PIL import Image, ImageFilter
 import requests
 
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -25,13 +26,15 @@ from django.urls import reverse
 from django.templatetags.static import static
 from django.utils.timezone import get_default_timezone
 
-
 from .managers import TrackManager, NoteManager
 from .utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
     posting_tw_api, memoize, pk_cached, indefinitely, lastfm, musicbrainzngs
 )
 from ..vote import mixcloud
+
+
+User = get_user_model()
 
 
 class CleanOnSaveMixin(object):
@@ -979,8 +982,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         tracks = []
         for url in (
-            tweet.get('extended_entities') or tweet.get('entities')
-        )['urls']:
+            tweet.get('extended_entities') or tweet.get('entities', {})
+        ).get('urls', ()):
             parsed = urlparse(url['expanded_url'])
 
             try:
@@ -1090,7 +1093,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         content = self.content()
         return (
             content and
-            re.search(r'\b(birthday|bday)\b', content, flags=re.IGNORECASE)
+            re.search(r'\b(birthday|b-?day)\b', content, flags=re.IGNORECASE)
         )
 
     @reify
@@ -1207,8 +1210,8 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         canon = unicode(self.track)
         hashtag = settings.HASHTAG
 
-        if len(canon) > 140 - (len(hashtag) + 1):
-            canon = canon[0:140-(len(hashtag)+2)]+u'…'
+        if len(canon) > settings.TWEET_LENGTH - (len(hashtag) + 1):
+            canon = canon[0:settings.TWEET_LENGTH-(len(hashtag)+2)]+u'…'
 
         status = u'%s %s' % (canon, hashtag)
         tweet = posting_tw_api.update_status(status)
@@ -1280,15 +1283,33 @@ class Request(CleanOnSaveMixin, models.Model):
     hilarious spam.
     """
 
+    METADATA_KEYS = ['trivia', 'trivia_question', 'contact']
+
     created = models.DateTimeField(auto_now_add=True)
     successful = models.BooleanField()
     blob = models.TextField()
+    filled = models.DateTimeField(blank=True, null=True)
+    filled_by = models.ForeignKey(User, blank=True, null=True)
+    claimant = models.ForeignKey(
+        User, blank=True, null=True, related_name='claims')
 
     def serialise(self, struct):
         self.blob = json.dumps(struct)
 
     def struct(self):
         return json.loads(self.blob)
+
+    def non_metadata(self):
+        return {
+            k: v for k, v in self.struct().items()
+            if (
+                k not in Request.METADATA_KEYS or
+                k == 'contact'
+            ) and v.strip()
+        }
+
+    class Meta:
+        ordering = ['-created']
 
 
 class Note(CleanOnSaveMixin, models.Model):

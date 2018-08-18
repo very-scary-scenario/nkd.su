@@ -27,8 +27,10 @@ class EverythingTest(
         '/vote-admin/artless/',
         '/vote-admin/add-manual-vote/0007C3F2760E0541/',
         '/vote-admin/upload/',
+        '/vote-admin/requests/',
         '/vote-admin/trivia/',
         '/vote-admin/all-the-anime/',
+        '/vote-admin/all-the-artists/',
         '/vote-admin/play/0007C3F2760E0541/',
 
         '/js/deselect/',
@@ -65,6 +67,8 @@ class EverythingTest(
         '/user/EuricaeriS/',
 
         '/login/',
+        '/cpw/',
+        '/cpw-done/',
 
         # it's important that logout be last since we have a sublcass of this
         # test that logs in at the start, and we want it to stay logged in
@@ -82,6 +86,8 @@ class EverythingTest(
 
         # only accepts POST
         '/vote-admin/shortlist-order/',
+        '/vote-admin/requests/fill/1/',
+        '/vote-admin/requests/claim/1/',
 
         # would require me to put twitter credentials in the public settings
         # file
