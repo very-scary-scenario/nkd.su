@@ -36,7 +36,7 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
 
         def track_should_be_in_main_list(track):
             if (
-                self.request.user.is_authenticated() and
+                self.request.user.is_authenticated and
                 self.request.user.is_staff
             ):
                 if track in show.shortlisted() or track in show.discarded():
@@ -167,7 +167,7 @@ class Search(ListView):
         return self.model.objects.search(
             self.request.GET.get('q', ''),
             show_secret_tracks=(
-                self.request.user.is_authenticated() and
+                self.request.user.is_authenticated and
                 self.request.user.is_staff
             ),
         )

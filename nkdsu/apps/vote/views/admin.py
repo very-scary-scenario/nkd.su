@@ -7,7 +7,6 @@ import plistlib
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse, reverse_lazy
 from django.forms import Form
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
@@ -39,7 +38,7 @@ class AdminMixin(object):
     @classmethod
     def as_view(cls):
         return user_passes_test(
-            lambda u: u.is_authenticated() and u.is_staff,
+            lambda u: u.is_authenticated and u.is_staff,
         )(super(AdminMixin, cls).as_view())
 
 

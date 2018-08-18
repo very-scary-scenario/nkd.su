@@ -70,7 +70,7 @@ MIXCLOUD_FEED_URL = 'http://api.mixcloud.com/NekoDesu/feed/'
 LASTFM_API_KEY = ''  # secret
 LASTFM_API_SECRET = ''  # secret
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 TEMPLATES = [
