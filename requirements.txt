@@ -9,7 +9,6 @@ django-pipeline==1.6.13
 slimit==0.8.1
 django-nose==1.4.5
 requests==2.5.1
-#django-cache-utils==0.7.2
 django-instant-coverage==1.1.0
 Pillow==5.2.0
 musicbrainzngs==0.5
