@@ -1383,6 +1383,16 @@ BADGES = [
         datetime.datetime(2017, 10, 1, tzinfo=get_default_timezone()),
         datetime.datetime(2017, 11, 27, tzinfo=get_default_timezone()),
     ),
+    Badge(
+        'charity-2018',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'Cancer Research UK in 2018.',
+        'likes depriving people of sleep, hates cancer',
+        'medkit',
+        'https://www.justgiving.com/fundraising/very-charity-scenario-2018',
+        datetime.datetime(2018, 10, 1, tzinfo=get_default_timezone()),
+        datetime.datetime(2018, 11, 27, tzinfo=get_default_timezone()),
+    ),
 ]
 
 
