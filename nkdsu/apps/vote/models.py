@@ -1100,7 +1100,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         content = self.content()
         return (
             content and
-            re.search(r'\b(birthday|b-?day)\b', content, flags=re.IGNORECASE)
+            re.search(r'\b(birthday|b-?day)', content, flags=re.IGNORECASE)
         )
 
     @reify
