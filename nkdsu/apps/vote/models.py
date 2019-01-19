@@ -19,6 +19,7 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.core.urlresolvers import resolve, Resolver404
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from django.template.defaultfilters import slugify
 from django.conf import settings
@@ -245,9 +246,9 @@ class Show(CleanOnSaveMixin, models.Model):
         track_set = set()
         tracks = []
 
-        votes = Vote.objects.filter(
-            show=self,
-            twitter_user__is_abuser=False,
+        votes = Vote.objects.filter(show=self).filter(
+            Q(twitter_user__is_abuser=False) |
+            Q(twitter_user__isnull=True)
         ).prefetch_related('tracks').order_by('-date')
 
         for track in (
