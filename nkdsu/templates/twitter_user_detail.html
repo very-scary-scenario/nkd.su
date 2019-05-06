@@ -62,6 +62,10 @@
     {% endif %}
   </div>
 
+  {% if voter.is_patron %}
+    <p class="patron">{{ voter.name }} supports Neko Desu on <a href="https://www.patreon.com/NekoDesu">Patreon</a>!</p>
+  {% endif %}
+
   <h2>requests</h2>
   <div class="user-votes">
     {% cache 300 user_detail:votes voter.user_id page_obj.number %}

@@ -1,4 +1,6 @@
-@import "../fa/less/font-awesome.less";
+@import "../fa/less/fontawesome.less";
+@import "../fa/less/solid.less";
+@import "../fa/less/brands.less";
 
 @import "_reset.less";
 @import "_elements.less";
@@ -142,8 +144,8 @@ body {
         .roulette-pro {
           &::before {
             color: @fg;
-            .fa();
-            content: @fa-var-warning;
+            .fas;
+            content: @fa-var-exclamation-triangle;
           }
         }
       }
@@ -171,6 +173,19 @@ body {
 
         &.abuser .avatar img {
           .transform(rotate(180deg));
+        }
+
+        .patron {
+          text-align: center;
+
+          &::before {
+            .fab;
+            font-size: 1.5em;
+            margin-bottom: .3em;
+            color: @patreon-colour;
+            content: @fa-var-patreon;
+            display: block;
+          }
         }
 
         .badges {
