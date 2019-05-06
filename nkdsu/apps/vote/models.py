@@ -321,6 +321,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     name = models.CharField(max_length=100)
 
     # nkdsu stuff
+    is_patron = models.BooleanField(default=False)
     is_abuser = models.BooleanField(default=False)
     updated = models.DateTimeField()
 
