@@ -46,6 +46,30 @@ body {
         display: inline-block;
         position: relative;
 
+        i::before {
+          .fas;
+          padding-right: .5em;
+        }
+
+        @media (max-width: 40em) {
+          i::before {
+            padding-left: .3em;
+            padding-right: .3em;
+          }
+
+          span.name {
+            display: none;
+          }
+        }
+
+        &#home-header-link i::before { content: @fa-var-home; }
+        &#archive-header-link i::before { content: @fa-var-archive; }
+        &#new-tracks-header-link i::before { content: @fa-var-concierge-bell; }
+        &#roulette-header-link i::before { content: @fa-var-dice; }
+        &#stats-header-link i::before { content: @fa-var-chart-bar; }
+        &#donate-header-link i::before { content: @fa-var-donate; }
+        &#etc-header-link i::before { content: @fa-var-ellipsis-h; }
+
         &.active a {
           background-color: #ddd;
           text-shadow: none;
@@ -69,7 +93,7 @@ body {
             padding: .4em .6em 1em;
           }
 
-         &:hover {
+          &:hover {
             border: none;
             background-color: @hl;
             .noise();
