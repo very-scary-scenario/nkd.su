@@ -45,6 +45,11 @@
       <p class="subheading">requests will still appear on tracks, but will not influence their position on the front page.</p>
     {% endif %}
 
+    {% if voter.is_patron %}
+      <p class="patron">{{ voter.name }} supports Neko Desu on <a href="https://www.patreon.com/NekoDesu">Patreon</a>!</p>
+    {% endif %}
+
+
     {% if voter.userbadge_set.all %}
       <ul class="badges">
         {% for badge in voter.userbadge_set.all %}
@@ -61,10 +66,6 @@
       </ul>
     {% endif %}
   </div>
-
-  {% if voter.is_patron %}
-    <p class="patron">{{ voter.name }} supports Neko Desu on <a href="https://www.patreon.com/NekoDesu">Patreon</a>!</p>
-  {% endif %}
 
   <h2>requests</h2>
   <div class="user-votes">
