@@ -871,7 +871,13 @@ class Track(CleanOnSaveMixin, models.Model):
             self.save()
             return
 
-        input_image = Image.open(StringIO(requests.get(image_url).content))
+        try:
+            input_image = Image.open(StringIO(requests.get(image_url).content))
+        except IOError as e:
+            print(e)
+            self.background_art = None
+            self.save()
+            return
 
         if input_image.mode not in ['L', 'RGB']:
             input_image = input_image.convert('RGB')
