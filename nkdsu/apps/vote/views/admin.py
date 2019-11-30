@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import os
+from urlparse import urlparse
 
 import plistlib
 
@@ -120,10 +121,16 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
         context = super(DestructiveAdminAction, self
                         ).get_context_data(*args, **kwargs)
 
+        referer = self.request.META.get('HTTP_REFERER')
+        if referer:
+            next_path = urlparse(referer).path
+        else:
+            next_path = reverse('vote:index')
+
         context.update({
             'deets': self.get_deets(),
             'action': self.__doc__.strip('\n .'),
-            'next': self.request.META.get('HTTP_REFERER'),
+            'next': next_path,
         })
         return context
 

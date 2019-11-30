@@ -567,6 +567,20 @@ form ul.errorlist li {
         margin: .3em 0 .7em;
       }
     }
+
+    p.update-warning {
+      background-color: fadeout(@pink, 75%);
+      color: darken(@pink, 20);
+      border: 1px solid darken(@pink, 20);
+      border-radius: .2em;
+      padding: .2em .4em .3em;
+
+      &::before {
+        .fas;
+        content: @fa-var-exclamation-triangle;
+        padding-right: .4em;
+      }
+    }
   }
 }
 
