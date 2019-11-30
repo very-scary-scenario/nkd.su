@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from models import Track
-from django.utils.timezone import utc, make_aware
+from django.utils.timezone import get_default_timezone, make_aware
 
 
 def update_library(tree, dry_run=False, inudesu=False):
@@ -12,9 +12,11 @@ def update_library(tree, dry_run=False, inudesu=False):
     for tid in tree['Tracks']:
         changed = False
         new = False
+        warnings = []
+        field_alterations = []
 
         t = tree['Tracks'][tid]
-        added = make_aware(t['Date Added'], utc)
+        added = make_aware(t['Date Added'], get_default_timezone())
 
         if 'Album' not in t:
             t['Album'] = ''  # to prevent future KeyErrors
@@ -53,6 +55,16 @@ def update_library(tree, dry_run=False, inudesu=False):
                     'to': track_dict[k],
                 } for k in db_dict.keys() if db_dict[k] != track_dict[k]]
 
+            for field, value in track_dict.iteritems():
+                if (
+                    isinstance(value, (str, unicode)) and
+                    (value.strip() != value)
+                ):
+                    warnings.append({
+                        'field': field,
+                        'message': 'leading or trailing whitespace',
+                    })
+
         if new or changed:
             db_track.id = t['Persistent ID']
             db_track.id3_title = t['Name']
@@ -74,11 +86,12 @@ def update_library(tree, dry_run=False, inudesu=False):
                 'item': unicode(db_track),
             })
 
-        if changed:
+        if changed or warnings:
             changes.append({
                 'type': 'change',
                 'item': unicode(db_track),
                 'changes': field_alterations,
+                'warnings': warnings
             })
 
         if (new or changed) and (not dry_run):
