@@ -529,6 +529,20 @@ class Track(CleanOnSaveMixin, models.Model):
             raise ValidationError('{track} is not hidden but has no revealed '
                                   'date'.format(track=self))
 
+    @classmethod
+    def all_anime_titles(cls):
+        return set(
+            (t.role_detail.get('anime', '') for t in cls.objects.all())
+        )
+
+    @classmethod
+    def all_artists(cls):
+        return set(
+            a['name']
+            for t in cls.objects.all()
+            for a in t.artists()
+        )
+
     @memoize
     def is_new(self):
         return Show.current() == self.show_revealed()
