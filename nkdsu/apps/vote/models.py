@@ -600,7 +600,7 @@ class Track(CleanOnSaveMixin, models.Model):
         if self.role is None:
             return {}
 
-        return re.match(
+        result = re.match(
             r'^(?P<anime>.*?) ?\b(?P<role>'
 
             r'(rebroadcast )?\b('
@@ -617,7 +617,12 @@ class Track(CleanOnSaveMixin, models.Model):
             r'()))$',
             self.role,
             flags=re.IGNORECASE,
-        ).groupdict()
+        )
+
+        if not result:
+            return {}
+
+        return result.groupdict()
 
     @reify
     def artist(self):
