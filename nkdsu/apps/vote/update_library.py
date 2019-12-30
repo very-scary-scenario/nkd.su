@@ -161,7 +161,7 @@ def update_library(tree, dry_run=False, inudesu=False):
             db_track.save()
 
         tracks_kept.append(db_track)
-    import pdb; pdb.set_trace()
+
     for track in [tr for tr in alltracks
                   if tr not in tracks_kept and not tr.hidden]:
         changes.append({
