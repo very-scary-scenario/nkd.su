@@ -5,15 +5,29 @@ from Levenshtein import ratio
 from django.utils.timezone import get_default_timezone, make_aware
 
 
-def check_closeness_against_list(name, canonical_names):
+def check_closeness_against_list(name, canonical_names, reverse=False):
     best_closeness, best_match = 0.7, None
-    if name and name not in canonical_names:
+
+    if name:
+        if name in canonical_names:
+            return None
+
+        reversed_name = ' '.join(reversed(name.split()))
+        if reverse:
+            if reversed_name in canonical_names:
+                return reversed_name
+            else:
+                names_to_check = (name, reversed_name)
+        else:
+            names_to_check = (name,)
+
         for canonical_name in canonical_names:
-            closeness = ratio(unicode(name.lower()),
-                              unicode(canonical_name.lower()))
-            if closeness > best_closeness:
-                best_closeness = closeness
-                best_match = canonical_name
+            for check_name in names_to_check:
+                closeness = ratio(unicode(check_name.lower()),
+                                  unicode(canonical_name.lower()))
+                if closeness > best_closeness:
+                    best_closeness = closeness
+                    best_match = canonical_name
 
     return best_match
 
@@ -48,7 +62,8 @@ def metadata_consistency_checks(db_track, all_anime_titles, all_artists):
 
     for artist in db_track.artists():
         artist_name = artist.get('name', '')
-        match = check_closeness_against_list(artist_name, all_artists)
+        match = check_closeness_against_list(artist_name, all_artists,
+                                             reverse=True)
         if match:
             warnings.append({
                 'field': 'artist',
