@@ -21,8 +21,13 @@
 
         <dl>
           {% for k, v in object.non_metadata.items %}
-            <dt>{{ k }}</dt>
-            <dd>{{ v }}</dd>
+            {% if k == "track_url" %}
+              <dt>track</dt>
+              <dd><a href="{{ v }}">{{ v }}</a></dd>
+            {% else %}
+              <dt>{{ k }}</dt>
+              <dd>{{ v }}</dd>
+            {% endif %}
           {% endfor %}
         </dl>
 

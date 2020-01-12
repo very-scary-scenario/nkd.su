@@ -93,6 +93,7 @@ class BadMetadataForm(TriviaForm):
                               label="What needs fixing?", required=False)
     contact = EmailOrTwitterField(label="Email/Twitter (not required)",
                                   required=False)
+    track_url = forms.CharField(widget=forms.HiddenInput)
 
 
 class RequestForm(TriviaForm):
