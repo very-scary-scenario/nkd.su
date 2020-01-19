@@ -498,10 +498,7 @@ class RemoveNote(DestructiveAdminAction, DetailView):
 
 
 class AllAnimeView(View):
-    def get_names(self):
-        return set(
-            (t.role_detail.get('anime', '') for t in Track.objects.all())
-        )
+    get_names = Track.all_anime_titles
 
     def get(self, request):
         return HttpResponse(
@@ -511,12 +508,7 @@ class AllAnimeView(View):
 
 
 class AllArtistsView(AllAnimeView):
-    def get_names(self):
-        return set(
-            a['name']
-            for t in Track.objects.all()
-            for a in t.artists()
-        )
+    get_names = Track.all_artists
 
 
 class RequestList(AnyLoggedInUserMixin, ListView):
