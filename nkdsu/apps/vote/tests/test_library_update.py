@@ -127,11 +127,11 @@ class LibraryUpdateTest(TestCase):
     def get_library_xml(self, tracks):
         return PLIST_TEMPLATE.format(
             tracks=[self.get_track_xml(track) for track in tracks]
-        )
+        ).encode()
 
     def library_plus_one_track(self, name, artist, time, added, hex_id,
                                album=None):
-        return plistlib.readPlistFromString(
+        return plistlib.loads(
             self.get_library_xml(
                 DEFAULT_TRACKS + [TrackMeta(
                     len(DEFAULT_TRACKS) + 1,
@@ -328,7 +328,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
         self.assertEqual(warning_count, 1)
 
     def test_removing_track(self):
-        tree = plistlib.readPlistFromString(
+        tree = plistlib.loads(
             self.get_library_xml(DEFAULT_TRACKS[:-1])
         )
         results = update_library(tree, dry_run=True)

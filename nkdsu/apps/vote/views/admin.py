@@ -1,14 +1,14 @@
 # coding: utf-8
 
 import os
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 import plistlib
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.forms import Form
 from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404

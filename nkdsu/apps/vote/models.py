@@ -316,7 +316,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     is_abuser = models.BooleanField(default=False)
     updated = models.DateTimeField()
 
-    def __unicode__(self):
+    def __str__(self):
         return unicode(self.screen_name)
 
     def __repr__(self):
@@ -500,7 +500,7 @@ class Track(CleanOnSaveMixin, models.Model):
         blank=True, upload_to=lambda i, f: 'art/bg/%s.%s'
         % (i.pk, f.split('.')[-1]))
 
-    def __unicode__(self):
+    def __str__(self):
         """
         The string that, for instance, would be tweeted
         """
@@ -1077,7 +1077,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         else:
             return static('i/vote-kinds/{0}.png'.format(self.kind))
 
-    def __unicode__(self):
+    def __str__(self):
         tracks = u', '.join([t.title for t in self.tracks.all()])
 
         return u'{user} at {date} for {tracks}'.format(
@@ -1203,7 +1203,7 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     track = models.ForeignKey(Track, db_index=True, on_delete=models.CASCADE)
     tweet_id = models.BigIntegerField(blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s at %s' % (self.track, self.date)
 
     def clean(self):
@@ -1351,7 +1351,7 @@ class Note(CleanOnSaveMixin, models.Model):
 
     objects = NoteManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.content
 
 

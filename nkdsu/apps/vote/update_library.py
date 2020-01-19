@@ -23,8 +23,8 @@ def check_closeness_against_list(name, canonical_names, reverse=False):
 
         for canonical_name in canonical_names:
             for check_name in names_to_check:
-                closeness = ratio(unicode(check_name.lower()),
-                                  unicode(canonical_name.lower()))
+                closeness = ratio(str(check_name.lower()),
+                                  str(canonical_name.lower()))
                 if closeness > best_closeness:
                     best_closeness = closeness
                     best_match = canonical_name
@@ -128,9 +128,9 @@ def update_library(tree, dry_run=False, inudesu=False):
                     'to': track_dict[k],
                 } for k in db_dict.keys() if db_dict[k] != track_dict[k]]
 
-            for field, value in track_dict.iteritems():
+            for field, value in track_dict.items():
                 if (
-                    isinstance(value, (str, unicode)) and
+                    isinstance(value, str) and
                     (value.strip() != value)
                 ):
                     warnings.append({
@@ -161,13 +161,13 @@ def update_library(tree, dry_run=False, inudesu=False):
 
             changes.append({
                 'type': 'new',
-                'item': unicode(db_track),
+                'item': str(db_track),
             })
 
         if changed or warnings:
             changes.append({
                 'type': 'change',
-                'item': unicode(db_track),
+                'item': str(db_track),
                 'changes': field_alterations,
                 'warnings': warnings
             })
@@ -181,7 +181,7 @@ def update_library(tree, dry_run=False, inudesu=False):
                   if tr not in tracks_kept and not tr.hidden]:
         changes.append({
             'type': 'hide',
-            'item': unicode(track),
+            'item': str(track),
         })
         if not dry_run:
             track.hidden = True
