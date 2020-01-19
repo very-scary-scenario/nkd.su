@@ -1313,9 +1313,11 @@ class Request(CleanOnSaveMixin, models.Model):
     successful = models.BooleanField()
     blob = models.TextField()
     filled = models.DateTimeField(blank=True, null=True)
-    filled_by = models.ForeignKey(User, blank=True, null=True)
+    filled_by = models.ForeignKey(User, blank=True, null=True,
+                                  on_delete=models.SET_NULL)
     claimant = models.ForeignKey(
-        User, blank=True, null=True, related_name='claims')
+        User, blank=True, null=True, related_name='claims',
+        on_delete=models.SET_NULL)
 
     def serialise(self, struct):
         self.blob = json.dumps(struct)
