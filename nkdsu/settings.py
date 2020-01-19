@@ -143,7 +143,6 @@ MIDDLEWARE = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'nkdsu.urls'
@@ -161,7 +160,6 @@ INSTALLED_APPS = (
     'django_nose',
     'django_orphaned',
     'pipeline',
-    'debug_toolbar',
 
     'nkdsu.apps.vote',
 )
