@@ -246,6 +246,4 @@ ORPHANED_APPS_MEDIABASE_DIRS = {
 try:
     from nkdsu.settings_local import *  # noqa
 except ImportError:
-    from sys import argv
-    if 'test' not in argv:
-        raise
+    pass
