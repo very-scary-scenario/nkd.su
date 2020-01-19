@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.urls import include, re_path as url, path
 from django.contrib import admin
-from django.contrib.auth.views import LogoutView, login, PasswordChangeView
+from django.contrib.auth.views import LogoutView, LoginView, PasswordChangeView
 from django.views.static import serve
 from django.views.generic.base import RedirectView
 
@@ -15,7 +15,7 @@ urlpatterns = [
 
     # registration
     url(r'^logout/', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
-    url(r'^login/', login, name='login'),
+    url(r'^login/', LoginView.as_view(), name='login'),
     url(r'^cpw/', PasswordChangeView.as_view(), name='password_change'),
     url(r'^cpw-done/', RedirectView.as_view(url='/'),
         name='password_change_done'),
