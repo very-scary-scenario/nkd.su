@@ -39,7 +39,7 @@ class AdminMixin(object):
     @classmethod
     def as_view(cls):
         return user_passes_test(
-            lambda u: u.is_authenticated() and u.is_staff,
+            lambda u: u.is_authenticated and u.is_staff,
         )(super(AdminMixin, cls).as_view())
 
 
