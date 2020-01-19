@@ -893,7 +893,7 @@ class Track(CleanOnSaveMixin, models.Model):
         try:
             input_image = Image.open(StringIO(requests.get(image_url).content))
         except IOError as e:
-            print(e)
+            print('{}:\n - {}'.format(self, e))
             self.background_art = None
             self.save()
             return
@@ -1419,6 +1419,16 @@ BADGES = [
         'https://www.justgiving.com/fundraising/very-charity-scenario-2018',
         datetime.datetime(2018, 10, 1, tzinfo=get_default_timezone()),
         datetime.datetime(2018, 11, 27, tzinfo=get_default_timezone()),
+    ),
+    Badge(
+        'charity-2019',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'Samaritans in 2019.',
+        'likes of depriving people of sleep, fan of good mental health',
+        'life-ring',
+        'https://www.justgiving.com/fundraising/very-charity-scenario-2019',
+        datetime.datetime(2019, 10, 1, tzinfo=get_default_timezone()),
+        datetime.datetime(2019, 11, 27, tzinfo=get_default_timezone()),
     ),
 ]
 
