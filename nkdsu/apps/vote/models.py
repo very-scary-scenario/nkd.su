@@ -874,7 +874,7 @@ class Track(CleanOnSaveMixin, models.Model):
         try:
             input_image = Image.open(StringIO(requests.get(image_url).content))
         except IOError as e:
-            print(e)
+            print('{}:\n - {}'.format(self, e))
             self.background_art = None
             self.save()
             return
