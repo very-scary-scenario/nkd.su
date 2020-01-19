@@ -7,7 +7,7 @@
 
   {% if show.playlist %}
     <div id="playlist"
-      {% if user.is_authenticated or show.voting_allowed %}
+      {% if user.is_staff or show.voting_allowed %}
         class="secondary"
       {% endif %}
     >
@@ -22,12 +22,12 @@
 
   <div
     {% if show.playlist %}
-      {% if user.is_authenticated or show.voting_allowed %}
+      {% if user.is_staff or show.voting_allowed %}
         class="defer-to-playlist"
       {% endif %}
     {% endif %}
   >
-    {% if user.is_authenticated and show.shortlisted %}
+    {% if user.is_staff and show.shortlisted %}
       <h2>shortlist</h2>
       <p class="subheading">{{ show.shortlisted|total_length }}</p>
       <ul class="tracks" id="shortlist">
@@ -59,7 +59,7 @@
       <p class="aside">Search, browse the <a href="{% url "vote:archive" %}">playlist archive</a> or just <a href="{% url "vote:roulette" %}">throw darts at the wall</a>.</p>
     {% endif %}
 
-    {% if user.is_authenticated and show.discarded %}
+    {% if user.is_staff and show.discarded %}
       <h2>discarded</h2>
       <ul class="tracks" id="discarded">
         {% for track in show.discarded %}
@@ -72,7 +72,7 @@
 {% endblock %}
 
 {% block footer_scripts %}
-  {% if user.is_authenticated %}
+  {% if user.is_staff %}
     <script>
       var s = $('ul#shortlist');
       var shortlistOrderURL = "{% url 'vote:admin:shortlist_order' %}";

@@ -5,15 +5,15 @@
 {% block content %}
 
   <h2>roulette</h2>
-  <p class="subheading roulette-mode-switch">
+  <p class="subheading roulette-mode-switch selected-{{ mode }}">
     {% for slug, name in modes %}
-      <span>
-      {% if mode == slug %}
-        {{ name }}
-      {% else %}
-        <a href="{% url "vote:roulette" mode=slug %}">{{ name }}</a>
-      {% endif %}
-    </span>
+      <span class="roulette-{{ slug }}">
+        {% if mode == slug %}
+          {{ name }}
+        {% else %}
+          <a href="{% url "vote:roulette" mode=slug %}">{{ name }}</a>
+        {% endif %}
+      </span>
     {% endfor %}
   </p>
 
@@ -21,6 +21,13 @@
     {% include "include/tracklist.html" %}
   </ul>
 
-  <p class="aside"><a href="{% url "vote:roulette" mode=mode %}">these are all terrible</a></p>
+  <p class="aside"><a href="{% url "vote:roulette" mode=mode %}">
+    {% if mode == "pro" %}
+      well, i am a pro after all<br/>
+      i guess i can wait until next week for another option
+    {% else %}
+      these are all terrible
+    {% endif %}
+  </a></p>
 
 {% endblock %}

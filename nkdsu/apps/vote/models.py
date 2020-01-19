@@ -12,11 +12,13 @@ from markdown import markdown
 from PIL import Image, ImageFilter
 import requests
 
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.urls import resolve, Resolver404
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from django.template.defaultfilters import slugify
 from django.conf import settings
@@ -25,13 +27,15 @@ from django.urls import reverse
 from django.templatetags.static import static
 from django.utils.timezone import get_default_timezone
 
-
 from .managers import TrackManager, NoteManager
 from .utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
     posting_tw_api, memoize, pk_cached, indefinitely, lastfm, musicbrainzngs
 )
 from ..vote import mixcloud
+
+
+User = get_user_model()
 
 
 class CleanOnSaveMixin(object):
@@ -233,9 +237,9 @@ class Show(CleanOnSaveMixin, models.Model):
         track_set = set()
         tracks = []
 
-        votes = Vote.objects.filter(
-            show=self,
-            twitter_user__is_abuser=False,
+        votes = Vote.objects.filter(show=self).filter(
+            Q(twitter_user__is_abuser=False) |
+            Q(twitter_user__isnull=True)
         ).prefetch_related('tracks').order_by('-date')
 
         for track in (
@@ -308,6 +312,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     name = models.CharField(max_length=100)
 
     # nkdsu stuff
+    is_patron = models.BooleanField(default=False)
     is_abuser = models.BooleanField(default=False)
     updated = models.DateTimeField()
 
@@ -513,6 +518,20 @@ class Track(CleanOnSaveMixin, models.Model):
             raise ValidationError('{track} is not hidden but has no revealed '
                                   'date'.format(track=self))
 
+    @classmethod
+    def all_anime_titles(cls):
+        return set(
+            (t.role_detail.get('anime', '') for t in cls.objects.all())
+        )
+
+    @classmethod
+    def all_artists(cls):
+        return set(
+            a['name']
+            for t in cls.objects.all()
+            for a in t.artists()
+        )
+
     @memoize
     def is_new(self):
         return Show.current() == self.show_revealed()
@@ -570,7 +589,7 @@ class Track(CleanOnSaveMixin, models.Model):
         if self.role is None:
             return {}
 
-        return re.match(
+        result = re.match(
             r'^(?P<anime>.*?) ?\b(?P<role>'
 
             r'(rebroadcast )?\b('
@@ -587,7 +606,12 @@ class Track(CleanOnSaveMixin, models.Model):
             r'()))$',
             self.role,
             flags=re.IGNORECASE,
-        ).groupdict()
+        )
+
+        if not result:
+            return {}
+
+        return result.groupdict()
 
     @reify
     def artist(self):
@@ -855,7 +879,13 @@ class Track(CleanOnSaveMixin, models.Model):
             self.save()
             return
 
-        input_image = Image.open(StringIO(requests.get(image_url).content))
+        try:
+            input_image = Image.open(StringIO(requests.get(image_url).content))
+        except IOError as e:
+            print('{}:\n - {}'.format(self, e))
+            self.background_art = None
+            self.save()
+            return
 
         if input_image.mode not in ['L', 'RGB']:
             input_image = input_image.convert('RGB')
@@ -976,8 +1006,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         tracks = []
         for url in (
-            tweet.get('extended_entities') or tweet.get('entities')
-        )['urls']:
+            tweet.get('extended_entities') or tweet.get('entities', {})
+        ).get('urls', ()):
             parsed = urlparse(url['expanded_url'])
 
             try:
@@ -1087,7 +1117,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         content = self.content()
         return (
             content and
-            re.search(r'\b(birthday|bday)\b', content, flags=re.IGNORECASE)
+            re.search(r'\b(birthday|b-?day)', content, flags=re.IGNORECASE)
         )
 
     @reify
@@ -1204,8 +1234,8 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         canon = unicode(self.track)
         hashtag = settings.HASHTAG
 
-        if len(canon) > 140 - (len(hashtag) + 1):
-            canon = canon[0:140-(len(hashtag)+2)]+u'…'
+        if len(canon) > settings.TWEET_LENGTH - (len(hashtag) + 1):
+            canon = canon[0:settings.TWEET_LENGTH-(len(hashtag)+2)]+u'…'
 
         status = u'%s %s' % (canon, hashtag)
         tweet = posting_tw_api.update_status(status)
@@ -1277,15 +1307,33 @@ class Request(CleanOnSaveMixin, models.Model):
     hilarious spam.
     """
 
+    METADATA_KEYS = ['trivia', 'trivia_question', 'contact']
+
     created = models.DateTimeField(auto_now_add=True)
     successful = models.BooleanField()
     blob = models.TextField()
+    filled = models.DateTimeField(blank=True, null=True)
+    filled_by = models.ForeignKey(User, blank=True, null=True)
+    claimant = models.ForeignKey(
+        User, blank=True, null=True, related_name='claims')
 
     def serialise(self, struct):
         self.blob = json.dumps(struct)
 
     def struct(self):
         return json.loads(self.blob)
+
+    def non_metadata(self):
+        return {
+            k: v for k, v in self.struct().items()
+            if (
+                k not in Request.METADATA_KEYS or
+                k == 'contact'
+            ) and v.strip()
+        }
+
+    class Meta:
+        ordering = ['-created']
 
 
 class Note(CleanOnSaveMixin, models.Model):
@@ -1352,6 +1400,26 @@ BADGES = [
         'https://www.justgiving.com/fundraising/very-charity-scenario-2017',
         datetime.datetime(2017, 10, 1, tzinfo=get_default_timezone()),
         datetime.datetime(2017, 11, 27, tzinfo=get_default_timezone()),
+    ),
+    Badge(
+        'charity-2018',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'Cancer Research UK in 2018.',
+        'likes depriving people of sleep, hates cancer',
+        'medkit',
+        'https://www.justgiving.com/fundraising/very-charity-scenario-2018',
+        datetime.datetime(2018, 10, 1, tzinfo=get_default_timezone()),
+        datetime.datetime(2018, 11, 27, tzinfo=get_default_timezone()),
+    ),
+    Badge(
+        'charity-2019',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'Samaritans in 2019.',
+        'likes of depriving people of sleep, fan of good mental health',
+        'life-ring',
+        'https://www.justgiving.com/fundraising/very-charity-scenario-2019',
+        datetime.datetime(2019, 10, 1, tzinfo=get_default_timezone()),
+        datetime.datetime(2019, 11, 27, tzinfo=get_default_timezone()),
     ),
 ]
 

@@ -20,8 +20,8 @@
 
   </head>
   <body class="
-    {% if user.is_authenticated %}
-      authenticated
+    {% if user.is_staff %}
+      staff
     {% endif %}
     {% if tracks_expanded %}
       tracks-expanded
@@ -41,9 +41,15 @@
       {% include "include/post_content.html" %}
     </div>
 
+<<<<<<< HEAD
     {% javascript "base" %}
     {% if user.is_authenticated %}
       {% javascript "ui" %}
+=======
+    {% compressed_js "base" %}
+    {% if user.is_staff %}
+      {% compressed_js "ui" %}
+>>>>>>> production
     {% endif %}
     {% block footer_scripts %}{% endblock %}
     <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>

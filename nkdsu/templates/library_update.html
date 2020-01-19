@@ -8,6 +8,10 @@
 
           <p class="title"><strong>{{ change.item }}</strong></p>
 
+          {% for warning in change.warnings %}
+            <p class="update-warning"><strong>{{ warning.field }}</strong>: {{ warning.message }}</p>
+          {% endfor %}
+
           {% if change.type == 'new' %}
             <p>Has been added</p>
           {% elif change.type == 'hide' %}

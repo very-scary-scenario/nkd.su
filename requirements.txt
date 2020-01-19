@@ -9,11 +9,18 @@ django-pipeline==1.6.13
 slimit==0.8.1
 django-nose==1.4.5
 requests==2.5.1
+<<<<<<< HEAD
 git+https://github.com/colons/instant-coverage.git
 Pillow==2.3.0
+=======
+django-cache-utils==0.7.2
+django-instant-coverage==0.0.16
+Pillow==5.2.0
+>>>>>>> production
 musicbrainzngs==0.5
 django-orphaned==0.1
 django-debug-toolbar==1.9.1
 ndg-httpsclient
 pyasn1
 classtools
+python-Levenshtein

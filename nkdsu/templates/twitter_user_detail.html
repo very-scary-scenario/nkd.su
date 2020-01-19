@@ -30,7 +30,7 @@
       <p class="subheading">voted for the last <strong>{{ voter.streak }}</strong> consecutive shows</p>
     {% endif %}
 
-    {% if user.is_authenticated %}
+    {% if user.is_staff %}
       <p class="subheading"><a href="{{ voter.get_toggle_abuser_url }}">
         {% if voter.is_abuser %}
           redeem {{ voter }}
@@ -44,6 +44,11 @@
       <p class="subheading"><strong>{{ voter.name }} is condemned until further notice.</strong></p>
       <p class="subheading">requests will still appear on tracks, but will not influence their position on the front page.</p>
     {% endif %}
+
+    {% if voter.is_patron %}
+      <p class="patron">{{ voter.name }} supports Neko Desu on <a href="https://www.patreon.com/NekoDesu">Patreon</a>!</p>
+    {% endif %}
+
 
     {% if voter.userbadge_set.all %}
       <ul class="badges">

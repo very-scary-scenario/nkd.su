@@ -73,10 +73,11 @@ to accept votes and generally be responsible, though:
     - It would be super considerate to run the `dumpdata vote` command piped to
       a file that is hosted such that Peter can get to it, just in case you too
       are hit by a bus.
-- Make Peter an account.
+- Make Peter an account with staff and admin permissions.
     - You can do this from the admin interface at /admin. Make them a super
-      user. Do not make accounts for anyone else; any authenticated user can do
-      all the built-in admin stuff like updating the library and hiding tracks.
+      user.
+- Make non-staff accounts for the gnomes who gather tracks, so that they can
+  get to the request list
 
 ----
 

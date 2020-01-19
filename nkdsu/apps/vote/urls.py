@@ -14,6 +14,14 @@ admin_patterns = ([
 
     url(r'^all-the-anime/$',
         admin.AllAnimeView.as_view(), name='all_anime'),
+    url(r'^all-the-artists/$',
+        admin.AllArtistsView.as_view(), name='all_artists'),
+    url(r'^requests/$',
+        admin.RequestList.as_view(), name='requests'),
+    url(r'^requests/fill/(?P<pk>[^/]+)/$',
+        admin.FillRequest.as_view(), name='fill_request'),
+    url(r'^requests/claim/(?P<pk>[^/]+)/$',
+        admin.ClaimRequest.as_view(), name='claim_request'),
 
     url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
 
@@ -103,7 +111,7 @@ urlpatterns = [
     url(r'^added/(?P<date>[\d-]+)/$', views.Added.as_view(), name='added'),
     url(r'^added/$', views.Added.as_view(), name='added'),
 
-    url(r'^roulette/(?P<mode>indiscriminate|hipster|almost-100)/$',
+    url(r'^roulette/(?P<mode>indiscriminate|hipster|almost-100|pro)/$',
         views.Roulette.as_view(), name='roulette'),
     url(r'^roulette/$', views.Roulette.as_view(), name='roulette'),
 
@@ -115,7 +123,7 @@ urlpatterns = [
         name='avatar'),
 
     url(r'^artist/(?P<artist>.*)/$', views.Artist.as_view(), name='artist'),
-    url(r'^anime/(?P<anime>.+)/$', views.Anime.as_view(), name='anime'),
+    url(r'^anime/(?P<anime>.*)/$', views.Anime.as_view(), name='anime'),
 
     url(r'^stats/$', views.Stats.as_view(), name='stats'),
 

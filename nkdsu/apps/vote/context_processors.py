@@ -29,6 +29,7 @@ def get_sections(request):
         ('new tracks', most_recent_track.show_revealed().get_revealed_url()),
         ('roulette', reverse('vote:roulette', kwargs={'mode': 'hipster'})),
         ('stats', reverse('vote:stats')),
+        ('donate', 'https://www.patreon.com/NekoDesu'),
         ('etc', 'http://nekodesu.co.uk/'),
     ]]
 

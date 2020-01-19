@@ -112,7 +112,7 @@ class RequestForm(TriviaForm):
     def clean(self):
         cleaned_data = super(RequestForm, self).clean()
 
-        compulsory = ['trivia', 'trivia_question', 'contact']
+        compulsory = Request.METADATA_KEYS
 
         filled = [cleaned_data[f] for f in cleaned_data
                   if f not in compulsory and cleaned_data[f]]

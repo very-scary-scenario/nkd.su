@@ -1,4 +1,6 @@
-@import "../fa/less/font-awesome.less";
+@import "../fa/less/fontawesome.less";
+@import "../fa/less/solid.less";
+@import "../fa/less/brands.less";
 
 @import "_reset.less";
 @import "_elements.less";
@@ -44,6 +46,30 @@ body {
         display: inline-block;
         position: relative;
 
+        i::before {
+          .fas;
+          padding-right: .5em;
+        }
+
+        @media (max-width: 40em) {
+          i::before {
+            padding-left: .3em;
+            padding-right: .3em;
+          }
+
+          span.name {
+            display: none;
+          }
+        }
+
+        &#home-header-link i::before { content: @fa-var-home; }
+        &#archive-header-link i::before { content: @fa-var-archive; }
+        &#new-tracks-header-link i::before { content: @fa-var-concierge-bell; }
+        &#roulette-header-link i::before { content: @fa-var-dice; }
+        &#stats-header-link i::before { content: @fa-var-chart-bar; }
+        &#donate-header-link i::before { content: @fa-var-donate; }
+        &#etc-header-link i::before { content: @fa-var-ellipsis-h; }
+
         &.active a {
           background-color: #ddd;
           text-shadow: none;
@@ -67,7 +93,7 @@ body {
             padding: .4em .6em 1em;
           }
 
-         &:hover {
+          &:hover {
             border: none;
             background-color: @hl;
             .noise();
@@ -132,6 +158,22 @@ body {
         .child-iter();
       }
 
+      .roulette-mode-switch {
+        &.selected-pro {
+          a {
+            color: @fg;
+            opacity: 0.5;
+          }
+        }
+        .roulette-pro {
+          &::before {
+            color: @fg;
+            .fas;
+            content: @fa-var-exclamation-triangle;
+          }
+        }
+      }
+
       ul.plays {
         text-align: center;
       }
@@ -155,6 +197,19 @@ body {
 
         &.abuser .avatar img {
           .transform(rotate(180deg));
+        }
+
+        .patron {
+          text-align: center;
+
+          &::before {
+            .fab;
+            font-size: 1.5em;
+            margin-bottom: .3em;
+            color: @patreon-colour;
+            content: @fa-var-patreon;
+            display: block;
+          }
         }
 
         .badges {
@@ -512,6 +567,20 @@ form ul.errorlist li {
         margin: .3em 0 .7em;
       }
     }
+
+    p.update-warning {
+      background-color: fadeout(@pink, 75%);
+      color: darken(@pink, 20);
+      border: 1px solid darken(@pink, 20);
+      border-radius: .2em;
+      padding: .2em .4em .3em;
+
+      &::before {
+        .fas;
+        content: @fa-var-exclamation-triangle;
+        padding-right: .4em;
+      }
+    }
   }
 }
 
@@ -567,6 +636,45 @@ form ul.errorlist li {
     #trivia .exchange .answer:before {
       content: '>'
     }
+
+#requests {
+  > li {
+    margin: 1em 0 2em;
+    &.claimed {
+      opacity: .5;
+
+      &.mine {
+        opacity: 1;
+        background-color: fadeout(@pink, 75%);
+        .noise();
+        border-radius: .5em;
+        padding: .5em;
+      }
+    }
+
+    > h3 {
+      font-size: 1em;
+      text-align: left;
+      margin: 0;
+    }
+
+    > dl {
+      margin: .5em 1em;
+
+      > dt {
+        font-weight: bold;
+      }
+
+      > dd {
+        margin-left: 1em;
+      }
+    }
+
+    > form {
+      display: inline-block;
+    }
+  }
+}
 
 
 @media (min-width:551px) {

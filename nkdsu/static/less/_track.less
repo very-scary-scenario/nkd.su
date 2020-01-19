@@ -3,6 +3,9 @@
 @metadata-width: 60%;
 @new-compensation: 2.7em;
 
+@avatar-border-radius: 0.3em;
+@avatar-thumb-size: 32px;
+
 @fhl: fade(@hl, 0%);
 
 .heavy-glow(@color) {
@@ -162,7 +165,7 @@
     }
 
     .vote {
-      &::after, .hat {
+      &::after, &::before, .hat {
         .heavy-glow(@inv_bg) !important;
       }
     }
@@ -211,19 +214,23 @@
 }
 
 li.vote {
+  .vote-link {
+    height: @avatar-thumb-size + 4px;
+    display: inline-block;
+  }
+
   .avatar {
-    border-radius: .3em;
+    border-radius: @avatar-border-radius;
   }
 
   &.new-user {
     &::before {
-      color: @hl;
-      content: @fa-var-star;
       top: -.2em;
       left: -.2em;
-      text-shadow: @bg .1em .1em .1em;
+      .heavy-glow(@bg);
     }
   }
+  &.new-user::before { .fas; content: @fa-var-star; color: @hl; }
 
   &.shortlisted, &.placated {
     img {
@@ -253,6 +260,37 @@ li.vote {
     }
     &.when {
       color: @light;
+    }
+  }
+
+  &.patron .deets .full_name::before {
+    .fab;
+    color: @patreon-colour;
+    content: @fa-var-patreon;
+    margin-right: .4em;
+  }
+}
+
+li.plusone {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+
+  a {
+    box-sizing: border-box;
+    margin: 2px;
+    display: block;
+    background-color: fade(black, 10);
+    border: 1px dashed @hl;
+    border-radius: @avatar-border-radius;
+    height: @avatar-thumb-size;
+    width: @avatar-thumb-size;
+    padding-top: .1em;
+    font-size: 1.2em;
+
+    &:hover, &:focus {
+      border: 1px dashed @fg;
     }
   }
 }
@@ -299,8 +337,8 @@ body.tracks-collapsed li.vote {
       &.thumb {
         padding: 1px;
         border: 1px solid rgba(128,128,128,0);
-        width: 32px;
-        height: 32px;
+        width: @avatar-thumb-size;
+        height: @avatar-thumb-size;
         border-radius: .4em;
       }
     }
@@ -383,7 +421,8 @@ body.tracks-collapsed li.vote {
 
         .text {
           &::before {
-            font-family: FontAwesome;
+            .fas;
+            display: block;
             content: @fa-var-comment;
           }
         }
@@ -421,13 +460,13 @@ body.tracks-collapsed li.vote {
 
   &::before, &::after, .hat {
     pointer-events: none;
-    .fa;
     display: block;
     position: absolute;
   }
 
   &.content {
     &::after {
+      .fas;
       content: @fa-var-comment;
       bottom: -.1em;
       right: -.1em;
