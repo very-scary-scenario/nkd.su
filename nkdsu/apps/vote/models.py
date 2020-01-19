@@ -245,10 +245,10 @@ class Show(CleanOnSaveMixin, models.Model):
         for track in (
             track for vote in votes for track in vote.tracks.all()
         ):
-            if track in track_set:
+            if track.pk in track_set:
                 continue
 
-            track_set.add(track)
+            track_set.add(track.pk)
             tracks.append(track)
 
         return tracks
