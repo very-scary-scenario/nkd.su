@@ -479,6 +479,10 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         ).exists()
 
 
+def art_path(i, f):
+    return 'art/bg/%s.%s' % (i.pk, f.split('.')[-1])
+
+
 class Track(CleanOnSaveMixin, models.Model):
     objects = TrackManager()
 
@@ -496,9 +500,7 @@ class Track(CleanOnSaveMixin, models.Model):
     revealed = models.DateTimeField(blank=True, null=True, db_index=True)
     hidden = models.BooleanField()
     inudesu = models.BooleanField()
-    background_art = models.ImageField(
-        blank=True, upload_to=lambda i, f: 'art/bg/%s.%s'
-        % (i.pk, f.split('.')[-1]))
+    background_art = models.ImageField(blank=True, upload_to=art_path)
 
     def __str__(self):
         """
