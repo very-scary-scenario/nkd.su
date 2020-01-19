@@ -10,7 +10,7 @@ slimit==0.8.1
 django-nose==1.4.5
 requests==2.22.0
 django-instant-coverage==1.1.0
-Pillow==5.2.0
+Pillow==7.0.0
 musicbrainzngs==0.5
 django-orphaned==0.1
 django-debug-toolbar==1.9.1
