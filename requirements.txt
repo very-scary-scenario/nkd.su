@@ -5,7 +5,7 @@ tweepy==3.8.0
 Markdown==2.3.1
 ujson==1.33
 python-dateutil==2.2
-django-pipeline==1.6.13
+django-pipeline==3.1.1
 slimit==0.8.1
 django-nose==1.4.5
 requests==2.22.0
