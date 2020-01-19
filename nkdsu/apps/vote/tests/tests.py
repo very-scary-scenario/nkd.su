@@ -48,7 +48,7 @@ class ShowTest(TestCase):
             self.assertEqual(show.end - show.showtime,
                              datetime.timedelta(hours=2))
 
-            self.assertGreater(show.end, starter)
+            self.assertGreater(show.end.isoformat(), starter.isoformat())
 
     def test_get_show(self):
         self.test_make_show(wipe=False)
