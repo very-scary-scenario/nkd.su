@@ -317,7 +317,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     updated = models.DateTimeField()
 
     def __str__(self):
-        return unicode(self.screen_name)
+        return str(self.screen_name)
 
     def __repr__(self):
         return self.screen_name
@@ -1129,6 +1129,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         badge_order = [b[0] for b in BADGES]
 
+        if not self.twitter_user:
+            return
+
         for badge in sorted(
             (
                 b for b in self.twitter_user.userbadge_set.all()
@@ -1231,7 +1234,7 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         if self.tweet_id is not None:
             raise TypeError('This play has already been tweeted')
 
-        canon = unicode(self.track)
+        canon = str(self.track)
         hashtag = settings.HASHTAG
 
         if len(canon) > settings.TWEET_LENGTH - (len(hashtag) + 1):
