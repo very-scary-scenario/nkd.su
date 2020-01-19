@@ -1,14 +1,14 @@
 django>=2.0,<2.1
 celery==4.1
 python-memcached==1.54
-tweepy==3.5.0
+tweepy==3.8.0
 Markdown==2.3.1
 ujson==1.33
 python-dateutil==2.2
 django-pipeline==1.6.13
 slimit==0.8.1
 django-nose==1.4.5
-requests==2.5.1
+requests==2.22.0
 django-instant-coverage==0.0.16
 Pillow==5.2.0
 musicbrainzngs==0.5
