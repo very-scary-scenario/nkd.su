@@ -337,10 +337,6 @@ class ReportBadMetadata(FormView):
     form_class = BadMetadataForm
     template_name = 'report.html'
 
-    def get_initial(self):
-        track = Track.objects.get(pk=self.kwargs['pk'])
-        return {'track_url': track.get_public_url()}
-
     def get_track(self):
         return get_object_or_404(Track, pk=self.kwargs['pk'])
 
@@ -349,6 +345,11 @@ class ReportBadMetadata(FormView):
                                                                   **kwargs)
         context['track'] = self.get_track()
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super(ReportBadMetadata, self).get_form_kwargs()
+        kwargs['track'] = Track.objects.get(pk=self.kwargs['pk'])
+        return kwargs
 
     def get_success_url(self):
         return self.get_track().get_absolute_url()
