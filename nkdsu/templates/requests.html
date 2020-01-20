@@ -20,6 +20,10 @@
         {% endif %}
 
         <dl>
+          {% if object.track %}
+            <dt>track</dt>
+            <dd><a href="{{ object.track.get_absolute_url }}">{{ object.track }}</a></dd>
+	  {% endif %}
           {% for k, v in object.non_metadata.items %}
             <dt>{{ k }}</dt>
             <dd>{{ v }}</dd>
