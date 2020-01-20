@@ -1323,6 +1323,8 @@ class Request(CleanOnSaveMixin, models.Model):
     claimant = models.ForeignKey(
         User, blank=True, null=True, related_name='claims',
         on_delete=models.SET_NULL)
+    track = models.ForeignKey(Track, blank=True, null=True,
+                              on_delete=models.SET_NULL)
 
     def serialise(self, struct):
         self.blob = json.dumps(struct)
