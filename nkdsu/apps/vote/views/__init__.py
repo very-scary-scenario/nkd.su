@@ -346,6 +346,11 @@ class ReportBadMetadata(FormView):
         context['track'] = self.get_track()
         return context
 
+    def get_form_kwargs(self):
+        kwargs = super(ReportBadMetadata, self).get_form_kwargs()
+        kwargs['track'] = Track.objects.get(pk=self.kwargs['pk'])
+        return kwargs
+
     def get_success_url(self):
         return self.get_track().get_absolute_url()
 

@@ -1326,6 +1326,7 @@ class Request(CleanOnSaveMixin, models.Model):
     filled_by = models.ForeignKey(User, blank=True, null=True)
     claimant = models.ForeignKey(
         User, blank=True, null=True, related_name='claims')
+    track = models.ForeignKey(Track, blank=True, null=True)
 
     def serialise(self, struct):
         self.blob = json.dumps(struct)

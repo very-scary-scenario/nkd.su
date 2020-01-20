@@ -51,6 +51,7 @@ class TriviaForm(forms.Form):
 
     trivia_question = forms.CharField(widget=forms.HiddenInput)
     trivia = forms.CharField(required=False)
+    track = None
 
     def __init__(self, *args, **kwargs):
         super(TriviaForm, self).__init__(*args, **kwargs)
@@ -72,6 +73,8 @@ class TriviaForm(forms.Form):
 
         request = Request()
         request.successful = bool(human)
+        if self.track:
+            request.track_id = self.track.pk
         request.serialise(self.cleaned_data)
         request.save()
 
@@ -93,6 +96,10 @@ class BadMetadataForm(TriviaForm):
                               label="What needs fixing?", required=False)
     contact = EmailOrTwitterField(label="Email/Twitter (not required)",
                                   required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.track = kwargs.pop('track')
+        super(BadMetadataForm, self).__init__(*args, **kwargs)
 
 
 class RequestForm(TriviaForm):
