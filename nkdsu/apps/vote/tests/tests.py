@@ -32,7 +32,7 @@ class ShowTest(TestCase):
 
             starter = (
                 timezone.now()
-                .replace(tzinfo=timezone.get_current_timezone()) -
+                .astimezone(timezone.get_current_timezone()) -
                 datetime.timedelta(hours=hours)
             )
 
@@ -48,7 +48,7 @@ class ShowTest(TestCase):
             self.assertEqual(show.end - show.showtime,
                              datetime.timedelta(hours=2))
 
-            self.assertGreater(show.end.isoformat(), starter.isoformat())
+            self.assertGreater(show.end, starter)
 
     def test_get_show(self):
         self.test_make_show(wipe=False)
