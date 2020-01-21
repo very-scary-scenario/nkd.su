@@ -1,6 +1,6 @@
 django>=2.2,<2.3
 celery==4.1
-python-memcached==1.54
+python-memcached==1.59
 tweepy==3.8.0
 Markdown==2.3.1
 ujson==1.33
