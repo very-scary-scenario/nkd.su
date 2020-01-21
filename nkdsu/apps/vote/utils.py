@@ -31,7 +31,7 @@ def length_str(msec):
     the length of a song.
     """
 
-    seconds = msec/1000
+    seconds = (msec or 0)/1000
     remainder_seconds = seconds % 60
     minutes = (seconds - remainder_seconds) / 60
 
