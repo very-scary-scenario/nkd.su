@@ -45,9 +45,9 @@ class TrackManager(models.Manager):
 
         for keyword in keywords:
             qs = qs.exclude(~models.Q(
-                id3_title__icontains=keyword,
+                id3_title__unaccent__icontains=keyword,
             ) & ~models.Q(
-                id3_artist__icontains=keyword,
+                id3_artist__unaccent__icontains=keyword,
             ))
 
         return qs

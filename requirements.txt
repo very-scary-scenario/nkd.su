@@ -4,7 +4,7 @@ python-memcached==1.59
 tweepy==3.8.0
 Markdown==2.3.1
 ujson==1.33
-python-dateutil==2.2
+python-dateutil==2.8.1
 django-pipeline==1.7.0
 slimit==0.8.1
 django-nose==1.4.5
