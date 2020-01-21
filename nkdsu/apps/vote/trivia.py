@@ -1,16 +1,10 @@
 questions = {
-    'JIBUN ____':
-    r'WO+',
-
-    'Feel so ____':
-    r'moo+n',
-
-    '____ Daikazoku':
-    r'dango',
-
-    'Does Peter have good taste in anime?':
-    r'(((ha)+)|(yes)|(no)|(yeah)|(nope))[\.!]?',
-
-    'Anime music with a ____ presenter':
+    'Neko Desu: anime music with a ____ presenter':
     r'(human)|(tired)|(3dpd)|(humous)|(ojou?[ ]?sama)',
+
+    'Neko ____':
+    r'(desu)',
+
+    '____ Desu':
+    r'(neko)|(inu)',
 }
