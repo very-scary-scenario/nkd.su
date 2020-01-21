@@ -8,7 +8,7 @@ cool if the site could continue to work.
 Here, then, are some instructions that I'm pretty sure should be all you need
 to do to get the site up and running on your own server. A passing familiarity
 with Django will help greatly. I'm assuming you have a server of some kind that
-has Python 2.7 and Apache or nginx or some httpd capable of hosting WSGI apps
+has Python 3.7 and Apache or nginx or some httpd capable of hosting WSGI apps
 installed.
 
 - Talk to Peter. They have some passwords and keys and other things that you'll
@@ -35,10 +35,9 @@ installed.
   `settings_local.py`.
     - I used to use sqlite but now use postgresql. sqlite has problems,
       although I do still use it for my local development instance.
-- `python manage.py syncdb --all`
+- `python manage.py migrate`
     - This will ask you to set up an account. Make yourself one. We'll make
       Peter's later (assuming you're not Peter).
-- `python manage.py migrate`
 - `python manage.py loaddata [fixtures]`
     - I have a cron job that dumps the important parts of my instance of nkd.su
       nightly to a json file that Peter has access to. Get that off them and
@@ -55,16 +54,10 @@ your apache/nginx/whatever instance at the WSGI app defined in `nkdsu/wsgi.py`
 and have the site run. There's still some stuff to do if you want to be able
 to accept votes and generally be responsible, though:
 
-- Get the streaming API client up and running.
-    - This is the thing that should be importing votes for you. You can fire it
-      up with `python manage.py listen_for_votes`. I recommend setting up a
-      [supervisor](http://supervisord.org/) instance to look after that, but
-      running it in a screen or tmux session will probably do in a pinch.
 - Set up some more management commands (stuff you run by invoking `python
   manage.py [command]`) as cron jobs.
-    - Just in case the streaming API misses stuff or goes down for a period of
-      time, you should run the `refresh_votes` management command every two
-      minutes or so.
+    - You should run the `refresh_votes` management command every two minutes
+      or so.
     - So that we don't start getting broken images for Twitter users who've
       changed their avatar since they last voted, you should run the
       `update_broken_twitter_avatars` management command daily.
