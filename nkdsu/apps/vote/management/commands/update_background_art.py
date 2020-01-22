@@ -11,12 +11,13 @@ class Command(BaseCommand):
         "argument if you only want to do one track."
     )
 
-    option_list = BaseCommand.option_list + (
-        make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--quick',
             action='store_true',
             default=False,
-            help="Don't get art for tracks that already have art"),)
+            help="Don't get art for tracks that already have art",
+        )
 
     def handle(self, track_id=None, *args, **options):
         if track_id is None:
@@ -38,7 +39,7 @@ class Command(BaseCommand):
                 continue
 
             if int(options['verbosity']) > 1:
-                print '{covered}/{total} - {track}'.format(**locals())
+                print(f'{covered}/{total} - {track}')
 
             track.update_background_art()
 

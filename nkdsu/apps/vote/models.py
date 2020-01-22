@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from io import StringIO
+from io import BytesIO
 import datetime
 import re
 import json
@@ -882,7 +882,7 @@ class Track(CleanOnSaveMixin, models.Model):
             return
 
         try:
-            input_image = Image.open(StringIO(requests.get(image_url).content))
+            input_image = Image.open(BytesIO(requests.get(image_url).content))
         except IOError as e:
             print('{}:\n - {}'.format(self, e))
             self.background_art = None
