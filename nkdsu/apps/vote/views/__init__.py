@@ -114,7 +114,7 @@ class Roulette(ListView):
         pk = self.request.session.get(self.pro_roulette_session_key())
 
         if pk is None:
-            for i in xrange(100):
+            for i in range(100):
                 track = self.get_base_queryset().order_by('?')[0]
                 if track.eligible():
                     break
