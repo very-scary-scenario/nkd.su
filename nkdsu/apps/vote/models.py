@@ -366,11 +366,14 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
     @memoize
     def tracks_voted_for_for(self, show):
-        tracks = set()
+        tracks = []
+        track_pk_set = set()
 
         for vote in self.votes_for(show):
             for track in vote.tracks.all():
-                tracks.add(track)
+                if track.pk not in track_pk_set:
+                    track_pk_set.add(track.pk)
+                    tracks.append(track)
 
         return tracks
 
