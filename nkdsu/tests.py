@@ -52,6 +52,7 @@ class EverythingTest(
         '/roulette/',
         '/roulette/indiscriminate/',
         '/roulette/hipster/',
+        '/roulette/pro/',
         '/archive/',
         '/stats/',
         '/0007C3F2760E0541/',
