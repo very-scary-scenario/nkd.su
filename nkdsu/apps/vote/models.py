@@ -1028,10 +1028,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
                 except Track.DoesNotExist:
                     continue
 
-                if (
-                    track not in twitter_user.tracks_voted_for_for(show) and
-                    track.eligible()
-                ):
+                if (track.pk not in (
+                    t.pk for t in twitter_user.tracks_voted_for_for(show)
+                ) and track.eligible()):
                     tracks.append(track)
 
         if tracks:
