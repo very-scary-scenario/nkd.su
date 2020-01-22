@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from io import StringIO
+from io import BytesIO
 import datetime
 import re
 import json
@@ -882,7 +882,7 @@ class Track(CleanOnSaveMixin, models.Model):
             return
 
         try:
-            input_image = Image.open(StringIO(requests.get(image_url).content))
+            input_image = Image.open(BytesIO(requests.get(image_url).content))
         except IOError as e:
             print('{}:\n - {}'.format(self, e))
             self.background_art = None
@@ -1028,10 +1028,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
                 except Track.DoesNotExist:
                     continue
 
-                if (
-                    track not in twitter_user.tracks_voted_for_for(show) and
-                    track.eligible()
-                ):
+                if (track.pk not in (
+                    t.pk for t in twitter_user.tracks_voted_for_for(show)
+                ) and track.eligible()):
                     tracks.append(track)
 
         if tracks:
