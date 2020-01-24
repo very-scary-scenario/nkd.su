@@ -52,7 +52,7 @@ class Select(SelectionView):
 
         for new_pk in new_pks:
             if (
-                self.request.user.is_authenticated()
+                self.request.user.is_authenticated
             ):
                 base_qs = Track.objects.all()
             else:
@@ -62,7 +62,7 @@ class Select(SelectionView):
             if qs.exists():
                 track = qs[0]
                 if (
-                    self.request.user.is_authenticated() and
+                    self.request.user.is_authenticated and
                     self.request.user.is_staff
                 ) or track.eligible():
                     selection.add(new_pk)
