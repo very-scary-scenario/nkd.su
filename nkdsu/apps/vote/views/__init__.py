@@ -85,10 +85,11 @@ class Roulette(ListView):
     template_name = 'roulette.html'
     context_object_name = 'tracks'
     modes = [
-        ('hipster', 'hipster'),
-        ('indiscriminate', 'indiscriminate'),
-        ('almost-100', 'almost 100'),
-        ('pro', 'pro (only for pros)'),
+        ('short-tracks', 'short tracks', False),
+        ('hipster', 'hipster', True),
+        ('indiscriminate', 'indiscriminate', True),
+        ('almost-100', 'almost 100', True),
+        ('pro', 'pro (only for pros)', True),
     ]
 
     def get(self, request, *args, **kwargs):
@@ -100,8 +101,12 @@ class Roulette(ListView):
                                     kwargs={'mode': 'pro'}))
 
         elif kwargs.get('mode') is None:
+            if request.user.is_staff:
+                mode = 'short-tracks'
+            else:
+                mode = 'hipster'
             return redirect(reverse('vote:roulette',
-                                    kwargs={'mode': 'hipster'}))
+                                    kwargs={'mode': mode}))
 
         else:
             return super(Roulette, self).get(request, *args, **kwargs)
@@ -146,14 +151,26 @@ class Roulette(ListView):
                 play__date__gt=Show.current().end -
                 datetime.timedelta(days=(7 * 80)),
             ).exclude(play=None)
+        elif self.kwargs.get('mode') == 'short-tracks':
+            length_msec = int(self.kwargs.get('minutes', 1)) * 60 * 1000
+            qs = qs.filter(msec__gt=length_msec - 60_000,
+                           msec__lte=length_msec)
 
         return qs.order_by('?')[:5]
 
     def get_context_data(self):
         context = super(Roulette, self).get_context_data()
-        context['mode'] = self.kwargs.get('mode') or 'hipster'
-        context['mode_name'] = dict(self.modes)[context['mode']]
+        if self.request.user.is_staff:
+            default_mode = 'short-tracks'
+        else:
+            default_mode = 'hipster'
+        context['mode'] = self.kwargs.get('mode') or default_mode
+        context['minutes'] = self.kwargs.get('minutes') or '1'
+
+        mode_names = {mode: mode_name for mode, mode_name, _ in self.modes}
+        context['mode_name'] = mode_names[context['mode']]
         context['modes'] = self.modes
+        context['allowed_minutes'] = ('1', '2', '3')
         return context
 
 

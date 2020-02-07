@@ -27,7 +27,7 @@ def get_sections(request):
         ('home', reverse('vote:index')),
         ('archive', reverse('vote:archive')),
         ('new tracks', most_recent_track.show_revealed().get_revealed_url()),
-        ('roulette', reverse('vote:roulette', kwargs={'mode': 'hipster'})),
+        ('roulette', reverse('vote:roulette')),
         ('stats', reverse('vote:stats')),
         ('donate', 'https://www.patreon.com/NekoDesu'),
         ('etc', 'http://nekodesu.co.uk/'),

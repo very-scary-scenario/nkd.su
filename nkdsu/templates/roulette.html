@@ -6,14 +6,29 @@
 
   <h2>roulette</h2>
   <p class="subheading roulette-mode-switch selected-{{ mode }}">
-    {% for slug, name in modes %}
-      <span class="roulette-{{ slug }}">
-        {% if mode == slug %}
-          {{ name }}
-        {% else %}
-          <a href="{% url "vote:roulette" mode=slug %}">{{ name }}</a>
-        {% endif %}
-      </span>
+    {% for slug, name, public in modes %}
+      {% if public or user.is_staff %}
+        <span class="roulette-{{ slug }}">
+          {% if mode == slug %}
+            {{ name }}
+          {% else %}
+            <a href="{% url "vote:roulette" mode=slug %}">{{ name }}</a>
+          {% endif %}
+          {% if mode == slug and mode == 'short-tracks' %}
+          (
+            {% for minute_slug in allowed_minutes %}
+              <span class="roulette-{{ minute_slug }}">
+                {% if minutes == minute_slug %}
+                  {{ minutes }}
+                {% else %}
+                  <a href="{% url "vote:roulette" mode="short-tracks" minutes=minute_slug %}">{{ minute_slug }}</a>
+                {% endif %}
+              </span>
+            {% endfor %}
+          mins. )
+          {% endif %}
+        </span>
+      {% endif %}
     {% endfor %}
   </p>
 
