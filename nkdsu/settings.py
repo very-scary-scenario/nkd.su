@@ -17,8 +17,6 @@ from dateutil.relativedelta import SA, relativedelta
 PROJECT_DIR = os.path.realpath(os.path.join(__file__, '..'))
 PROJECT_ROOT = os.path.realpath(os.path.join(PROJECT_DIR, '..'))
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
 CELERY_TIMEZONE = 'Europe/London'
 
 BROKER_URL = "amqp://guest:guest@127.0.0.1:5672//"
@@ -72,8 +70,8 @@ MIXCLOUD_FEED_URL = 'http://api.mixcloud.com/NekoDesu/feed/'
 LASTFM_API_KEY = ''  # secret
 LASTFM_API_SECRET = ''  # secret
 
-DEBUG = True
-TEMPLATE_DEBUG = True
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
 
 TEMPLATES = [
     {
