@@ -196,6 +196,29 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "Song) - Sheryl Nome starring May'n"
         )
 
+    def test_new_track_missing_artist(self):
+        tree = self.library_plus_one_track(
+            "Universal Bunny (Macross Frontier Movies Insert Song)",
+            "",
+            "357000",
+            "2010-11-11T02:00:00Z",
+            "0D096C693DA38F51"
+        )
+        del tree['Tracks']['8']['Artist']
+        results = update_library(tree, dry_run=True)
+        self.assertEqual(len(results), 2)
+
+        warning_count = 0
+        for result in results:
+            warnings = result.get('warnings', None)
+            if warnings:
+                warning_count += 1
+                self.assertEqual(len(warnings), 1)
+                warning = warnings[0]
+                self.assertEqual(warning['field'], 'artist')
+                self.assertEqual(warning['message'], 'field is missing')
+        self.assertEqual(warning_count, 1)
+
     def test_new_track_almost_matching_artist(self):
         tree = self.library_plus_one_track(
             "23:50 (Angel Beats Character Song - Girls Dead Monster)",

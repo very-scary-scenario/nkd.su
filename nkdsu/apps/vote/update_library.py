@@ -60,6 +60,12 @@ def metadata_consistency_checks(db_track, all_anime_titles, all_artists):
                 ).format(track_anime=track_anime, canonical_anime=match)
             })
 
+    if not db_track.id3_artist:
+        warnings.append({
+            'field': 'artist',
+            'message': 'field is missing'
+        })
+
     for artist in db_track.artists():
         artist_name = artist.get('name', '')
         match = check_closeness_against_list(artist_name, all_artists,
@@ -112,7 +118,7 @@ def update_library(tree, dry_run=False, inudesu=False):
             }
             track_dict = {
                 'title': t['Name'],
-                'artist': t['Artist'],
+                'artist': t.get('Artist', ''),
                 'album': t['Album'],
                 'msec': t['Total Time'],
                 'composer': t.get('Composer', ''),
@@ -141,7 +147,7 @@ def update_library(tree, dry_run=False, inudesu=False):
         if new or changed:
             db_track.id = t['Persistent ID']
             db_track.id3_title = t['Name']
-            db_track.id3_artist = t['Artist']
+            db_track.id3_artist = t.get('Artist', '')
             db_track.id3_album = t['Album']
             db_track.msec = t['Total Time']
             db_track.composer = t.get('Composer', '')
