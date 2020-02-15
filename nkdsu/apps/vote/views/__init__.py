@@ -155,7 +155,7 @@ class Roulette(ListView):
             # since the track was made available. Exclude tracks that don't
             # yet have enough plays to be reasonably called a "staple".
 
-            usec_per_week = 3600 * 24 * 7 * 1_000_000
+            usec_per_week = 1_000_000 * 60 * 60 * 24 * 7
             qs = (
                 qs.annotate(plays=Count('play'))
                 .filter(plays__gt=2)
