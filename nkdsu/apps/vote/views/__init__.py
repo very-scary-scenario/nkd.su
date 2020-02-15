@@ -91,7 +91,7 @@ class Roulette(ListView):
         ('hipster', 'hipster'),
         ('indiscriminate', 'indiscriminate'),
         ('almost-100', 'almost 100'),
-        ('popular', 'popular'),
+        ('staple', 'staple'),
         ('pro', 'pro (only for pros)'),
     ]
 
@@ -150,10 +150,10 @@ class Roulette(ListView):
                 play__date__gt=Show.current().end -
                 datetime.timedelta(days=(7 * 80)),
             ).exclude(play=None)
-        elif self.kwargs.get('mode') == 'popular':
-            # Popularity: having been played more than once per year(ish)
+        elif self.kwargs.get('mode') == 'staple':
+            # Staple track: having been played more than once per year(ish)
             # since the track was made available. Exclude tracks that don't
-            # yet have enough plays to be reasonably called "popular".
+            # yet have enough plays to be reasonably called a "staple".
 
             usec_per_week = 3600 * 24 * 7 * 1_000_000
             qs = (
@@ -325,7 +325,7 @@ class Stats(TemplateView):
             minimum_weight=minimum_weight
         ), reverse=True)
 
-    def popular_tracks(self):
+    def staple_tracks(self):
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
         tracks = []
 
@@ -340,7 +340,7 @@ class Stats(TemplateView):
         context.update({
             'streaks': self.streaks,
             'batting_averages': self.batting_averages,
-            'popular_tracks': self.popular_tracks,
+            'staple_tracks': self.staple_tracks,
         })
         return context
 
