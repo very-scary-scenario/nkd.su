@@ -1,4 +1,5 @@
 import datetime
+from random import sample
 
 import tweepy
 
@@ -11,6 +12,8 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.mail import send_mail
 from django.views.generic import TemplateView, ListView, DetailView, FormView
+from django.db.models import F, Count, IntegerField, ExpressionWrapper
+from django.db.models.functions import Now
 
 from ..forms import RequestForm, BadMetadataForm
 from ..models import Show, Track, TwitterUser
@@ -88,6 +91,7 @@ class Roulette(ListView):
         ('hipster', 'hipster'),
         ('indiscriminate', 'indiscriminate'),
         ('almost-100', 'almost 100'),
+        ('staple', 'staple'),
         ('pro', 'pro (only for pros)'),
     ]
 
@@ -146,6 +150,24 @@ class Roulette(ListView):
                 play__date__gt=Show.current().end -
                 datetime.timedelta(days=(7 * 80)),
             ).exclude(play=None)
+        elif self.kwargs.get('mode') == 'staple':
+            # Staple track: having been played more than once per year(ish)
+            # since the track was made available. Exclude tracks that don't
+            # yet have enough plays to be reasonably called a "staple".
+
+            usec_per_week = 1_000_000 * 60 * 60 * 24 * 7
+            qs = (
+                qs.annotate(plays=Count('play'))
+                .filter(plays__gt=2)
+                .annotate(
+                    weeks_per_play=ExpressionWrapper(
+                        ((Now() - F('revealed')) / F('plays') / usec_per_week),
+                        output_field=IntegerField()
+                    )
+                ).filter(weeks_per_play__lt=52)
+            )
+            # order_by('?') fails when annotate() has been used
+            return sample(list(qs), 5)
 
         return qs.order_by('?')[:5]
 
@@ -303,7 +325,7 @@ class Stats(TemplateView):
             minimum_weight=minimum_weight
         ), reverse=True)
 
-    def popular_tracks(self):
+    def staple_tracks(self):
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
         tracks = []
 
@@ -318,7 +340,7 @@ class Stats(TemplateView):
         context.update({
             'streaks': self.streaks,
             'batting_averages': self.batting_averages,
-            'popular_tracks': self.popular_tracks,
+            'staple_tracks': self.staple_tracks,
         })
         return context
 
