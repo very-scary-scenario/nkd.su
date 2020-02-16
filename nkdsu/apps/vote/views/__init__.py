@@ -12,8 +12,8 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.mail import send_mail
 from django.views.generic import TemplateView, ListView, DetailView, FormView
-from django.db.models import F, Count, IntegerField, ExpressionWrapper
-from django.db.models.functions import Now
+from django.db.models import F, Count, DurationField
+from django.db.models.functions import Cast, Now
 
 from ..forms import RequestForm, BadMetadataForm
 from ..models import Show, Track, TwitterUser
@@ -155,16 +155,15 @@ class Roulette(ListView):
             # since the track was made available. Exclude tracks that don't
             # yet have enough plays to be reasonably called a "staple".
 
-            usec_per_week = 1_000_000 * 60 * 60 * 24 * 7
             qs = (
                 qs.annotate(plays=Count('play'))
                 .filter(plays__gt=2)
                 .annotate(
-                    weeks_per_play=ExpressionWrapper(
-                        ((Now() - F('revealed')) / F('plays') / usec_per_week),
-                        output_field=IntegerField()
+                    time_per_play=Cast(
+                        ((Now() - F('revealed')) / F('plays')),
+                        output_field=DurationField()
                     )
-                ).filter(weeks_per_play__lt=52)
+                ).filter(time_per_play__lt='1y')
             )
             # order_by('?') fails when annotate() has been used
             return sample(list(qs), 5)
