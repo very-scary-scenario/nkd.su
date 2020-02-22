@@ -338,7 +338,8 @@ class LibraryUploadView(AdminMixin, FormView):
     def form_valid(self, form):
         self.request.session['library_update'] = {
             'inudesu': form.cleaned_data['inudesu'],
-            'library_xml': form.cleaned_data['library_xml'].read(),
+            'library_xml':
+            form.cleaned_data['library_xml'].read().decode('utf-8'),
         }
 
         return redirect(reverse('vote:admin:confirm_upload'))
@@ -354,8 +355,8 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
     def update_library(self, dry_run):
         library_update = self.request.session['library_update']
         return update_library(
-            plistlib.readPlistFromString(
-                library_update['library_xml'].encode('utf-8')),
+            plistlib.loads(
+                library_update['library_xml'].encode()),
             inudesu=library_update['inudesu'],
             dry_run=dry_run,
         )
