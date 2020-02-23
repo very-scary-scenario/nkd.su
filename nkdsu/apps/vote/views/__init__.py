@@ -324,7 +324,7 @@ class Stats(TemplateView):
             minimum_weight=minimum_weight
         ), reverse=True)
 
-    def staple_tracks(self):
+    def popular_tracks(self):
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
         tracks = []
 
@@ -339,7 +339,7 @@ class Stats(TemplateView):
         context.update({
             'streaks': self.streaks,
             'batting_averages': self.batting_averages,
-            'staple_tracks': self.staple_tracks,
+            'popular_tracks': self.popular_tracks,
         })
         return context
 
