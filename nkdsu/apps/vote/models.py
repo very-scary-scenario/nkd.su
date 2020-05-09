@@ -714,11 +714,11 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @memoize
     def notes(self):
-        return self.note_set.for_show_or_none(Show.current)
+        return self.note_set.for_show_or_none(Show.current())
 
     @memoize
     def public_notes(self):
-        return self.note_set.for_show_or_none(Show.current).filter(public=True)
+        return self.notes().filter(public=True)
 
     def play(self, tweet=True):
         """
