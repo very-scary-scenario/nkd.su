@@ -4,11 +4,14 @@ from ...models import Track
 
 
 class Command(BaseCommand):
-    args = '<track id to be deleted> <track id to keep>'
     help = (
         'copy all plays and votes from one track to another and then remove '
         'the first'
     )
+
+    def add_arguments(self, parser):
+        parser.add_argument('to_remove_id', type=str)
+        parser.add_argument('target_id', type=str)
 
     def handle(self, to_remove_id, target_id, *args, **options):
         to_remove = Track.objects.get(id=to_remove_id)
