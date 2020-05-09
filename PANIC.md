@@ -60,7 +60,7 @@ to accept votes and generally be responsible, though:
       or so.
     - So that we don't start getting broken images for Twitter users who've
       changed their avatar since they last voted, you should run the
-      `update_broken_twitter_avatars` management command daily.
+      `update_twitter_avatars` management command daily.
     - To keep track album art up to date, you should run the
       `update_background_art` command at least once a week.
     - It would be super considerate to run the `dumpdata vote` command piped to

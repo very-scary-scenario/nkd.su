@@ -336,8 +336,14 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         return reverse('vote:avatar', kwargs={'user_id': self.user_id})
 
     @memoize
-    @pk_cached(60*60*5)
-    def get_avatar(self, size=None):
+    def get_avatar(self, size=None, from_cache=True):
+        ck = f'twav:{size}:{self.pk}'
+
+        if from_cache:
+            hit = cache.get(ck)
+            if hit:
+                return hit
+
         url = self.get_twitter_user().profile_image_url_https
         if size is not None:
             if size != 'original':
@@ -346,7 +352,13 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
                 size = ''
             url = re.sub(r'_normal(?=\.[^.]+$)', size, url)
         resp = requests.get(url)
-        return (resp.headers['content-type'], resp.content)
+        rv = (resp.headers['content-type'], resp.content)
+
+        # update_twitter_avatars will call this every day with
+        # from_cache=False, and might sometimes fail, so:
+        cache.set(ck, rv, (60 * 60 * 24 * 2.1))
+
+        return rv
 
     @memoize
     def votes(self):

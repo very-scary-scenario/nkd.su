@@ -22,6 +22,8 @@ class Command(BaseCommand):
         for user in TwitterUser.objects.all():
             try:
                 user.update_from_api()
+                user.get_avatar(size=None, from_cache=False)
+                user.get_avatar(size='original', from_cache=False)
             except TweepError as e:
                 # this user probably does not exist, but we might be getting
                 # rate limited
