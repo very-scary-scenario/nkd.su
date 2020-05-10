@@ -48,7 +48,6 @@ INUDESU_HASHTAG = '#InuDesu'
 TMP_XML_PATH = '/tmp/songlibrary.xml'
 REQUEST_CURATOR = 'peter.shillito@thisisthecat.com'
 
-TWITTER_SHORT_URL_LENGTH = 22
 TWEET_LENGTH = 280
 
 OPTIONS = {'timeout': 20}

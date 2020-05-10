@@ -25,6 +25,9 @@ posting_tw_api = tweepy.API(_post_tw_auth)
 indefinitely = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
 
 
+SHORT_URL_LENGTH = posting_tw_api.configuration()['short_url_length_https']
+
+
 def length_str(msec):
     """
     Convert a number of milliseconds into a human-readable representation of
@@ -70,7 +73,7 @@ def vote_tweet_intent_url(tracks):
 
 def tweet_len(tweet):
     placeholder_url = ''
-    while len(placeholder_url) < settings.TWITTER_SHORT_URL_LENGTH:
+    while len(placeholder_url) < SHORT_URL_LENGTH:
         placeholder_url = placeholder_url + 'x'
 
     shortened = re.sub('https?://[^\s]+', placeholder_url, tweet)
