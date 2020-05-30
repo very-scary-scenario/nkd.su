@@ -1,6 +1,7 @@
 import datetime
 from random import sample
 
+from classtools import reify
 import tweepy
 
 from django.urls import reverse, reverse_lazy
@@ -184,7 +185,19 @@ class Search(ListView):
     context_object_name = 'tracks'
     paginate_by = 20
 
-    def get_queryset(self):
+    def get(self, *a, **k):
+        resp = super().get(*a, **k)
+        animes = set((t.role_detail.anime for t in self.get_queryset()))
+
+        if len(animes) == 1:
+            anime, = animes
+            if anime is not None:
+                return redirect(reverse('vote:anime', kwargs={'anime': anime}))
+
+        return resp
+
+    @reify
+    def _queryset(self):
         return self.model.objects.search(
             self.request.GET.get('q', ''),
             show_secret_tracks=(
@@ -192,6 +205,9 @@ class Search(ListView):
                 self.request.user.is_staff
             ),
         )
+
+    def get_queryset(self):
+        return self._queryset
 
     def get_context_data(self):
         context = super(Search, self).get_context_data()
