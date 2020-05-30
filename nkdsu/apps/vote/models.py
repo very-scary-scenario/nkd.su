@@ -536,11 +536,11 @@ class Role:
         else:
             self.kind, self.specifics = ('', self.full_role)
 
-        self.verbose, self.plural = {
-            'op': ('Opening theme', 'Opening themes'),
-            'ed': ('Ending theme', 'Ending themes'),
-            'character song': ('Character song', 'Character songs'),
-        }.get(self.kind.lower(), ('Other', 'Others'))
+        self.sortkey_group, self.verbose, self.plural = {
+            'op': (0, 'Opening theme', 'Opening themes'),
+            'ed': (1, 'Ending theme', 'Ending themes'),
+            'character song': (2, 'Character song', 'Character songs'),
+        }.get(self.kind.lower(), (99, 'Other', 'Others'))
 
     def __str__(self):
         return self.full_tag
@@ -552,11 +552,7 @@ class Role:
         return self.sortkey() > other.sortkey()
 
     def sortkey(self):
-        return ({
-            'op': 0,
-            'ed': 1,
-            'character song': 2,
-        }.get(self.kind.lower(), 99), self.kind, self.full_tag)
+        return (self.sortkey_group, self.kind, self.full_tag)
 
 
 class Track(CleanOnSaveMixin, models.Model):
