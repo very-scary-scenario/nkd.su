@@ -6,8 +6,15 @@
 
   <h2>{{ anime }}</h2>
 
-  <ul class="tracks">
-    {% include "include/tracklist.html" %}
-  </ul>
+  {% regroup tracks by role_detail.plural as roles %}
+
+  {% for role, tracks in roles %}
+    <h2>{{ role }}</h2>
+    <ul class="tracks">
+      {% for track in tracks %}
+        {% include "include/track.html" %}
+      {% endfor %}
+    </ul>
+  {% endfor %}
 
 {% endblock %}

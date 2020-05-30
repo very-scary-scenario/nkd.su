@@ -34,8 +34,8 @@ def check_closeness_against_list(name, canonical_names, reverse=False):
 
 def metadata_consistency_checks(db_track, all_anime_titles, all_artists):
     warnings = []
-    track_anime = db_track.role_detail.get('anime', '')
-    track_role = db_track.role_detail.get('role', '')
+    track_anime = db_track.role_detail.anime
+    track_role = db_track.role_detail.full_role
 
     if not track_anime and not db_track.inudesu:
         warnings.append({

@@ -512,6 +512,10 @@ class AllArtistsView(AllAnimeView):
     get_names = Track.all_artists
 
 
+class AllRolesView(AllAnimeView):
+    get_names = Track.all_roles
+
+
 class RequestList(AnyLoggedInUserMixin, ListView):
     template_name = 'requests.html'
     model = Request

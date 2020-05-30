@@ -498,6 +498,66 @@ def art_path(i, f):
     return 'art/bg/%s.%s' % (i.pk, f.split('.')[-1])
 
 
+class Role:
+    def __init__(self, full_tag):
+        self.full_tag = full_tag
+
+        result = re.match(
+            r'^(?P<anime>.*?) ?\b(?P<role>'
+
+            r'(rebroadcast )?\b('
+
+            r'((ED|OP)\d*\b.*)|'
+            r'((character|image) song\b.*)|'
+            r'(ep\d+\b.*)|'
+            r'(insert (track|song)\b.*)|'
+            r'(ins)|'
+            r'((main )?theme ?\d*)|'
+            r'(bgm\b.*)|'
+            r'(ost)|'
+
+            r'()))$',
+            full_tag,
+            flags=re.IGNORECASE,
+        )
+
+        if result:
+            deets = result.groupdict()
+            self.anime = deets['anime']
+            self.full_role = deets['role']
+        else:
+            self.anime = None
+            self.full_role = self.full_tag
+
+        if self.full_role[:2] in ('OP', 'ED'):
+            self.kind, self.specifics = self.full_role[:2], self.full_role[2:]
+        elif ' - ' in self.full_role:
+            self.kind, self.specifics = self.full_role.split(' - ', 1)
+        else:
+            self.kind, self.specifics = ('', self.full_role)
+
+        self.verbose, self.plural = {
+            'op': ('Opening theme', 'Opening themes'),
+            'ed': ('Ending theme', 'Ending themes'),
+            'character song': ('Character song', 'Character songs'),
+        }.get(self.kind.lower(), ('Other', 'Others'))
+
+    def __str__(self):
+        return self.full_tag
+
+    def __lt__(self, other):
+        return self.sortkey() < other.sortkey()
+
+    def __gt__(self, other):
+        return self.sortkey() > other.sortkey()
+
+    def sortkey(self):
+        return ({
+            'OP': 0,
+            'ED': 1,
+        }.get(self.kind, 99), self.full_tag)
+
+
 class Track(CleanOnSaveMixin, models.Model):
     objects = TrackManager()
 
@@ -538,7 +598,7 @@ class Track(CleanOnSaveMixin, models.Model):
     @classmethod
     def all_anime_titles(cls):
         return set(
-            (t.role_detail.get('anime', '') for t in cls.objects.all())
+            (t.role_detail.anime for t in cls.objects.all())
         )
 
     @classmethod
@@ -548,6 +608,14 @@ class Track(CleanOnSaveMixin, models.Model):
             for t in cls.objects.all()
             for a in t.artists()
         )
+
+    @classmethod
+    def all_roles(cls):
+        return set((
+            f'{t.role_detail.full_role}'
+            f'\n | {t.role_detail.kind}\n | {t.role_detail.specifics}\n'
+            for t in cls.objects.all() if t.role_detail
+        ))
 
     @memoize
     def is_new(self):
@@ -603,32 +671,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @reify
     def role_detail(self):
-        if self.role is None:
-            return {}
-
-        result = re.match(
-            r'^(?P<anime>.*?) ?\b(?P<role>'
-
-            r'(rebroadcast )?\b('
-
-            r'((ED|OP)\d*\b.*)|'
-            r'((character|image) song\b.*)|'
-            r'(ep\d+\b.*)|'
-            r'(insert (track|song)\b.*)|'
-            r'(ins)|'
-            r'((main )?theme ?\d*)|'
-            r'(bgm\b.*)|'
-            r'(ost)|'
-
-            r'()))$',
-            self.role,
-            flags=re.IGNORECASE,
-        )
-
-        if not result:
-            return {}
-
-        return result.groupdict()
+        return Role(self.role) if self.role else None
 
     @reify
     def artist(self):

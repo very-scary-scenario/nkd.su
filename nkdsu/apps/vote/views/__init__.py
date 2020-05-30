@@ -280,7 +280,7 @@ class Anime(ListView):
         if len(tracks) == 0:
             raise Http404('No tracks for this anime')
         else:
-            return tracks
+            return sorted(tracks, key=lambda t: t.role_detail)
 
     def get_context_data(self):
         context = super(Anime, self).get_context_data()
