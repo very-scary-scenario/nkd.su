@@ -1,3 +1,4 @@
+import logging
 import re
 from functools import partial
 
@@ -7,6 +8,9 @@ import tweepy
 
 from django.conf import settings
 from django.utils.http import urlquote
+
+
+logger = logging.getLogger(__name__)
 
 
 _read_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
@@ -25,7 +29,11 @@ posting_tw_api = tweepy.API(_post_tw_auth)
 indefinitely = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
 
 
-SHORT_URL_LENGTH = posting_tw_api.configuration()['short_url_length_https']
+try:
+    SHORT_URL_LENGTH = posting_tw_api.configuration()['short_url_length_https']
+except Exception as e:
+    SHORT_URL_LENGTH = 22
+    logger.critical(e)
 
 
 def length_str(msec):
