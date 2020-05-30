@@ -551,8 +551,19 @@ class Role:
     def __gt__(self, other):
         return self.sortkey() > other.sortkey()
 
+    def numbers_in_role(self):
+        # basically intended to ensure 'op10' is sorted after 'op9', but also
+        # will work perfectly for cases where there's stuff like 'season 3
+        # ep10-13'
+        return tuple((int(n) for n in re.findall(r'\d+', self.full_role)))
+
     def sortkey(self):
-        return (self.sortkey_group, self.kind, self.full_tag)
+        return (
+            self.sortkey_group,
+            self.kind,
+            self.numbers_in_role(),
+            self.full_tag,
+        )
 
 
 class Track(CleanOnSaveMixin, models.Model):
