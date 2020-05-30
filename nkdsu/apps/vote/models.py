@@ -553,9 +553,10 @@ class Role:
 
     def sortkey(self):
         return ({
-            'OP': 0,
-            'ED': 1,
-        }.get(self.kind, 99), self.full_tag)
+            'op': 0,
+            'ed': 1,
+            'character song': 2,
+        }.get(self.kind.lower(), 99), self.kind, self.full_tag)
 
 
 class Track(CleanOnSaveMixin, models.Model):
