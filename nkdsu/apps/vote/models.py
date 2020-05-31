@@ -530,7 +530,13 @@ class Role:
             self.full_role = self.full_tag
 
         if self.full_role[:2] in ('OP', 'ED'):
-            self.kind, self.specifics = self.full_role[:2], self.full_role[2:]
+            self.kind, self.specifics = (
+                self.full_role[:2], self.full_role[2:].strip(),
+            )
+        elif self.full_role[:11].lower() == 'insert song':
+            self.kind, self.specifics = (
+                self.full_role[:11], self.full_role[11:].strip()
+            )
         elif ' - ' in self.full_role:
             self.kind, self.specifics = self.full_role.split(' - ', 1)
         else:
@@ -539,7 +545,8 @@ class Role:
         self.sortkey_group, self.verbose, self.plural = {
             'op': (0, 'Opening theme', 'Opening themes'),
             'ed': (1, 'Ending theme', 'Ending themes'),
-            'character song': (2, 'Character song', 'Character songs'),
+            'insert song': (2, 'Insert song', 'Insert songs'),
+            'character song': (3, 'Character song', 'Character songs'),
         }.get(self.kind.lower(), (99, 'Other', 'Others'))
 
     def __str__(self):
