@@ -2,7 +2,6 @@
 
 {% block content %}
   <h2 class="message">Report bad metadata</h2>
-  <p class=subheading><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
 
   <form class="reqeust" method="post" enctype="multipart/form-data" action=".">
     {% csrf_token %}

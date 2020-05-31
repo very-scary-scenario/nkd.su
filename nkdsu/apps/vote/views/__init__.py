@@ -68,12 +68,12 @@ class Archive(ListView):
             'play_set', 'vote_set')
 
 
-class ShowDetail(mixins.ShowDetail):
+class ShowDetail(mixins.BreadcrumbMixin, mixins.ShowDetail):
     section = 'archive'
     template_name = 'show_detail.html'
 
 
-class Added(mixins.ShowDetailMixin, ListView):
+class Added(mixins.BreadcrumbMixin, mixins.ShowDetailMixin, ListView):
     default_to_current = True
     section = 'new tracks'
     template_name = 'added.html'
@@ -222,7 +222,7 @@ class Search(ListView):
         return context
 
 
-class TrackDetail(DetailView):
+class TrackDetail(mixins.BreadcrumbMixin, DetailView):
     model = Track
     template_name = 'track_detail.html'
     context_object_name = 'track'
@@ -380,7 +380,7 @@ class APIDocs(mixins.MarkdownView):
     filename = 'API.md'
 
 
-class ReportBadMetadata(FormView):
+class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
     form_class = BadMetadataForm
     template_name = 'report.html'
 
@@ -424,6 +424,17 @@ class ReportBadMetadata(FormView):
         )
 
         return super(ReportBadMetadata, self).form_valid(form)
+
+    def get_breadcrumbs(self):
+        track = self.get_track()
+
+        if track.role_detail:
+            return [
+                (reverse('vote:anime', kwargs={
+                    'anime': track.role_detail.anime
+                }), track.role_detail.anime),
+                (track.get_absolute_url(), track.title),
+            ]
 
 
 class RequestAddition(FormView):

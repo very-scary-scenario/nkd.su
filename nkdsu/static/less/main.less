@@ -127,6 +127,33 @@ body {
       }
     }
 
+    #breadcrumbs {
+      font-size: .9em;
+      max-width: @max-width;
+      margin: 0 auto;
+
+      ul {
+        .invert();
+        border-radius: 0 0 .5em .5em;
+        padding: 0 .5em .1em;
+        display: inline-block;
+
+        li {
+          display: inline-block;
+          text-wrap: nowrap;
+
+          &::after {
+            content: " »";
+            padding: 0 .1em;
+          }
+
+          &:last-child::after {
+            padding-right: 0;
+          }
+        }
+      }
+    }
+
     main {
       display: block;
       margin: 0 auto;

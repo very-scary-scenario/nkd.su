@@ -176,3 +176,11 @@ class TwitterUserDetailMixin(object):
             return user
         else:
             raise Http404
+
+
+class BreadcrumbMixin:
+    def get_context_data(self, *a, **k):
+        return {
+            **super().get_context_data(*a, **k),
+            'breadcrumbs': self.get_breadcrumbs(),
+        }
