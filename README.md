@@ -5,7 +5,7 @@ radio show.
 
 [nkd.su]: https://nkd.su
 [The Cat]: http://thisisthecat.com
-[Neko Desu]: http://nekodesu.co.uk
+[Neko Desu]: https://nekodesu.co.uk
 
 ### How do I vote?
 
