@@ -68,12 +68,12 @@ class Archive(ListView):
             'play_set', 'vote_set')
 
 
-class ShowDetail(mixins.BreadcrumbMixin, mixins.ShowDetail):
+class ShowDetail(mixins.ShowDetail):
     section = 'archive'
     template_name = 'show_detail.html'
 
 
-class Added(mixins.BreadcrumbMixin, mixins.ShowDetailMixin, ListView):
+class Added(mixins.ShowDetailMixin, ListView):
     default_to_current = True
     section = 'new tracks'
     template_name = 'added.html'
@@ -222,7 +222,7 @@ class Search(ListView):
         return context
 
 
-class TrackDetail(mixins.BreadcrumbMixin, DetailView):
+class TrackDetail(DetailView):
     model = Track
     template_name = 'track_detail.html'
     context_object_name = 'track'
