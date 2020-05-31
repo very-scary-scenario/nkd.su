@@ -2,8 +2,9 @@
 
 from io import BytesIO
 import datetime
-import re
 import json
+import re
+from string import ascii_letters
 from urllib.parse import urlparse
 
 from classtools import reify
@@ -499,6 +500,27 @@ def art_path(i, f):
     return 'art/bg/%s.%s' % (i.pk, f.split('.')[-1])
 
 
+def _name_is_related(a, b):
+    return (
+        (
+            # exclude cases where this is a subword match (to avoid matching
+            # 'rec' to 'record', for instance):
+
+            # none of these checks matter if b is the longer string or they're
+            # the same length
+            (len(a) <= len(b)) or
+
+            a[len(b)] not in ascii_letters or
+
+            b[-1] not in ascii_letters
+
+        ) and
+
+        # run our actual comparison
+        ratio(a[:len(b)].lower(), b.lower()) > 0.8
+    )
+
+
 class Role:
     def __init__(self, full_tag):
         self.full_tag = full_tag
@@ -578,8 +600,8 @@ class Role:
             len(self.anime) > 1 and
             len(anime) > 1
         ) and (
-            ratio(anime[:len(self.anime)].lower(), self.anime.lower()) > 0.8 or
-            ratio(self.anime[:len(anime)].lower(), anime.lower()) > 0.8
+            _name_is_related(anime, self.anime) or
+            _name_is_related(self.anime, anime)
         )
 
     def related_anime(self):
