@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 from classtools import reify
 from dateutil import parser as date_parser
+from Levenshtein import ratio
 from markdown import markdown
 from PIL import Image, ImageFilter
 import requests
@@ -571,6 +572,16 @@ class Role:
             self.numbers_in_role(),
             self.full_tag,
         )
+
+    def anime_is_related(self, anime):
+        return (
+            ratio(anime[:len(self.anime)], self.anime) > 0.8 or
+            ratio(self.anime[:len(anime)], anime) > 0.8
+        )
+
+    def related_anime(self):
+        return [a for a in Track.all_anime_titles()
+                if a != self.anime and self.anime_is_related(a)]
 
 
 class Track(CleanOnSaveMixin, models.Model):

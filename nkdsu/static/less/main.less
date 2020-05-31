@@ -332,8 +332,14 @@ body {
         }
       }
 
-      @media (min-width: @breakpoint * 2) {
-        &.anime {
+      &.anime {
+        > p {
+          max-width: @max-width;
+          margin: 0 auto;
+          text-align: center;
+        }
+
+        @media (min-width: @breakpoint * 2) {
           max-width: none;
 
           .role-categories {

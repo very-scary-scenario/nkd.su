@@ -307,7 +307,10 @@ class Anime(ListView):
 
     def get_context_data(self):
         context = super(Anime, self).get_context_data()
-        context['anime'] = self.kwargs['anime']
+        context.update({
+            'anime': self.kwargs['anime'],
+            'related_anime': context['tracks'][0].role_detail.related_anime,
+        })
         return context
 
 
