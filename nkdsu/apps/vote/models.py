@@ -575,6 +575,9 @@ class Role:
 
     def anime_is_related(self, anime):
         return (
+            len(self.anime) > 1 and
+            len(anime) > 1
+        ) and (
             ratio(anime[:len(self.anime)].lower(), self.anime.lower()) > 0.8 or
             ratio(self.anime[:len(anime)].lower(), anime.lower()) > 0.8
         )
