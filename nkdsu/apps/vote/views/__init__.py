@@ -187,11 +187,18 @@ class Search(ListView):
 
     def get(self, *a, **k):
         resp = super().get(*a, **k)
-        animes = set((t.role_detail.anime for t in self.get_queryset()))
+        qs = self.get_queryset()
+        animes = set((t.role_detail.anime for t in qs))
 
+        # if our search results are identical to an anime detail page, take us
+        # there instead
         if len(animes) == 1:
             anime, = animes
-            if anime is not None:
+            anime_qs = self.model.objects.by_anime(anime)
+
+            if anime is not None and (
+                sorted((t.pk for t in anime_qs)) == sorted((t.pk for t in qs))
+            ):
                 return redirect(reverse('vote:anime', kwargs={'anime': anime}))
 
         return resp
