@@ -16,3 +16,4 @@ ndg-httpsclient
 pyasn1
 classtools
 python-Levenshtein
+psycopg2
