@@ -10,7 +10,8 @@
       var clearSelectionURL = "{% url 'vote:js:clear_selection' %}";
     </script>
     {% stylesheet "main" %}
-    <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico" type="image/vnd.microsoft.icon">
+    <link rel="icon" href="{% static "i/logo/icon version.svg" %}" type="image/svg">
+    <link rel="mask-icon" href="{% static "i/logo/wordless knockout.svg" %}" color="#d60">
     <title>
       {% block title %}a neko desu request robot{% endblock %} | nkd.su
     </title>
