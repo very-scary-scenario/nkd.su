@@ -5,6 +5,7 @@
 
 @avatar-border-radius: 0.3em;
 @avatar-thumb-size: 32px;
+@key-avatar-thumb-size: @avatar-thumb-size * 1.5;
 
 @fhl: fade(@hl, 0%);
 
@@ -15,7 +16,7 @@
 .tinytrack() {
   display: block;
 
-  div.metadata, div.voting, div.invitation {
+  div.metadata, div.key-vote, div.voting, div.invitation {
     text-align: left;
     display: block;
   }
@@ -56,7 +57,7 @@
   background-clip: padding-box;
   position: relative;
 
-  div.metadata, div.voting, div.invitation {
+  div.metadata, div.key-vote, div.voting, div.invitation {
     display: table-cell;
     vertical-align: middle;
     padding: 0 .6em;
@@ -98,6 +99,16 @@
           content: " PUBLIC";
         }
       }
+    }
+  }
+
+  div.key-vote {
+    width: @key-avatar-thumb-size + 4px;
+    padding-right: 0;
+
+    img.avatar.thumb {
+      height: @key-avatar-thumb-size !important;
+      width: @key-avatar-thumb-size !important;
     }
   }
 
