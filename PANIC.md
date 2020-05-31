@@ -33,8 +33,9 @@ installed.
       `LASTFM_API_KEY` and `LASTFM_API_SECRET`.
 - Set up a database and add the [settings][db] for it to your
   `settings_local.py`.
-    - I used to use sqlite but now use postgresql. sqlite has problems,
-      although I do still use it for my local development instance.
+    - The site runs on postgresql. It will run on other backends, but searches
+      won't be as good. You'll need to `CREATE EXTENSION unaccent;` on the
+      database to make searches not 500 on postgresql.
 - `python manage.py migrate`
     - This will ask you to set up an account. Make yourself one. We'll make
       Peter's later (assuming you're not Peter).

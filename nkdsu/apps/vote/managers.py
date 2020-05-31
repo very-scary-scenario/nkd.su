@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from .utils import split_query_into_keywords
 
@@ -44,10 +45,16 @@ class TrackManager(models.Manager):
         qs = self._everything(show_secret_tracks)
 
         for keyword in keywords:
-            qs = qs.exclude(~models.Q(
-                id3_title__icontains=keyword,
-            ) & ~models.Q(
-                id3_artist__icontains=keyword,
-            ))
+            if (
+                settings.DATABASES['default']['ENGINE'] ==
+                'django.db.backends.postgresql'
+            ):
+                title_q = models.Q(id3_title__unaccent__icontains=keyword)
+                artist_q = models.Q(id3_artist__unaccent__icontains=keyword)
+            else:
+                title_q = models.Q(id3_title__icontains=keyword)
+                artist_q = models.Q(id3_artist__icontains=keyword)
+
+            qs = qs.exclude(~title_q & ~artist_q)
 
         return qs

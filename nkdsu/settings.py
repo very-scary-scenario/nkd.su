@@ -156,6 +156,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'django.contrib.postgres',
 
     'django_nose',
     'pipeline',
