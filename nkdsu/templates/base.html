@@ -33,7 +33,7 @@
     <p id="loading"></p>
     <div id="everything">
       {% include "include/pre_content.html" %}
-      <main>
+      <main class="{% block main_classes %}{% endblock %}">
         {% block content %}{% endblock %}
         <div id="selection"></div>
         <div id="stick" class="invisible"></div>

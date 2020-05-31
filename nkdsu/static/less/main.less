@@ -331,6 +331,25 @@ body {
           font-size: .9em;
         }
       }
+
+      @media (min-width: @breakpoint * 2) {
+        &.anime {
+          max-width: none;
+
+          .role-categories {
+            text-align: center;
+
+            .role-category {
+              margin: 0 1em;
+              text-align: left;
+              text-align: start;
+              display: inline-block;
+              width: 40%;
+              max-width: @max-width;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -675,7 +694,6 @@ form ul.errorlist li {
     }
   }
 }
-
 
 @media (min-width:551px) {
   form p label {
