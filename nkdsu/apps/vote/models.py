@@ -661,12 +661,19 @@ class Track(CleanOnSaveMixin, models.Model):
         )
 
     @classmethod
-    def all_roles(cls):
+    def all_roles(cls, qs=None):
+        if qs is None:
+            qs = cls.objects.all()
+
         return set((
             f'{t.role_detail.full_role}'
             f'\n | {t.role_detail.kind}\n | {t.role_detail.specifics}\n'
-            for t in cls.objects.all() if t.role_detail
+            for t in qs if t.role_detail
         ))
+
+    @classmethod
+    def all_non_inudesu_roles(cls):
+        return cls.all_roles(cls.objects.filter(inudesu=False))
 
     @memoize
     def is_new(self):

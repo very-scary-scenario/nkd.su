@@ -513,7 +513,7 @@ class AllArtistsView(AllAnimeView):
 
 
 class AllRolesView(AllAnimeView):
-    get_names = Track.all_roles
+    get_names = Track.all_non_inudesu_roles
 
 
 class RequestList(AnyLoggedInUserMixin, ListView):
