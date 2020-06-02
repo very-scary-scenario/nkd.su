@@ -6,6 +6,22 @@
 
   <h2>{{ artist }}</h2>
 
+  <p class="subheading">
+    {% if tracks|length == 1 %}
+      {% if played|length == 0 %}
+        The only track in the library by {{ artist }} has not yet been played.
+      {% else %}
+        All of these tracks have been played, but there's only one of them, so take that as you will.
+      {% endif %}
+    {% elif played|length == tracks|length %}
+      All {{ tracks|length }} tracks by {{ artist }} in the library have been played.
+    {% elif played|length == 0 %}
+      None of the {{ tracks|length }} track{{ tracks|pluralize }} by {{ artist }} have been played.
+    {% else %}
+      {{ played|length }} of the {{ tracks|length }} track{{ tracks|pluralize }} by {{ artist }} in the library {{ played|pluralize:"has,have" }} been played.
+    {% endif %}
+  </p>
+
   <ul class="tracks">
     {% include "include/tracklist.html" %}
   </ul>
