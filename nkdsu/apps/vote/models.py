@@ -426,7 +426,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             minimum_weight=minimum_weight
         )
 
-    def _streak(self, l=[]):
+    def _streak(self, ls=[]):
         show = Show.current().prev()
         streak = 0
 
