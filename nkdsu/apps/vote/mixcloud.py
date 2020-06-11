@@ -1,15 +1,24 @@
 import requests
 
 from django.conf import settings
+from django.core.cache import cache
 
 
 def _api_resp():
+    ck = 'mixcloud:feed'
+    hit = cache.get(ck)
+    if hit:
+        return hit
+
     try:
-        return requests.get(
+        rv = requests.get(
             settings.MIXCLOUD_FEED_URL,
-            params={'since': '0'},
-            timeout=3,
+            # we should probably be paginating here to ensure we get everything
+            params={'since': '0', 'limit': '100'},
+            timeout=5,
         ).json()
+        cache.set(ck, rv, 60*5)
+        return rv
     except requests.RequestException:
         # problem with the Mixcloud API; panic
         return None
