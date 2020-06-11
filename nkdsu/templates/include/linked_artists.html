@@ -1,1 +1,1 @@
-{% for artist in artists %}{% if artist.worth_showing %}<a href="{{ artist.url }}">{{ artist.name }}</a>{% else %}{{ artist.name }}{% endif %}{% endfor %}
+{% for artist in artists %}{% if artist.worth_linking_to %}<a href="{{ artist.url }}">{{ artist.name }}</a>{% else %}{{ artist.name }}{% endif %}{% endfor %}

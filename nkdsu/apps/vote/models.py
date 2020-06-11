@@ -753,7 +753,7 @@ class Track(CleanOnSaveMixin, models.Model):
                     if is_artist_name else None
                 ),
                 'name': bit_of_string,
-                'worth_showing': bool(
+                'worth_linking_to': bool(
                     is_artist_name and
                     Track.objects.by_artist(bit_of_string)
                 )
