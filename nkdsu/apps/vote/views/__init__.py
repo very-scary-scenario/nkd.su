@@ -188,7 +188,7 @@ class Search(ListView):
     def get(self, *a, **k):
         resp = super().get(*a, **k)
         qs = self.get_queryset()
-        animes = set((t.role_detail.anime for t in qs))
+        animes = set((t.role_detail.anime for t in qs if t.role_detail))
 
         # if our search results are identical to an anime detail page, take us
         # there instead
