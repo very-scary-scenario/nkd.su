@@ -736,9 +736,12 @@ class Track(CleanOnSaveMixin, models.Model):
     def artist(self):
         return self.id3_artist
 
-    def artist_names(self):
-        return (name for is_artist_name, name in parse_artist(self.artist)
-                if is_artist_name)
+    def artist_names(self, fail_silently=True):
+        return (
+            name for is_artist_name, name in
+            parse_artist(self.artist, fail_silently=fail_silently)
+            if is_artist_name
+        )
 
     @memoize
     @pk_cached(90)

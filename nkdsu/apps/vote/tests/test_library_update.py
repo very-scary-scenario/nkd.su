@@ -337,6 +337,29 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
         self.assertIn('type', results[0])
         self.assertEqual(results[0]['type'], 'hide')
 
+    def test_new_track_has_parsing_error(self):
+        tree = self.library_plus_one_track(
+            "Born This Way (feat. YZERR, Vingo &amp; Bark) (Kengan Ashura ED)",
+            "BAD HOP feat.YZERR,Vingo＆Bark",
+            "168000",
+            "2011-03-07T02:00:00Z",
+            "2A25990D66A020E6",
+        )
+        results = update_library(tree, dry_run=True)
+        self.assertGreater(len(results), 1)
+        warning_count = 0
+        for result in results:
+            warnings = result.get('warnings', None)
+            if warnings:
+                self.assertEqual(len(warnings), 1)
+                warning_count += 1
+                self.assertEqual(
+                    warnings[0].get('message'),
+                    "Illegal character ',' at index 18",
+                )
+
+        self.assertEqual(warning_count, 1)
+
 
 class LibraryUpdateWetRunTest(LibraryUpdateTest):
     def test_add_track(self):

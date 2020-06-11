@@ -29,7 +29,7 @@ class ArtistLexer(Lexer):
 artist_lexer = ArtistLexer()
 
 
-def parse_artist(string):
+def parse_artist(string, fail_silently=True):
     """
     Generate tuples of (whether or not this is the name of an arist,
     bit of this string), which when combined reform the original string handed
@@ -43,9 +43,12 @@ def parse_artist(string):
 
     try:
         tokens = list(artist_lexer.tokenize(string))
-    except LexError:
-        yield (True, string)
-        return
+    except LexError as e:
+        if fail_silently:
+            yield (True, string)
+            return
+        else:
+            raise e
 
     artist_parts = ('ARTIST_COMPONENT', 'SPACE')
 

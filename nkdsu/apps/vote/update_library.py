@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
-from .models import Track
+from sly.lex import LexError
 from Levenshtein import ratio
 from django.utils.timezone import get_default_timezone, make_aware
+
+from .models import Track
 
 
 def check_closeness_against_list(name, canonical_names, reverse=False):
@@ -60,9 +62,17 @@ def metadata_consistency_checks(db_track, all_anime_titles, all_artists):
                 ).format(track_anime=track_anime, canonical_anime=match)
             })
 
-    for artist in db_track.artists():
-        artist_name = artist.get('name', '')
-        match = check_closeness_against_list(artist_name, all_artists,
+    try:
+        artists = list(db_track.artist_names(fail_silently=False))
+    except LexError as e:
+        warnings.append({
+            'field': 'artist',
+            'message': str(e),
+        })
+        artists = db_track.artist_names()
+
+    for artist in artists:
+        match = check_closeness_against_list(artist, all_artists,
                                              reverse=True)
         if match:
             warnings.append({
@@ -70,7 +80,7 @@ def metadata_consistency_checks(db_track, all_anime_titles, all_artists):
                 'message': (
                     u'"{track_artist}" was not found in the database, but it '
                     u'looks similar to "{canonical_artist}", which is'
-                ).format(track_artist=artist_name, canonical_artist=match)
+                ).format(track_artist=artist, canonical_artist=match)
             })
 
     return warnings
