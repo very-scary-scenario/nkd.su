@@ -188,11 +188,13 @@ class Search(ListView):
     def get(self, *a, **k):
         resp = super().get(*a, **k)
         qs = self.get_queryset()
-        animes = set((t.role_detail.anime for t in qs if t.role_detail))
+        animes = set((
+            t.role_detail.anime if t.role_detail else None for t in qs
+        ))
 
         # if our search results are identical to an anime detail page, take us
         # there instead
-        if len(animes) == 1:
+        if len(animes) == 1 and None not in animes:
             anime, = animes
             anime_qs = self.model.objects.by_anime(anime)
 
