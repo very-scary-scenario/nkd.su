@@ -25,7 +25,7 @@ class ArtistLexer(Lexer):
         r'&'
         r')\s+'
     )
-    LPAREN = r'\s\('
+    LPAREN = r'(?<=\s)\('
     RPAREN = r'\)(?=\s|,|\)|$)'
     CV = (
         r'('
@@ -35,7 +35,7 @@ class ArtistLexer(Lexer):
         r'[Cc]omposed\sby|'
         r'[Ff]rom|'
         r'[Ff]eat(\.|uring)?|'
-        r'Vo.'
+        r'Vo\.'
         r')\s+'
     )
     COMMA = r',(\sand)?\s+'
