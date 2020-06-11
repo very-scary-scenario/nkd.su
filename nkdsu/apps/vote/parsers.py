@@ -3,17 +3,18 @@ from sly import Lexer
 
 class ArtistLexer(Lexer):
     tokens = {
-        ARTIST_COMPONENT, SPACE, COMMA, AND, FROM, LPAREN, RPAREN, CV,  # noqa
-        FEAT,  # noqa
+        ARTIST_COMPONENT, SPACE, COMMA, VIA, LPAREN, RPAREN, CV,  # noqa
     }
 
-    FROM = r'\s+from\s+'
-    FEAT = r'\s+feat\.\s+'
+    VIA = (
+        r'\s+('
+        r'from|feat|starring|and|&'
+        r')\s+'
+    )
     LPAREN = r'\('
     RPAREN = r'\)'
     CV = r'CV[.:]\s+'
     COMMA = r',\s+'
-    AND = r'\s+and\s+'
     SPACE = r'\s+'
     ARTIST_COMPONENT = (
         r'('
