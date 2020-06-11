@@ -43,16 +43,16 @@ Short answer: [Django].
 Long answer: [GitHub]. [Suggestions] welcome.
 
 [Django]: https://www.djangoproject.com
-[Github]: https://github.com/colons/nkd.su
-[Suggestions]: https://github.com/colons/nkd.su/issues/new
+[Github]: https://github.com/very-scary-scenario/nkd.su
+[Suggestions]: https://github.com/very-scary-scenario/nkd.su/issues/new
 
 ## Does it work?
 
 Hopefully! Only Travis knows for sure:
 
-[![Build Status](https://travis-ci.org/colons/nkd.su.svg)][build status]
+[![Build Status](https://travis-ci.org/very-scary-scenario/nkd.su.svg)][build status]
 
-[build status]: https://travis-ci.org/colons/nkd.su
+[build status]: https://travis-ci.org/very-scary-scenario/nkd.su
 
 ## Can I build things with this data?
 

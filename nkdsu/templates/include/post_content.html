@@ -1,5 +1,5 @@
 <div id="footer">
-  <a id="stamp" target="_blank" href="http://vscary.co"><img alt="the very scary scenario logo" src="https://vscary.co/logo-grey.svg"></a>
+  <a id="stamp" target="_blank" href="https://vscary.co"><img alt="the very scary scenario logo" src="https://vscary.co/logo-grey.svg"></a>
   <p class="credit">
     {% if user.is_staff %}
       <span><a href="{% url "admin:index" %}">admin</a></span>
@@ -11,8 +11,8 @@
     {% else %}
       <span><a href="{% url "vote:info" %}">help</a></span>
       <span><a href="{% url "vote:api_docs" %}">api</a></span>
-      <span><a target="_blank" href="https://github.com/colons/nkd.su">source</a></span>
-      <span><a target="_blank" href="https://github.com/colons/nkd.su/issues/new">report a bug</a></span>
+      <span><a target="_blank" href="https://github.com/very-scary-scenario/nkd.su">source</a></span>
+      <span><a target="_blank" href="https://github.com/very-scary-scenario/nkd.su/issues/new">report a bug</a></span>
     {% endif %}
 
     {% if user.is_authenticated %}
