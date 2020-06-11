@@ -62,18 +62,10 @@ know][Suggestions].
 
 ## Who's to blame?
 
-[colons] ([@mftb]), mostly, and of course [Peter Shillito], but also
-[contributors], including
-[Chris Walden] ([@EuricaeriS]),
-[Tachibana Kanade] ([@h0m54r]), and
-[Thomas Moore].
+[Peter][peter] runs the show, a bunch of suspiciously [anonymous
+elves][patreon] do work managing the library, and [some nerds][contributors]
+work on this website.
 
-[colons]: https://colons.co/
-[@mftb]: https://twitter.com/mftb
-[contributors]: https://github.com/colons/nkd.su/graphs/contributors
-[Thomas Moore]: https://github.com/tomouchuu
-[Chris Walden]: http://www.chriswalden.co.uk/
-[@EuricaeriS]: https://twitter.com/EuricaeriS
-[Peter Shillito]: https://twitter.com/theshillito
-[Tachibana Kanade]: https://github.com/homsar
-[@h0m54r]: https://twitter.com/h0m54r
+[contributors]: https://github.com/very-scary-scenario/nkd.su/graphs/contributors
+[peter]: https://twitter.com/theshillito
+[patreon]: https://www.patreon.com/NekoDesu
