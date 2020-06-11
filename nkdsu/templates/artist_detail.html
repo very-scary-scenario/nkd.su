@@ -2,6 +2,11 @@
 
 {% block title %}{{ artist }}{% endblock %}
 
+{% block main_classes %}
+  {{ block.super }}
+  grouped-tracks
+{% endblock %}
+
 {% block content %}
 
   <h2>{{ artist }}</h2>
@@ -24,8 +29,19 @@
     {% endif %}
   </p>
 
-  <ul class="tracks">
-    {% include "include/tracklist.html" %}
-  </ul>
+  {% regroup tracks by role_detail.anime as animes %}
+
+  <div class="track-groups">
+    {% for anime, tracks in animes %}
+      <div class="track-group">
+        <h3>{{ anime }}</h3>
+        <ul class="tracks">
+          {% for track in tracks %}
+            {% include "include/track.html" %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
 
 {% endblock %}

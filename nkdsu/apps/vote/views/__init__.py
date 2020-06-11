@@ -289,7 +289,10 @@ class Artist(ListView):
         return response
 
     def get_queryset(self):
-        tracks = self.model.objects.by_artist(self.kwargs['artist'])
+        tracks = sorted(
+            self.model.objects.by_artist(self.kwargs['artist']),
+            key=lambda t: t.role_detail.anime if t.role_detail else 'Other'
+        )
         return tracks
 
     def get_context_data(self):

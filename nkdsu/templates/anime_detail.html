@@ -4,7 +4,7 @@
 
 {% block main_classes %}
   {{ block.super }}
-  anime
+  grouped-tracks
 {% endblock %}
 
 {% block content %}
@@ -22,9 +22,9 @@
 
   {% regroup tracks by role_detail.plural as roles %}
 
-  <div class="role-categories">
+  <div class="track-groups">
     {% for role, tracks in roles %}
-      <div class="role-category">
+      <div class="track-group">
         <h3>{{ role }}</h3>
         <ul class="tracks">
           {% for track in tracks %}
