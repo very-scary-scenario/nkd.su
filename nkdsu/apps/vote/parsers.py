@@ -50,7 +50,7 @@ class ArtistLexer(Lexer):
         r'Tackey & Tsubasa|'
         r'THE RAMPAGE from EXILE TRIBE|'
         r'GENERATIONS from EXILE TRIBE|'
-        r'Wake Up, Girls!|'
+        r'Wake Up, [^\s]+!|'
         r'Hello, Happy World!|'
         r'King & Queen|'
         r'HIGH and MIGHTY COLOR|'
