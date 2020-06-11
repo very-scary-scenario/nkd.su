@@ -24,7 +24,7 @@ class ArtistLexer(Lexer):
         r'[Cc]omposed\sby|'
         r'[Ff]rom|'
         r'Vo.'
-        r')|\s+'
+        r')\s+'
     )
     COMMA = r',(\sand)?\s+'
     SPACE = r'\s+'
