@@ -34,7 +34,13 @@
   <div class="track-groups">
     {% for anime, tracks in animes %}
       <div class="track-group">
-        <h3>{{ anime }}</h3>
+        <h3>
+          {% if anime %}
+            <a href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>
+          {% else %}
+            Other
+          {% endif %}
+        </h3>
         <ul class="tracks">
           {% for track in tracks %}
             {% include "include/track.html" %}

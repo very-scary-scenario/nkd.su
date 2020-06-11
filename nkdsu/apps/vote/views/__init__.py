@@ -310,7 +310,7 @@ class Artist(ListView):
     def get_queryset(self):
         tracks = sorted(
             self.model.objects.by_artist(self.kwargs['artist']),
-            key=lambda t: t.role_detail.anime if t.role_detail else 'Other'
+            key=lambda t: t.role_detail.anime if t.role_detail else None
         )
         return tracks
 
