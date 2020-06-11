@@ -43,6 +43,7 @@ class ArtistLexer(Lexer):
         r'Wake Up, Girls!|'
         r'Hello, Happy World!|'
         r'King & Queen|'
+        r'HIGH and MIGHTY COLOR|'
         r'＊\(Asterisk\)|'
         r'[^\s,()]+'
         r')'
