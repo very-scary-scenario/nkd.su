@@ -13,7 +13,6 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.mail import send_mail
 from django.views.generic import TemplateView, ListView, DetailView, FormView
-from django.views.generic.base import RedirectView
 from django.db.models import F, Count, DurationField
 from django.db.models.functions import Cast, Now
 
