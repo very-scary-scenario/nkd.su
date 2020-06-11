@@ -39,6 +39,7 @@ class ArtistLexer(Lexer):
         r'Tackey & Tsubasa|'
         r'THE RAMPAGE from EXILE TRIBE|'
         r'GENERATIONS from EXILE TRIBE|'
+        r'Wake Up, Girls!|'
         r'[^\s,()]+'
         r')'
     )
