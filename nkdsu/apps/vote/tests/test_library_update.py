@@ -212,7 +212,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             if warnings:
                 self.assertEqual(len(warnings), 1)
                 warning_count += 1
-                self.assertIn("Girls Dead Monster (LiSA Singing)",
+                self.assertIn("LiSA Singing",
                               warnings[0].get('message', ""))
 
         self.assertEqual(warning_count, 1)
