@@ -41,6 +41,7 @@ class ArtistLexer(Lexer):
         r'GENERATIONS from EXILE TRIBE|'
         r'Wake Up, Girls!|'
         r'Hello, Happy World!|'
+        r'King & Queen|'
         r'[^\s,()]+'
         r')'
     )
