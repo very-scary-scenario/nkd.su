@@ -11,7 +11,7 @@ class ArtistLexer(Lexer):
 
     VIA = (
         r'\s+('
-        r'from|ft\.|feat(\.|uring)?|starring|and|with|adding|x|&'
+        r'from|ft\.|feat(\.|uring)?|starring|and|with|adding|x|×|&'
         r')\s+'
     )
     LPAREN = r'\s\('
