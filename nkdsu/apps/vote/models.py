@@ -280,6 +280,11 @@ class Show(CleanOnSaveMixin, models.Model):
             'date': self.showtime.date().strftime('%Y-%m-%d')
         })
 
+    def get_listen_url(self):
+        return reverse('vote:listen-to-show', kwargs={
+            'date': self.showtime.date().strftime('%Y-%m-%d')
+        })
+
     def get_revealed_url(self):
         return reverse('vote:added', kwargs={
             'date': self.showtime.date().strftime('%Y-%m-%d')

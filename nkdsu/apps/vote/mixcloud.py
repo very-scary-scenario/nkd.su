@@ -3,7 +3,6 @@ import requests
 from django.conf import settings
 
 
-# @cached(60*10)
 def _api_resp():
     try:
         return requests.get(

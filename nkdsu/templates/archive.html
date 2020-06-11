@@ -13,6 +13,7 @@
           {% if show.revealed.count %}
             <span><a href="{{ show.get_revealed_url }}">{{ show.revealed.count }} new track{{ show.revealed.count|pluralize }}</a></span>
           {% endif %}
+          <span><a href="{{ show.get_listen_url }}">listen</a></span>
         </p>
       </li>
     {% endfor %}

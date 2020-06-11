@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.mail import send_mail
 from django.views.generic import TemplateView, ListView, DetailView, FormView
+from django.views.generic.base import RedirectView
 from django.db.models import F, Count, DurationField
 from django.db.models.functions import Cast, Now
 
@@ -71,6 +72,24 @@ class Archive(ListView):
 class ShowDetail(mixins.ShowDetail):
     section = 'archive'
     template_name = 'show_detail.html'
+
+
+class ListenRedirect(mixins.ShowDetail):
+    section = 'archive'
+    template_name = 'show_detail.html'
+
+    def get(self, *a, **k):
+        super().get(*a, **k)
+        cloudcasts = self.object.cloudcasts()
+        if len(cloudcasts) == 1:
+            return redirect(cloudcasts[0]['url'])
+        else:
+            messages.error(
+                self.request,
+                "Sorry, we couldn't find an appropriate Mixcloud upload to "
+                "take you to.",
+            )
+            return redirect(self.object.get_absolute_url())
 
 
 class Added(mixins.ShowDetailMixin, ListView):
