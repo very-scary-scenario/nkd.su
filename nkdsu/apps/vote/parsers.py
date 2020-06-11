@@ -40,6 +40,7 @@ class ArtistLexer(Lexer):
         r'THE RAMPAGE from EXILE TRIBE|'
         r'GENERATIONS from EXILE TRIBE|'
         r'Wake Up, Girls!|'
+        r'Hello, Happy World!|'
         r'[^\s,()]+'
         r')'
     )
