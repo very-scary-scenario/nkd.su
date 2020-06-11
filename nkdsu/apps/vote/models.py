@@ -1027,6 +1027,8 @@ class Track(CleanOnSaveMixin, models.Model):
             'title': self.title,
             'role': self.role,
             'artist': self.artist,
+            'artists': list(self.artist_names()),
+            'artists_parsed': self.artists(),
             'eligible': self.eligible(),
             'ineligibility_reason': self.ineligible() or None,
             'length': self.msec,
