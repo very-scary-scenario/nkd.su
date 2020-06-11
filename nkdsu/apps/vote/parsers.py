@@ -12,8 +12,8 @@ class ArtistLexer(Lexer):
         r'from|feat(uring)?|starring|and|&'
         r')\s+'
     )
-    LPAREN = r'\('
-    RPAREN = r'\)'
+    LPAREN = r'\s\('
+    RPAREN = r'\)(\s|$)'
     CV = r'(CV[.:]|[Vv]ocal:)\s+'
     COMMA = r',\s+'
     SPACE = r'\s+'
