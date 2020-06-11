@@ -13,7 +13,7 @@ class ArtistLexer(Lexer):
     )
     LPAREN = r'\('
     RPAREN = r'\)'
-    CV = r'CV[.:]\s+'
+    CV = r'(CV[.:]|[Vv]ocal:)\s+'
     COMMA = r',\s+'
     SPACE = r'\s+'
     ARTIST_COMPONENT = (
