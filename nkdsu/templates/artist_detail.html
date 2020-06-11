@@ -7,7 +7,9 @@
   <h2>{{ artist }}</h2>
 
   <p class="subheading">
-    {% if tracks|length == 1 %}
+    {% if tracks|length == 0 %}
+      This isn't currently an artist that we recognise in the library. You might want to <a href="{% url "vote:search" %}?q={{ artist|urlencode }}">run a search</a> instead.
+    {% elif tracks|length == 1 %}
       {% if played|length == 0 %}
         The only track in the library by {{ artist }} has not yet been played.
       {% else %}

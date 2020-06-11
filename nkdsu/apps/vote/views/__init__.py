@@ -280,16 +280,21 @@ class Artist(ListView):
     template_name = 'artist_detail.html'
     context_object_name = 'tracks'
 
+    def get(self, *a, **k):
+        response = super().get(*a, **k)
+
+        if len(self.tracks) == 0:
+            response.status_code = 404
+
+        return response
+
     def get_queryset(self):
         tracks = self.model.objects.by_artist(self.kwargs['artist'])
-
-        if len(tracks) == 0:
-            raise Http404('No tracks for this artist')
-        else:
-            return tracks
+        return tracks
 
     def get_context_data(self):
         context = super(Artist, self).get_context_data()
+        self.tracks = context['tracks']
         context.update({
             'artist': self.kwargs['artist'],
             'played': [t for t in context['tracks'] if t.last_play()],
