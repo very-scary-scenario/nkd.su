@@ -11,7 +11,7 @@ class ArtistLexer(Lexer):
 
     VIA = (
         r'\s+('
-        r'from|ft\.|feat(\.|uring)?|starring|and|with|adding|x|×|&'
+        r'from|ft\.|feat(\.|uring)?|starring|and|with|adding|x|×|n\'|&'
         r')\s+'
     )
     LPAREN = r'\s\('
@@ -37,6 +37,8 @@ class ArtistLexer(Lexer):
         r'Daisy x Daisy|'
         r'Kisida Kyodan & The Akebosi Rockets|'
         r'Tackey & Tsubasa|'
+        r'THE RAMPAGE from EXILE TRIBE|'
+        r'GENERATIONS from EXILE TRIBE|'
         r'[^\s,()]+'
         r')'
     )
