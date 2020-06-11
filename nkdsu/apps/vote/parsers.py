@@ -9,7 +9,7 @@ class ArtistLexer(Lexer):
 
     VIA = (
         r'\s+('
-        r'from|feat(\.|uring)?|starring|and|&'
+        r'from|ft\.|feat(\.|uring)?|starring|and|&'
         r')\s+'
     )
     LPAREN = r'\s\('
