@@ -11,12 +11,12 @@ class ArtistLexer(Lexer):
 
     VIA = (
         r'\s+('
-        r'from|ft\.|feat(\.|uring)?|starring|and|with|&'
+        r'from|ft\.|feat(\.|uring)?|starring|and|with|adding|&'
         r')\s+'
     )
     LPAREN = r'\s\('
     RPAREN = r'\)(?=\s|,|$)'
-    CV = r'(CV[.:]|[Vv]ocal:|[Mm]ain\svocals?:\s+|[Cc]omposed\sby)\s+'
+    CV = r'(CV[.:]|[Vv]ocal:|[Mm]ain\svocals?:\s+|[Cc]omposed\sby|[Ff]rom)\s+'
     COMMA = r',\s+'
     SPACE = r'\s+'
     ARTIST_COMPONENT = (
