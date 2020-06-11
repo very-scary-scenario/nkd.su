@@ -30,6 +30,7 @@ from django.templatetags.static import static
 from django.utils.timezone import get_default_timezone
 
 from .managers import TrackManager, NoteManager
+from .parsers import parse_artist
 from .utils import (
     length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
     posting_tw_api, memoize, pk_cached, indefinitely, lastfm, musicbrainzngs
@@ -735,32 +736,26 @@ class Track(CleanOnSaveMixin, models.Model):
     def artist(self):
         return self.id3_artist
 
-    @memoize
     def artist_names(self):
-        artist_string = self.artist
-        separator = r', '
-        ultimate_separator = r'(?<!,) and '
-        if not re.search(ultimate_separator, artist_string):
-            return [artist_string]
-        else:
-            ultimate_split = re.split(ultimate_separator, artist_string)
-            last_artist = ultimate_split[-1]
-            pre_ultimate = ' and '.join(ultimate_split[:-1])
-            everyone_else = re.split(separator, pre_ultimate)
-            return everyone_else + [last_artist]
+        return (name for is_artist_name, name in parse_artist(self.artist)
+                if is_artist_name)
 
     @memoize
     @pk_cached(90)
     def artists(self):
         return [
             {
-                'url': reverse('vote:artist', kwargs={'artist': name}),
-                'name': name,
+                'url': (
+                    reverse('vote:artist', kwargs={'artist': bit_of_string})
+                    if is_artist_name else None
+                ),
+                'name': bit_of_string,
                 'worth_showing': bool(
-                    Track.objects.by_artist(name)
+                    is_artist_name and
+                    Track.objects.by_artist(bit_of_string)
                 )
             }
-            for name in self.artist_names()
+            for is_artist_name, bit_of_string in parse_artist(self.artist)
         ]
 
     def split_id3_title(self):
