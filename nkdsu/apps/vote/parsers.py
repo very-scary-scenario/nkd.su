@@ -20,6 +20,7 @@ class ArtistLexer(Lexer):
     ARTIST_COMPONENT = (
         r'('
         r'Oranges\sand\sLemons|'
+        r'Carole\s&\sTuesday|'
         r'[^\s,()]+'
         r')'
     )
