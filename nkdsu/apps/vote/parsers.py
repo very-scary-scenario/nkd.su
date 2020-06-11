@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from sly import Lexer
 from sly.lex import LexError
 
@@ -46,6 +48,8 @@ def parse_artist(string, fail_silently=True):
         tokens = list(artist_lexer.tokenize(string))
     except LexError as e:
         if fail_silently:
+            if settings.DEBUG:
+                print(e)
             yield (True, string)
             return
         else:
