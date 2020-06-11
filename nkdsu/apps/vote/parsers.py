@@ -11,7 +11,7 @@ class ArtistLexer(Lexer):
 
     VIA = (
         r'\s+('
-        r'from|ft\.|feat(\.|uring)?|starring|and|with|adding|&'
+        r'from|ft\.|feat(\.|uring)?|starring|and|with|adding|x|&'
         r')\s+'
     )
     LPAREN = r'\s\('
@@ -24,6 +24,7 @@ class ArtistLexer(Lexer):
         r'Oranges\sand\sLemons|'
         r'Carole\s&\sTuesday|'
         r'MYTH\s&\sROID|'
+        r'Fear,\sand\sLoathing\sin\sLas\sVegas|'
         r'[^\s,()]+'
         r')'
     )
