@@ -16,7 +16,16 @@ class ArtistLexer(Lexer):
     )
     LPAREN = r'\s\('
     RPAREN = r'\)(?=\s|,|\)|$)'
-    CV = r'(CV[.:]|[Vv]ocal:|[Mm]ain\svocals?:|[Cc]omposed\sby|[Ff]rom)\s+'
+    CV = (
+        r'('
+        r'CV[.:]|'
+        r'[Vv]ocal:|'
+        r'[Mm]ain\svocals?:|'
+        r'[Cc]omposed\sby|'
+        r'[Ff]rom|'
+        r'Vo.'
+        r')|\s+'
+    )
     COMMA = r',(\sand)?\s+'
     SPACE = r'\s+'
     ARTIST_COMPONENT = (
@@ -27,6 +36,7 @@ class ArtistLexer(Lexer):
         r'Fear,\sand\sLoathing\sin\sLas\sVegas|'
         r'Daisy x Daisy|'
         r'Kisida Kyodan & The Akebosi Rockets|'
+        r'Tackey & Tsubasa|'
         r'[^\s,()]+'
         r')'
     )
