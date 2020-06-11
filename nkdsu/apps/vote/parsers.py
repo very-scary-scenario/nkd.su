@@ -26,6 +26,7 @@ class ArtistLexer(Lexer):
         r'MYTH\s&\sROID|'
         r'Fear,\sand\sLoathing\sin\sLas\sVegas|'
         r'Daisy x Daisy|'
+        r'Kisida Kyodan & The Akebosi Rockets|'
         r'[^\s,()]+'
         r')'
     )
