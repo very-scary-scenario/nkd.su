@@ -21,6 +21,7 @@ class ArtistLexer(Lexer):
         r'('
         r'Oranges\sand\sLemons|'
         r'Carole\s&\sTuesday|'
+        r'MYTH\s&\sROID|'
         r'[^\s,()]+'
         r')'
     )
