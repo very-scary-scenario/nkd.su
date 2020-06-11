@@ -17,11 +17,15 @@ html {
 }
 
 body {
+  @media (prefers-color-scheme: dark) {
+    .invert();
+  }
+
   font-family: "Bitter", "Calibri", sans-serif;
   background-color: @bg;
   .noise();
   color: @fg;
-  text-shadow: fadeout(@bg, 40%) 0 .1em 0;
+  text-shadow: @basic-shadow 0 .1em 0;
   height: 100%;
 
   #everything {
@@ -29,6 +33,9 @@ body {
     position: relative;
 
     #nav {
+      background-color: @bg;
+      .uninvert();
+
       height: 2em;
       line-height: 2em;
       margin: 0 auto;
@@ -188,13 +195,12 @@ body {
       .roulette-mode-switch {
         &.selected-pro {
           a {
-            color: @fg;
+            color: inherit;
             opacity: 0.5;
           }
         }
         .roulette-pro {
           &::before {
-            color: @fg;
             .fas;
             content: @fa-var-exclamation-triangle;
           }

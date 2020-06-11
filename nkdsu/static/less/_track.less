@@ -43,6 +43,10 @@
 @track-border-radius: .7em;
 
 .track {
+  @media (prefers-color-scheme: dark) {
+    .uninvert();
+  }
+
   margin: .8em 0;
   padding: .5em 0;
   width: 100%;
@@ -174,7 +178,6 @@
   &.ineligible {
     border-color: #222;
     .invert();
-    -webkit-box-shadow: inset #222 0 .2em 2em;;
 
     div.metadata {
       border-color: #222;
@@ -213,10 +216,6 @@
 
     &.ineligible {
       background-color: @dark_hl;
-
-      &.inudesu {
-        background-color: @dark_inu_hl;
-      }
     }
   }
 
@@ -387,7 +386,7 @@ body.tracks-collapsed li.vote {
         padding: .4em;
         background-color: @bg;
         .noise();
-        box-shadow: inset #ddd 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
+        box-shadow: inset @basic-shadow 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
         border: 1px solid @border;
         min-width: 9em;
         max-width: 17em;

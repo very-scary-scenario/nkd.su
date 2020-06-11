@@ -10,9 +10,12 @@ div#stick {
   z-index: 10;
 
   div.stuck {
+    @media (prefers-color-scheme: dark) {
+      .invert();
+    }
+    background-color: @bg;
     pointer-events: auto;
     display: inline-block;
-    background-color: #fff;
     .noise();
     box-shadow: #888 0 .5em 2em; /*,inset #ddd 0 0 2em;*/
     border: 1px solid #aaa;

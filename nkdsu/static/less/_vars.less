@@ -2,8 +2,9 @@
 @hl: #d60;
 @fg: #444;
 @light: #999;
+@basic-shadow: fadeout(@bg, 40%);
 
-@light_hl: lighten(@hl, 48);
+@light_hl: fadeout(lighten(@hl, 45), 10);
 @dark_hl: darken(@hl, 32);
 
 @inv_bg: #333;
@@ -24,7 +25,7 @@
 @badge-colour: #e88;
 
 @border: fadeout(#888, 50%);
-@track_background: #fafafa;
+@track_background: fadeout(#fafafa, 10%);
 
 @fa-font-path: "../fa/webfonts";
 @patreon-colour: #F34F43;
