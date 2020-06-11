@@ -23,6 +23,7 @@ class ArtistLexer(Lexer):
         r'[Mm]ain\svocals?:|'
         r'[Cc]omposed\sby|'
         r'[Ff]rom|'
+        r'[Ff]eat(\.|uring)?|'
         r'Vo.'
         r')\s+'
     )
