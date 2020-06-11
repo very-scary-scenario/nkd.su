@@ -1,4 +1,5 @@
 from sly import Lexer
+from sly.lex import LexError
 
 
 class ArtistLexer(Lexer):
@@ -39,7 +40,12 @@ def parse_artist(string):
     # then i don't know that it'd help us here, so im just gonna use the lexer
     # and hack the rest of this:
 
-    tokens = list(artist_lexer.tokenize(string))
+    try:
+        tokens = list(artist_lexer.tokenize(string))
+    except LexError:
+        yield (True, string)
+        return
+
     artist_parts = ('ARTIST_COMPONENT', 'SPACE')
 
     fragment = None
