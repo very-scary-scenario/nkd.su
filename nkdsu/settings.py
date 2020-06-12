@@ -222,6 +222,7 @@ PIPELINE = {
                 'js/select.js',
                 'js/messages.js',
                 'js/ajax-actions.js',
+                'js/dark.js',
             ],
             'output_filename': 'js/min/base.js',
         },

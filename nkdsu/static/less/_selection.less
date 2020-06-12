@@ -10,9 +10,6 @@ div#stick {
   z-index: 10;
 
   div.stuck {
-    @media (prefers-color-scheme: dark) {
-      .invert();
-    }
     background-color: @bg;
     pointer-events: auto;
     display: inline-block;
@@ -22,6 +19,13 @@ div#stick {
     padding: .5em 1em 1.5em;
     margin: 0 auto;
     border-radius: 1em;
+  }
+}
+
+// @media (prefers-color-scheme: dark) {
+body.dark {
+  div#stick div.stuck {
+    .invert();
   }
 }
 
