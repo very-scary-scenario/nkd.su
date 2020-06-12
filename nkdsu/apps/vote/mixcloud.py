@@ -15,7 +15,6 @@ def _get_items():
     for page_index in range(20):
         ck = 'mixcloud:api-page:{}'.format(page_index)
         hit = cache.get(ck)
-        print(next_page_url)
 
         if hit:
             page = hit
