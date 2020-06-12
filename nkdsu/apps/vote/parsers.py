@@ -55,6 +55,7 @@ class ArtistLexer(Lexer):
         r'Hello, Happy World!|'
         r'King & Queen|'
         r'HIGH and MIGHTY COLOR|'
+        r'Dimitri From Paris|'
         r'＊\(Asterisk\)|'
         r'[^\s,()]+'
         r')'
