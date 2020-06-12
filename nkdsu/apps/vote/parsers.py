@@ -14,7 +14,7 @@ class ArtistLexer(Lexer):
         r'from|'
         r'ft\.|'
         r'feat(\.|uring)?|'
-        r'starring|'
+        r'[Ss]tarring|'
         r'and|'
         r'with|'
         r'adding|'
