@@ -1,10 +1,13 @@
-.nanotrack {
+body .tracks .nanotrack {
+  .uninvert();
+
+  background-color: @track_background;
+
   > a {
     overflow: hidden;
     position: relative;
     display: block;
     padding: .1em .4em .3em;
-    background-color: @track_background;
     .noise();
 
     .art {
