@@ -667,6 +667,17 @@ class Track(CleanOnSaveMixin, models.Model):
         )
 
     @classmethod
+    def suggest_artists(cls, string):
+        artist_names = set()
+        for track in Track.objects.public().filter(
+            id3_artist__icontains=string
+        ):
+            for artist_name in track.artist_names():
+                artist_names.add(artist_name)
+
+        return artist_names
+
+    @classmethod
     def all_roles(cls, qs=None):
         if qs is None:
             qs = cls.objects.all()

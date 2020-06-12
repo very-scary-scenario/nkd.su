@@ -313,12 +313,16 @@ class Artist(ListView):
         )
         return tracks
 
+    def artist_suggestions(self):
+        return Track.suggest_artists(self.kwargs['artist'])
+
     def get_context_data(self):
         context = super(Artist, self).get_context_data()
         self.tracks = context['tracks']
         context.update({
             'artist': self.kwargs['artist'],
             'played': [t for t in context['tracks'] if t.last_play()],
+            'artist_suggestions': self.artist_suggestions,
         })
         return context
 
