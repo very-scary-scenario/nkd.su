@@ -55,6 +55,7 @@ class ArtistLexer(Lexer):
         r'Kisida Kyodan & The Akebosi Rockets|'
         r'MYTH\s&\sROID|'
         r'Oranges\sand\sLemons|'
+        r'Run Girls, Run!|'
         r'THE RAMPAGE from EXILE TRIBE|'
         r'Tackey & Tsubasa|'
         r'Wake Up, [^\s]+!|'
