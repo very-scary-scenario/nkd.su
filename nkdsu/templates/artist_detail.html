@@ -14,12 +14,14 @@
   <p class="subheading">
     {% if tracks|length == 0 %}
       This isn't currently an artist that we recognise in the library.
+
       {% if artist_suggestions %}
         You might be looking for:
         {% for suggestion in artist_suggestions %}
           <a href="{% url "vote:artist" artist=suggestion %}">{{ suggestion }}</a>{% if forloop.last %}. {% else %}, {% endif %}
         {% endfor %}
       {% endif %}
+
       You may want to <a href="{% url "vote:search" %}?q={{ artist|urlencode }}">run a search</a> if that's unhelpful.
 
     {% elif tracks|length == 1 %}
@@ -44,7 +46,7 @@
       {% endif %}
 
     {% else %}
-      {{ played|length }} of these {{ tracks|length }} tracks have been played.
+      {{ played|length }} of these {{ tracks|length }} tracks {{ played|length|pluralize:"has,have" }} been played.
     {% endif %}
   </p>
 
