@@ -1,8 +1,12 @@
+import logging
+
 import requests
 
 from django.conf import settings
 from django.core.cache import cache
 
+
+logger = logging.getLogger(__name__)
 
 TIMEOUT = 4
 
@@ -19,10 +23,16 @@ def _get_items():
         if hit:
             page = hit
         else:
-            page = requests.get(
-                next_page_url,
-                timeout=TIMEOUT,
-            ).json()
+            try:
+                page = requests.get(
+                    next_page_url,
+                    timeout=TIMEOUT,
+                ).json()
+            except requests.RequestException as e:
+                # mission failed; we'll get 'em next time
+                logger.exception(e)
+                break
+
             cache.set(ck, page, 60*20)
 
         yield from page['data']
