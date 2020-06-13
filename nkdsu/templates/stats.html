@@ -3,70 +3,80 @@
 
 {% block title %}stats{% endblock %}
 
+{% block main_classes %}stats-page{% endblock %}
+
 {% block content %}
   {% cache indefinitely stats current_show %}
     {% with batting_averages as ba %}
-      <h2 id="most-successful-users">most successful users</h2>
-      <p class="subheading">in the last six months</p>
-      <table class="stats users">
-        <tr>
-          <th class="summary"><span>user</span></th>
-          <th class="value">batting average</th>
-        </tr>
+      <section class="stat">
+        <h2 id="most-successful-users">most successful users</h2>
+        <p class="subheading">in the last six months</p>
+        <table class="stats users">
+          <tr>
+            <th class="summary"><span>user</span></th>
+            <th class="value">batting average</th>
+          </tr>
 
-        {% for voter in ba|slice:":10" %}
-          {% include "include/stats/user_batting_average.html" %}
-        {% endfor %}
-      </table>
+          {% for voter in ba|slice:":10" %}
+            {% include "include/stats/user_batting_average.html" %}
+          {% endfor %}
+        </table>
+      </section>
 
-      <h2 id="least-successful-users">least successful users</h2>
-      <p class="subheading">in the last six months</p>
-      <table class="stats users">
-        <tr>
-          <th class="summary"><span>user</span></th>
-          <th class="value">batting average</th>
-        </tr>
+      <section class="stat">
+        <h2 id="least-successful-users">least successful users</h2>
+        <p class="subheading">in the last six months</p>
+        <table class="stats users">
+          <tr>
+            <th class="summary"><span>user</span></th>
+            <th class="value">batting average</th>
+          </tr>
 
-        {% for voter in ba|slice:":-10:-1" %}
-          {% include "include/stats/user_batting_average.html" %}
-        {% endfor %}
-      </table>
+          {% for voter in ba|slice:":-10:-1" %}
+            {% include "include/stats/user_batting_average.html" %}
+          {% endfor %}
+        </table>
+      </section>
     {% endwith %}
 
-    <h2 id="most-dedicated-users">most dedicated users</h2>
-    <table class="stats users">
-      <tr>
-        <th class="summary"><span>user</span></th>
-        <th class="value">current streak</th>
-      </tr>
-
-      {% for voter in streaks|slice:":10" %}
-        {% include "include/stats/user_streak.html" %}
-      {% endfor %}
-    </table>
-
-    <h2 id="most-popular-tracks">most popular tracks</h2>
-    <p class="subheading">in the last six months</p>
-    <table class="stats tracks">
-      <tr>
-        <th class="summary"><span>track</span></th>
-        <th class="value">votes</th>
-      </tr>
-
-      {% for track, value in popular_tracks|slice:":10" %}
-        <tr class="stat">
-          <td class="summary">
-            <p class="artist">
-              {% include "include/linked_artists.html" with artists=track.artists %}
-            </p>
-            <p class="title"><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
-            <p class="role">{{ track.role }}</p>
-          </td>
-          <td>
-            {{ value }}
-          </td>
+    <section class="stat">
+      <h2 id="most-dedicated-users">most dedicated users</h2>
+      <table class="stats users">
+        <tr>
+          <th class="summary"><span>user</span></th>
+          <th class="value">current streak</th>
         </tr>
-      {% endfor %}
-    </table>
+
+        {% for voter in streaks|slice:":10" %}
+          {% include "include/stats/user_streak.html" %}
+        {% endfor %}
+      </table>
+    </section>
+
+    <section class="stat">
+      <h2 id="most-popular-tracks">most popular tracks</h2>
+      <p class="subheading">in the last six months</p>
+      <table class="stats tracks">
+        <tr>
+          <th class="summary"><span>track</span></th>
+          <th class="value">votes</th>
+        </tr>
+
+        {% for track, value in popular_tracks|slice:":10" %}
+          <tr class="stat">
+            <td class="summary">
+              <p class="artist">
+                {% include "include/linked_artists.html" with artists=track.artists %}
+              </p>
+              <p class="title"><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
+              <p class="role">{{ track.role }}</p>
+            </td>
+            <td>
+              {{ value }}
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    </section>
   {% endcache %}
 {% endblock %}

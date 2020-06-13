@@ -297,7 +297,7 @@ body {
 
         .value {
           text-align: left;
-          width: 33%;
+          width: 20%;
         }
 
         @media (max-width: @breakpoint) {
@@ -370,7 +370,7 @@ body {
         }
       }
 
-      &.grouped-tracks {
+      &.grouped-tracks, &.stats-page {
         > p {
           max-width: @max-width;
           margin: 0 auto;
@@ -382,15 +382,15 @@ body {
 
           .track-groups {
             text-align: center;
+          }
 
-            .track-group {
-              margin: 0 1em;
-              text-align: left;
-              text-align: start;
-              display: inline-block;
-              width: 40%;
-              max-width: @max-width;
-            }
+          .track-group, section.stat {
+            margin: 0 1em;
+            text-align: left;
+            text-align: start;
+            display: inline-block;
+            width: 40%;
+            max-width: @max-width;
           }
         }
       }
