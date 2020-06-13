@@ -378,7 +378,12 @@ body {
         }
 
         @media (min-width: @breakpoint * 2) {
-          max-width: none;
+          &.grouped-tracks {
+            max-width: none;
+          }
+          &.stats-page {
+            max-width: @max-width * 1.7;
+          }
 
           .track-groups {
             text-align: center;
