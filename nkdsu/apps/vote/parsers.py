@@ -42,6 +42,7 @@ class ArtistLexer(Lexer):
     SPACE = r'\s+'
     ARTIST_COMPONENT = (
         r'('
+        r'AKIMA & NEOS|'
         r'Carole\s&\sTuesday|'
         r'Daisy x Daisy|'
         r'Dejo & Bon|'
