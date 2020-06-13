@@ -32,7 +32,7 @@
             <th class="value">batting average</th>
           </tr>
 
-          {% for voter in ba|slice:":-10:-1" %}
+          {% for voter in ba|slice:":-11:-1" %}
             {% include "include/stats/user_batting_average.html" %}
           {% endfor %}
         </table>
