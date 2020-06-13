@@ -4,18 +4,18 @@ from random import sample
 from classtools import reify
 import tweepy
 
-from django.urls import reverse, reverse_lazy
-from django.core.paginator import Paginator, InvalidPage
+from django.conf import settings
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.core.paginator import Paginator, InvalidPage
+from django.db.models import F, Count, DurationField
+from django.db.models.functions import Cast, Now
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.conf import settings
-from django.core.mail import send_mail
-from django.views.generic import TemplateView, ListView, DetailView, FormView
-from django.db.models import F, Count, DurationField
 from django.utils.dateparse import parse_duration
-from django.db.models.functions import Cast, Now
+from django.views.generic import TemplateView, ListView, DetailView, FormView
 
 from ..forms import RequestForm, BadMetadataForm
 from ..models import Show, Track, TwitterUser
