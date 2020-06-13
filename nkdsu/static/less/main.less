@@ -200,10 +200,14 @@ body {
             opacity: 0.5;
           }
         }
-        .roulette-pro {
-          &::before {
-            .fas;
-            content: @fa-var-exclamation-triangle;
+        span {
+          white-space: nowrap;
+
+          &.roulette-pro {
+            &::before {
+              .fas;
+              content: @fa-var-exclamation-triangle;
+            }
           }
         }
       }
