@@ -14,6 +14,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.views.generic import TemplateView, ListView, DetailView, FormView
 from django.db.models import F, Count, DurationField
+from django.utils.dateparse import parse_duration
 from django.db.models.functions import Cast, Now
 
 from ..forms import RequestForm, BadMetadataForm
@@ -173,7 +174,6 @@ class Roulette(ListView):
             # Staple track: having been played more than once per year(ish)
             # since the track was made available. Exclude tracks that don't
             # yet have enough plays to be reasonably called a "staple".
-
             qs = (
                 qs.annotate(plays=Count('play'))
                 .filter(plays__gt=2)
@@ -182,7 +182,7 @@ class Roulette(ListView):
                         ((Now() - F('revealed')) / F('plays')),
                         output_field=DurationField()
                     )
-                ).filter(time_per_play__lt='1y')
+                ).filter(time_per_play__lt=parse_duration('365 days'))
             )
             # order_by('?') fails when annotate() has been used
             return sample(list(qs), 5)
