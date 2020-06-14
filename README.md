@@ -9,18 +9,18 @@ radio show.
 
 ### How do I vote?
 
-If there are any songs on the front page you would like to vote for, click on
+If there are any tracks on the front page you would like to request, click on
 the ‘+1’ next to the current votes and send the generated tweet. If nothing on
 the front page strikes your fancy, feel free to use the search box to find
-something more your style. Once you've found something, click ‘request this
-song’ (or ‘+1’ if it has already been voted for). If you can't find what you're
-looking for, fill out the [request an addition] form.
+something more your style. Once you've found something, click the + button. If
+you can't find what you're looking for, fill out the [request an addition]
+form.
 
 You can personalise your vote with a message that will appear when people hover
-over your user icon. All text that is not either a valid song URL or the
+over your user icon. All text that is not either a valid track URL or the
 [@nkdsu] mention at the start of the tweet will be displayed.
 
-If you have javascript enabled, You can select tracks so that you can vote for
+If you have javascript enabled, You can select tracks so that you can request
 several at once by clicking anywhere in a track box that is not a link.
 
 None of your Twitter followers will see your vote in their timelines unless

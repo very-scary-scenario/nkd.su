@@ -2,7 +2,7 @@
 <div id="selhead">
   {% if selection %}
     <div class="stuck">
-      <h3>{{ selection|length }} song{{ selection|pluralize }} selected</h3>
+      <h3>{{ selection|length }} track{{ selection|pluralize }} selected</h3>
       {% if user.is_staff %}
         <p class="actions">
           <span><a href="{% url "vote:admin:shortlist_selection" %}">shortlist</a></span>
@@ -15,7 +15,7 @@
         </p>
       {% else %}
         {% if vote_url %}
-          <p class="actions"><a class="mass_vote" href="{{ vote_url }}">vote for all</a></p>
+          <p class="actions"><a class="mass_vote" href="{{ vote_url }}">request all</a></p>
         {% else %}
           <p class="refusal actions">too many tracks</p>
         {% endif %}

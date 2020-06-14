@@ -39,7 +39,7 @@ except Exception as e:
 def length_str(msec):
     """
     Convert a number of milliseconds into a human-readable representation of
-    the length of a song.
+    the length of a track.
     """
 
     seconds = (msec or 0)/1000
@@ -67,7 +67,7 @@ def vote_url(tracks):
 
 def vote_tweet(tracks):
     """
-    Return what a person should tweet to vote for `tracks`.
+    Return what a person should tweet to request `tracks`.
     """
 
     return '@%s %s' % (settings.READING_USERNAME,
@@ -84,7 +84,7 @@ def tweet_len(tweet):
     while len(placeholder_url) < SHORT_URL_LENGTH:
         placeholder_url = placeholder_url + 'x'
 
-    shortened = re.sub('https?://[^\s]+', placeholder_url, tweet)
+    shortened = re.sub(r'https?://[^\s]+', placeholder_url, tweet)
     return len(shortened)
 
 

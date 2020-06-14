@@ -3,7 +3,7 @@
 {% block title %}manual vote{% endblock %}
 
 {% block content %}
-  <h2 class=message>Add manual vote for <a href="{{ track.get_absolute_url }}">{{ track.title }}</a></h2>
+  <h2 class=message>Add manual request for <a href="{{ track.get_absolute_url }}">{{ track.title }}</a></h2>
 
   <form class="login" method="post" action=".">
     {% csrf_token %}
