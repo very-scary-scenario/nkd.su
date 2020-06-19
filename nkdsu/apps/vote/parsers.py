@@ -59,6 +59,7 @@ class ArtistLexer(Lexer):
         r'Run Girls, Run!|'
         r'THE RAMPAGE from EXILE TRIBE|'
         r'Tackey & Tsubasa|'
+        r'Voices From Mars|'
         r'Wake Up, [^\s]+!|'
         r'＊\(Asterisk\)|'
         r'[^\s,()]+'
