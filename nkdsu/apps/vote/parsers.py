@@ -97,8 +97,17 @@ def parse_artist(string, fail_silently=True):
 
     fragment = None
 
-    for token in tokens:
-        is_part_of_artist_name = (token.type in artist_parts)
+    for ti, token in enumerate(tokens):
+        is_part_of_artist_name = (
+            (token.type in artist_parts) and
+            (
+                (token.type != 'SPACE') or
+                (
+                    (ti+1 < len(tokens)) and
+                    (tokens[ti+1].type == 'ARTIST_COMPONENT')
+                )
+            )
+        )
 
         if fragment:
             if is_part_of_artist_name == fragment[0]:
@@ -122,6 +131,7 @@ if __name__ == '__main__':
         'Miho and Kana from AIKATSU☆STARS!',
         'Moe, Sunao from STAR☆ANIS',
         'Alicia from BEST FRIENDS!, Remi and Nanase',
+        'Laala and Mirei (CV: Himika Akaneya and Yu Serizawa from i☆Ris)',
     ]:
 
         print(list(parse_artist(string)))
