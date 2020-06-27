@@ -103,8 +103,16 @@ def parse_artist(string, fail_silently=True):
             (
                 (token.type != 'SPACE') or
                 (
-                    (ti+1 < len(tokens)) and
-                    (tokens[ti+1].type == 'ARTIST_COMPONENT')
+                    # if this is a space, then:
+                    (
+                        # be false if the next token isn't an artist component
+                        (ti+1 < len(tokens)) and
+                        (tokens[ti+1].type == 'ARTIST_COMPONENT')
+                    ) and (
+                        # or if the previous one wasn't, either
+                        (ti > 0) and
+                        (tokens[ti-1].type == 'ARTIST_COMPONENT')
+                    )
                 )
             )
         )
