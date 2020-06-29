@@ -61,6 +61,7 @@ class ArtistLexer(Lexer):
         r'Tackey & Tsubasa|'
         r'Voices From Mars|'
         r'Wake Up, [^\s]+!|'
+        r'765PRO&876PRO ALLSTARS|'
         r'＊\(Asterisk\)|'
         r'[^\s,()]+'
         r')'
