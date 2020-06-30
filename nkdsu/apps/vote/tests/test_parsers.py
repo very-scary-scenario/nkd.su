@@ -1,7 +1,6 @@
-from ..parsers import parse_artist
-
-
 from django.test import TestCase
+
+from ..parsers import parse_artist
 
 
 ARTIST_EXAMPLES = [
