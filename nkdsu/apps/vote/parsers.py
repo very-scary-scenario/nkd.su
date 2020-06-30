@@ -127,19 +127,3 @@ def parse_artist(string, fail_silently=True):
         fragment = (is_part_of_artist_name, token.value)
 
     yield fragment
-
-
-if __name__ == '__main__':
-    for string in [
-        'Oranges and Lemons',
-        'The Very Angry Dolphins',
-        'Date Arisa, Yoshimura Haruka, Matsuda Satsumi, Nakatsu Mariko and '
-        'Kotobuki Minako',
-        'Takagi-san (CV: Takahashi Rie)',
-        'Miho and Kana from AIKATSU☆STARS!',
-        'Moe, Sunao from STAR☆ANIS',
-        'Alicia from BEST FRIENDS!, Remi and Nanase',
-        'Laala and Mirei (CV: Himika Akaneya and Yu Serizawa from i☆Ris)',
-    ]:
-
-        print(list(parse_artist(string)))
