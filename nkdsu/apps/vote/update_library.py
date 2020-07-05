@@ -79,7 +79,7 @@ def metadata_consistency_checks(db_track, all_anime_titles, all_artists):
                 'field': 'artist',
                 'message': (
                     u'"{track_artist}" was not found in the database, but it '
-                    u'looks similar to "{canonical_artist}", which is'
+                    u'looks similar to "{canonical_artist}"'
                 ).format(track_artist=artist, canonical_artist=match)
             })
 
