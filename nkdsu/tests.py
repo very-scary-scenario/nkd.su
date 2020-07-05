@@ -17,6 +17,8 @@ class EverythingTest(
         '/vote-admin/unblock/0007C3F2760E0541/',
         '/vote-admin/hide/0007C3F2760E0541/',
         '/vote-admin/unhide/0007C3F2760E0541/',
+        '/vote-admin/lm/0007C3F2760E0541/',
+        '/vote-admin/ulm/0007C3F2760E0541/',
         '/vote-admin/shortlist/0007C3F2760E0541/',
         '/vote-admin/discard/0007C3F2760E0541/',
         '/vote-admin/reset/0007C3F2760E0541/',
