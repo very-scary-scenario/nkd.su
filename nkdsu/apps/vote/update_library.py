@@ -148,7 +148,7 @@ def update_library(tree, dry_run=False, inudesu=False):
                         'message': 'leading or trailing whitespace',
                     })
 
-        if new or changed:
+        if (new or changed) and not db_track.metadata_locked:
             db_track.id = t['Persistent ID']
             db_track.id3_title = t['Name']
             db_track.id3_artist = t['Artist']
@@ -176,13 +176,17 @@ def update_library(tree, dry_run=False, inudesu=False):
 
         if changed or warnings:
             changes.append({
-                'type': 'change',
+                'type': 'locked' if db_track.metadata_locked else 'change',
                 'item': str(db_track),
                 'changes': field_alterations,
-                'warnings': warnings
+                'warnings': warnings,
             })
 
-        if (new or changed) and (not dry_run):
+        if (
+            (not dry_run) and
+            (new or changed) and
+            (not db_track.metadata_locked)
+        ):
             db_track.save()
 
         tracks_kept.append(db_track)

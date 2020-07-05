@@ -119,6 +119,11 @@
             <span><a class="ajaxable" href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
             <span><a class="ajaxable" href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
           {% endif %}
+          {% if track.metadata_locked %}
+            <span><a title="let library updates affect this track" href="{% url "vote:admin:unlock_metadata" pk=track.pk %}">unlock</a></span>
+          {% else %}
+            <span><a title="prevent library updates from affecting this track" href="{% url "vote:admin:lock_metadata" pk=track.pk %}">lock</a></span>
+          {% endif %}
           <span><a href="{% url "vote:admin:make_note" pk=track.pk %}">add note</a></span>
         </p>
       {% endif %}

@@ -642,17 +642,37 @@ form ul.errorlist li {
       }
     }
 
-    p.update-warning {
-      background-color: fadeout(@pink, 75%);
-      color: darken(@pink, 20);
-      border: 1px solid darken(@pink, 20);
+    p.update-message {
       border-radius: .2em;
       padding: .2em .4em .3em;
+      margin-top: .2em;
 
       &::before {
         .fas;
-        content: @fa-var-exclamation-triangle;
-        padding-right: .4em;
+        display: inline-block;
+        width: 1.4em;
+        text-align: center;
+        padding-right: .3em;
+      }
+
+      &.update-warning {
+        background-color: fadeout(@pink, 75%);
+        color: darken(@pink, 20);
+        border: 1px solid darken(@pink, 20);
+
+        &::before {
+          content: @fa-var-exclamation-triangle;
+        }
+      }
+
+      &.update-info {
+        background-color: fadeout(@blue, 75%);
+        color: darken(@blue, 20);
+        border: 1px solid darken(@blue, 20);
+
+        &::before {
+          content: @fa-var-info;
+        }
       }
     }
   }

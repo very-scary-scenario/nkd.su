@@ -9,14 +9,18 @@
           <p class="title"><strong>{{ change.item }}</strong></p>
 
           {% for warning in change.warnings %}
-            <p class="update-warning"><strong>{{ warning.field }}</strong>: {{ warning.message }}</p>
+            <p class="update-message update-warning"><strong>{{ warning.field }}</strong>: {{ warning.message }}</p>
           {% endfor %}
 
           {% if change.type == 'new' %}
             <p>Has been added</p>
           {% elif change.type == 'hide' %}
             <p>Has been removed and will be hidden</p>
-          {% elif change.type == 'change' %}
+          {% elif change.type == 'change' or change.type == 'locked' %}
+            {% if change.type == 'locked' %}
+              <p class="update-message update-info">Will not be changed, because metadata is locked</p>
+            {% endif %}
+
             <ul class="diff">
               {% for item in change.changes %}
                 <li>

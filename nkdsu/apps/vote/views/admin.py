@@ -202,6 +202,30 @@ class Unhide(AdminAction, DetailView):
                          u"'{}' unhidden".format(self.get_object().title))
 
 
+class LockMetadata(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        self.get_object().lock_metadata()
+        messages.success(
+            self.request,
+            "'{}' will no longer have its metadata updated in library updates"
+            .format(self.get_object().title)
+        )
+
+
+class UnlockMetadata(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        self.get_object().unlock_metadata()
+        messages.success(
+            self.request,
+            "Library updates will affect '{}' again"
+            .format(self.get_object().title)
+        )
+
+
 class ManualVote(TrackSpecificAdminMixin, CreateView):
     model = Vote
     fields = ['text', 'name', 'kind']

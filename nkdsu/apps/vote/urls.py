@@ -41,6 +41,11 @@ admin_patterns = ([
     url(r'^hide/(?P<pk>.+)/$', admin.Hide.as_view(), name='hide'),
     url(r'^unhide/(?P<pk>.+)/$', admin.Unhide.as_view(), name='unhide'),
 
+    url(r'^lm/(?P<pk>.+)/$', admin.LockMetadata.as_view(),
+        name='lock_metadata'),
+    url(r'^ulm/(?P<pk>.+)/$', admin.UnlockMetadata.as_view(),
+        name='unlock_metadata'),
+
     url(r'^hide-selection/$', admin.HideSelection.as_view(),
         name='hide_selection'),
     url(r'^unhide-selection/$', admin.UnhideSelection.as_view(),

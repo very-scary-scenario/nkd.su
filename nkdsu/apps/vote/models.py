@@ -633,6 +633,7 @@ class Track(CleanOnSaveMixin, models.Model):
     hidden = models.BooleanField()
     inudesu = models.BooleanField()
     background_art = models.ImageField(blank=True, upload_to=art_path)
+    metadata_locked = models.BooleanField(default=False)
 
     def __str__(self):
         """
@@ -904,6 +905,18 @@ class Track(CleanOnSaveMixin, models.Model):
         self.save()
 
     unhide.alters_data = True
+
+    def lock_metadata(self):
+        self.metadata_locked = True
+        self.save()
+
+    lock_metadata.alters_data = True
+
+    def unlock_metadata(self):
+        self.metadata_locked = False
+        self.save()
+
+    unlock_metadata.alters_data = True
 
     def slug(self):
         return slugify(self.title)

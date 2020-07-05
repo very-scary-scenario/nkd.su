@@ -154,7 +154,7 @@ class LibraryUpdateTest(TestCase):
                     if field in new_meta:
                         track_dict[field] = new_meta[field]
                 tracks[track_id] = TrackMeta(**track_dict)
-        return plistlib.readPlistFromString(self.get_library_xml(tracks))
+        return plistlib.loads(self.get_library_xml(tracks))
 
 
 class LibraryUpdateDryRunTest(LibraryUpdateTest):
@@ -380,3 +380,13 @@ class LibraryUpdateWetRunTest(LibraryUpdateTest):
         self.assertEqual(db_track.title, "Koi Hana")
         self.assertEqual(db_track.role, "Kaichou wa Maid-sama! Character Song")
         self.assertEqual(db_track.msec, 254000)
+
+    def test_change_locked_track(self):
+        hex_id = "00555AF6AC71CB70"
+        Track.objects.filter(id=hex_id).update(metadata_locked=True)
+        tree = self.library_change_one_track(
+            hex_id, {'artist': "Death in Reno"}
+        )
+        update_library(tree, dry_run=False)
+        db_track = Track.objects.get(id=hex_id)
+        self.assertEqual(db_track.artist, 'Death in Vegas')
