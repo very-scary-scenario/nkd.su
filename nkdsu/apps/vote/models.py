@@ -66,7 +66,7 @@ class Show(CleanOnSaveMixin, models.Model):
     voting_allowed = models.BooleanField(default=True)
 
     def __str__(self):
-        return '<Show for %r>' % (self.showtime.date())
+        return self.showtime.date().isoformat()
 
     def __repr__(self):
         return str(self)
@@ -311,6 +311,9 @@ class Show(CleanOnSaveMixin, models.Model):
             'message_markdown': self.message or None,
             'message_html': markdown(self.message) if self.message else None,
         }
+
+    class Meta:
+        ordering = ['-showtime']
 
 
 class TwitterUser(CleanOnSaveMixin, models.Model):
