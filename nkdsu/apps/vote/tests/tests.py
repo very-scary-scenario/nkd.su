@@ -102,6 +102,13 @@ class ShowTest(TestCase):
         self.assertIs(None, Show.current().prev())
 
 
+class TrackTest(TestCase):
+    fixtures = ['vote.json']
+
+    def test_can_delete_tracks(self):
+        Track.objects.all()[0].delete()
+
+
 class PlayTest(TestCase):
     fixtures = ['vote.json']
 
