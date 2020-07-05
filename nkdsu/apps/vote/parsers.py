@@ -22,6 +22,7 @@ class ArtistLexer(Lexer):
         r'×|'
         r'n\'|'
         r'vs\.?|'
+        r'/|'
         r'&'
         r')\s+'
     )
