@@ -437,33 +437,6 @@ body {
       }
     }
   }
-
-  #loading {
-    opacity: 0;
-    position: fixed;
-    width: 100%;
-    pointer-events: none;
-    text-transform: uppercase;
-    text-align: center;
-    z-index: 100;
-    box-shadow: 0 0 0 1000em @bg;
-    background-color: @bg;
-
-    top: 30%;
-    font-weight: bold;
-    color: black;
-    font-size: 2.5em;
-    @media (min-width: @breakpoint) {
-      font-size: 5em;
-    }
-  }
-
-  &.loading {
-    #loading {
-      opacity: .6;
-      transition: opacity 1s;
-    }
-  }
 }
 
 body[data-dark-mode=dark] [value=dark],

@@ -36,10 +36,7 @@ def get_sections(request):
 
 
 def get_parent(request):
-    if request.META.get('HTTP_X_PJAX', False):
-        return 'pjax.html'
-    else:
-        return 'base.html'
+    return 'base.html'
 
 
 def get_dark_mode(request):
