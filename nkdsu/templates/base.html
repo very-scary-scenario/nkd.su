@@ -20,16 +20,27 @@
     <meta name="twitter:domain" content="nkd.su">
 
   </head>
-  <body class="
-    {% if user.is_staff %}
-      staff
+  <body
+    class="
+      {% if user.is_staff %}
+        staff
+      {% endif %}
+
+      {% if tracks_expanded %}
+        tracks-expanded
+      {% else %}
+        tracks-collapsed
+      {% endif %}
+    "
+
+    {% if dark_mode %}
+      data-dark-mode="dark"
+    {% elif dark_mode == False %}
+      data-dark-mode="light"
+    {% elif dark_mode == None %}
+      data-dark-mode="system"
     {% endif %}
-    {% if tracks_expanded %}
-      tracks-expanded
-    {% else %}
-      tracks-collapsed
-    {% endif %}
-  ">
+  >
     {% csrf_token %}
     <p id="loading"></p>
     <div id="everything">

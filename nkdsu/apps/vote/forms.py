@@ -142,3 +142,11 @@ class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
         fields = ['content', 'public']
+
+
+class DarkModeForm(forms.Form):
+    mode = forms.ChoiceField(choices=[
+        ('light', 'light'),
+        ('dark', 'dark'),
+        ('system', 'system'),
+    ])

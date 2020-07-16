@@ -94,6 +94,7 @@ class EverythingTest(
         '/vote-admin/shortlist-order/',
         '/vote-admin/requests/fill/1/',
         '/vote-admin/requests/claim/1/',
+        '/set-dark-mode/',
 
         # would require me to put twitter credentials in the public settings
         # file

@@ -17,7 +17,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_duration
 from django.views.generic import TemplateView, ListView, DetailView, FormView
 
-from ..forms import RequestForm, BadMetadataForm
+from ..forms import RequestForm, BadMetadataForm, DarkModeForm
 from ..models import Show, Track, TwitterUser
 from ...vote import mixins
 
@@ -497,3 +497,25 @@ class RequestAddition(FormView):
         )
 
         return super(RequestAddition, self).form_valid(form)
+
+
+class SetDarkModeView(FormView):
+    http_method_names = ['post']
+    form_class = DarkModeForm
+    success_url = reverse_lazy('vote:index')
+
+    def get_success_url(self):
+        return self.request.META.get('HTTP_REFERER', self.success_url)
+
+    def form_valid(self, form):
+        session = self.request.session
+        session['dark_mode'] = {
+            'light': False,
+            'dark': True,
+            'system': None,
+        }[form.cleaned_data['mode']]
+        session.save()
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        return self.form_valid(form)

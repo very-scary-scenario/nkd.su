@@ -1,11 +1,17 @@
-function respectHashForDarkMode() {
-  if (window.location.hash === '#dark') {
-    document.body.classList.add('dark');
-  } else {
-    document.body.classList.remove('dark');
-  }
+function bindDarkModeForm() {
+  var darkModeForm = document.getElementById('dark-mode-settings');
+  darkModeForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var data = new FormData(darkModeForm);
+
+    fetch(darkModeForm.getAttribute('action'),
+      {method: 'post', body: data, redirect: 'manual'})
+      .then(function(response) {
+        console.log(response);
+      });
+
+    document.body.setAttribute('data-dark-mode', data.get('mode'));
+  });
 }
 
-respectHashForDarkMode();
-
-window.addEventListener('hashchange', respectHashForDarkMode);
+$(document).ready(bindDarkModeForm);

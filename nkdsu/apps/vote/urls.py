@@ -142,6 +142,9 @@ urlpatterns = [
     url(r'^request/$',
         views.RequestAddition.as_view(), name='request_addition'),
 
+    url(r'^set-dark-mode/$', views.SetDarkModeView.as_view(),
+        name='set-dark-mode'),
+
     # tracks
     url(r'^(?P<pk>[0-9A-F]{16})/$', views.TrackDetail.as_view(), name='track'),
     url(r'^(?P<slug>[^/]*)/(?P<pk>[0-9A-F]{16})/$',

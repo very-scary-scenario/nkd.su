@@ -1,5 +1,17 @@
 @import "_vars.less";
 
+.dark(@rules) {
+  body[data-dark-mode=system] {
+    @media (prefers-color-scheme: dark) {
+      @rules();
+    }
+  }
+
+  body[data-dark-mode=dark] {
+    @rules();
+  }
+}
+
 .clearfix() {
   &::after {
     content: ' ';
@@ -36,7 +48,7 @@
   color: @inv_fg;
   text-shadow: fadeout(black, 50%) 0 .1em 0;
 
-  a {
+  a, button.link {
     &:hover {
       color: @inv_fg;
     }
@@ -48,7 +60,7 @@
   background-color: none;
   color: @fg;
   text-shadow: @basic-shadow 0 .1em 0;
-  a {
+  a, button.link {
     &:hover {
       color: @fg;
     }

@@ -1,5 +1,6 @@
 from django.urls import reverse
 
+from .forms import DarkModeForm
 from .models import Show, Track
 from .utils import indefinitely
 
@@ -41,6 +42,10 @@ def get_parent(request):
         return 'base.html'
 
 
+def get_dark_mode(request):
+    return request.session.get('dark_mode')
+
+
 def nkdsu_context_processor(request):
     """
     Add common stuff to context.
@@ -54,4 +59,6 @@ def nkdsu_context_processor(request):
         'sections': get_sections(request),
         'indefinitely': indefinitely,
         'parent': get_parent(request),
+        'dark_mode': get_dark_mode(request),
+        'dark_mode_form': DarkModeForm(),
     }

@@ -16,12 +16,11 @@ html {
   height: 100%;
 }
 
-body {
-  // @media (prefers-color-scheme: dark) {
-  &.dark {
-    .invert();
-  }
+.dark({
+  .invert();
+});
 
+body {
   font-family: "Bitter", "Calibri", sans-serif;
   background-color: @bg;
   .noise();
@@ -430,6 +429,12 @@ body {
 
     .credit {
       .child-iter();
+
+      margin-bottom: 0;
+
+      &:last-child {
+        margin-bottom: 0.5em;
+      }
     }
   }
 
@@ -458,6 +463,17 @@ body {
       opacity: .6;
       transition: opacity 1s;
     }
+  }
+}
+
+body[data-dark-mode=dark] [value=dark],
+body[data-dark-mode=light] [value=light],
+body[data-dark-mode=system] [value=system] {
+  color: inherit !important;
+  cursor: default;
+
+  &:hover, &:focus {
+    color: inherit !important;
   }
 }
 

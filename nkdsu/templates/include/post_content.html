@@ -1,5 +1,13 @@
 <div id="footer">
   <a id="stamp" target="_blank" href="https://vscary.co"><img alt="the very scary scenario logo" src="https://vscary.co/logo-grey.svg"></a>
+
+  <form class="credit" id="dark-mode-settings" method="post" action="{% url "vote:set-dark-mode" %}">
+    {% csrf_token %}
+    <span><button class="link" name="mode" value="light">light</button></span>
+    <span><button class="link" name="mode" value="dark">dark</button></span>
+    <span><button class="link" name="mode" value="system">system</button></span>
+  </form>
+
   <p class="credit">
     {% if user.is_staff %}
       <span><a href="{% url "admin:index" %}">admin</a></span>
