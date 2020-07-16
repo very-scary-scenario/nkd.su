@@ -3,7 +3,9 @@ function bindDarkModeForm() {
   darkModeForm.addEventListener('submit', function(e) {
     e.preventDefault();
     var data = new FormData(darkModeForm);
-    data.set('mode', e.submitter.getAttribute('value'));
+    if (e.submitter) {
+      data.set('mode', e.submitter.getAttribute('value'));
+    }
 
     fetch(darkModeForm.getAttribute('action'),
       {method: 'post', body: data, redirect: 'manual'})
