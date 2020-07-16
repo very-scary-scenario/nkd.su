@@ -518,4 +518,4 @@ class SetDarkModeView(FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        return self.form_valid(form)
+        return redirect(self.get_success_url())
