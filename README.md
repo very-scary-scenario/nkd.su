@@ -10,7 +10,7 @@ radio show.
 ### How do I vote?
 
 If there are any tracks on the front page you would like to request, click on
-the ‘+1’ next to the current votes and send the generated tweet. If nothing on
+the ‘+’ next to the current votes and send the generated tweet. If nothing on
 the front page strikes your fancy, feel free to use the search box to find
 something more your style. Once you've found something, click the + button. If
 you can't find what you're looking for, fill out the [request an addition]
@@ -34,7 +34,7 @@ they're also following [@nkdsu].
 Yeah, I get it. In that case, just send Peter an [email] or a text or
 something.
 
-[email]: mailto:peter.shillito@thisisthecat.com
+[email]: mailto:peter@thisisthecat.com
 
 ## How does it work?
 
