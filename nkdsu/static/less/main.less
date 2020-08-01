@@ -16,10 +16,6 @@ html {
   height: 100%;
 }
 
-.dark({
-  .invert();
-});
-
 body {
   font-family: "Bitter", "Calibri", sans-serif;
   background-color: @bg;
@@ -438,6 +434,15 @@ body {
     }
   }
 }
+
+.dark({
+  .invert();
+
+  #breadcrumbs ul {
+    background-color: @bg !important;
+    .uninvert() !important;
+  }
+});
 
 body[data-dark-mode=dark] [value=dark],
 body[data-dark-mode=light] [value=light],
