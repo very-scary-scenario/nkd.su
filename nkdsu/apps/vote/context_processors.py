@@ -7,7 +7,10 @@ from .utils import indefinitely
 
 def get_sections(request):
     active_section = None
-    most_recent_track = Track.objects.public().latest('revealed')
+    try:
+        most_recent_track = Track.objects.public().latest('revealed')
+    except Track.DoesNotExist:
+        most_recent_track = None
 
     if (
         hasattr(request, 'resolver_match') and
@@ -21,18 +24,20 @@ def get_sections(request):
                 break
 
     return [{
-        'name': section[0],
-        'url': section[1],
-        'active': section[0] == active_section
-    } for section in [
+        'name': name,
+        'url': url,
+        'active': name == active_section
+    } for name, url in [
         ('home', reverse('vote:index')),
         ('archive', reverse('vote:archive')),
-        ('new tracks', most_recent_track.show_revealed().get_revealed_url()),
+        ('new tracks',
+         most_recent_track.show_revealed().get_revealed_url()
+         if most_recent_track else None),
         ('roulette', reverse('vote:roulette', kwargs={'mode': 'hipster'})),
         ('stats', reverse('vote:stats')),
         ('donate', 'https://www.patreon.com/NekoDesu'),
         ('etc', 'https://nekodesu.co.uk/'),
-    ]]
+    ] if url]
 
 
 def get_parent(request):
