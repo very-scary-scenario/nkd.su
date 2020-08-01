@@ -755,7 +755,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @reify
     def roles(self):
-        return self.split_id3_title()[1].split('|')
+        return self.role.split('|') if self.role else []
 
     @reify
     def role_details(self):
