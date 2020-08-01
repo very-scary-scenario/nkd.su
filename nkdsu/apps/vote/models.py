@@ -571,6 +571,8 @@ class Role:
             )
         elif ' - ' in self.full_role:
             self.kind, self.specifics = self.full_role.split(' - ', 1)
+        elif self.full_role.lower() in ('character song', 'insert song'):
+            self.kind, self.specifics = (self.full_role, '')
         else:
             self.kind, self.specifics = ('', self.full_role)
 
