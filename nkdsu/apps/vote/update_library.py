@@ -36,22 +36,22 @@ def check_closeness_against_list(name, canonical_names, reverse=False):
 
 def metadata_consistency_checks(db_track, all_anime_titles, all_artists):
     warnings = []
-    track_anime = db_track.role_detail.anime
-    track_role = db_track.role_detail.full_role
+    track_animes = [rd.anime for rd in db_track.role_details]
+    track_roles = [rd.full_role for rd in db_track.role_details]
 
-    if not track_anime and not db_track.inudesu:
+    if not track_animes and not db_track.inudesu:
         warnings.append({
             'field': 'anime',
             'message': 'field is missing'
         })
 
-    if not track_role and not db_track.inudesu:
+    if not track_roles and not db_track.inudesu:
         warnings.append({
             'field': 'role',
             'message': 'field is missing'
         })
 
-    if track_anime:
+    for track_anime in track_animes:
         match = check_closeness_against_list(track_anime, all_anime_titles)
         if match:
             warnings.append({

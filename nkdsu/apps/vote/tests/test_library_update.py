@@ -47,7 +47,7 @@ DEFAULT_TRACKS = [
         "1",
         "Canpeki Shinakya! (RO-KYU-BU! Character Song: Saki)",
         "Hikasa Youko",
-        "RO-KYU-BU! Character Songs 03 - Nagatsuka Saki",
+        "RO-KYU-BU! Character Songs 03 - Nagatsuka Saki|Lucky Star ED4",
         "225044",
         "2012-12-15T18:51:21Z",
         "0007C3F2760E0541"

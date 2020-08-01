@@ -20,7 +20,7 @@
     </p>
   {% endif %}
 
-  {% regroup tracks by role_detail.plural as roles %}
+  {% regroup tracks by role_detail_for_recently_relevant_anime.plural as roles %}
 
   <div class="track-groups">
     {% for role, tracks in roles %}

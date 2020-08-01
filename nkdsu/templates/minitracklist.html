@@ -38,8 +38,10 @@
         <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
       </p>
       {% if track.role %}
-      <p class="role">
-        {{ track.role }}
+      <p class="roles">
+        {% for role in track.role_details %}
+          <span class="role">{{ role }}</span>
+        {% endfor %}
       </p>
       {% endif %}
     </div>

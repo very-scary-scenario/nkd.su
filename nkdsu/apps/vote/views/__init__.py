@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import datetime
 from random import sample
 
@@ -207,12 +208,12 @@ class Search(ListView):
         resp = super().get(*a, **k)
         qs = self.get_queryset()
         animes = set((
-            t.role_detail.anime if t.role_detail else None for t in qs
+            role_detail.anime for t in qs for role_detail in t.role_details
         ))
 
         # if our search results are identical to an anime detail page, take us
         # there instead
-        if len(animes) == 1 and None not in animes:
+        if len(animes) == 1:
             anime, = animes
             anime_qs = self.model.objects.by_anime(anime)
 
@@ -307,16 +308,22 @@ class Artist(ListView):
         return response
 
     def get_queryset(self):
-        tracks = sorted(
-            self.model.objects.by_artist(
-                self.kwargs['artist'], show_secret_tracks=(
-                    self.request.user.is_authenticated and
-                    self.request.user.is_staff
-                )
-            ),
-            key=lambda t: t.role_detail.anime if t.role_detail else None
+        return self.model.objects.by_artist(
+            self.kwargs['artist'], show_secret_tracks=(
+                self.request.user.is_authenticated and
+                self.request.user.is_staff
+            )
         )
-        return tracks
+
+    def grouped_tracks(self):
+        tracks = self.get_queryset()
+        animes = sorted(set(rd.anime for t in tracks for rd in t.role_details))
+        grouped_tracks = OrderedDict()
+
+        for anime in animes:
+            grouped_tracks[anime] = [t for t in tracks if t.has_anime(anime)]
+
+        return grouped_tracks
 
     def artist_suggestions(self):
         return Track.suggest_artists(self.kwargs['artist'])
@@ -328,6 +335,7 @@ class Artist(ListView):
             'artist': self.kwargs['artist'],
             'played': [t for t in context['tracks'] if t.last_play()],
             'artist_suggestions': self.artist_suggestions,
+            'grouped_tracks': self.grouped_tracks,
         })
         return context
 
@@ -348,13 +356,19 @@ class Anime(ListView):
         if len(tracks) == 0:
             raise Http404('No tracks for this anime')
         else:
-            return sorted(tracks, key=lambda t: t.role_detail)
+            return sorted(
+                tracks,
+                key=lambda t: t.role_detail_for_anime(self.kwargs['anime'])
+            )
 
     def get_context_data(self):
         context = super(Anime, self).get_context_data()
         context.update({
             'anime': self.kwargs['anime'],
-            'related_anime': context['tracks'][0].role_detail.related_anime,
+            'related_anime': (
+                context['tracks'][0]
+                .role_detail_for_anime(self.kwargs['anime']).related_anime
+            )
         })
         return context
 
@@ -473,13 +487,9 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
     def get_breadcrumbs(self):
         track = self.get_track()
 
-        if track.role_detail:
-            return [
-                (reverse('vote:anime', kwargs={
-                    'anime': track.role_detail.anime
-                }), track.role_detail.anime),
-                (track.get_absolute_url(), track.title),
-            ]
+        return [
+            (track.get_absolute_url(), track.title),
+        ]
 
 
 class RequestAddition(FormView):

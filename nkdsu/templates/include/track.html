@@ -41,12 +41,16 @@
 
       <p class="meta">
         {% if track.role %}
-          <span class="role">
-            {% if track.role_detail.anime %}
-              <a href="{% url "vote:anime" anime=track.role_detail.anime %}">{{ track.role_detail.anime }}</a> {{ track.role_detail.full_role }}
-            {% else %}
-              {{ track.role_detail }}
-            {% endif %}
+          <span class="roles">
+            {% for role_detail in track.role_details %}
+              <span class="role">
+                {% if role_detail.anime %}
+                  <a href="{% url "vote:anime" anime=role_detail.anime %}">{{ role_detail.anime }}</a> {{ role_detail.full_role }}
+                {% else %}
+                  {{ role_detail }}
+                {% endif %}
+              </span>
+            {% endfor %}
           </span>
         {% endif %}
 

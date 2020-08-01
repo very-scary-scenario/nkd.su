@@ -50,10 +50,8 @@
     {% endif %}
   </p>
 
-  {% regroup tracks by role_detail.anime as animes %}
-
   <div class="track-groups">
-    {% for anime, tracks in animes %}
+    {% for anime, tracks in grouped_tracks.items %}
       <div class="track-group">
         <h3>
           {% if anime %}

@@ -664,7 +664,7 @@ class Track(CleanOnSaveMixin, models.Model):
     @classmethod
     def all_anime_titles(cls):
         return set(
-            (t.role_detail.anime for t in cls.objects.all() if t.role_detail)
+            (rd.anime for t in cls.objects.all() for rd in t.role_details)
         )
 
     @classmethod
@@ -692,9 +692,9 @@ class Track(CleanOnSaveMixin, models.Model):
             qs = cls.objects.all()
 
         return set((
-            f'{t.role_detail.full_role}'
-            f'\n | {t.role_detail.kind}\n | {t.role_detail.specifics}\n'
-            for t in qs if t.role_detail
+            f'{role_detail.full_role}'
+            f'\n | {role_detail.kind}\n | {role_detail.specifics}\n'
+            for t in qs for role_detail in t.role_details
         ))
 
     @classmethod
@@ -754,8 +754,23 @@ class Track(CleanOnSaveMixin, models.Model):
         return self.split_id3_title()[1]
 
     @reify
-    def role_detail(self):
-        return Role(self.role) if self.role else None
+    def roles(self):
+        return self.split_id3_title()[1].split('|')
+
+    @reify
+    def role_details(self):
+        return [Role(role) for role in self.roles]
+
+    def role_detail_for_anime(self, anime):
+        self._recently_relevant_anime = anime
+        details, = [r for r in self.role_details if r.anime == anime]
+        return details
+
+    def role_detail_for_recently_relevant_anime(self):
+        return self.role_detail_for_anime(self._recently_relevant_anime)
+
+    def has_anime(self, anime):
+        return anime in (r.anime for r in self.role_details)
 
     @reify
     def artist(self):
