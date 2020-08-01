@@ -308,7 +308,12 @@ class Artist(ListView):
 
     def get_queryset(self):
         tracks = sorted(
-            self.model.objects.by_artist(self.kwargs['artist']),
+            self.model.objects.by_artist(
+                self.kwargs['artist'], show_secret_tracks=(
+                    self.request.user.is_authenticated and
+                    self.request.user.is_staff
+                )
+            ),
             key=lambda t: t.role_detail.anime if t.role_detail else None
         )
         return tracks
@@ -333,7 +338,12 @@ class Anime(ListView):
     context_object_name = 'tracks'
 
     def get_queryset(self):
-        tracks = self.model.objects.by_anime(self.kwargs['anime'])
+        tracks = self.model.objects.by_anime(
+            self.kwargs['anime'], show_secret_tracks=(
+                self.request.user.is_authenticated and
+                self.request.user.is_staff
+            )
+        )
 
         if len(tracks) == 0:
             raise Http404('No tracks for this anime')
