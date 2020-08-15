@@ -44,6 +44,7 @@ class ArtistLexer(Lexer):
     ARTIST_COMPONENT = (
         r'('
         r'AKIMA & NEOS|'
+        r'ANNA TSUCHIYA inspi\' NANA\(BLACK STONES\)|'
         r'Carole\s&\sTuesday|'
         r'Daisy x Daisy|'
         r'Dejo & Bon|'
@@ -56,6 +57,7 @@ class ArtistLexer(Lexer):
         r'King & Queen|'
         r'Kisida Kyodan & The Akebosi Rockets|'
         r'MYTH\s&\sROID|'
+        r'OLIVIA inspi\' REIRA\(TRAPNEST\)|'
         r'Oranges\sand\sLemons|'
         r'Run Girls, Run!|'
         r'THE RAMPAGE from EXILE TRIBE|'
