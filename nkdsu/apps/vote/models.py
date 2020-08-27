@@ -664,7 +664,7 @@ class Track(CleanOnSaveMixin, models.Model):
     @classmethod
     def all_anime_titles(cls):
         return set(
-            (rd.anime for t in cls.objects.all() for rd in t.role_details)
+            (rd.anime for t in cls.objects.public() for rd in t.role_details)
         )
 
     @classmethod
