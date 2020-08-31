@@ -59,15 +59,12 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
         return context
 
 
-class Archive(ListView):
+class Archive(mixins.ArchiveList):
     section = 'archive'
     template_name = 'archive.html'
-    paginate_by = 50
 
     def get_queryset(self):
-        qs = Show.objects.filter(end__lt=timezone.now())
-        return qs.order_by('-showtime').prefetch_related(
-            'play_set', 'vote_set')
+        return super().get_queryset().prefetch_related('play_set', 'vote_set')
 
 
 class ShowDetail(mixins.ShowDetail):

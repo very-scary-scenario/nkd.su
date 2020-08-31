@@ -58,6 +58,7 @@ class EverythingTest(
         '/roulette/pro/',
         '/roulette/staple/',
         '/archive/',
+        '/archive/2014/',
         '/stats/',
         '/0007C3F2760E0541/',
         '/canpeki-shinakya/0007C3F2760E0541/',

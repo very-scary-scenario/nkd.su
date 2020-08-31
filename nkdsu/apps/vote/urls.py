@@ -111,6 +111,8 @@ urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
 
     url(r'^archive/$', views.Archive.as_view(), name='archive'),
+    url(r'^archive/(?P<year>\d{4})/$', views.Archive.as_view(),
+        name='archive'),
 
     url(r'^show/(?P<date>[\d-]+)/$', views.ShowDetail.as_view(), name='show'),
     url(r'^show/(?P<date>[\d-]+)/listen/$', views.ListenRedirect.as_view(),

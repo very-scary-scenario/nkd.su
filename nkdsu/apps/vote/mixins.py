@@ -6,11 +6,12 @@ from os import path
 from markdown import markdown
 
 from django.conf import settings
+from django.db.utils import NotSupportedError
 from django.urls import reverse
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView, ListView
 
 from .models import Show, TwitterUser
 from .utils import memoize
@@ -129,6 +130,51 @@ class ThisShowDetailMixin(ShowDetailMixin):
 
 class ShowDetail(ShowDetailMixin, DetailView):
     pass
+
+
+class ArchiveList(ListView):
+    model = Show
+    exclude_current = True
+
+    def year(self):
+        year = int(
+            self.kwargs.get('year') or
+            self.get_queryset().latest('showtime').showtime.year
+        )
+
+        if year not in self.get_years():
+            raise Http404("We don't have shows for that year")
+
+        return year
+
+    def get_years(self):
+        try:
+            return list(
+                self.get_queryset().order_by('showtime__year').distinct(
+                    'showtime__year').values_list('showtime__year', flat=True)
+            )
+        except NotSupportedError:
+            # we're probably running on sqlite
+            return sorted(set(self.get_queryset().order_by('showtime__year')
+                              .values_list('showtime__year', flat=True)))
+
+    def get_queryset(self):
+        qs = super().get_queryset().order_by('-showtime')
+
+        if self.exclude_current:
+            qs = qs.exclude(pk=self.model.current().pk)
+
+        return qs
+
+    def get_context_data(self):
+        return {
+            **super().get_context_data(),
+            'years': self.get_years(),
+            'year': self.year(),
+            'object_list': self.get_queryset().filter(
+                showtime__year=self.year()
+            ),
+        }
 
 
 class MarkdownView(TemplateView):

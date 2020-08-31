@@ -12,7 +12,15 @@
       <a href="{% url "vote:index" %}">« current</a>
     {% endif %}
 
-    · <a href="{% url "vote:archive" %}">all shows</a> ·
+    ·
+
+    {% if show.has_ended %}
+      <a href="{% url "vote:archive" year=show.showtime.year %}">all {{ show.showtime.year }} shows</a>
+    {% else %}
+      <a href="{% url "vote:archive" %}">all shows</a>
+    {% endif %}
+
+    ·
 
     {% if show.prev %}
       <a href="{{ show.prev.get_absolute_url }}">older »</a>

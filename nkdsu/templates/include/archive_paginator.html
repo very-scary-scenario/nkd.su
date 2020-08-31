@@ -1,0 +1,13 @@
+<div class="paginator">
+  <p class="years">
+    {% for year_page in years %}
+      <span>
+        {% if year == year_page %}
+          {{ year_page }}
+        {% else %}
+          <a href="{% url request.resolver_match.view_name year=year_page %}">{{ year_page }}</a>
+        {% endif %}
+      </span>
+    {% endfor %}
+  </p>
+</div>

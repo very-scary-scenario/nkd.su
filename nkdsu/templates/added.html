@@ -11,7 +11,7 @@
       <a href="{% url "vote:index" %}">« current</a>
     {% endif %}
 
-    · <a href="{% url "vote:archive" %}">all shows</a> ·
+    · <a href="{% url "vote:archive" year=show.showtime.year %}">all {{ show.showtime.year }} shows</a> ·
 
     {% if show.prev %}
       <a href="{{ show.prev.get_revealed_url }}">{{ show.prev.showtime|date:"Y-m-d" }} »</a>
