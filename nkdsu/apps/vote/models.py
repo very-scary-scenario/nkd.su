@@ -310,6 +310,7 @@ class Show(CleanOnSaveMixin, models.Model):
             'broadcasting': self.broadcasting(),
             'message_markdown': self.message or None,
             'message_html': markdown(self.message) if self.message else None,
+            'voting_allowed': self.voting_allowed,
         }
 
     class Meta:
