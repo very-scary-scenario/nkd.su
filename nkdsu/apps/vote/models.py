@@ -1079,6 +1079,14 @@ class Track(CleanOnSaveMixin, models.Model):
             'id': self.id,
             'title': self.title,
             'role': self.role,
+            'role_parsed': [
+                {
+                    'anime': role.anime,
+                    'kind': role.kind,
+                    'specifics': role.specifics,
+                }
+                for role in self.role_details
+            ],
             'artist': self.artist,
             'artists': list(self.artist_names()),
             'artists_parsed': self.artists(),
