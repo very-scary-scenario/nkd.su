@@ -1610,7 +1610,7 @@ BADGES = [
         'charity-2020',
         u'{user.name} donated to the Very Scary Scenario charity streams '
         u'in 2020.',
-        'likes of depriving people of sleep, but somehow also likes bodily '
+        'likes depriving people of sleep, but somehow also likes bodily '
         'health',
         'heartbeat',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2020',
