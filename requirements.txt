@@ -4,7 +4,7 @@ celery==4.1
 classtools
 django-instant-coverage==1.1.0
 django-nose==1.4.5
-django-pipeline==1.7.0
+django-pipeline==2.0.5
 django>=2.2,<2.3
 musicbrainzngs==0.5
 ndg-httpsclient
