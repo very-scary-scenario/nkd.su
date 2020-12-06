@@ -35,9 +35,9 @@ def _get_items():
 
             cache.set(ck, page, 60*20)
 
-        yield from page['data']
+        yield from page.get('data', [])
 
-        next_page_url = page['paging'].get('next')
+        next_page_url = page.get('paging', {}).get('next')
         if next_page_url is None:
             break
 
