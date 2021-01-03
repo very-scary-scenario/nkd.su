@@ -2,12 +2,11 @@ import logging
 import re
 from functools import partial
 
+from django.conf import settings
+from django.utils.http import urlquote
 import musicbrainzngs
 import requests
 import tweepy
-
-from django.conf import settings
-from django.utils.http import urlquote
 
 
 logger = logging.getLogger(__name__)

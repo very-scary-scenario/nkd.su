@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from sly.lex import LexError
 from Levenshtein import ratio
 from django.utils.timezone import get_default_timezone, make_aware
+from sly.lex import LexError
 
 from .models import Track
 

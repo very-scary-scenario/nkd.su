@@ -1,10 +1,9 @@
+from django.core.management.base import BaseCommand
 import tweepy
 from tweepy.parsers import JSONParser
 
-from django.core.management.base import BaseCommand
-
-from ...utils import _read_tw_auth
 from ...models import Vote
+from ...utils import _read_tw_auth
 
 
 class Command(BaseCommand):

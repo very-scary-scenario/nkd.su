@@ -1,17 +1,18 @@
 import codecs
-from copy import copy
 import datetime
+from copy import copy
 from os import path
-
-from markdown import markdown
+from typing import Type
 
 from django.conf import settings
+from django.db.models import Model
 from django.db.utils import NotSupportedError
-from django.urls import reverse
 from django.http import Http404
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import DetailView, TemplateView, ListView
+from django.views.generic import DetailView, ListView, TemplateView
+from markdown import markdown
 
 from .models import Show, TwitterUser
 from .utils import memoize
@@ -31,8 +32,8 @@ class ShowDetailMixin(object):
     in context.
     """
 
-    model = Show
-    view_name = None
+    model: Type[Model] = Show
+    view_name: str
     default_to_current = False
 
     @memoize

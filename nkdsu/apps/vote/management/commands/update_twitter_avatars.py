@@ -1,9 +1,8 @@
 import logging
 from time import sleep
 
-from tweepy import TweepError
-
 from django.core.management.base import BaseCommand
+from tweepy import TweepError
 
 from nkdsu.apps.vote.models import TwitterUser
 

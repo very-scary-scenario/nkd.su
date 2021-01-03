@@ -1,7 +1,7 @@
-from django.conf.urls import re_path as url, include
+from django.urls import include, re_path as url
 
 from nkdsu.apps.vote import views
-from nkdsu.apps.vote.views import admin, js, api
+from nkdsu.apps.vote.views import admin, api, js
 
 
 app_name = 'vote'

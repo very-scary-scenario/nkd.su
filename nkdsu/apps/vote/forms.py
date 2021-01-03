@@ -1,15 +1,14 @@
-from random import choice
 import re
-
-import tweepy
+from random import choice
 
 from django import forms
 from django.core.validators import validate_email
 from django.utils.safestring import mark_safe
+import tweepy
 
-from .models import Request, Note
-from ..vote import trivia
+from .models import Note, Request
 from .utils import reading_tw_api
+from ..vote import trivia
 
 _disable_autocorrect = {
     "autocomplete": "off",

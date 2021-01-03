@@ -1,39 +1,37 @@
 # -*- coding: utf-8 -*-
 
-from io import BytesIO
 import datetime
 import json
 import re
+from io import BytesIO
 from string import ascii_letters
 from urllib.parse import urlparse
 
+from Levenshtein import ratio
+from PIL import Image, ImageFilter
 from classtools import reify
 from dateutil import parser as date_parser
-from Levenshtein import ratio
-from markdown import markdown
-from PIL import Image, ImageFilter
-import requests
-
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
-from django.urls import resolve, Resolver404
 from django.db import models
 from django.db.models import Q
-from django.utils import timezone
 from django.template.defaultfilters import slugify
-from django.conf import settings
-from django.core.exceptions import ValidationError
-from django.urls import reverse
 from django.templatetags.static import static
+from django.urls import Resolver404, resolve, reverse
+from django.utils import timezone
 from django.utils.timezone import get_default_timezone
+from markdown import markdown
+import requests
 
-from .managers import TrackManager, NoteManager
+from .managers import NoteManager, TrackManager
 from .parsers import parse_artist
 from .utils import (
-    length_str, split_id3_title, vote_tweet_intent_url, reading_tw_api,
-    posting_tw_api, memoize, pk_cached, indefinitely, lastfm, musicbrainzngs
+    indefinitely, lastfm, length_str, memoize, musicbrainzngs, pk_cached, posting_tw_api, reading_tw_api,
+    split_id3_title, vote_tweet_intent_url,
 )
 from ..vote import mixcloud
 

@@ -136,20 +136,20 @@ STATICFILES_FINDERS = (
 
 SECRET_KEY = 'please replace me with something decent in production'  # secret
 
-MIDDLEWARE = (
+MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-)
+]
 
 ROOT_URLCONF = 'nkdsu.urls'
 
 WSGI_APPLICATION = 'nkdsu.wsgi.application'
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.messages',
@@ -162,7 +162,7 @@ INSTALLED_APPS = (
     'pipeline',
 
     'nkdsu.apps.vote',
-)
+]
 
 LOGGING = {
     'version': 1,

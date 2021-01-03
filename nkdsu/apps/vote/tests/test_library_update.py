@@ -1,5 +1,5 @@
-from collections import namedtuple
 import plistlib
+from collections import namedtuple
 
 from django.test import TestCase
 

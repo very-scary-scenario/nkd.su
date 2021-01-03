@@ -1,11 +1,9 @@
 from dateutil import parser as date_parser
-import ujson
-
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+import ujson
 
-from nkdsu.apps.vote.models import (Show, Track, Play, Block, Vote,
-                                    TwitterUser, Request)
+from nkdsu.apps.vote.models import Block, Play, Request, Show, Track, TwitterUser, Vote
 
 
 class Command(BaseCommand):

@@ -8,6 +8,7 @@ django-pipeline==2.0.5
 django-stubs>=1.7.0<1.8
 django>=2.2,<2.3
 flake8>=3.8
+flake8-import-order<2
 musicbrainzngs==0.5
 mypy<1
 ndg-httpsclient

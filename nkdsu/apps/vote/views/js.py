@@ -1,15 +1,17 @@
+from typing import Optional
+
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
 from ..models import Track
-from ..utils import vote_tweet, tweet_url, tweet_len
+from ..utils import tweet_len, tweet_url, vote_tweet
 
 
 class JSApiMixin(object):
     # Yes, it's traversed like HTML, but it's *not* HTML. None of these even
     # have <html> elements.
-    content_type = 'text/plain'
+    content_type: Optional[str] = 'text/plain'
 
     def post(self, request):
         result = self.do_thing(request.POST)

@@ -1,6 +1,7 @@
-from django.core.management.base import BaseCommand
-from nkdsu.apps.vote.update_library import update_library
 import plistlib
+from django.core.management.base import BaseCommand
+
+from ...update_library import update_library
 
 
 class Command(BaseCommand):

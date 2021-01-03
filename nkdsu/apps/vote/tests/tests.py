@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 
-from ..models import Show, Track, Play
+from ..models import Play, Show, Track
 
 
 def mkutc(*args, **kwargs):

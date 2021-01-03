@@ -1,5 +1,6 @@
-from ..vote import models
 from django.contrib import admin
+
+from ..vote import models
 
 
 class ShowAdmin(admin.ModelAdmin):

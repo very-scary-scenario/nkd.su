@@ -1,9 +1,8 @@
 # coding=utf-8
 
+from django.core.management.base import BaseCommand
 import tweepy
 from tweepy.parsers import JSONParser
-
-from django.core.management.base import BaseCommand
 
 from ...models import Vote
 from ...utils import _read_tw_auth

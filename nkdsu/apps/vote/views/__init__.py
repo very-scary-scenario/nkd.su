@@ -1,24 +1,23 @@
-from collections import OrderedDict
 import datetime
+from collections import OrderedDict
 from random import sample
 
 from classtools import reify
-import tweepy
-
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.core.paginator import Paginator, InvalidPage
-from django.db.models import F, Count, DurationField
+from django.core.paginator import InvalidPage, Paginator
+from django.db.models import Count, DurationField, F
 from django.db.models.functions import Cast, Now
 from django.http import Http404, HttpResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_duration
-from django.views.generic import TemplateView, ListView, DetailView, FormView
+from django.views.generic import DetailView, FormView, ListView, TemplateView
+import tweepy
 
-from ..forms import RequestForm, BadMetadataForm, DarkModeForm
+from ..forms import BadMetadataForm, DarkModeForm, RequestForm
 from ..models import Show, Track, TwitterUser
 from ...vote import mixins
 
@@ -201,8 +200,8 @@ class Search(ListView):
     context_object_name = 'tracks'
     paginate_by = 20
 
-    def get(self, *a, **k):
-        resp = super().get(*a, **k)
+    def get(self, request):
+        resp = super().get(request)
         qs = self.get_queryset()
         animes = set((
             role_detail.anime for t in qs for role_detail in t.role_details

@@ -1,27 +1,23 @@
-# coding: utf-8
-
 import os
+import plistlib
 from urllib.parse import urlparse
 
-import plistlib
-
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import ValidationError
-from django.urls import reverse, reverse_lazy
 from django.forms import Form
 from django.http import HttpResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import (DetailView, CreateView, View, FormView,
-                                  TemplateView, ListView)
+from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, View
 from django.views.generic.base import TemplateResponseMixin
 
-from ..forms import LibraryUploadForm, NoteForm
-from ..models import Track, Vote, Block, Show, TwitterUser, Request, Note
-from ..update_library import update_library
 from .js import JSApiMixin
+from ..forms import LibraryUploadForm, NoteForm
+from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
+from ..update_library import update_library
 
 
 class AdminMixin(object):

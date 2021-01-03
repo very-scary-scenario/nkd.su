@@ -1,10 +1,9 @@
 import datetime
 
-from markdown import markdown as md
-
 from django.template import Library
 from django.utils import timezone
 from django.utils.safestring import mark_safe
+from markdown import markdown as md
 
 from ..utils import length_str
 

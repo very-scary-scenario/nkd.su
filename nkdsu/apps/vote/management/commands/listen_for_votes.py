@@ -1,12 +1,11 @@
 import json
 
+from django.conf import settings
+from django.core.management.base import BaseCommand
 import tweepy
 
-from django.core.management.base import BaseCommand
-from django.conf import settings
-
-from ...utils import _read_tw_auth
 from ...models import Vote
+from ...utils import _read_tw_auth
 
 
 class TweetListener(tweepy.StreamListener):
