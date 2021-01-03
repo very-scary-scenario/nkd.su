@@ -58,10 +58,36 @@ body {
           i::before {
             padding-left: .3em;
             padding-right: .3em;
+            position: relative;
           }
 
           span.name {
             display: none;
+          }
+
+          &.lookatme {
+            i::before {
+              .bell-ding;
+            }
+
+            &::before {
+              .bell-strike;
+              .fas;
+              z-index: 2;
+              content: @fa-var-hand-holding;
+              color: @fg;
+              display: block;
+              position: absolute;
+              width: 100%;
+              text-align: center;
+              top: 0;
+              left: 0;
+              text-shadow: none;
+            }
+
+            &:hover::before {
+              color: @bg;
+            }
           }
         }
 
@@ -656,7 +682,7 @@ form ul.errorlist li {
 
       &.update-warning {
         background-color: fadeout(@pink, 75%);
-        color: darken(@pink, 20);
+        color: @warning;
         border: 1px solid darken(@pink, 20);
 
         &::before {
