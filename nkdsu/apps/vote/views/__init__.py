@@ -286,7 +286,10 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
         except tweepy.TweepError as e:
             if e.api_code == 50:
                 raise Http404('No such user :<')
-            raise
+            elif e.api_code == 63:
+                raise Http404('User got suspended :<')
+            else:
+                raise
 
         return HttpResponse(image, content_type=content_type)
 
