@@ -496,6 +496,12 @@ class RequestAddition(FormView):
     template_name = 'request.html'
     success_url = reverse_lazy('vote:index')
 
+    def get_initial(self):
+        return {
+            **super().get_initial(),
+            **{k: v for (k, v) in self.request.GET.items()},
+        }
+
     def form_valid(self, form):
         f = form.cleaned_data
 

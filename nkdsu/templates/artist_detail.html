@@ -69,4 +69,6 @@
     {% endfor %}
   </div>
 
+  <p class="aligned everything">Are we missing a good track by {{ artist }}? <a href="{% url "vote:request_addition" %}?artist={{ artist|urlencode }}">Get it added to the library</a>!</p>
+
 {% endblock %}

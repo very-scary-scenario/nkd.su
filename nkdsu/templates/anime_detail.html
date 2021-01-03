@@ -35,4 +35,11 @@
     {% endfor %}
   </div>
 
+  <p class="aligned everything">
+    Are we missing a good pick from {{ anime }}? <a href="{% url "vote:request_addition" %}?show={{ anime|urlencode }}">Get it added to the library</a>!
+    {% if anime == "Carole & Tuesday" %}
+      No, we will not be adding Galactic Mermaid.
+    {% endif %}
+  </p>
+
 {% endblock %}
