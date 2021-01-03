@@ -536,9 +536,9 @@ class Role:
         self.full_tag = full_tag
 
         result = re.match(
-            r'^(?P<anime>.*?) ?\b(?P<role>'
+            r'^(?P<anime>.*?) ?\b('
 
-            r'(rebroadcast )?\b('
+            r'(?P<caveat>rebroadcast )?\b(?P<role>'
 
             r'((ED|OP)\d*\b.*)|'
             r'((character|image) song\b.*)|'
@@ -558,6 +558,7 @@ class Role:
             deets = result.groupdict()
             self.anime = deets['anime']
             self.full_role = deets['role']
+            self.caveat = deets['caveat']
         else:
             self.anime = None
             self.full_role = self.full_tag

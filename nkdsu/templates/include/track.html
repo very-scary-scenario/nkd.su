@@ -45,7 +45,9 @@
             {% for role_detail in track.role_details %}
               <span class="role">
                 {% if role_detail.anime %}
-                  <a href="{% url "vote:anime" anime=role_detail.anime %}">{{ role_detail.anime }}</a> {{ role_detail.full_role }}
+                  <a href="{% url "vote:anime" anime=role_detail.anime %}">{{ role_detail.anime }}</a>
+                  {{ role_detail.caveat|default:"" }}
+                  {{ role_detail.full_role }}
                 {% else %}
                   {{ role_detail }}
                 {% endif %}
