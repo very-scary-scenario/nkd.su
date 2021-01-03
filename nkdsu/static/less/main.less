@@ -672,6 +672,8 @@ form ul.errorlist li {
       padding: .2em .4em .3em;
       margin-top: .2em;
 
+      .uninvert();
+
       &::before {
         .fas;
         display: inline-block;
@@ -681,7 +683,7 @@ form ul.errorlist li {
       }
 
       &.update-warning {
-        background-color: fadeout(@pink, 75%);
+        background-color: mix(@pink, @bg, 25%);
         color: @warning;
         border: 1px solid darken(@pink, 20);
 
@@ -691,7 +693,7 @@ form ul.errorlist li {
       }
 
       &.update-info {
-        background-color: fadeout(@blue, 75%);
+        background-color: mix(@blue, @bg, 25%);
         color: darken(@blue, 20);
         border: 1px solid darken(@blue, 20);
 
