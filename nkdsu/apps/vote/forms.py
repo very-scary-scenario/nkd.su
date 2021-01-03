@@ -33,7 +33,9 @@ def email_or_twitter(address):
 
 
 class EmailOrTwitterField(forms.EmailField):
-    widget = forms.TextInput(attrs=dict(_disable_autocorrect, autocapitalize="off"))
+    widget = forms.TextInput(
+        attrs=dict(_disable_autocorrect, autocapitalize="off")
+    )
     default_error_messages = {
         'invalid': u'Enter a valid email address or Twitter username',
     }
@@ -111,8 +113,10 @@ class RequestForm(TriviaForm):
                            widget=_proper_noun_textinput)
     role = forms.CharField(label="Role (OP/ED/Insert/Character/etc.)",
                            required=False)
-    details = forms.CharField(widget=forms.Textarea(attrs=_disable_autocorrect),
-                              label="Additional Details", required=False)
+    details = forms.CharField(
+        widget=forms.Textarea(attrs=_disable_autocorrect),
+        label="Additional Details", required=False,
+    )
     contact = EmailOrTwitterField(label="Email Address/Twitter name",
                                   required=True)
 

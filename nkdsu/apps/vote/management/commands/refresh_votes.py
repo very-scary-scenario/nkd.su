@@ -14,7 +14,7 @@ class Command(BaseCommand):
                                        tweet_mode='extended')
 
         for tweet in mentions:
-            if not 'full_text' in tweet and len(tweet['text']) == 140:
+            if ('full_text' not in tweet) and (len(tweet['text']) == 140):
                 tweet = t.get_status(tweet['id'], tweet_mode='extended')
 
             Vote.handle_tweet(tweet)

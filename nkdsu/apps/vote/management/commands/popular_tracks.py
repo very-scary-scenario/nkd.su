@@ -13,16 +13,16 @@ class Command(BaseCommand):
         return c
 
     def handle(self, **options):
-        print '\nby vote count, total:'
+        print('\nby vote count, total:')
         for track, count in self.counter(
             Track.objects.all(),
             lambda t: t.vote_set.all().count(),
         ).most_common(50):
-            print '{:>5}: {}'.format(count, track)
+            print('{:>5}: {}'.format(count, track))
 
-        print '\nby play count, total:'
+        print('\nby play count, total:')
         for track, count in self.counter(
             Track.objects.all(),
             lambda t: t.play_set.all().count(),
         ).most_common(50):
-            print '{:>5}: {}'.format(count, track)
+            print('{:>5}: {}'.format(count, track))

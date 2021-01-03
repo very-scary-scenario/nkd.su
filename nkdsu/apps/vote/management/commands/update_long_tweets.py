@@ -15,15 +15,14 @@ class Command(BaseCommand):
         t = tweepy.API(_read_tw_auth, parser=JSONParser())
 
         for vote in Vote.objects.exclude(tweet_id__isnull=True).order_by('-date'):
-            if len(vote.text) != 140:
+            if len(vote.text) != 280:
                 continue
 
-            print
-            print vote.text
+            print(vote.text)
             try:
                 tweet_obj = t.get_status(vote.tweet_id, tweet_mode='extended')
             except tweepy.TweepError as e:
-                print (e)
+                print(e)
                 continue
             vote.text = tweet_obj.get('full_text', None) or tweet_obj.get('text', None)
             print(vote.text)

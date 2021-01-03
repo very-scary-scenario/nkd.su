@@ -14,14 +14,14 @@ class TweetListener(tweepy.StreamListener):
         Vote.handle_tweet(json.loads(data))
 
     def on_error(self, status):
-        print status
+        print(status)
         return True
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        l = TweetListener()
+        listener = TweetListener()
 
-        stream = tweepy.Stream(_read_tw_auth, l)
+        stream = tweepy.Stream(_read_tw_auth, listener)
         track = ['@%s' % settings.READING_USERNAME]
         stream.filter(track=track)

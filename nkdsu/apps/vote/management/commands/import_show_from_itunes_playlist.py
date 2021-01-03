@@ -26,9 +26,7 @@ class Command(BaseCommand):
             try:
                 track = Track.objects.get(pk=pk)
             except Track.DoesNotExist:
-                print "could not find '{Name}' ({pk})".format(
-                    pk=pk, **plist_track
-                )
+                print("could not find '{Name}' ({pk})".format(pk=pk, **plist_track))
                 continue
 
-            print track
+            print(track)

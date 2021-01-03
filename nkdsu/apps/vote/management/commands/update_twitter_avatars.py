@@ -1,7 +1,6 @@
 import logging
 from time import sleep
 
-import requests
 from tweepy import TweepError
 
 from django.core.management.base import BaseCommand
@@ -24,7 +23,7 @@ class Command(BaseCommand):
                 user.update_from_api()
                 user.get_avatar(size=None, from_cache=False)
                 user.get_avatar(size='original', from_cache=False)
-            except TweepError as e:
+            except TweepError:
                 # this user probably does not exist, but we might be getting
                 # rate limited
                 pass
