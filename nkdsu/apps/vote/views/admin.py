@@ -20,7 +20,7 @@ from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
 from ..update_library import update_library
 
 
-class AdminMixin(object):
+class AdminMixin:
     """
     A mixin we should apply to all admin views.
     """
@@ -33,16 +33,16 @@ class AdminMixin(object):
         return TemplateResponse(self.request, 'admin_error.html', context)
 
     @classmethod
-    def as_view(cls):
+    def as_view(cls, **kw):
         return user_passes_test(
             lambda u: u.is_authenticated and u.is_staff,
-        )(super(AdminMixin, cls).as_view())
+        )(super(AdminMixin, cls).as_view(**kw))
 
 
-class AnyLoggedInUserMixin(object):
+class AnyLoggedInUserMixin:
     @classmethod
-    def as_view(cls):
-        return login_required(super(AnyLoggedInUserMixin, cls).as_view())
+    def as_view(cls, **kw):
+        return login_required(super(AnyLoggedInUserMixin, cls).as_view(**kw))
 
 
 class TrackSpecificAdminMixin(AdminMixin):

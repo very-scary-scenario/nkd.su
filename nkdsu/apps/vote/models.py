@@ -1,10 +1,12 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 import datetime
 import json
 import re
+from dataclasses import dataclass
 from io import BytesIO
 from string import ascii_letters
+from typing import List, Optional, Union
 from urllib.parse import urlparse
 
 from Levenshtein import ratio
@@ -39,18 +41,18 @@ from ..vote import mixcloud
 User = get_user_model()
 
 
-class CleanOnSaveMixin(object):
-    def save(self, force_save=False):
-        if not force_save:
-            self.full_clean()
-
-        return super(CleanOnSaveMixin, self).save()
+class CleanOnSaveMixin:
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
 
 
-class SetShowBasedOnDateMixin(object):
+class SetShowBasedOnDateMixin:
+    show: models.ForeignKey[Union[Show, models.expressions.Combinable], Show]
+
     def save(self, *args, **kwargs):
         self.show = Show.at(self.date)
-        return super(SetShowBasedOnDateMixin, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 class Show(CleanOnSaveMixin, models.Model):
@@ -876,7 +878,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return play
 
-    play.alters_data = True
+    play.alters_data = True  # type: ignore
 
     def shortlist(self):
         shortlist = Shortlist(
@@ -890,7 +892,7 @@ class Track(CleanOnSaveMixin, models.Model):
         except ValidationError:
             pass
 
-    shortlist.alters_data = True
+    shortlist.alters_data = True  # type: ignore
 
     def discard(self):
         try:
@@ -901,20 +903,20 @@ class Track(CleanOnSaveMixin, models.Model):
         except ValidationError:
             pass
 
-    discard.alters_data = True
+    discard.alters_data = True  # type: ignore
 
     def reset_shortlist_discard(self):
         qs_kwargs = {'track': self, 'show': Show.current()}
         Discard.objects.filter(**qs_kwargs).delete()
         Shortlist.objects.filter(**qs_kwargs).delete()
 
-    reset_shortlist_discard.alters_data = True
+    reset_shortlist_discard.alters_data = True  # type: ignore
 
     def hide(self):
         self.hidden = True
         self.save()
 
-    hide.alters_data = True
+    hide.alters_data = True  # type: ignore
 
     def unhide(self):
         self.hidden = False
@@ -924,19 +926,19 @@ class Track(CleanOnSaveMixin, models.Model):
 
         self.save()
 
-    unhide.alters_data = True
+    unhide.alters_data = True  # type: ignore
 
     def lock_metadata(self):
         self.metadata_locked = True
         self.save()
 
-    lock_metadata.alters_data = True
+    lock_metadata.alters_data = True  # type: ignore
 
     def unlock_metadata(self):
         self.metadata_locked = False
         self.save()
 
-    unlock_metadata.alters_data = True
+    unlock_metadata.alters_data = True  # type: ignore
 
     def slug(self):
         return slugify(self.title)
@@ -1122,8 +1124,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     # universal
     tracks = models.ManyToManyField(Track, db_index=True)
     date = models.DateTimeField(db_index=True)
-    show = models.ForeignKey(Show, related_name='vote_set',
-                             on_delete=models.CASCADE)
+    show = models.ForeignKey(Show, related_name='vote_set', on_delete=models.CASCADE)
     text = models.TextField(blank=True)
 
     # twitter only
@@ -1396,7 +1397,7 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
                 )
 
     def save(self, *args, **kwargs):
-        super(Play, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
         if self.track.hidden:
             self.track.hidden = False
@@ -1422,7 +1423,7 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         self.tweet_id = tweet.id
         self.save()
 
-    tweet.alters_data = True
+    tweet.alters_data = True  # type: ignore
 
     def api_dict(self, verbose=False):
         return {
@@ -1526,8 +1527,7 @@ class Note(CleanOnSaveMixin, models.Model):
     """
 
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
-    show = models.ForeignKey(Show, blank=True, null=True,
-                             on_delete=models.CASCADE)
+    show = models.ForeignKey(Show, blank=True, null=True, on_delete=models.CASCADE)
     public = models.BooleanField(default=False)
     content = models.TextField()
 
@@ -1537,9 +1537,15 @@ class Note(CleanOnSaveMixin, models.Model):
         return self.content
 
 
-class Badge(tuple):
-    def __new__(cls, *args):
-        return super(Badge, cls).__new__(cls, args)
+@dataclass
+class Badge:
+    slug: str
+    description_fmt: str
+    summary: str
+    icon: str
+    url: str
+    start: Optional[datetime.datetime]
+    finish: Optional[datetime.datetime]
 
     def info(self, user):
         slug, description, summary, icon, url, start, finish = self
@@ -1555,7 +1561,7 @@ class Badge(tuple):
         }
 
 
-BADGES = [
+BADGES: List[Badge] = [
     Badge(
         'tblc',
         u'{user.name} bought Take Back Love City for the RSPCA.',
@@ -1621,8 +1627,8 @@ BADGES = [
 
 class UserBadge(CleanOnSaveMixin, models.Model):
     badge = models.CharField(
-        choices=[b[:2] for b in BADGES],
-        max_length=max((len(b[0]) for b in BADGES)),
+        choices=[(b.slug, b.description_fmt) for b in BADGES],
+        max_length=max((len(b.slug) for b in BADGES)),
     )
     user = models.ForeignKey(TwitterUser, on_delete=models.CASCADE)
 

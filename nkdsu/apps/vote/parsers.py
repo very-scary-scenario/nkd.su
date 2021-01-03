@@ -6,7 +6,7 @@ from sly.lex import LexError
 
 class ArtistLexer(Lexer):
     tokens = {
-        ARTIST_COMPONENT, SPACE, COMMA, VIA, LPAREN, RPAREN, CV,  # noqa
+        ARTIST_COMPONENT, SPACE, COMMA, VIA, LPAREN, RPAREN, CV,  # type: ignore  # noqa
     }
 
     VIA = (

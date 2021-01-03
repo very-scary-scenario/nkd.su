@@ -2,7 +2,7 @@ import codecs
 import datetime
 from copy import copy
 from os import path
-from typing import Type
+from typing import Optional, Type
 
 from django.conf import settings
 from django.db.models import Model
@@ -18,26 +18,34 @@ from .models import Show, TwitterUser
 from .utils import memoize
 
 
-class CurrentShowMixin(object):
+class CurrentShowMixin:
     def get_context_data(self):
         context = super(CurrentShowMixin, self).get_context_data()
         context['show'] = Show.current()
         return context
 
 
-class ShowDetailMixin(object):
+class LetMemoizeGetObject:
+    def get_object(self, qs=None):
+        if qs is None:
+            return self._get_object()
+        else:
+            return super().get_object(qs=qs)
+
+
+class ShowDetailMixin(LetMemoizeGetObject):
     """
     A view that will find a show for any date in the past, redirect to the
     showtime date if necessary, and then render a view with the correct show
     in context.
     """
 
-    model: Type[Model] = Show
+    model: Optional[Type[Model]] = Show
     view_name: str
     default_to_current = False
 
     @memoize
-    def get_object(self):
+    def _get_object(self):
         """
         Get the show relating to self.date or, if self.date is None, the most
         recent complete show. If self.default_to_current is True, get the show
@@ -130,11 +138,11 @@ class ThisShowDetailMixin(ShowDetailMixin):
 
 
 class ShowDetail(ShowDetailMixin, DetailView):
-    pass
+    model: Type[Model] = Show
 
 
 class ArchiveList(ListView):
-    model = Show
+    model: Optional[Type[Model]] = Show
     exclude_current = True
 
     def year(self):
@@ -197,11 +205,11 @@ class MarkdownView(TemplateView):
         return context
 
 
-class TwitterUserDetailMixin(object):
-    model = TwitterUser
+class TwitterUserDetailMixin(LetMemoizeGetObject):
+    model: Type[Model] = TwitterUser
 
     @memoize
-    def get_object(self):
+    def _get_object(self):
         user_id = self.kwargs.get('user_id')
 
         if user_id:
