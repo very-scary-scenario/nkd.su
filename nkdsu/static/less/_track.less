@@ -242,7 +242,7 @@ li.vote {
       .heavy-glow(@bg);
     }
   }
-  &.new-user::before { .fas; content: @fa-var-star; color: @hl; }
+  &.new-user::before { .fas(); content: @fa-var-star; color: @hl; }
 
   &.shortlisted, &.placated {
     img {
@@ -276,7 +276,7 @@ li.vote {
   }
 
   &.patron .deets .full_name::before {
-    .fab;
+    .fab();
     color: @patreon-colour;
     content: @fa-var-patreon;
     margin-right: .4em;
@@ -433,7 +433,7 @@ body.tracks-collapsed li.vote {
 
         .text {
           &::before {
-            .fas;
+            .fas();
             display: block;
             content: @fa-var-comment;
           }
@@ -478,7 +478,7 @@ body.tracks-collapsed li.vote {
 
   &.content {
     &::after {
-      .fas;
+      .fas();
       content: @fa-var-comment;
       bottom: -.1em;
       right: -.1em;

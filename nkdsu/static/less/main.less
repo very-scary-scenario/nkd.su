@@ -50,7 +50,7 @@ body {
         position: relative;
 
         i::before {
-          .fas;
+          .fas();
           padding-right: .5em;
         }
 
@@ -67,12 +67,12 @@ body {
 
           &.lookatme {
             i::before {
-              .bell-ding;
+              .bell-ding();
             }
 
             &::before {
-              .bell-strike;
-              .fas;
+              .bell-strike();
+              .fas();
               z-index: 2;
               content: @fa-var-hand-holding;
               color: @fg;
@@ -226,7 +226,7 @@ body {
 
           &.roulette-pro {
             &::before {
-              .fas;
+              .fas();
               content: @fa-var-exclamation-triangle;
             }
           }
@@ -262,7 +262,7 @@ body {
           text-align: center;
 
           &::before {
-            .fab;
+            .fab();
             font-size: 1.5em;
             margin-bottom: .3em;
             color: @patreon-colour;
@@ -675,7 +675,7 @@ form ul.errorlist li {
       .uninvert();
 
       &::before {
-        .fas;
+        .fas();
         display: inline-block;
         width: 1.4em;
         text-align: center;
