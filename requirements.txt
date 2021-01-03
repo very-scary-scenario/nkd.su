@@ -6,6 +6,7 @@ django-instant-coverage==1.1.0
 django-nose==1.4.5
 django-pipeline==2.0.5
 django>=2.2,<2.3
+flake8>=3.8
 musicbrainzngs==0.5
 ndg-httpsclient
 psycopg2
