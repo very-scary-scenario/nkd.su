@@ -1305,7 +1305,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         badge is the last one defined in `BADGES`.
         """
 
-        badge_order = [b[0] for b in BADGES]
+        badge_order = [b.slug for b in BADGES]
 
         if not self.twitter_user:
             return
@@ -1548,16 +1548,14 @@ class Badge:
     finish: Optional[datetime.datetime]
 
     def info(self, user):
-        slug, description, summary, icon, url, start, finish = self
-
         return {
-            'slug': slug,
-            'description': description.format(user=user),
-            'summary': summary,
-            'icon': icon,
-            'url': url,
-            'start': Show.at(start).showtime if start is not None else None,
-            'finish': Show.at(finish).end if finish is not None else None,
+            'slug': self.slug,
+            'description': self.description_fmt.format(user=user),
+            'summary': self.summary,
+            'icon': self.icon,
+            'url': self.url,
+            'start': Show.at(self.start).showtime if self.start is not None else None,
+            'finish': Show.at(self.finish).end if self.finish is not None else None,
         }
 
 
@@ -1634,7 +1632,7 @@ class UserBadge(CleanOnSaveMixin, models.Model):
 
     @reify
     def badge_info(self):
-        badge, = (b for b in BADGES if b[0] == self.badge)
+        badge, = (b for b in BADGES if b.slug == self.badge)
         return badge.info(self.user)
 
     class Meta:
