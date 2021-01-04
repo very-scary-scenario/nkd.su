@@ -41,7 +41,7 @@ class ShowDetailMixin(LetMemoizeGetObject):
     """
 
     model: Optional[Type[Model]] = Show
-    view_name: str
+    view_name: Optional[str] = None
     default_to_current = False
 
     @memoize
