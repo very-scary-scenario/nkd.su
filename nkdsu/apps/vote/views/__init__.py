@@ -453,7 +453,7 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
 
     def get_form_kwargs(self):
         kwargs = super(ReportBadMetadata, self).get_form_kwargs()
-        kwargs['track'] = Track.objects.get(pk=self.kwargs['pk'])
+        kwargs['track'] = self.get_track()
         return kwargs
 
     def get_success_url(self):
