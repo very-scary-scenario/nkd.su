@@ -54,6 +54,30 @@ body {
           padding-right: .5em;
         }
 
+        &.lookatme {
+          i::before {
+            .bell-ding();
+          }
+
+          &::before {
+            .bell-strike();
+            .fas();
+            z-index: 2;
+            content: @fa-var-hand-holding;
+            color: @fg;
+            display: block;
+            position: absolute;
+            text-align: center;
+            top: 0;
+            left: .8em;
+            text-shadow: none;
+          }
+
+          &:hover::before {
+            color: @bg;
+          }
+        }
+
         @media (max-width: 40em) {
           i::before {
             padding-left: .3em;
@@ -63,31 +87,6 @@ body {
 
           span.name {
             display: none;
-          }
-
-          &.lookatme {
-            i::before {
-              .bell-ding();
-            }
-
-            &::before {
-              .bell-strike();
-              .fas();
-              z-index: 2;
-              content: @fa-var-hand-holding;
-              color: @fg;
-              display: block;
-              position: absolute;
-              width: 100%;
-              text-align: center;
-              top: 0;
-              left: 0;
-              text-shadow: none;
-            }
-
-            &:hover::before {
-              color: @bg;
-            }
           }
         }
 
