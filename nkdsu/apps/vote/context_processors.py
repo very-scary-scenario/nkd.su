@@ -36,7 +36,7 @@ def get_sections(request):
         ('roulette', reverse('vote:roulette', kwargs={'mode': 'hipster'})),
         ('stats', reverse('vote:stats')),
         ('donate', 'https://www.patreon.com/NekoDesu'),
-        ('etc', 'https://nekodesu.co.uk/'),
+        ('etc', 'https://nekodesu.radio/'),
     ] if url]
 
 
