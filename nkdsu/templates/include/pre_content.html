@@ -13,7 +13,7 @@
       {% if current_show.broadcasting %}
         <p class="subtitle">on air! listen live at <a target="_blank" href="http://thisisthecat.com">the&nbsp;cat</a>
       {% elif current_show %}
-        <p class="subtitle">next <a href="https://nekodesu.co.uk/">neko desu</a>: {{ current_show.showtime|date:"F"|lower }}&nbsp;{{ current_show.showtime|date:"jS" }}</p>
+        <p class="subtitle">next <a href="https://nekodesu.radio/">neko desu</a>: {{ current_show.showtime|date:"F"|lower }}&nbsp;{{ current_show.showtime|date:"jS" }}</p>
       {% else %}
         <p class="subtitle">a neko desu request robot</p>
       {% endif %}
