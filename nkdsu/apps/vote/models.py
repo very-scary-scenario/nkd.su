@@ -1113,6 +1113,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
 MANUAL_VOTE_KINDS = (
     ('email', 'email'),
+    ('discord', 'discord'),
     ('text', 'text'),
     ('tweet', 'tweet'),
     ('person', 'in person'),
