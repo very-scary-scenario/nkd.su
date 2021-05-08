@@ -31,7 +31,7 @@ class ArtistLexer(Lexer):
     CV = (
         r'('
         r'CV[.:]|'
-        r'[Vv]ocal:|'
+        r'[Vv]ocals?:|'
         r'[Mm]ain\svocals?:|'
         r'[Cc]omposed\sby|'
         r'[Ff]rom|'
