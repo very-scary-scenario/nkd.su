@@ -585,6 +585,9 @@ class Role:
             'character song': (3, 'Character song', 'Character songs'),
         }.get(self.kind.lower(), (99, 'Other', 'Others'))
 
+        if self.caveat and self.caveat.lower().strip() == 'rebroadcast':
+            self.sortkey_group += 0.5
+
     def __str__(self):
         return self.full_tag
 
