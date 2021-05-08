@@ -22,16 +22,22 @@
       <span><a target="_blank" href="https://github.com/very-scary-scenario/nkd.su">source</a></span>
       <span><a target="_blank" href="https://github.com/very-scary-scenario/nkd.su/issues/new">report a bug</a></span>
     {% endif %}
+  </p>
 
-    {% if user.is_authenticated %}
+  {% if user.is_authenticated %}
+    <p class="credit">
+      <span>
+        all:
+        <a href="{% url "vote:admin:all_anime" %}">anime</a> /
+        <a href="{% url "vote:admin:all_artists" %}">artists</a> /
+        <a href="{% url "vote:admin:all_composers" %}">composers</a> /
+        <a href="{% url "vote:admin:all_roles" %}">roles</a>
+      </span>
       <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
-      <span><a href="{% url "vote:admin:all_anime" %}">all anime</a></span>
-      <span><a href="{% url "vote:admin:all_artists" %}">all artists</a></span>
-      <span><a href="{% url "vote:admin:all_roles" %}">all roles</a></span>
       <span><a href="{% url "password_change" %}">change password</a></span>
       <span><a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a></span>
     {% else %}
       <span><a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a></span>
-    {% endif %}
-  </p>
+    </p>
+  {% endif %}
 </div>

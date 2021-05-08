@@ -16,6 +16,8 @@ admin_patterns = ([
         admin.AllAnimeView.as_view(), name='all_anime'),
     url(r'^all-the-artists/$',
         admin.AllArtistsView.as_view(), name='all_artists'),
+    url(r'^all-the-composers/$',
+        admin.AllComposersView.as_view(), name='all_composers'),
     url(r'^all-the-roles/$',
         admin.AllRolesView.as_view(), name='all_roles'),
     url(r'^requests/$',

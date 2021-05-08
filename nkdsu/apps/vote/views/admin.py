@@ -532,6 +532,10 @@ class AllArtistsView(AllAnimeView):
     get_names = Track.all_artists
 
 
+class AllComposersView(AllAnimeView):
+    get_names = Track.all_composers
+
+
 class AllRolesView(AllAnimeView):
     get_names = Track.all_non_inudesu_roles
 

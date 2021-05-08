@@ -678,6 +678,12 @@ class Track(CleanOnSaveMixin, models.Model):
         )
 
     @classmethod
+    def all_composers(cls):
+        return set(
+            (t.composer for t in cls.objects.public())
+        )
+
+    @classmethod
     def suggest_artists(cls, string):
         artist_names = set()
         for track in Track.objects.public().filter(
