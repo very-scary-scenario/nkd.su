@@ -33,6 +33,7 @@ class EverythingTest(
         '/vote-admin/trivia/',
         '/vote-admin/all-the-anime/',
         '/vote-admin/all-the-artists/',
+        '/vote-admin/all-the-composers/',
         '/vote-admin/all-the-roles/',
         '/vote-admin/play/0007C3F2760E0541/',
 
@@ -65,6 +66,7 @@ class EverythingTest(
         '/0007C3F2760E0541/report/',
         '/artist/Hikasa Youko/',
         '/anime/RO-KYU-BU%21/',
+        '/composer/folks/',
         '/show/2014-02-05/listen/',
         '/show/2014-02-05/',
         '/show/',

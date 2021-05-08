@@ -50,6 +50,7 @@
   "model": "vote.track",
   "fields": {
     "id3_artist": "Hikasa Youko",
+    "composer": "idk, someone",
     "added": "2012-12-15T18:51:21Z",
     "inudesu": false,
     "msec": 225044,
@@ -64,6 +65,7 @@
   "model": "vote.track",
   "fields": {
     "id3_artist": "Sakurai Tomo",
+    "composer": "someone else",
     "added": "2010-12-03T17:24:49Z",
     "inudesu": false,
     "msec": 216894,
@@ -78,6 +80,7 @@
   "model": "vote.track",
   "fields": {
     "id3_artist": "Kobayashi Yuu",
+    "composer": "person",
     "added": "2011-05-25T12:24:48Z",
     "inudesu": false,
     "msec": 238393,
@@ -92,6 +95,7 @@
   "model": "vote.track",
   "fields": {
     "id3_artist": "Suzaki Aya",
+    "composer": "folks",
     "added": "2013-01-26T12:39:37Z",
     "inudesu": false,
     "msec": 232907,
@@ -106,6 +110,7 @@
   "model": "vote.track",
   "fields": {
     "id3_artist": "Death in Vegas",
+    "composer": "folks",
     "added": "2011-03-19T19:12:21Z",
     "inudesu": false,
     "msec": 305893,
