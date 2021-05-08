@@ -293,10 +293,28 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
         return HttpResponse(image, content_type=content_type)
 
 
-class Artist(ListView):
+class TrackListWithAnimeGrouping(ListView):
     model = Track
-    template_name = 'artist_detail.html'
     context_object_name = 'tracks'
+
+    def grouped_tracks(self):
+        tracks = self.get_queryset()
+        animes = sorted(set(rd.anime for t in tracks for rd in t.role_details))
+        grouped_tracks = OrderedDict()
+
+        for anime in animes:
+            grouped_tracks[anime] = [t for t in tracks if t.has_anime(anime)]
+
+        return grouped_tracks
+
+    def get_context_data(self):
+        context = super(TrackListWithAnimeGrouping, self).get_context_data()
+        context['grouped_tracks'] = self.grouped_tracks
+        return context
+
+
+class Artist(TrackListWithAnimeGrouping):
+    template_name = 'artist_detail.html'
 
     def get(self, *a, **k):
         response = super().get(*a, **k)
@@ -314,16 +332,6 @@ class Artist(ListView):
             )
         )
 
-    def grouped_tracks(self):
-        tracks = self.get_queryset()
-        animes = sorted(set(rd.anime for t in tracks for rd in t.role_details))
-        grouped_tracks = OrderedDict()
-
-        for anime in animes:
-            grouped_tracks[anime] = [t for t in tracks if t.has_anime(anime)]
-
-        return grouped_tracks
-
     def artist_suggestions(self):
         return Track.suggest_artists(self.kwargs['artist'])
 
@@ -334,7 +342,6 @@ class Artist(ListView):
             'artist': self.kwargs['artist'],
             'played': [t for t in context['tracks'] if t.last_play()],
             'artist_suggestions': self.artist_suggestions,
-            'grouped_tracks': self.grouped_tracks,
         })
         return context
 
@@ -368,6 +375,25 @@ class Anime(ListView):
                 context['tracks'][0]
                 .role_detail_for_anime(self.kwargs['anime']).related_anime
             )
+        })
+        return context
+
+
+class Composer(TrackListWithAnimeGrouping):
+    template_name = 'composer_detail.html'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated and self.request.user.is_staff:
+            qs = self.model.objects.all()
+        else:
+            qs = self.model.objects.public()
+
+        return qs.filter(composer=self.kwargs['composer'])
+
+    def get_context_data(self):
+        context = super(Composer, self).get_context_data()
+        context.update({
+            'composer': self.kwargs['composer'],
         })
         return context
 

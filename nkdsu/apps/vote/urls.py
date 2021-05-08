@@ -135,6 +135,7 @@ urlpatterns = [
 
     url(r'^artist/(?P<artist>.*)/$', views.Artist.as_view(), name='artist'),
     url(r'^anime/(?P<anime>.*)/$', views.Anime.as_view(), name='anime'),
+    url(r'^composer/(?P<composer>.*)/$', views.Composer.as_view(), name='composer'),
 
     url(r'^stats/$', views.Stats.as_view(), name='stats'),
 

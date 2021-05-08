@@ -13,7 +13,7 @@
 {% block content %}
 
 <ul class="tracks">
-  {% include "include/track.html" %}
+  {% include "include/track.html" with show_all_metadata=True %}
 </ul>
 
 <p class="aside"><a href="{{ track.get_report_url }}">report bad metadata</a></p>

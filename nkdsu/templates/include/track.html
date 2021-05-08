@@ -71,6 +71,17 @@
         <span class="length">{{ track.length_str }}</span>
       </p>
 
+      {% if show_all_metadata %}
+        <p class="meta">
+          composer:
+          {% if track.composer %}
+            <a href="{% url "vote:composer" composer=track.composer %}">{{ track.composer }}</a>
+          {% else %}
+            &emdash;
+          {% endif %}
+        </p>
+      {% endif %}
+
       {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
         <p class="refusal">{{ track.ineligible }}</p>
       {% endif %}
