@@ -73,11 +73,13 @@
 
       {% if show_all_metadata %}
         <p class="meta">
-          composer:
           {% if track.composer %}
-            <a href="{% url "vote:composer" composer=track.composer %}">{{ track.composer }}</a>
-          {% else %}
-            &mdash;
+            composed by
+            <a href="{% url "vote:composer" composer=track.composer %}">{{ track.composer }}</a>{% if track.year %},{% endif %}
+          {% endif %}
+
+          {% if track.year %}
+            {{ track.year }}
           {% endif %}
         </p>
       {% endif %}
