@@ -1420,7 +1420,9 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         if self.tweet_id is not None:
             raise TypeError('This play has already been tweeted')
 
-        canon = str(self.track)
+        # here we add a zwsp after every . to prevent twitter from turning
+        # things into links
+        canon = str(self.track).replace('.', '.\u200b')
         hashtag = settings.HASHTAG
 
         if len(canon) > settings.TWEET_LENGTH - (len(hashtag) + 1):
