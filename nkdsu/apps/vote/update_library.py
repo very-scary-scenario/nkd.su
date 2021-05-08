@@ -118,6 +118,7 @@ def update_library(tree, dry_run=False, inudesu=False):
                 'album': db_track.id3_album,
                 'msec': db_track.msec,
                 'composer': db_track.composer,
+                'year': db_track.year,
                 'added': db_track.added,
             }
             track_dict = {
@@ -127,6 +128,7 @@ def update_library(tree, dry_run=False, inudesu=False):
                 'msec': t['Total Time'],
                 'composer': t.get('Composer', ''),
                 'added': added,
+                'year': t.get('Year'),
             }
 
             if db_dict != track_dict:
@@ -155,6 +157,7 @@ def update_library(tree, dry_run=False, inudesu=False):
             db_track.id3_album = t['Album']
             db_track.msec = t['Total Time']
             db_track.composer = t.get('Composer', '')
+            db_track.year = t.get('Year')
             db_track.added = added
             db_track.inudesu = inudesu
             warnings.extend(
