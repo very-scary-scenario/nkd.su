@@ -1102,6 +1102,8 @@ class Track(CleanOnSaveMixin, models.Model):
             'ineligibility_reason': self.ineligible() or None,
             'length': self.msec,
             'inu desu': self.inudesu,
+            'added_week': self.show_revealed().showtime.date().strftime('%Y-%m-%d'),
+            'added': self.added.isoformat(),
             'url': self.get_public_url(),
             'background': (
                 self.background_art.url
