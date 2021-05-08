@@ -634,6 +634,7 @@ class Track(CleanOnSaveMixin, models.Model):
     added = models.DateTimeField()
     composer = models.CharField(max_length=500, blank=True, db_index=True)
     label = models.CharField(max_length=500, blank=True)
+    year = models.IntegerField(blank=True, null=True)
 
     # nkdsu-specific
     revealed = models.DateTimeField(blank=True, null=True, db_index=True)
