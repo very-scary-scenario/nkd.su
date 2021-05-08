@@ -632,7 +632,7 @@ class Track(CleanOnSaveMixin, models.Model):
     id3_album = models.CharField(max_length=500, blank=True)
     msec = models.IntegerField(blank=True, null=True)
     added = models.DateTimeField()
-    composer = models.CharField(max_length=500, blank=True)
+    composer = models.CharField(max_length=500, blank=True, db_index=True)
     label = models.CharField(max_length=500, blank=True)
 
     # nkdsu-specific
