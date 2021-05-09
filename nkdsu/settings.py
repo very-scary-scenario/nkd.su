@@ -46,7 +46,7 @@ SHOW_END = relativedelta(
 HASHTAG = '#NekoDesu'
 INUDESU_HASHTAG = '#InuDesu'
 TMP_XML_PATH = '/tmp/songlibrary.xml'
-REQUEST_CURATOR = 'peter.shillito@thisisthecat.com'
+REQUEST_CURATOR = 'peter@nekodesu.radio'
 
 TWEET_LENGTH = 280
 
