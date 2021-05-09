@@ -1,11 +1,11 @@
 # What is this?
 
-[nkd.su] is a request-gathering and voting service for [The Cat]'s [Neko Desu]
-radio show.
+[nkd.su] is a request-gathering and voting service for the [Neko Desu]
+radio show currently broadcast on [The Cat].
 
 [nkd.su]: https://nkd.su
 [The Cat]: http://thisisthecat.com
-[Neko Desu]: https://nekodesu.co.uk
+[Neko Desu]: https://nekodesu.radio
 
 ### How do I vote?
 
@@ -34,7 +34,7 @@ they're also following [@nkdsu].
 Yeah, I get it. In that case, just send Peter an [email] or a text or
 something.
 
-[email]: mailto:peter@thisisthecat.com
+[email]: mailto:peter@nekodesu.radio
 
 ## How does it work?
 
