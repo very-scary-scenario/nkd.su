@@ -204,12 +204,7 @@ class Roulette(ListView):
 
     def get_context_data(self):
         context = super(Roulette, self).get_context_data()
-        if self.request.user.is_staff:
-            default_mode = 'short-tracks'
-        else:
-            default_mode = 'hipster'
-
-        mode = self.kwargs.get('mode', default_mode)
+        mode = self.kwargs['mode']
         decade_str = self.kwargs.get('decade', str(self.default_decade))
         minutes_str = self.kwargs.get('minutes', str(self.default_minutes_count))
 
