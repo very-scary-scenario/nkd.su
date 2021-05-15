@@ -16,17 +16,33 @@
       </span>
     {% endfor %}
   </p>
-  <p class="subheading roulette-mode-switch">
-    {% for decade_option in decades %}
-      <span class="roulette-decade">
-        {% if mode == "decade" and decade == decade_option %}
-          {{ decade_option }}s
-        {% else %}
-          <a href="{% url "vote:roulette" mode="decade" decade=decade_option %}">{{ decade_option }}s</a>
-        {% endif %}
-      </span>
-    {% endfor %}
-  </p>
+  {% if mode == "decade" %}
+    <p class="subheading roulette-mode-switch">
+      {% for decade_option in decades %}
+        <span class="roulette-decade">
+          {% if mode == "decade" and decade == decade_option %}
+            {{ decade_option }}s
+          {% else %}
+            <a href="{% url "vote:roulette" mode="decade" decade=decade_option %}">{{ decade_option }}s</a>
+          {% endif %}
+        </span>
+      {% endfor %}
+    </p>
+  {% endif %}
+
+  {% if mode == "short" %}
+    <p class="subheading roulette-mode-switch">
+      {% for minute_slug in allowed_minutes %}
+        <span class="roulette-minute">
+          {% if minutes == minute_slug %}
+            &lt; {{ minutes }} min
+          {% else %}
+            <a href="{% url "vote:roulette" mode="short" minutes=minute_slug %}">&lt; {{ minute_slug }} min</a>
+          {% endif %}
+        </span>
+      {% endfor %}
+    </p>
+  {% endif %}
 
   <ul class="tracks">
     {% include "include/tracklist.html" %}

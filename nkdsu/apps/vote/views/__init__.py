@@ -104,15 +104,16 @@ class Roulette(ListView):
     model = Track
     template_name = 'roulette.html'
     context_object_name = 'tracks'
+    default_minutes_count = 1
+    default_decade = 1980
     modes = [
         ('hipster', 'hipster'),
         ('indiscriminate', 'indiscriminate'),
         ('almost-100', 'almost 100'),
+        ('decade', 'decade'),
+        ('short', 'short'),
         ('staple', 'staple'),
         ('pro', 'pro (only for pros)'),
-    ]
-    complex_modes = [
-        ('decade', 'decade'),
     ]
 
     def get(self, request, *args, **kwargs):
@@ -124,8 +125,12 @@ class Roulette(ListView):
                                     kwargs={'mode': 'pro'}))
 
         elif kwargs.get('mode') is None:
+            if request.user.is_staff:
+                mode = 'short-tracks'
+            else:
+                mode = 'hipster'
             return redirect(reverse('vote:roulette',
-                                    kwargs={'mode': 'hipster'}))
+                                    kwargs={'mode': mode}))
 
         else:
             return super(Roulette, self).get(request, *args, **kwargs)
@@ -171,7 +176,7 @@ class Roulette(ListView):
                 datetime.timedelta(days=(7 * 80)),
             ).exclude(play=None)
         elif self.kwargs.get('mode') == 'decade':
-            qs = qs.for_decade(int(self.kwargs['decade']))
+            qs = qs.for_decade(int(self.kwargs.get('decade', self.default_decade)))
         elif self.kwargs.get('mode') == 'staple':
             # Staple track: having been played more than once per year(ish)
             # since the track was made available. Exclude tracks that don't
@@ -188,20 +193,36 @@ class Roulette(ListView):
             )
             # order_by('?') fails when annotate() has been used
             return sample(list(qs), 5)
+        elif self.kwargs.get('mode') == 'short':
+            length_msec = int(
+                self.kwargs.get('minutes', self.default_minutes_count)
+            ) * 60 * 1000
+            qs = qs.filter(msec__gt=length_msec - 60_000,
+                           msec__lte=length_msec)
 
         return qs.order_by('?')[:5]
 
     def get_context_data(self):
         context = super(Roulette, self).get_context_data()
-        mode = self.kwargs.get('mode', 'hipster')
-        decade_str = self.kwargs.get('decade', None)
+        if self.request.user.is_staff:
+            default_mode = 'short-tracks'
+        else:
+            default_mode = 'hipster'
+
+        mode = self.kwargs.get('mode', default_mode)
+        decade_str = self.kwargs.get('decade', str(self.default_decade))
+        minutes_str = self.kwargs.get('minutes', str(self.default_minutes_count))
+
         context.update({
             'decades': Track.all_decades(),
             'decade': int(decade_str) if decade_str else None,
+            'minutes': int(minutes_str) if minutes_str else None,
+            'allowed_minutes': (1, 2, 3),
             'mode': mode,
-            'mode_name': dict(self.modes + self.complex_modes)[mode],
+            'mode_name': dict(self.modes)[mode],
             'modes': self.modes,
         })
+
         return context
 
 

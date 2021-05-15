@@ -125,7 +125,10 @@ urlpatterns = [
     url(r'^added/$', views.Added.as_view(), name='added'),
 
     url(r'^roulette/$', views.Roulette.as_view(), name='roulette'),
-    url(r'^roulette/(?P<mode>indiscriminate|hipster|almost-100|pro|staple)/$',
+    url(r'^roulette/'
+        r'(?P<mode>indiscriminate|hipster|almost-100|pro|staple|short|decade)/$',
+        views.Roulette.as_view(), name='roulette'),
+    url(r'^roulette/(?P<mode>short)/(?P<minutes>\d+)/$',
         views.Roulette.as_view(), name='roulette'),
     url(r'^roulette/(?P<mode>decade)/(?P<decade>\d{4})/$',
         views.Roulette.as_view(), name='roulette'),
