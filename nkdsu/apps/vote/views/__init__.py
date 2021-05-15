@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
-from django.db.models import Count, DurationField, F
+from django.db.models import Count, DurationField, F, QuerySet
 from django.db.models.functions import Cast, Now
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -208,7 +208,7 @@ class Roulette(ListView):
         decade_str = self.kwargs.get('decade', str(self.default_decade))
         minutes_str = self.kwargs.get('minutes', str(self.default_minutes_count))
         qs = self.get_queryset()
-        option_count = qs.count()
+        option_count = qs.count() if isinstance(qs, QuerySet) else len(qs)
 
         context.update({
             'decades': Track.all_decades(),
