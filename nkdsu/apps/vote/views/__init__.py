@@ -111,6 +111,9 @@ class Roulette(ListView):
         ('staple', 'staple'),
         ('pro', 'pro (only for pros)'),
     ]
+    complex_modes = [
+        ('decade', 'decade'),
+    ]
 
     def get(self, request, *args, **kwargs):
         if (
@@ -167,6 +170,8 @@ class Roulette(ListView):
                 play__date__gt=Show.current().end -
                 datetime.timedelta(days=(7 * 80)),
             ).exclude(play=None)
+        elif self.kwargs.get('mode') == 'decade':
+            qs = qs.for_decade(int(self.kwargs['decade']))
         elif self.kwargs.get('mode') == 'staple':
             # Staple track: having been played more than once per year(ish)
             # since the track was made available. Exclude tracks that don't
@@ -188,9 +193,15 @@ class Roulette(ListView):
 
     def get_context_data(self):
         context = super(Roulette, self).get_context_data()
-        context['mode'] = self.kwargs.get('mode') or 'hipster'
-        context['mode_name'] = dict(self.modes)[context['mode']]
-        context['modes'] = self.modes
+        mode = self.kwargs.get('mode', 'hipster')
+        decade_str = self.kwargs.get('decade', None)
+        context.update({
+            'decades': Track.all_decades(),
+            'decade': int(decade_str) if decade_str else None,
+            'mode': mode,
+            'mode_name': dict(self.modes + self.complex_modes)[mode],
+            'modes': self.modes,
+        })
         return context
 
 

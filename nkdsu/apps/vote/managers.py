@@ -3,17 +3,20 @@ from django.db import models
 from .utils import split_query_into_keywords
 
 
-class NoteManager(models.Manager):
+class NoteQuerySet(models.QuerySet):
     def for_show_or_none(self, show):
         return self.filter(models.Q(show=show) | models.Q(show=None))
 
 
-class TrackManager(models.Manager):
+class TrackQuerySet(models.QuerySet):
     def _everything(self, show_secret_tracks=False):
         if show_secret_tracks:
             return self.all()
         else:
             return self.public()
+
+    def for_decade(self, start_year):
+        return self.filter(year__gte=start_year, year__lt=start_year + 10)
 
     def public(self):
         return self.filter(hidden=False, inudesu=False)

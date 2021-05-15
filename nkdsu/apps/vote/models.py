@@ -29,7 +29,7 @@ from django.utils.timezone import get_default_timezone
 from markdown import markdown
 import requests
 
-from .managers import NoteManager, TrackManager
+from .managers import NoteQuerySet, TrackQuerySet
 from .parsers import parse_artist
 from .utils import (
     indefinitely, lastfm, length_str, memoize, musicbrainzngs, pk_cached, posting_tw_api, reading_tw_api,
@@ -626,7 +626,7 @@ class Role:
 
 
 class Track(CleanOnSaveMixin, models.Model):
-    objects = TrackManager()
+    objects = TrackQuerySet.as_manager()
 
     # derived from iTunes
     id = models.CharField(max_length=16, primary_key=True)
@@ -686,6 +686,19 @@ class Track(CleanOnSaveMixin, models.Model):
         return set(
             (t.composer for t in cls.objects.public())
         )
+
+    @classmethod
+    def all_years(cls):
+        return list(
+            year for year in
+            cls.objects.public().filter(year__isnull=False)
+            .order_by('year').distinct('year')
+            .values_list('year', flat=True)
+        )
+
+    @classmethod
+    def all_decades(cls):
+        return sorted({(year // 10) * 10 for year in cls.all_years()})
 
     @classmethod
     def suggest_artists(cls, string):
@@ -1546,7 +1559,7 @@ class Note(CleanOnSaveMixin, models.Model):
     public = models.BooleanField(default=False)
     content = models.TextField()
 
-    objects = NoteManager()
+    objects = NoteQuerySet.as_manager()
 
     def __str__(self):
         return self.content

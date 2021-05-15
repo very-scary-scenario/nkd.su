@@ -16,12 +16,24 @@
       </span>
     {% endfor %}
   </p>
+  <p class="subheading roulette-mode-switch">
+    decade:
+    {% for decade_option in decades %}
+      <span class="roulette-decade">
+        {% if mode == "decade" and decade == decade_option %}
+          {{ decade_option }}s
+        {% else %}
+          <a href="{% url "vote:roulette" mode="decade" decade=decade_option %}">{{ decade_option }}s</a>
+        {% endif %}
+      </span>
+    {% endfor %}
+  </p>
 
   <ul class="tracks">
     {% include "include/tracklist.html" %}
   </ul>
 
-  <p class="aside"><a href="{% url "vote:roulette" mode=mode %}">
+  <p class="aside"><a href=".">
     {% if mode == "pro" %}
       well, i am a pro after all<br/>
       i guess i can wait until next week for another option
