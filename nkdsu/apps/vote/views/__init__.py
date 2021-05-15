@@ -126,7 +126,7 @@ class Roulette(ListView):
 
         elif kwargs.get('mode') is None:
             if request.user.is_staff:
-                mode = 'short-tracks'
+                mode = 'short'
             else:
                 mode = 'hipster'
             return redirect(reverse('vote:roulette',
