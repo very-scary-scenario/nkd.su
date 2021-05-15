@@ -200,13 +200,15 @@ class Roulette(ListView):
             qs = qs.filter(msec__gt=length_msec - 60_000,
                            msec__lte=length_msec)
 
-        return qs.order_by('?')[:5]
+        return qs.order_by('?')
 
     def get_context_data(self):
         context = super(Roulette, self).get_context_data()
         mode = self.kwargs['mode']
         decade_str = self.kwargs.get('decade', str(self.default_decade))
         minutes_str = self.kwargs.get('minutes', str(self.default_minutes_count))
+        qs = self.get_queryset()
+        option_count = qs.count()
 
         context.update({
             'decades': Track.all_decades(),
@@ -216,6 +218,8 @@ class Roulette(ListView):
             'mode': mode,
             'mode_name': dict(self.modes)[mode],
             'modes': self.modes,
+            'tracks': qs[:5],
+            'option_count': option_count,
         })
 
         return context
