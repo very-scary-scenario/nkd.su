@@ -689,12 +689,21 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @classmethod
     def all_years(cls):
-        return list(
-            year for year in
-            cls.objects.public().filter(year__isnull=False)
-            .order_by('year').distinct('year')
-            .values_list('year', flat=True)
-        )
+        tracks = cls.objects.public().filter(year__isnull=False)
+
+        if (
+            settings.DATABASES['default']['ENGINE'] ==
+            'django.db.backends.postgresql'
+        ):
+            return list(
+                year for year in tracks
+                .order_by('year').distinct('year')
+                .values_list('year', flat=True)
+            )
+        else:
+            return sorted({
+                year for year in tracks.values_list('year', flat=True)
+            })
 
     @classmethod
     def all_decades(cls):
