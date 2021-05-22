@@ -167,7 +167,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "ADDD70C2D748ECC7"
         )
         results = update_library(tree, dry_run=True)
-        self.assertEqual(len(results), 1)
+        self.assertEqual(len(results), 1, results)
 
         result = results[0]
         self.assertEqual(result['type'], 'new')
@@ -186,7 +186,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "0D096C693DA38F51"
         )
         results = update_library(tree, dry_run=True)
-        self.assertEqual(len(results), 1)
+        self.assertEqual(len(results), 1, results)
 
         result = results[0]
         self.assertEqual(result['type'], 'new')
@@ -205,7 +205,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "765682E348A46C30"
         )
         results = update_library(tree, dry_run=True)
-        self.assertGreater(len(results), 1)
+        self.assertGreater(len(results), 1, results)
         warning_count = 0
         for result in results:
             warnings = result.get('warnings', None)
@@ -226,7 +226,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "ADDD70C2D748ECC7"
         )
         results = update_library(tree, dry_run=True)
-        self.assertGreater(len(results), 1)
+        self.assertGreater(len(results), 1, results)
         warning_count = 0
         for result in results:
             warnings = result.get('warnings', None)
@@ -246,7 +246,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "ADDD70C2D748ECC7"
         )
         results = update_library(tree, dry_run=True)
-        self.assertGreater(len(results), 1)
+        self.assertGreater(len(results), 1, results)
         warning_count = 0
         for result in results:
             warnings = result.get('warnings', None)
@@ -266,7 +266,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "F2FDCB0308431FB4"
         )
         results = update_library(tree, dry_run=True)
-        self.assertEqual(len(results), 1)
+        self.assertEqual(len(results), 1, results)
 
         result = results[0]
         self.assertEqual(result['type'], 'new')
@@ -285,7 +285,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "F2FDCB0308431FB4"
         )
         results = update_library(tree, dry_run=True)
-        self.assertGreater(len(results), 1)
+        self.assertGreater(len(results), 1, results)
         warning_count = 0
         for result in results:
             warnings = result.get('warnings', None)
@@ -306,7 +306,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "4ACC4F068C0E4C16"
         )
         results = update_library(tree, dry_run=True)
-        self.assertGreater(len(results), 1)
+        self.assertGreater(len(results), 1, results)
         warning_count = 0
         for result in results:
             warnings = result.get('warnings', None)
@@ -333,7 +333,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
         )
         results = update_library(tree, dry_run=True)
 
-        self.assertEqual(len(results), 1)
+        self.assertEqual(len(results), 1, results)
         self.assertIn('type', results[0])
         self.assertEqual(results[0]['type'], 'hide')
 
@@ -346,7 +346,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "2A25990D66A020E6",
         )
         results = update_library(tree, dry_run=True)
-        self.assertGreater(len(results), 1)
+        self.assertGreater(len(results), 1, results)
         warning_count = 0
         for result in results:
             warnings = result.get('warnings', None)
