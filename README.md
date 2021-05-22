@@ -50,9 +50,9 @@ Long answer: [GitHub]. [Suggestions] welcome.
 
 Hopefully! Only Travis knows for sure:
 
-[![Build Status](https://travis-ci.org/very-scary-scenario/nkd.su.svg)][build status]
+[![Build Status](https://travis-ci.com/very-scary-scenario/nkd.su.svg)][build status]
 
-[build status]: https://travis-ci.org/very-scary-scenario/nkd.su
+[build status]: https://travis-ci.com/github/very-scary-scenario/nkd.su
 
 ## Can I build things with this data?
 
