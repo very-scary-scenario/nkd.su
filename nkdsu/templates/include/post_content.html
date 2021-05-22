@@ -24,8 +24,8 @@
     {% endif %}
   </p>
 
-  {% if user.is_authenticated %}
-    <p class="credit">
+  <p class="credit">
+    {% if user.is_authenticated %}
       <span>
         all:
         <a href="{% url "vote:admin:all_anime" %}">anime</a> /
@@ -38,6 +38,6 @@
       <span><a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a></span>
     {% else %}
       <span><a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a></span>
-    </p>
-  {% endif %}
+    {% endif %}
+  </p>
 </div>
