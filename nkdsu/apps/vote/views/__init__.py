@@ -1,13 +1,14 @@
 import datetime
 from collections import OrderedDict
 from random import sample
+from typing import Iterable, Tuple
 
 from classtools import reify
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
-from django.db.models import Count, DurationField, F, QuerySet
+from django.db.models import Count, DurationField, F
 from django.db.models.functions import Cast, Now
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -163,7 +164,7 @@ class Roulette(ListView):
     def get_base_queryset(self):
         return self.model.objects.public()
 
-    def get_queryset(self):
+    def get_tracks(self) -> Tuple[Iterable[Track], int]:
         qs = self.get_base_queryset()
 
         if self.kwargs.get('mode') == 'pro':
@@ -192,7 +193,7 @@ class Roulette(ListView):
                 ).filter(time_per_play__lt=parse_duration('365 days'))
             )
             # order_by('?') fails when annotate() has been used
-            return sample(list(qs), 5)
+            return (sample(list(qs), 5), qs.count())
         elif self.kwargs.get('mode') == 'short':
             length_msec = int(
                 self.kwargs.get('minutes', self.default_minutes_count)
@@ -200,15 +201,14 @@ class Roulette(ListView):
             qs = qs.filter(msec__gt=length_msec - 60_000,
                            msec__lte=length_msec)
 
-        return qs.order_by('?')
+        return (qs.order_by('?')[:5], qs.count())
 
     def get_context_data(self):
         context = super(Roulette, self).get_context_data()
         mode = self.kwargs['mode']
         decade_str = self.kwargs.get('decade', str(self.default_decade))
         minutes_str = self.kwargs.get('minutes', str(self.default_minutes_count))
-        qs = self.get_queryset()
-        option_count = qs.count() if isinstance(qs, QuerySet) else len(qs)
+        tracks, option_count = self.get_tracks()
 
         context.update({
             'decades': Track.all_decades(),
@@ -218,7 +218,7 @@ class Roulette(ListView):
             'mode': mode,
             'mode_name': dict(self.modes)[mode],
             'modes': self.modes,
-            'tracks': qs[:5],
+            'tracks': tracks,
             'option_count': option_count,
         })
 
