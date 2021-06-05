@@ -46,8 +46,26 @@ def _get_short_url_length():
         return length
 
 
+def _get_reading_username():
+    cache_key = 'tw-reading-username:{}'.format(settings.READING_ACCESS_TOKEN)
+    username = cache.get(cache_key)
+    if username is not None:
+        return username
+
+    try:
+        username = reading_tw_api.auth.get_username()
+    except tweepy.error.TweepError as e:
+        logger.critical(
+            "could not read reading account's username:\n{}".format(e)
+        )
+        return 'nkdsu'
+    else:
+        cache.set(cache_key, username)
+        return username
+
+
 SHORT_URL_LENGTH = _get_short_url_length()
-READING_USERNAME = reading_tw_api.auth.get_username()
+READING_USERNAME = _get_reading_username()
 
 
 def length_str(msec):
