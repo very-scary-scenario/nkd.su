@@ -112,9 +112,14 @@ body main .track {
     width: @key-avatar-thumb-size + 4px;
     padding-right: 0;
 
-    img.avatar.thumb {
+    img.avatar.thumb, .plusone a {
       height: @key-avatar-thumb-size !important;
       width: @key-avatar-thumb-size !important;
+    }
+
+    .plusone a {
+      padding-top: .25em;
+      font-size: 1.5em;
     }
 
     .deets {

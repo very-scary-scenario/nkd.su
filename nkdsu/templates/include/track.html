@@ -94,24 +94,24 @@
         {% include "include/notes.html" with notes=track.public_notes %}
       {% endif %}
     </div>
-    {% if track|votes_for:vote_show %}
-      <div class="key-vote">
-        <ul class="votes">
+    <div class="key-vote">
+      <ul class="votes">
+        {% if track|votes_for:vote_show %}
           {% for vote in track|votes_for:vote_show|slice:":1" %}
             {% include "include/inline_vote.html" %}
           {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
+        {% else %}
+          {% include "include/plusone.html" %}
+        {% endif %}
+      </ul>
+    </div>
     <div class="voting">
       <ul class="votes">
         {% for vote in track|votes_for:vote_show|slice:"1:" %}
           {% include "include/inline_vote.html" %}
         {% endfor %}
-        {% if track.eligible and not user.is_staff %}
-          <li class="plusone"><a target="_blank" title="request this track" href="{{ track.get_vote_url }}">
-            +
-          </a></li>
+        {% if track.eligible and not user.is_staff and track|votes_for:vote_show %}
+          {% include "include/plusone.html" %}
         {% endif %}
       </ul>
 
