@@ -213,11 +213,11 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     def plays(self):
-        return self.play_set.order_by('date')
+        return self.play_set.order_by('date').select_related('track')
 
     @memoize
     def playlist(self):
-        return [p.track for p in self.plays().select_related('track')]
+        return [p.track for p in self.plays()]
 
     @memoize
     def shortlisted(self):

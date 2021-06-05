@@ -48,8 +48,15 @@
     </div>
   {% endif %}
 
-  <ul class="tracks">
-    {% include "include/tracklist.html" with tracks=show.playlist vote_show=show %}
-  </ul>
+  {% regroup show.plays by date.hour as hours %}
+
+  {% for hour in hours %}
+    <h3>hour {{ forloop.counter }}</h3>
+    <ul class="tracks">
+      {% for play in hour.list %}
+        {% include "include/track.html" with track=play.track vote_show=show %}
+      {% endfor %}
+    </ul>
+  {% endfor %}
 
 {% endblock %}
