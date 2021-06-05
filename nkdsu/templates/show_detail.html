@@ -2,6 +2,11 @@
 
 {% block title %}{{ show.showtime|date:"F"|lower }} {{ show.showtime|date:"jS Y" }}{% endblock %}
 
+{% block main_classes %}
+  {{ block.super }}
+  grouped-tracks
+{% endblock %}
+
 {% block content %}
 
   <h2>playlist for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS Y" }}</h2>
@@ -50,15 +55,17 @@
 
   {% regroup show.plays by date.hour as hours %}
 
-  {% for hour in hours %}
-    <section class="hour">
-      <h3>hour {{ forloop.counter }}</h3>
-      <ul class="tracks">
-        {% for play in hour.list %}
-          {% include "include/track.html" with track=play.track vote_show=show %}
-        {% endfor %}
-      </ul>
-    </section>
-  {% endfor %}
+  <div class="track-groups">
+    {% for hour in hours %}
+    <div class="track-group">
+        <h3>hour {{ forloop.counter }}</h3>
+        <ul class="tracks">
+          {% for play in hour.list %}
+            {% include "include/track.html" with track=play.track vote_show=show %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
 
 {% endblock %}
