@@ -69,8 +69,7 @@ def vote_tweet(tracks):
     Return what a person should tweet to request `tracks`.
     """
 
-    return '@%s %s' % (settings.READING_USERNAME,
-                       ' '.join([t.get_public_url() for t in tracks]))
+    return ' '.join([t.get_public_url() for t in tracks])
 
 
 def vote_tweet_intent_url(tracks):
