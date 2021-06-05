@@ -47,17 +47,14 @@ class NoteAdmin(admin.ModelAdmin):
     list_display = ('track', 'show', 'public', 'content')
 
 
-for model, modeladmin in [
-        (models.Show, ShowAdmin),
-        (models.TwitterUser, TwitterUserAdmin),
-        (models.UserBadge, UserBadgeAdmin),
-        (models.Track, TrackAdmin),
-        (models.Vote, VoteAdmin),
-        (models.Play, PlayAdmin),
-        (models.Block, BlockAdmin),
-        (models.Shortlist, DiscardShortlistAdmin),
-        (models.Discard, DiscardShortlistAdmin),
-        (models.Request, RequestAdmin),
-        (models.Note, NoteAdmin),
-]:
-    admin.site.register(model, modeladmin)
+admin.site.register(models.Show, ShowAdmin)
+admin.site.register(models.TwitterUser, TwitterUserAdmin)
+admin.site.register(models.UserBadge, UserBadgeAdmin)
+admin.site.register(models.Track, TrackAdmin)
+admin.site.register(models.Vote, VoteAdmin)
+admin.site.register(models.Play, PlayAdmin)
+admin.site.register(models.Block, BlockAdmin)
+admin.site.register(models.Shortlist, DiscardShortlistAdmin)
+admin.site.register(models.Discard, DiscardShortlistAdmin)
+admin.site.register(models.Request, RequestAdmin)
+admin.site.register(models.Note, NoteAdmin)
