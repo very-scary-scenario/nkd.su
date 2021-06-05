@@ -109,18 +109,20 @@
       </div>
     </div>
 
-    <div class="voting">
-      <ul class="votes">
-        {% for vote in track|votes_for:vote_show|slice:"1:" %}
-          {% include "include/inline_vote.html" %}
-        {% endfor %}
-        {% if track.eligible and not user.is_staff and track|votes_for:vote_show %}
+    {% if track|votes_for:vote_show %}
+      <div class="voting">
+        <ul class="votes">
+          {% for vote in track|votes_for:vote_show|slice:"1:" %}
+            {% include "include/inline_vote.html" %}
+          {% endfor %}
           {% include "include/plusone.html" %}
-        {% endif %}
-      </ul>
+        </ul>
+      </div>
+    {% endif %}
 
-      {% if user.is_staff %}
-        <p class="admin">
+    {% if user.is_staff %}
+      <div class="admin">
+        <p>
           <span><a href="{% url "vote:admin:play" pk=track.pk %}">play</a></span>
           <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
           {% if track.ineligible %}
@@ -130,7 +132,7 @@
             <span><a class="ajaxable" href="{% url "vote:admin:block_with_reason" pk=track.pk %}?reason=announced">announce</a></span>
           {% endif %}
         </p>
-        <p class="admin">
+        <p>
           {% if track.hidden %}
             <span><a href="{% url "vote:admin:unhide" pk=track.pk %}">unhide</a></span>
           {% else %}
@@ -149,11 +151,6 @@
           {% endif %}
           <span><a href="{% url "vote:admin:make_note" pk=track.pk %}">add note</a></span>
         </p>
-      {% endif %}
-    </div>
-    {% if user.is_staff %}
-      <div class="invitation">
-        {{ track|votes_for:vote_show|length }}
       </div>
     {% endif %}
   </li>

@@ -64,7 +64,6 @@ body main .track {
 
     div.key-vote {
       width: @key-avatar-thumb-size + 4px;
-      padding-right: 0;
 
       img.avatar.thumb, .plusone a {
         height: @key-avatar-thumb-size !important;
@@ -84,7 +83,6 @@ body main .track {
 
     div.metadata {
       text-align: left;
-
       border-left: 1px solid @border;
 
       .refusal, .meta {
@@ -124,17 +122,18 @@ body main .track {
     }
   }
 
-  .voting, .admin {
+  div.voting, div.admin {
     display: block;
+    margin: .6em .6em 0;
+    padding: .6em 0 0;
+    border-top: 1px solid @border;
   }
 
-  .admin {
+  div.admin {
     font-size: .8em;
-    .child-iter();
-  }
-
-  .invitation {
-    text-align: right;
+    > p {
+      .child-iter();
+    }
   }
 
   // stamps
@@ -299,15 +298,24 @@ li.plusone {
     margin: 2px;
     display: block;
     background-color: fade(black, 10);
-    border: 1px dashed @hl;
+    border: 1px dashed @fg;
     border-radius: @avatar-border-radius;
     height: @avatar-thumb-size;
     width: @avatar-thumb-size;
     padding-top: .1em;
     font-size: 1.2em;
+    color: @fg !important;
+    cursor: default;
 
-    &:hover, &:focus {
-      border: 1px dashed @fg;
+    &[href] {
+      border-color: @hl;
+      color: @hl !important;
+      cursor: pointer;
+
+      &:hover, &:focus {
+        border: 1px dashed @fg;
+        color: @fg !important;
+      }
     }
   }
 }

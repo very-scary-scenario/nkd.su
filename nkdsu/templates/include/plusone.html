@@ -1,3 +1,13 @@
-<li class="plusone"><a target="_blank" title="request this track" href="{{ track.get_vote_url }}">
-  +
-</a></li>
+{% load vote_tags %}
+
+<li class="plusone">
+  {% if user.is_staff %}
+    <a>
+      {{ track|votes_for:vote_show|length }}
+    </a>
+  {% else %}
+    <a target="_blank" title="request this track" href="{{ track.get_vote_url }}">
+      +
+    </a>
+  {% endif %}
+</li>
