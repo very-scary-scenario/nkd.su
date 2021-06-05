@@ -51,12 +51,14 @@
   {% regroup show.plays by date.hour as hours %}
 
   {% for hour in hours %}
-    <h3>hour {{ forloop.counter }}</h3>
-    <ul class="tracks">
-      {% for play in hour.list %}
-        {% include "include/track.html" with track=play.track vote_show=show %}
-      {% endfor %}
-    </ul>
+    <section class="hour">
+      <h3>hour {{ forloop.counter }}</h3>
+      <ul class="tracks">
+        {% for play in hour.list %}
+          {% include "include/track.html" with track=play.track vote_show=show %}
+        {% endfor %}
+      </ul>
+    </section>
   {% endfor %}
 
 {% endblock %}

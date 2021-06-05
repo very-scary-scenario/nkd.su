@@ -1,36 +1,42 @@
 import codecs
 import datetime
+from abc import abstractmethod
 from copy import copy
 from os import path
-from typing import Optional, Type
+from typing import Any, Dict, Optional, Type
 
 from django.conf import settings
-from django.db.models import Model
+from django.db.models import Model, QuerySet
 from django.db.utils import NotSupportedError
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic.base import ContextMixin
 from markdown import markdown
 
 from .models import Show, TwitterUser
 from .utils import memoize
 
 
-class CurrentShowMixin:
-    def get_context_data(self):
-        context = super(CurrentShowMixin, self).get_context_data()
+class CurrentShowMixin(ContextMixin):
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super(CurrentShowMixin, self).get_context_data(**kwargs)
         context['show'] = Show.current()
         return context
 
 
 class LetMemoizeGetObject:
-    def get_object(self, qs=None):
-        if qs is None:
+    def get_object(self, queryset: Optional[QuerySet] = None):
+        if queryset is None:
             return self._get_object()
         else:
-            return super().get_object(qs=qs)
+            return super().get_object(queryset=queryset)  # type: ignore
+
+    @abstractmethod
+    def _get_object(self):
+        raise NotImplementedError()
 
 
 class ShowDetailMixin(LetMemoizeGetObject):
@@ -138,7 +144,7 @@ class ThisShowDetailMixin(ShowDetailMixin):
 
 
 class ShowDetail(ShowDetailMixin, DetailView):
-    model: Type[Model] = Show
+    model = Show
 
 
 class ArchiveList(ListView):

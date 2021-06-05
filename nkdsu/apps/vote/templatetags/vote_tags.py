@@ -1,17 +1,22 @@
-import datetime
+from __future__ import annotations
 
+import datetime
+from typing import Iterable, Optional
+
+from django.db.models import QuerySet
 from django.template import Library
 from django.utils import timezone
-from django.utils.safestring import mark_safe
+from django.utils.safestring import SafeText, mark_safe
 from markdown import markdown as md
 
+from ..models import Show, Track
 from ..utils import length_str
 
 register = Library()
 
 
 @register.filter
-def votes_for(track, show):
+def votes_for(track, show: Show) -> QuerySet[Track]:
     """
     Return all votes applicable to to `track` for `show`.
     """
@@ -20,7 +25,7 @@ def votes_for(track, show):
 
 
 @register.filter
-def when(date):
+def when(date: datetime.datetime) -> str:
     """
     Convert a date into an appropriately relative human-readable date.
     """
@@ -42,7 +47,7 @@ def when(date):
 
 
 @register.filter
-def percent(flt):
+def percent(flt: Optional[float]) -> str:
     """
     Convert a float into a percentage string.
     """
@@ -54,10 +59,10 @@ def percent(flt):
 
 
 @register.filter
-def total_length(tracks):
-    return length_str(sum([t.msec for t in tracks]))
+def total_length(tracks: Iterable[Track]):
+    return length_str(sum([t.msec for t in tracks if t.msec is not None]))
 
 
 @register.filter
-def markdown(text):
+def markdown(text: str) -> SafeText:
     return mark_safe(md(text))

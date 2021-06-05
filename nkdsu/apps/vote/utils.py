@@ -1,13 +1,20 @@
+from __future__ import annotations
+
 import logging
 import re
 from functools import partial
+from typing import Any, Callable, List, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
 
+from classtools import reify as ct_reify
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.http import urlquote
 import musicbrainzngs
 import requests
 import tweepy
+
+if TYPE_CHECKING:
+    from .models import Track
 
 
 logger = logging.getLogger(__name__)
@@ -26,10 +33,10 @@ _post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
 posting_tw_api = tweepy.API(_post_tw_auth)
 
 
-indefinitely = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
+indefinitely: int = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
 
 
-def _get_short_url_length():
+def _get_short_url_length() -> int:
     cache_key = 'tw-short-url-length'
     length = cache.get(cache_key)
     if length is not None:
@@ -46,7 +53,7 @@ def _get_short_url_length():
         return length
 
 
-def _get_reading_username():
+def _get_reading_username() -> str:
     cache_key = 'tw-reading-username:{}'.format(settings.READING_ACCESS_TOKEN)
     username = cache.get(cache_key)
     if username is not None:
@@ -64,11 +71,11 @@ def _get_reading_username():
         return username
 
 
-SHORT_URL_LENGTH = _get_short_url_length()
-READING_USERNAME = _get_reading_username()
+SHORT_URL_LENGTH: int = _get_short_url_length()
+READING_USERNAME: str = _get_reading_username()
 
 
-def length_str(msec):
+def length_str(msec: float) -> str:
     """
     Convert a number of milliseconds into a human-readable representation of
     the length of a track.
@@ -86,7 +93,7 @@ def length_str(msec):
         return '%i:%02d' % (minutes, remainder_seconds)
 
 
-def tweet_url(tweet):
+def tweet_url(tweet: str) -> str:
     return (
         'https://twitter.com/intent/tweet?in_reply_to={reply_id}&text={text}'
         .format(reply_id='744237593164980224', text=urlquote(tweet))
@@ -97,7 +104,7 @@ def vote_url(tracks):
     return tweet_url(vote_tweet(tracks))
 
 
-def vote_tweet(tracks):
+def vote_tweet(tracks: List[Track]) -> str:
     """
     Return what a person should tweet to request `tracks`.
     """
@@ -105,12 +112,12 @@ def vote_tweet(tracks):
     return ' '.join([t.get_public_url() for t in tracks])
 
 
-def vote_tweet_intent_url(tracks):
+def vote_tweet_intent_url(tracks: List[Track]) -> str:
     tweet = vote_tweet(tracks)
     return tweet_url(tweet)
 
 
-def tweet_len(tweet):
+def tweet_len(tweet: str) -> int:
     placeholder_url = ''
     while len(placeholder_url) < SHORT_URL_LENGTH:
         placeholder_url = placeholder_url + 'x'
@@ -119,7 +126,7 @@ def tweet_len(tweet):
     return len(shortened)
 
 
-def split_id3_title(id3_title):
+def split_id3_title(id3_title: str) -> Tuple[str, Optional[str]]:
     """
     Take a 'Title (role)'-style ID3 title and return (title, role)
     """
@@ -167,7 +174,10 @@ def split_query_into_keywords(query):
     return keywords
 
 
-class Memoize(object):
+T = TypeVar('T')
+
+
+class Memoize:
     """
     Cache the return value of a method on the object itself.
 
@@ -194,7 +204,7 @@ class Memoize(object):
             return self.func
         return partial(self, obj)
 
-    def __call__(self, *args, **kw):
+    def __call__(self, *args: Any, **kw: Any) -> T:
         obj = args[0]
         try:
             cache = obj.__cache
@@ -208,19 +218,24 @@ class Memoize(object):
         return res
 
 
-memoize = Memoize
+def memoize(func: T) -> T:
+    return cast(T, Memoize(func))
 
 
-def pk_cached(*args, **kwargs):
-    # does nothing rn
-    def wrapper(func):
+def reify(func: Callable[..., T]) -> T:
+    return cast(T, ct_reify(func))
+
+
+def pk_cached(seconds: int) -> Callable[[T], T]:
+    # does nothing (currently), but expresses a desire to cache stuff in future
+    def wrapper(func: T) -> T:
         def wrapped(obj, *a, **k):
             def do_thing(func, pk, *a, **k):
                 return func(obj, *a, **k)
 
             return do_thing(func, obj.pk, *a, **k)
 
-        return wrapped
+        return cast(T, wrapped)
 
     return wrapper
 

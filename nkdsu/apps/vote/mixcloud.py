@@ -1,4 +1,5 @@
 import logging
+from typing import Any, List
 
 from django.conf import settings
 from django.core.cache import cache
@@ -43,7 +44,7 @@ def _get_items():
         page = requests.get(next_page_url, timeout=TIMEOUT).json()
 
 
-def cloudcasts_for(date):
+def cloudcasts_for(date) -> List[Any]:
     hunting_for = date.strftime('%d/%m/%Y')
     cloudcasts = []
 

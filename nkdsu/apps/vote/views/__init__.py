@@ -1,9 +1,8 @@
 import datetime
 from collections import OrderedDict
 from random import sample
-from typing import Iterable, Tuple
+from typing import Any, Dict, Iterable, Tuple
 
-from classtools import reify
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -20,6 +19,7 @@ import tweepy
 
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm
 from ..models import Show, Track, TwitterUser
+from ..utils import reify
 from ...vote import mixins
 
 
@@ -36,8 +36,8 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
     section = 'home'
     template_name = 'index.html'
 
-    def get_context_data(self):
-        context = super(IndexView, self).get_context_data()
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
         show = context['show']
 
         def track_should_be_in_main_list(track):
