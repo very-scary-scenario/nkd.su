@@ -3,15 +3,15 @@ Pillow==8.1.2
 celery==4.1
 classtools
 django-instant-coverage==1.1.0
-django-nose==1.4.5
+django-nose==1.4.7
 django-pipeline==2.0.5
 django-stubs>=1.8.0<1.9
 django>=2.2,<2.3
-mypy>=0.812
-flake8>=3.8
 flake8-import-order<2
+flake8>=3.8
 musicbrainzngs==0.5
 mypy<1
+mypy>=0.812
 ndg-httpsclient
 psycopg2
 pyasn1
@@ -22,4 +22,5 @@ requests==2.22.0
 slimit==0.8.1
 sly==0.4
 tweepy==3.8.0
+typeguard>=2.12.1<3
 ujson==1.33
