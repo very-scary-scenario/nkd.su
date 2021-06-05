@@ -1,6 +1,5 @@
 @import "_mixins.less"; 
 
-@metadata-width: 60%;
 @new-compensation: 2.7em;
 
 @avatar-border-radius: 0.3em;
@@ -15,11 +14,6 @@
 
 .tinytrack() {
   display: block;
-
-  div.metadata, div.key-vote, div.voting, div.invitation {
-    text-align: left;
-    display: block;
-  }
 
   div.metadata {
     width: auto;
@@ -55,77 +49,83 @@ body main .track {
   border: 1px solid @border;
   border-radius: @track-border-radius;
 
-  display: table;
   background-clip: padding-box;
   position: relative;
 
-  div.metadata, div.key-vote, div.voting, div.invitation {
-    display: table-cell;
-    vertical-align: middle;
-    padding: 0 .6em;
-    position: relative;
-  }
+  div.first-row {
+    display: table-row;
 
-  div.metadata {
-    text-align: right;
-    width: @metadata-width;
-
-    border-right: 1px solid @border;
-
-    .refusal, .meta {
-      font-size: .8em;
-      .child-iter();
+    div.metadata, div.key-vote {
+      display: table-cell;
+      vertical-align: middle;
+      padding: 0 .6em;
+      position: relative;
     }
 
-    .refusal {
-      color: #aaa;
+    div.key-vote {
+      width: @key-avatar-thumb-size + 4px;
+      padding-right: 0;
+
+      img.avatar.thumb, .plusone a {
+        height: @key-avatar-thumb-size !important;
+        width: @key-avatar-thumb-size !important;
+      }
+
+      .plusone a {
+        padding-top: .25em;
+        font-size: 1.5em;
+      }
+
+      .deets {
+        top: -.35em !important;
+        right: -.35em !important;
+      }
     }
 
-    .title {
-      font-size: 1.4em;
-      margin-bottom: .1em;
-      font-weight: bold;
-    }
+    div.metadata {
+      text-align: left;
 
-    .roles {
-      .child-iter();
-    }
+      border-left: 1px solid @border;
 
-    .notes {
-      li {
-        margin-top: .2em;
-        font-family: "Comic Neue", sans-serif;
+      .refusal, .meta {
+        font-size: .8em;
+        .child-iter();
+      }
 
-        &.transient {
-          font-weight: bold;
-        }
+      .refusal {
+        color: #aaa;
+      }
 
-        &.public-warn .note::after {
-          opacity: .7;
-          content: " PUBLIC";
+      .title {
+        font-size: 1.4em;
+        margin-bottom: .1em;
+        font-weight: bold;
+      }
+
+      .roles {
+        .child-iter();
+      }
+
+      .notes {
+        li {
+          margin-top: .2em;
+          font-family: "Comic Neue", sans-serif;
+
+          &.transient {
+            font-weight: bold;
+          }
+
+          &.public-warn .note::after {
+            opacity: .7;
+            content: " PUBLIC";
+          }
         }
       }
     }
   }
 
-  div.key-vote {
-    width: @key-avatar-thumb-size + 4px;
-    padding-right: 0;
-
-    img.avatar.thumb, .plusone a {
-      height: @key-avatar-thumb-size !important;
-      width: @key-avatar-thumb-size !important;
-    }
-
-    .plusone a {
-      padding-top: .25em;
-      font-size: 1.5em;
-    }
-
-    .deets {
-      top: -.35em !important;
-      right: -.35em !important;
-    }
+  .voting, .admin {
+    display: block;
   }
 
   .admin {

@@ -31,80 +31,84 @@
       <div class="art" style="background-image: url('{{ track.background_art.url }}');"></div>
     {% endif %}
 
-    <div class="metadata">
-      <p class="artist">
-        {% include "include/linked_artists.html" with artists=track.artists %}
-      </p>
-      <p class="title">
-        <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
-      </p>
-
-      <p class="meta">
-        {% if track.role %}
-          <span class="roles">
-            {% for role_detail in track.role_details %}
-              <span class="role">
-                {% if role_detail.anime %}
-                  <a href="{% url "vote:anime" anime=role_detail.anime %}">{{ role_detail.anime }}</a>
-                  {{ role_detail.caveat|default:"" }}
-                  {{ role_detail.full_role }}
-                {% else %}
-                  {{ role_detail }}
-                {% endif %}
-              </span>
+    <div class="first-row">
+      <div class="key-vote">
+        <ul class="votes">
+          {% if track|votes_for:vote_show %}
+            {% for vote in track|votes_for:vote_show|slice:":1" %}
+              {% include "include/inline_vote.html" %}
             {% endfor %}
-          </span>
-        {% endif %}
-
-        {% if track.last_play %}
-          <span class="last_played">played <a href="{{ track.last_play.show.get_absolute_url }}">
-            {% if track.weeks_since_play == 0 %}
-              this week
-            {% elif track.weeks_since_play == 1 %}
-              last week
-            {% else %}
-              {{ track.weeks_since_play }} weeks ago
-            {% endif %}
-          </a></span>
-        {% endif %}
-
-        <span class="length">{{ track.length_str }}</span>
-      </p>
-
-      {% if show_all_metadata %}
-        <p class="meta">
-          {% if track.composer %}
-            composed by
-            <a href="{% url "vote:composer" composer=track.composer %}">{{ track.composer }}</a>{% if track.year %},{% endif %}
+          {% else %}
+            {% include "include/plusone.html" %}
           {% endif %}
+        </ul>
+      </div>
 
-          {% if track.year %}
-            {{ track.year }}
-          {% endif %}
+      <div class="metadata">
+        <p class="artist">
+          {% include "include/linked_artists.html" with artists=track.artists %}
         </p>
-      {% endif %}
+        <p class="title">
+          <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
+        </p>
 
-      {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
-        <p class="refusal">{{ track.ineligible }}</p>
-      {% endif %}
+        <p class="meta">
+          {% if track.role %}
+            <span class="roles">
+              {% for role_detail in track.role_details %}
+                <span class="role">
+                  {% if role_detail.anime %}
+                    <a href="{% url "vote:anime" anime=role_detail.anime %}">{{ role_detail.anime }}</a>
+                    {{ role_detail.caveat|default:"" }}
+                    {{ role_detail.full_role }}
+                  {% else %}
+                    {{ role_detail }}
+                  {% endif %}
+                </span>
+              {% endfor %}
+            </span>
+          {% endif %}
 
-      {% if user.is_staff %}
-        {% include "include/notes.html" with notes=track.notes %}
-      {% else %}
-        {% include "include/notes.html" with notes=track.public_notes %}
-      {% endif %}
-    </div>
-    <div class="key-vote">
-      <ul class="votes">
-        {% if track|votes_for:vote_show %}
-          {% for vote in track|votes_for:vote_show|slice:":1" %}
-            {% include "include/inline_vote.html" %}
-          {% endfor %}
-        {% else %}
-          {% include "include/plusone.html" %}
+          {% if track.last_play %}
+            <span class="last_played">played <a href="{{ track.last_play.show.get_absolute_url }}">
+              {% if track.weeks_since_play == 0 %}
+                this week
+              {% elif track.weeks_since_play == 1 %}
+                last week
+              {% else %}
+                {{ track.weeks_since_play }} weeks ago
+              {% endif %}
+            </a></span>
+          {% endif %}
+
+          <span class="length">{{ track.length_str }}</span>
+        </p>
+
+        {% if show_all_metadata %}
+          <p class="meta">
+            {% if track.composer %}
+              composed by
+              <a href="{% url "vote:composer" composer=track.composer %}">{{ track.composer }}</a>{% if track.year %},{% endif %}
+            {% endif %}
+
+            {% if track.year %}
+              {{ track.year }}
+            {% endif %}
+          </p>
         {% endif %}
-      </ul>
+
+        {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
+          <p class="refusal">{{ track.ineligible }}</p>
+        {% endif %}
+
+        {% if user.is_staff %}
+          {% include "include/notes.html" with notes=track.notes %}
+        {% else %}
+          {% include "include/notes.html" with notes=track.public_notes %}
+        {% endif %}
+      </div>
     </div>
+
     <div class="voting">
       <ul class="votes">
         {% for vote in track|votes_for:vote_show|slice:"1:" %}
