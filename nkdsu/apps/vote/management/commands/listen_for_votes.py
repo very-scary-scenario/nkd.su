@@ -1,11 +1,10 @@
 import json
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 import tweepy
 
 from ...models import Vote
-from ...utils import _read_tw_auth
+from ...utils import READING_USERNAME, _read_tw_auth
 
 
 class TweetListener(tweepy.StreamListener):
@@ -22,5 +21,5 @@ class Command(BaseCommand):
         listener = TweetListener()
 
         stream = tweepy.Stream(_read_tw_auth, listener)
-        track = ['@%s' % settings.READING_USERNAME]
+        track = ['@%s' % READING_USERNAME]
         stream.filter(track=track)

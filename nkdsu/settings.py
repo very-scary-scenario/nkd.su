@@ -58,7 +58,6 @@ CONSUMER_SECRET = ''  # secret
 # @nkdsu
 READING_ACCESS_TOKEN = ''  # secret
 READING_ACCESS_TOKEN_SECRET = ''  # secret
-READING_USERNAME = "nkdsu"
 
 # @nekodesuradio
 POSTING_ACCESS_TOKEN = ''  # secret

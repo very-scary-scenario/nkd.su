@@ -32,8 +32,9 @@ import requests
 from .managers import NoteQuerySet, TrackQuerySet
 from .parsers import parse_artist
 from .utils import (
-    indefinitely, lastfm, length_str, memoize, musicbrainzngs, pk_cached, posting_tw_api, reading_tw_api,
-    split_id3_title, vote_tweet_intent_url,
+    READING_USERNAME, indefinitely, lastfm, length_str, memoize,
+    musicbrainzngs, pk_cached, posting_tw_api, reading_tw_api, split_id3_title,
+    vote_tweet_intent_url,
 )
 from ..vote import mixcloud
 
@@ -1196,7 +1197,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         def mention_is_first_and_for_us(mention):
             return (
                 mention['indices'][0] == 0 and
-                mention['screen_name'] == settings.READING_USERNAME
+                mention['screen_name'] == READING_USERNAME
             )
 
         if not any([mention_is_first_and_for_us(m)
@@ -1310,7 +1311,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         if not self.is_manual:
             while (
                 content.lower()
-                .startswith('@{}'.format(settings.READING_USERNAME).lower())
+                .startswith('@{}'.format(READING_USERNAME).lower())
             ):
                 content = content.split(' ', 1)[1]
 

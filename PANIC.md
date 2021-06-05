@@ -27,8 +27,7 @@ installed.
           app keys.
         - If you're setting up an instance for local development and testing,
           you probably want to create a testing Twitter account and use that
-          instead, for both `READING_` and `POSTING_`. You may or may not also
-          want to override `READING_USERNAME` in your local settings.
+          instead, for both `READING_` and `POSTING_`.
     - [Make some last.fm API keys][lastfmapikeys] and add them as
       `LASTFM_API_KEY` and `LASTFM_API_SECRET`.
 - Set up a database and add the [settings][db] for it to your

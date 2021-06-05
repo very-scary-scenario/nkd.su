@@ -3,6 +3,7 @@ import re
 from functools import partial
 
 from django.conf import settings
+from django.core.cache import cache
 from django.utils.http import urlquote
 import musicbrainzngs
 import requests
@@ -28,11 +29,25 @@ posting_tw_api = tweepy.API(_post_tw_auth)
 indefinitely = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
 
 
-try:
-    SHORT_URL_LENGTH = posting_tw_api.configuration()['short_url_length_https']
-except Exception as e:
-    SHORT_URL_LENGTH = 22
-    logger.critical(e)
+def _get_short_url_length():
+    cache_key = 'tw-short-url-length'
+    length = cache.get(cache_key)
+    if length is not None:
+        return length
+    try:
+        length = reading_tw_api.configuration()['short_url_length_https']
+    except tweepy.error.TweepError as e:
+        logger.critical(
+            "could not read twitter configuration to determine short URL length:\n{}".format(e)
+        )
+        return 22
+    else:
+        cache.set(cache_key, length)
+        return length
+
+
+SHORT_URL_LENGTH = _get_short_url_length()
+READING_USERNAME = reading_tw_api.auth.get_username()
 
 
 def length_str(msec):
