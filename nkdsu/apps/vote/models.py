@@ -6,7 +6,7 @@ import re
 from dataclasses import dataclass
 from io import BytesIO
 from string import ascii_letters
-from typing import Any, Dict, Iterable, List, Literal, Optional, Set, Tuple, Union
+from typing import Any, Dict, Iterable, List, Literal, Optional, Set, Tuple, Union, cast
 from urllib.parse import urlparse
 
 from Levenshtein import ratio
@@ -159,9 +159,8 @@ class Show(CleanOnSaveMixin, models.Model):
         show = last_show
 
         while show.end < time:
-            this_show = show.next(create=True)
-            assert this_show is not None
-            return this_show
+            # if create=True, show.next will never return None
+            show = cast(Show, show.next(create=True))
 
         return show
 
