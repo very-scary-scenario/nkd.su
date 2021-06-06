@@ -122,33 +122,41 @@
 
     {% if user.is_staff %}
       <div class="admin">
-        <p>
+        <p class="useful-when-live">
           <span><a href="{% url "vote:admin:play" pk=track.pk %}">play</a></span>
-          <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
-          {% if track.ineligible %}
-            <span><a href="{% url "vote:admin:unblock" pk=track.pk %}">unblock</a></span>
-          {% elif track.eligible %}
-            <span><a href="{% url "vote:admin:block" pk=track.pk %}">block</a></span>
-            <span><a class="ajaxable" href="{% url "vote:admin:block_with_reason" pk=track.pk %}?reason=announced">announce</a></span>
-          {% endif %}
-        </p>
-        <p>
-          {% if track.hidden %}
-            <span><a href="{% url "vote:admin:unhide" pk=track.pk %}">unhide</a></span>
-          {% else %}
-            <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
-          {% endif %}
+
           {% if track in current_show.discarded or track in current_show.shortlisted %}
             <span><a class="ajaxable" href="{% url "vote:admin:reset" pk=track.pk %}">reset shortlist/discard</a></span>
           {% else %}
             <span><a class="ajaxable" href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
             <span><a class="ajaxable" href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
           {% endif %}
+
+          {% if track.eligible %}
+            <span><a class="ajaxable" href="{% url "vote:admin:block_with_reason" pk=track.pk %}?reason=announced">announce</a></span>
+          {% endif %}
+        </p>
+        <p class="useful-less-often">
+          {% if track.ineligible %}
+            <span><a href="{% url "vote:admin:unblock" pk=track.pk %}">unblock</a></span>
+          {% else %}
+            <span><a href="{% url "vote:admin:block" pk=track.pk %}">block</a></span>
+          {% endif %}
+
+          {% if track.hidden %}
+            <span><a href="{% url "vote:admin:unhide" pk=track.pk %}">unhide</a></span>
+          {% else %}
+            <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
+          {% endif %}
+
+          <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
+
           {% if track.metadata_locked %}
             <span><a title="let library updates affect this track" href="{% url "vote:admin:unlock_metadata" pk=track.pk %}">unlock</a></span>
           {% else %}
             <span><a title="prevent library updates from affecting this track" href="{% url "vote:admin:lock_metadata" pk=track.pk %}">lock</a></span>
           {% endif %}
+
           <span><a href="{% url "vote:admin:make_note" pk=track.pk %}">add note</a></span>
         </p>
       </div>
