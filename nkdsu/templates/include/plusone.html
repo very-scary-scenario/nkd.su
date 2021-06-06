@@ -5,6 +5,10 @@
     <a>
       {{ track|votes_for:vote_show|length }}
     </a>
+  {% elif track.ineligible %}
+    <a title="{{ track.ineligible }}">
+      -
+    </a>
   {% else %}
     <a target="_blank" title="request this track" href="{{ track.get_vote_url }}">
       +
