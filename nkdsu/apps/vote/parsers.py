@@ -37,7 +37,7 @@ class ArtistLexer(Lexer):
         r'[Ff]rom|'
         r'[Ff]eat(\.|uring)?|'
         r'Vo\.'
-        r')\s+'
+        r')\s+|='
     )
     COMMA = r',(\sand)?\s+'
     SPACE = r'\s+'
@@ -65,7 +65,7 @@ class ArtistLexer(Lexer):
         r'Voices From Mars|'
         r'Wake Up, [^\s]+!|'
         r'＊\(Asterisk\)|'
-        r'[^\s,()]+'
+        r'[^\s=,()]+'
         r')'
     )
 
