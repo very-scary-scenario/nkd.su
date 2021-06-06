@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import codecs
 import datetime
 from abc import abstractmethod
@@ -8,7 +10,7 @@ from typing import Any, Dict, List, Optional, Tuple, Type
 from django.conf import settings
 from django.db.models import Model, QuerySet
 from django.db.utils import NotSupportedError
-from django.http import Http404
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -28,14 +30,14 @@ class CurrentShowMixin(ContextMixin):
 
 
 class LetMemoizeGetObject:
-    def get_object(self, queryset: Optional[QuerySet] = None):
+    def get_object(self, queryset: Optional[QuerySet] = None) -> Model:
         if queryset is None:
             return self._get_object()
         else:
             return super().get_object(queryset=queryset)  # type: ignore
 
     @abstractmethod
-    def _get_object(self):
+    def _get_object(self) -> Model:
         raise NotImplementedError()
 
 
@@ -51,7 +53,7 @@ class ShowDetailMixin(LetMemoizeGetObject):
     default_to_current = False
 
     @memoize
-    def _get_object(self):
+    def _get_object(self) -> Show:
         """
         Get the show relating to self.date or, if self.date is None, the most
         recent complete show. If self.default_to_current is True, get the show
@@ -60,6 +62,8 @@ class ShowDetailMixin(LetMemoizeGetObject):
         Doesn't use Show.at() because I don't want views creating Shows in the
         database.
         """
+
+        assert self.model is not None
 
         if self.date is None:
             qs = self.model.objects.all()
@@ -77,7 +81,7 @@ class ShowDetailMixin(LetMemoizeGetObject):
         except IndexError:
             raise Http404
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         date_fmt = '%Y-%m-%d'
         date_str = kwargs.get('date')
 
@@ -102,14 +106,16 @@ class ShowDetailMixin(LetMemoizeGetObject):
                                             timezone.get_current_timezone())
 
         self.object = self.get_object()
+        assert isinstance(self.object, Show)
 
         if (
             not fell_back and
             self.date is not None and
             self.object.showtime.date() == self.date.date()
         ):
-            return super(ShowDetailMixin, self).get(request, *args, **kwargs)
+            return super().get(request, *args, **kwargs)  # type: ignore
         else:
+            assert request.resolver_match.url_name is not None
             new_kwargs = copy(kwargs)
             name = (self.view_name or
                     ':'.join([request.resolver_match.namespace,
@@ -118,9 +124,8 @@ class ShowDetailMixin(LetMemoizeGetObject):
             url = reverse(name, kwargs=new_kwargs)
             return redirect(url)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(ShowDetailMixin, self).get_context_data(*args,
-                                                                **kwargs)
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)  # type: ignore
 
         context['show'] = self.get_object()
         return context
@@ -140,7 +145,7 @@ class ThisShowDetailMixin(ShowDetailMixin):
             except self.model.DoesNotExist:
                 raise Http404
         else:
-            return super(ThisShowDetailMixin, self).get_object()
+            return super().get_object()
 
 
 class ShowDetail(ShowDetailMixin, DetailView):
@@ -151,7 +156,7 @@ class ArchiveList(ListView):
     model: Optional[Type[Model]] = Show
     exclude_current = True
 
-    def year(self):
+    def year(self) -> int:
         year = int(
             self.kwargs.get('year') or
             self.get_queryset().latest('showtime').showtime.year
@@ -162,7 +167,7 @@ class ArchiveList(ListView):
 
         return year
 
-    def get_years(self):
+    def get_years(self) -> List[int]:
         try:
             return list(
                 self.get_queryset().order_by('showtime__year').distinct(
@@ -173,7 +178,10 @@ class ArchiveList(ListView):
             return sorted(set(self.get_queryset().order_by('showtime__year')
                               .values_list('showtime__year', flat=True)))
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Show]:
+        assert self.model is not None
+        assert issubclass(self.model, Show)
+
         qs = super().get_queryset().order_by('-showtime')
 
         if self.exclude_current:
@@ -181,9 +189,9 @@ class ArchiveList(ListView):
 
         return qs
 
-    def get_context_data(self):
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
         return {
-            **super().get_context_data(),
+            **super().get_context_data(**kwargs),
             'years': self.get_years(),
             'year': self.year(),
             'object_list': self.get_queryset().filter(
@@ -194,9 +202,11 @@ class ArchiveList(ListView):
 
 class MarkdownView(TemplateView):
     template_name = 'markdown.html'
+    filename: str
+    title: str
 
-    def get_context_data(self):
-        context = super(MarkdownView, self).get_context_data()
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super(MarkdownView, self).get_context_data(**kwargs)
 
         words = markdown(codecs.open(
             path.join(settings.PROJECT_ROOT, self.filename),
