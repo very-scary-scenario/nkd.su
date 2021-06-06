@@ -1,15 +1,17 @@
+from __future__ import annotations
+
 import datetime
 from collections import OrderedDict
 from random import sample
-from typing import Any, Dict, Iterable, Tuple
+from typing import Any, Dict, Iterable, List, Set, Tuple, cast
 
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
-from django.db.models import Count, DurationField, F
+from django.db.models import Count, DurationField, F, QuerySet
 from django.db.models.functions import Cast, Now
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -63,7 +65,7 @@ class Archive(mixins.ArchiveList):
     section = 'archive'
     template_name = 'archive.html'
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Show]:
         return super().get_queryset().prefetch_related('play_set', 'vote_set')
 
 
@@ -76,7 +78,7 @@ class ListenRedirect(mixins.ShowDetail):
     section = 'archive'
     template_name = 'show_detail.html'
 
-    def get(self, *a, **k):
+    def get(self, *a, **k) -> HttpResponse:
         super().get(*a, **k)
         cloudcasts = self.object.cloudcasts()
         if len(cloudcasts) == 1:
@@ -96,7 +98,7 @@ class Added(mixins.ShowDetailMixin, ListView):
     template_name = 'added.html'
     paginate_by = 50
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Track]:
         return self.get_object().revealed()
 
 
@@ -117,7 +119,7 @@ class Roulette(ListView):
         ('pro', 'pro (only for pros)'),
     ]
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
         if (
             kwargs.get('mode') != 'pro' and
             self.request.session.get(self.pro_roulette_session_key())
@@ -136,10 +138,10 @@ class Roulette(ListView):
         else:
             return super(Roulette, self).get(request, *args, **kwargs)
 
-    def pro_roulette_session_key(self):
+    def pro_roulette_session_key(self) -> str:
         return PRO_ROULETTE.format(Show.current().pk)
 
-    def pro_pk(self):
+    def pro_pk(self) -> int:
         sk = self.pro_roulette_session_key()
         pk = self.request.session.get(self.pro_roulette_session_key())
 
@@ -203,8 +205,8 @@ class Roulette(ListView):
 
         return (qs.order_by('?')[:5], qs.count())
 
-    def get_context_data(self):
-        context = super(Roulette, self).get_context_data()
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super(Roulette, self).get_context_data(**kwargs)
         mode = self.kwargs['mode']
         decade_str = self.kwargs.get('decade', str(self.default_decade))
         minutes_str = self.kwargs.get('minutes', str(self.default_minutes_count))
@@ -231,8 +233,8 @@ class Search(ListView):
     context_object_name = 'tracks'
     paginate_by = 20
 
-    def get(self, request):
-        resp = super().get(request)
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        resp = super().get(request, *args, **kwargs)
         qs = self.get_queryset()
         animes = set((
             role_detail.anime for t in qs for role_detail in t.role_details
@@ -252,7 +254,7 @@ class Search(ListView):
         return resp
 
     @reify
-    def _queryset(self):
+    def _queryset(self) -> QuerySet[Track]:
         return self.model.objects.search(
             self.request.GET.get('q', ''),
             show_secret_tracks=(
@@ -261,11 +263,11 @@ class Search(ListView):
             ),
         )
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Track]:
         return self._queryset
 
-    def get_context_data(self):
-        context = super(Search, self).get_context_data()
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super(Search, self).get_context_data(**kwargs)
         context['query'] = self.request.GET.get('q', '')
         return context
 
@@ -275,8 +277,8 @@ class TrackDetail(DetailView):
     template_name = 'track_detail.html'
     context_object_name = 'track'
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        self.object = cast(Track, self.get_object())
         if kwargs.get('slug', None) != self.object.slug():
             return redirect(self.object.get_absolute_url())
         else:
@@ -288,9 +290,8 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
     context_object_name = 'voter'
     paginate_by = 100
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(TwitterUserDetail, self).get_context_data(*args,
-                                                                  **kwargs)
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super(TwitterUserDetail, self).get_context_data(**kwargs)
 
         votes = self.get_object().votes_with_liberal_preselection()
         paginator = Paginator(votes, self.paginate_by)
@@ -309,7 +310,7 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
 
 
 class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
-    def get(self, *a, **k):
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
             content_type, image = self.get_object().get_avatar(
                 size=self.request.GET.get('size'))
@@ -328,18 +329,18 @@ class TrackListWithAnimeGrouping(ListView):
     model = Track
     context_object_name = 'tracks'
 
-    def grouped_tracks(self):
+    def grouped_tracks(self) -> OrderedDict[str, List[Track]]:
         tracks = self.get_queryset()
         animes = sorted(set(rd.anime for t in tracks for rd in t.role_details))
-        grouped_tracks = OrderedDict()
+        grouped_tracks: OrderedDict[str, List[Track]] = OrderedDict()
 
         for anime in animes:
             grouped_tracks[anime] = [t for t in tracks if t.has_anime(anime)]
 
         return grouped_tracks
 
-    def get_context_data(self):
-        context = super(TrackListWithAnimeGrouping, self).get_context_data()
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super(TrackListWithAnimeGrouping, self).get_context_data(**kwargs)
         context['grouped_tracks'] = self.grouped_tracks
         return context
 
@@ -347,15 +348,15 @@ class TrackListWithAnimeGrouping(ListView):
 class Artist(TrackListWithAnimeGrouping):
     template_name = 'artist_detail.html'
 
-    def get(self, *a, **k):
-        response = super().get(*a, **k)
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        response = super().get(request, *args, **kwargs)
 
         if len(self.tracks) == 0:
             response.status_code = 404
 
         return response
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Track]:
         return self.model.objects.by_artist(
             self.kwargs['artist'], show_secret_tracks=(
                 self.request.user.is_authenticated and
@@ -363,11 +364,11 @@ class Artist(TrackListWithAnimeGrouping):
             )
         )
 
-    def artist_suggestions(self):
+    def artist_suggestions(self) -> Set[str]:
         return Track.suggest_artists(self.kwargs['artist'])
 
-    def get_context_data(self):
-        context = super(Artist, self).get_context_data()
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super(Artist, self).get_context_data(**kwargs)
         self.tracks = context['tracks']
         context.update({
             'artist': self.kwargs['artist'],
@@ -382,7 +383,7 @@ class Anime(ListView):
     template_name = 'anime_detail.html'
     context_object_name = 'tracks'
 
-    def get_queryset(self):
+    def get_queryset(self) -> List[Track]:  # type: ignore
         tracks = self.model.objects.by_anime(
             self.kwargs['anime'], show_secret_tracks=(
                 self.request.user.is_authenticated and
@@ -398,8 +399,8 @@ class Anime(ListView):
                 key=lambda t: t.role_detail_for_anime(self.kwargs['anime'])
             )
 
-    def get_context_data(self):
-        context = super(Anime, self).get_context_data()
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super(Anime, self).get_context_data(**kwargs)
         context.update({
             'anime': self.kwargs['anime'],
             'related_anime': (
@@ -413,7 +414,7 @@ class Anime(ListView):
 class Composer(TrackListWithAnimeGrouping):
     template_name = 'composer_detail.html'
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Track]:
         if self.request.user.is_authenticated and self.request.user.is_staff:
             qs = self.model.objects.all()
         else:
@@ -421,8 +422,8 @@ class Composer(TrackListWithAnimeGrouping):
 
         return qs.filter(composer=self.kwargs['composer'])
 
-    def get_context_data(self):
-        context = super(Composer, self).get_context_data()
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super(Composer, self).get_context_data(**kwargs)
         context.update({
             'composer': self.kwargs['composer'],
         })
@@ -434,7 +435,7 @@ class Stats(TemplateView):
     template_name = 'stats.html'
     cache_key = 'stats:context'
 
-    def streaks(self):
+    def streaks(self) -> List[TwitterUser]:
         last_votable_show = Show.current().prev()
         while (
             last_votable_show is not None and
@@ -450,7 +451,7 @@ class Stats(TemplateView):
             reverse=True
         )
 
-    def batting_averages(self):
+    def batting_averages(self) -> List[TwitterUser]:
         users = []
         minimum_weight = 4
 
@@ -463,20 +464,19 @@ class Stats(TemplateView):
 
         return sorted(users, key=lambda u: u.batting_average(
             minimum_weight=minimum_weight
-        ), reverse=True)
+        ) or 0, reverse=True)
 
-    def popular_tracks(self):
+    def popular_tracks(self) -> List[Tuple[Track, int]]:
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
         tracks = []
 
         for track in Track.objects.public():
-            tracks.append((track,
-                           track.vote_set.filter(date__gt=cutoff).count()))
+            tracks.append((track, track.vote_set.filter(date__gt=cutoff).count()))
 
         return sorted(tracks, key=lambda t: t[1], reverse=True)
 
-    def get_context_data(self):
-        context = super(Stats, self).get_context_data()
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        context = super(Stats, self).get_context_data(**kwargs)
         context.update({
             'streaks': self.streaks,
             'batting_averages': self.batting_averages,
@@ -499,24 +499,24 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
     form_class = BadMetadataForm
     template_name = 'report.html'
 
-    def get_track(self):
+    def get_track(self) -> Track:
         return get_object_or_404(Track, pk=self.kwargs['pk'])
 
-    def get_context_data(self, *args, **kwargs):
+    def get_context_data(self, *args, **kwargs) -> Dict[str, Any]:
         context = super(ReportBadMetadata, self).get_context_data(*args,
                                                                   **kwargs)
         context['track'] = self.get_track()
         return context
 
-    def get_form_kwargs(self):
+    def get_form_kwargs(self) -> Dict[str, Any]:
         kwargs = super(ReportBadMetadata, self).get_form_kwargs()
         kwargs['track'] = self.get_track()
         return kwargs
 
-    def get_success_url(self):
+    def get_success_url(self) -> str:
         return self.get_track().get_absolute_url()
 
-    def form_valid(self, form):
+    def form_valid(self, form: BadMetadataForm) -> HttpResponse:
         f = form.cleaned_data
 
         track = Track.objects.get(pk=self.kwargs['pk'])
@@ -540,7 +540,7 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
 
         return super(ReportBadMetadata, self).form_valid(form)
 
-    def get_breadcrumbs(self):
+    def get_breadcrumbs(self) -> List[Tuple[str, str]]:
         track = self.get_track()
 
         return [
@@ -553,13 +553,13 @@ class RequestAddition(FormView):
     template_name = 'request.html'
     success_url = reverse_lazy('vote:index')
 
-    def get_initial(self):
+    def get_initial(self) -> Dict[str, Any]:
         return {
             **super().get_initial(),
             **{k: v for (k, v) in self.request.GET.items()},
         }
 
-    def form_valid(self, form):
+    def form_valid(self, form: RequestForm) -> HttpResponse:
         f = form.cleaned_data
 
         fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
@@ -586,10 +586,10 @@ class SetDarkModeView(FormView):
     form_class = DarkModeForm
     success_url = reverse_lazy('vote:index')
 
-    def get_success_url(self):
+    def get_success_url(self) -> str:
         return self.request.META.get('HTTP_REFERER', self.success_url)
 
-    def form_valid(self, form):
+    def form_valid(self, form: DarkModeForm) -> HttpResponse:
         session = self.request.session
         session['dark_mode'] = {
             'light': False,
@@ -599,5 +599,5 @@ class SetDarkModeView(FormView):
         session.save()
         return super().form_valid(form)
 
-    def form_invalid(self, form):
+    def form_invalid(self, form: DarkModeForm) -> HttpResponse:
         return redirect(self.get_success_url())

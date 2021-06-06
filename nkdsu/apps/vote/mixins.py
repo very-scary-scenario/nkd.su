@@ -3,7 +3,7 @@ import datetime
 from abc import abstractmethod
 from copy import copy
 from os import path
-from typing import Any, Dict, Optional, Type
+from typing import Any, Dict, List, Optional, Tuple, Type
 
 from django.conf import settings
 from django.db.models import Model, QuerySet
@@ -240,6 +240,10 @@ class TwitterUserDetailMixin(LetMemoizeGetObject):
 
 
 class BreadcrumbMixin:
+    @abstractmethod
+    def get_breadcrumbs(self) -> List[Tuple[str, str]]:
+        raise NotImplementedError()
+
     def get_context_data(self, *a, **k):
         return {
             **super().get_context_data(*a, **k),
