@@ -1,6 +1,5 @@
 import os
 import plistlib
-from urllib.parse import urlparse
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -119,7 +118,7 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
 
         referer = self.request.META.get('HTTP_REFERER')
         if referer:
-            next_path = urlparse(referer).path
+            next_path = referer
         else:
             next_path = reverse('vote:index')
 

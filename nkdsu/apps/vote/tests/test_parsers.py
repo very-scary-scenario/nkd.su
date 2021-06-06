@@ -66,6 +66,16 @@ ARTIST_EXAMPLES = [
     ('765PRO&876PRO ALLSTARS', [
         (True, '765PRO&876PRO ALLSTARS'),
     ]),
+    ('Ranka Lee=Nakajima Megumi', [
+        (True, 'Ranka Lee'),
+        (False, '='),
+        (True, 'Nakajima Megumi'),
+    ]),
+    ('char = cv', [
+        (True, 'char'),
+        (False, ' = '),
+        (True, 'cv'),
+    ]),
 ]
 
 
