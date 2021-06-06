@@ -123,6 +123,8 @@ body main .track {
   }
 
   div.voting, div.admin {
+    position: relative;
+    z-index: 2;
     display: block;
     margin: .6em .6em 0;
     padding: .6em 0 0;
@@ -130,6 +132,7 @@ body main .track {
   }
 
   div.admin {
+    z-index: 1;
     font-size: .8em;
     > p {
       .child-iter();
