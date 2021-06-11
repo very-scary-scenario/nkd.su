@@ -63,7 +63,7 @@ READING_ACCESS_TOKEN_SECRET = ''  # secret
 POSTING_ACCESS_TOKEN = ''  # secret
 POSTING_ACCESS_TOKEN_SECRET = ''  # secret
 
-MIXCLOUD_FEED_URL = 'https://api.mixcloud.com/NekoDesu/feed/?limit=100'
+MIXCLOUD_USERNAME = 'NekoDesu'
 
 LASTFM_API_KEY = ''  # secret
 LASTFM_API_SECRET = ''  # secret
