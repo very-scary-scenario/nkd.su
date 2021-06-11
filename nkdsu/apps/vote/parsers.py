@@ -90,7 +90,7 @@ def parse_artist(string, fail_silently=True):
     except LexError as e:
         if fail_silently:
             if settings.DEBUG:
-                print(e)
+                print(f'problem parsing artist name {string!r}:\n  {e}')
             yield (True, string)
             return
         else:
