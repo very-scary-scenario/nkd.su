@@ -10,51 +10,53 @@ logger = logging.getLogger(__name__)
 
 TIMEOUT = 4
 
+MIXCLOUD_FEED_URL = 'https://api.mixcloud.com/{}/cloudcasts/'
+MIXCLOUD_PAGE_LIMIT = 100
 
-def _get_items():
-    next_page_url = settings.MIXCLOUD_FEED_URL
 
+def _get_cloudcasts():
     # we should page through for a while, but at a certain point it probably
     # isn't worth the load times
     for page_index in range(20):
+        url = MIXCLOUD_FEED_URL.format(settings.MIXCLOUD_USERNAME)
         ck = 'mixcloud:api-page:{}'.format(page_index)
+
         hit = cache.get(ck)
 
         if hit:
             page = hit
         else:
             try:
-                page = requests.get(
-                    next_page_url,
-                    timeout=TIMEOUT,
-                ).json()
+                resp = requests.get(url, params={
+                    'limit': MIXCLOUD_PAGE_LIMIT,
+                    'offset': page_index * MIXCLOUD_PAGE_LIMIT,
+                }, timeout=TIMEOUT)
             except requests.RequestException as e:
                 # mission failed; we'll get 'em next time
                 logger.exception(e)
                 break
 
+            page = resp.json()
             cache.set(ck, page, 60*20)
 
-        yield from page.get('data', [])
+        data = page.get('data', [])
 
-        next_page_url = page.get('paging', {}).get('next')
-        if next_page_url is None:
+        if not data:
             break
 
-        page = requests.get(next_page_url, timeout=TIMEOUT).json()
+        yield from data
 
 
 def cloudcasts_for(date) -> List[Any]:
     hunting_for = date.strftime('%d/%m/%Y')
     cloudcasts = []
 
-    for item in _get_items():
+    for cloudcast in _get_cloudcasts():
         matched_item = False
 
-        for cloudcast in item.get('cloudcasts', []):
-            if hunting_for in cloudcast['name']:
-                cloudcasts.append(cloudcast)
-                matched_item = True
+        if hunting_for in cloudcast['name']:
+            cloudcasts.append(cloudcast)
+            matched_item = True
 
         if cloudcasts and not matched_item:
             # we've matched something, and the next item isn't also a

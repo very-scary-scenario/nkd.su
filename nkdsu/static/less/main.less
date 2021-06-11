@@ -491,6 +491,7 @@ body[data-dark-mode=system] [value=system] {
   cursor: pointer;
   .noise();
   background-color: @inv_bg;
+  color: @fg;
   overflow: hidden;
   text-shadow: none;
   position: relative;
@@ -504,6 +505,7 @@ body[data-dark-mode=system] [value=system] {
 
   li {
     &.success {background-color: @green}
+    &.error {background-color: @pink}
   }
 
   &::before {

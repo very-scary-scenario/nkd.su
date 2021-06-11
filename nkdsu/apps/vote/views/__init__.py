@@ -80,7 +80,7 @@ class ListenRedirect(mixins.ShowDetail):
 
     def get(self, *a, **k) -> HttpResponse:
         super().get(*a, **k)
-        cloudcasts = self.object.cloudcasts()
+        cloudcasts = cast(Show, self.object).cloudcasts()
         if len(cloudcasts) == 1:
             return redirect(cloudcasts[0]['url'])
         else:
@@ -89,7 +89,7 @@ class ListenRedirect(mixins.ShowDetail):
                 "Sorry, we couldn't find an appropriate Mixcloud upload to "
                 "take you to.",
             )
-            return redirect(self.object.get_absolute_url())
+            return redirect(cast(Show, self.object).get_absolute_url())
 
 
 class Added(mixins.ShowDetailMixin, ListView):
@@ -99,7 +99,7 @@ class Added(mixins.ShowDetailMixin, ListView):
     paginate_by = 50
 
     def get_queryset(self) -> QuerySet[Track]:
-        return self.get_object().revealed()
+        return cast(Show, self.get_object()).revealed()
 
 
 class Roulette(ListView):
@@ -293,17 +293,17 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         context = super(TwitterUserDetail, self).get_context_data(**kwargs)
 
-        votes = self.get_object().votes_with_liberal_preselection()
+        votes = cast(TwitterUser, self.get_object()).votes_with_liberal_preselection()
         paginator = Paginator(votes, self.paginate_by)
 
         try:
-            votes = paginator.page(self.request.GET.get('page', 1))
+            vote_page = paginator.page(self.request.GET.get('page', 1))
         except InvalidPage:
             raise Http404('Not a page')
 
         context.update({
-            'votes': votes,
-            'page_obj': votes,
+            'votes': vote_page,
+            'page_obj': vote_page,
         })
 
         return context
@@ -312,8 +312,8 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
 class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
-            content_type, image = self.get_object().get_avatar(
-                size=self.request.GET.get('size'))
+            content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
+                size='original' if request.GET.get('size') == 'original' else None)
         except tweepy.TweepError as e:
             if e.api_code == 50:
                 raise Http404('No such user :<')
