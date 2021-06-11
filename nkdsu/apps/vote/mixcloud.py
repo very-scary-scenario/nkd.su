@@ -10,11 +10,11 @@ logger = logging.getLogger(__name__)
 
 TIMEOUT = 4
 
-MIXCLOUD_FEED_URL = 'https://api.mixcloud.com/{}/feed/'
+MIXCLOUD_FEED_URL = 'https://api.mixcloud.com/{}/cloudcasts/'
 MIXCLOUD_PAGE_LIMIT = 100
 
 
-def _get_items():
+def _get_cloudcasts():
     # we should page through for a while, but at a certain point it probably
     # isn't worth the load times
     for page_index in range(20):
@@ -51,13 +51,12 @@ def cloudcasts_for(date) -> List[Any]:
     hunting_for = date.strftime('%d/%m/%Y')
     cloudcasts = []
 
-    for item in _get_items():
+    for cloudcast in _get_cloudcasts():
         matched_item = False
 
-        for cloudcast in item.get('cloudcasts', []):
-            if hunting_for in cloudcast['name']:
-                cloudcasts.append(cloudcast)
-                matched_item = True
+        if hunting_for in cloudcast['name']:
+            cloudcasts.append(cloudcast)
+            matched_item = True
 
         if cloudcasts and not matched_item:
             # we've matched something, and the next item isn't also a
