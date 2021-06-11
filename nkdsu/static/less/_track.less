@@ -195,10 +195,49 @@ body main .track {
     }
   }
 
-  &.expanded > .expansion-toggle::before {
-    content: 'collapse'
-  }
+  &.expanded {
+    > .expansion-toggle::before {
+      content: 'collapse'
+    }
 
+    div.first-row {
+      display: block;
+
+      div.metadata, div.key-vote {
+        display: block;
+        width: auto;
+      }
+    }
+
+    .vote {
+      display: block;
+      .avatar.thumb { display: none; }
+
+      &::after {
+        content: none;
+      }
+
+      .deets {
+        padding: 0;
+        background: none;
+        box-shadow: none;
+        border: none;
+        transform: none;
+        pointer-events: auto;
+        position: static;
+        opacity: 1;
+        max-width: none;
+        
+        .text {
+          text-align: left;
+
+          &::before, &::after {
+            content: none;
+          }
+        }
+      }
+    }
+  }
 
   // variants
   &.ineligible {
