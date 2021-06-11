@@ -201,21 +201,27 @@ body main .track {
     }
 
     div.first-row {
-      display: block;
+      display: flex;
+      flex-direction: column;
 
       div.metadata, div.key-vote {
-        display: block;
         width: auto;
       }
 
-      div.key-vote .votes {
-        border-bottom: 1px solid rgba(136, 136, 136, 0.5);
-        margin-bottom: .6em;
-      }
+      div.metadata { order: 0 }
+      div.key-vote { order: 1 }
+    }
+
+    .voting {
+      margin-top: 0;
+      border: none;
     }
 
     .vote {
+      border-top: 1px solid rgba(136, 136, 136, 0.5);
+      margin-top: .6em;
       display: block;
+
       .avatar.thumb { display: none; }
 
       &::after {
