@@ -215,6 +215,7 @@ PIPELINE = {
                 'js/libs/jquery.js',
                 'js/libs/jquery.cookie.js',
                 'js/csrf.js',
+                'js/expand.js',
                 'js/select.js',
                 'js/messages.js',
                 'js/ajax-actions.js',

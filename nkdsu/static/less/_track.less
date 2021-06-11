@@ -183,6 +183,23 @@ body main .track {
     opacity: .08;
   }
 
+  // fold and unfold controls
+  > .expansion-toggle {
+    position: absolute;
+    display: block;
+    top: 1em;
+    right: 1em;
+
+    &::before {
+      content: 'expand'
+    }
+  }
+
+  &.expanded > .expansion-toggle::before {
+    content: 'collapse'
+  }
+
+
   // variants
   &.ineligible {
     .invert();
