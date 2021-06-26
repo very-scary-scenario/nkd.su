@@ -66,13 +66,13 @@ class Show(CleanOnSaveMixin, models.Model):
     message = models.TextField(blank=True)
     voting_allowed = models.BooleanField(default=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.showtime.date().isoformat()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
-    def clean(self):
+    def clean(self) -> None:
         if self.end < self.showtime:
             raise ValidationError(
                 'Show ends before it begins; {end} < {start}'.format(
@@ -337,10 +337,10 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     is_abuser = models.BooleanField(default=False)
     updated = models.DateTimeField()
 
-    def __str__(self):
-        return str(self.screen_name)
+    def __str__(self) -> str:
+        return self.screen_name
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.screen_name
 
     def twitter_url(self) -> str:
@@ -610,13 +610,13 @@ class Role:
         if self.caveat and self.caveat.lower().strip() == 'rebroadcast':
             self.sortkey_group += 0.5
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.full_tag
 
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         return self.sortkey() < other.sortkey()
 
-    def __gt__(self, other):
+    def __gt__(self, other) -> bool:
         return self.sortkey() > other.sortkey()
 
     def numbers_in_role(self) -> Tuple[int, ...]:
@@ -625,7 +625,7 @@ class Role:
         # ep10-13'
         return tuple((int(n) for n in re.findall(r'\d+', self.full_role)))
 
-    def sortkey(self):
+    def sortkey(self) -> Tuple[float, str, Tuple[int, ...], str]:
         return (
             self.sortkey_group,
             self.kind,
@@ -671,7 +671,7 @@ class Track(CleanOnSaveMixin, models.Model):
     background_art = models.ImageField(blank=True, upload_to=art_path)
     metadata_locked = models.BooleanField(default=False)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         The string that, for instance, would be tweeted
         """
@@ -681,10 +681,10 @@ class Track(CleanOnSaveMixin, models.Model):
         else:
             return u'‘%s’ - %s' % (self.title, self.artist)
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return type(self) == type(other) and self.id == other.id
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.id)
 
     def clean(self) -> None:

@@ -1,5 +1,6 @@
 import re
 from random import choice
+from typing import Any, Dict
 
 from django import forms
 from django.core.validators import validate_email
@@ -20,7 +21,7 @@ _proper_noun_textinput = forms.TextInput(attrs=dict(_disable_autocorrect,
                                                     autocapitalize="words"))
 
 
-def email_or_twitter(address):
+def email_or_twitter(address: str) -> None:
     try:
         validate_email(address)
     except forms.ValidationError:
@@ -59,7 +60,7 @@ class TriviaForm(forms.Form):
         self.fields.move_to_end('trivia')
         self.fields['trivia_question'].initial = self.new_question()
 
-    def new_question(self):
+    def new_question(self) -> str:
         question = choice(list(trivia.questions.keys()))
         self.fields['trivia'].label = 'Captcha: %s' % question
         return question
@@ -119,7 +120,7 @@ class RequestForm(TriviaForm):
     contact = EmailOrTwitterField(label="Email Address/Twitter name",
                                   required=True)
 
-    def clean(self):
+    def clean(self) -> Dict[str, Any]:
         cleaned_data = super(RequestForm, self).clean()
 
         compulsory = Request.METADATA_KEYS

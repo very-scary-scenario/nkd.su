@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from typing import Any, Dict, Iterable, List, Optional, Tuple
+
 from Levenshtein import ratio
 from django.utils.timezone import get_default_timezone, make_aware
 from sly.lex import LexError
@@ -7,10 +9,12 @@ from sly.lex import LexError
 from .models import Track
 
 
-def check_closeness_against_list(name, canonical_names, reverse=False):
+def check_closeness_against_list(name, canonical_names: Iterable[str], reverse: bool = False) -> Optional[str]:
     best_closeness, best_match = 0.7, None
 
     if name:
+        names_to_check: Tuple[str, ...]
+
         if name in canonical_names:
             return None
 
@@ -34,7 +38,11 @@ def check_closeness_against_list(name, canonical_names, reverse=False):
     return best_match
 
 
-def metadata_consistency_checks(db_track, all_anime_titles, all_artists):
+def metadata_consistency_checks(
+    db_track: Track,
+    all_anime_titles: Iterable[str],
+    all_artists: Iterable[str],
+) -> List[Dict[str, str]]:
     warnings = []
     track_animes = [rd.anime for rd in db_track.role_details]
     track_roles = [rd.full_role for rd in db_track.role_details]
@@ -62,6 +70,8 @@ def metadata_consistency_checks(db_track, all_anime_titles, all_artists):
                 ).format(track_anime=track_anime, canonical_anime=match)
             })
 
+    artists: Iterable[str]
+
     try:
         artists = list(db_track.artist_names(fail_silently=False))
     except LexError as e:
@@ -86,8 +96,8 @@ def metadata_consistency_checks(db_track, all_anime_titles, all_artists):
     return warnings
 
 
-def update_library(tree, dry_run=False, inudesu=False):
-    changes = []
+def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[Dict[str, Any]]:
+    changes: List[Dict[str, Any]] = []
     alltracks = Track.objects.filter(inudesu=inudesu)
     all_anime_titles = Track.all_anime_titles()
     all_artists = Track.all_artists()

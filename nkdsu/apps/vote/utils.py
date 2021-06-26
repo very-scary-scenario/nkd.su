@@ -47,10 +47,10 @@ def _get_short_url_length() -> int:
         logger.critical(
             "could not read twitter configuration to determine short URL length:\n{}".format(e)
         )
-        return 22
-    else:
-        cache.set(cache_key, length)
-        return length
+        length = 22
+
+    cache.set(cache_key, length)
+    return length
 
 
 def _get_reading_username() -> str:
@@ -100,7 +100,7 @@ def tweet_url(tweet: str) -> str:
     )
 
 
-def vote_url(tracks):
+def vote_url(tracks) -> str:
     return tweet_url(vote_tweet(tracks))
 
 
