@@ -100,7 +100,7 @@ def tweet_url(tweet: str) -> str:
     )
 
 
-def vote_url(tracks):
+def vote_url(tracks) -> str:
     return tweet_url(vote_tweet(tracks))
 
 

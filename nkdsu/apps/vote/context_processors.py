@@ -1,3 +1,6 @@
+from typing import Any, Dict
+
+from django.http import HttpRequest
 from django.urls import reverse
 
 from .forms import DarkModeForm
@@ -40,15 +43,15 @@ def get_sections(request):
     ] if url]
 
 
-def get_parent(request):
+def get_parent(request: HttpRequest) -> str:
     return 'base.html'
 
 
-def get_dark_mode(request):
+def get_dark_mode(request: HttpRequest):
     return request.session.get('dark_mode')
 
 
-def nkdsu_context_processor(request):
+def nkdsu_context_processor(request: HttpRequest) -> Dict[str, Any]:
     """
     Add common stuff to context.
     """
