@@ -1,3 +1,5 @@
+from typing import Iterable, Tuple
+
 from django.conf import settings
 
 from sly import Lexer
@@ -6,9 +8,15 @@ from sly.lex import LexError
 
 class ArtistLexer(Lexer):
     tokens = {
-        ARTIST_COMPONENT, SPACE, COMMA, VIA, LPAREN, RPAREN, CV,  # type: ignore  # noqa
+        SPECIAL_CASE, ARTIST_COMPONENT, SPACE, COMMA, VIA, LPAREN, RPAREN, CV,  # type: ignore  # noqa
     }
 
+    SPECIAL_CASE = (
+        r'^('
+        r'FLOWxGRANRODEO|'
+        r'SawanoHiroyuki\[nZk\]:.*'
+        r')$'
+    )
     VIA = (
         r'\s+('
         r'from|'
@@ -80,7 +88,16 @@ class ArtistLexer(Lexer):
 artist_lexer = ArtistLexer()
 
 
-def parse_artist(string, fail_silently=True):
+def handle_special_case(token) -> Iterable[Tuple[bool, str]]:
+    if token.value == "FLOWxGRANRODEO":
+        yield (True, 'FLOW')
+        yield (False, 'x')
+        yield (True, 'GRANRODEO')
+    else:
+        raise NotImplementedError(token.value)
+
+
+def parse_artist(string: str, fail_silently: bool = True) -> Iterable[Tuple[bool, str]]:
     """
     Generate tuples of (whether or not this is the name of an arist,
     bit of this string), which when combined reform the original string handed
@@ -108,6 +125,10 @@ def parse_artist(string, fail_silently=True):
     fragment = None
 
     for ti, token in enumerate(tokens):
+        if token.type == 'SPECIAL_CASE':
+            yield from handle_special_case(token)
+            continue
+
         is_part_of_artist_name = (
             (token.type in artist_parts) and
             (
@@ -136,4 +157,5 @@ def parse_artist(string, fail_silently=True):
 
         fragment = (is_part_of_artist_name, token.value)
 
-    yield fragment
+    if fragment:
+        yield fragment
