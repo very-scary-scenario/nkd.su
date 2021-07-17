@@ -100,12 +100,23 @@ ARTIST_EXAMPLES = [
     ('SawanoHiroyuki[nZk]:Tielle&Gemie', [
         (True, 'SawanoHiroyuki[nZk]'),
         (False, ':'),
-        (True, 'Tielle&Gemie'),
+        (True, 'Tielle'),
+        (False, '&'),
+        (True, 'Gemie'),
     ]),
     ('SawanoHiroyuki[nZk]:someone:else', [
         (True, 'SawanoHiroyuki[nZk]'),
         (False, ':'),
         (True, 'someone:else'),
+    ]),
+    ('SawanoHiroyuki[nZk]:someone&someone:else&yet another person', [
+        (True, 'SawanoHiroyuki[nZk]'),
+        (False, ':'),
+        (True, 'someone'),
+        (False, '&'),
+        (True, 'someone:else'),
+        (False, '&'),
+        (True, 'yet another person'),
     ]),
     ('SawanoHiroyuki[nzk]:collab', [
         (True, 'SawanoHiroyuki[nzk]:collab'),

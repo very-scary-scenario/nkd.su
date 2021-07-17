@@ -94,10 +94,13 @@ def handle_special_case(token) -> Iterable[Tuple[bool, str]]:
         yield (False, 'x')
         yield (True, 'GRANRODEO')
     elif token.value.startswith('SawanoHiroyuki[nZk]:'):
-        sawano, collaborator = token.value.split(':', 1)
+        sawano, collaborators = token.value.split(':', 1)
         yield (True, sawano)
         yield (False, ':')
-        yield (True, collaborator)
+        for i, collaborator in enumerate(collaborators.split('&')):
+            if i != 0:
+                yield (False, '&')
+            yield (True, collaborator)
 
     else:
         raise NotImplementedError(token.value)
