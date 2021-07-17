@@ -99,6 +99,9 @@ def handle_special_case(token) -> Iterable[Tuple[bool, str]]:
         yield (False, ':')
         yield (True, collaborator)
 
+    else:
+        raise NotImplementedError(token.value)
+
 
 def parse_artist(string: str, fail_silently: bool = True) -> Iterable[Tuple[bool, str]]:
     """
