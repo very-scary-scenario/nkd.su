@@ -13,7 +13,7 @@ class ArtistLexer(Lexer):
         r'\s+('
         r'from|'
         r'ft\.|'
-        r'feat(\.|uring)?|'
+        r'feat(\.|uring)?\.?|'
         r'[Ss]tarring|'
         r'and|'
         r'with|'
@@ -23,6 +23,7 @@ class ArtistLexer(Lexer):
         r'n\'|'
         r'vs\.?|'
         r'/|'
+        r'\+|'
         r'&'
         r')\s+'
     )
@@ -36,6 +37,7 @@ class ArtistLexer(Lexer):
         r'[Cc]omposed\sby|'
         r'[Ff]rom|'
         r'[Ff]eat(\.|uring)?|'
+        r'[Pp]erformed\sby|'
         r'Vo\.'
         r')\s+|='
     )
