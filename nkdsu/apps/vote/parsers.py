@@ -93,8 +93,11 @@ def handle_special_case(token) -> Iterable[Tuple[bool, str]]:
         yield (True, 'FLOW')
         yield (False, 'x')
         yield (True, 'GRANRODEO')
-    else:
-        raise NotImplementedError(token.value)
+    elif token.value.startswith('SawanoHiroyuki[nZk]:'):
+        sawano, collaborator = token.value.split(':', 1)
+        yield (True, sawano)
+        yield (False, ':')
+        yield (True, collaborator)
 
 
 def parse_artist(string: str, fail_silently: bool = True) -> Iterable[Tuple[bool, str]]:
