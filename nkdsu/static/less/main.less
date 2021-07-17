@@ -618,27 +618,23 @@ form.login tr {
 form {
   text-align: center;
   margin: .5em 0;
-}
 
-form p {
-  text-align: left;
-  margin: .5em 0;
-}
+  p {
+    text-align: left;
+    margin: .5em 0;
 
-form p input {
-  text-align: left;
-}
+    input, textarea {
+      text-align: left;
+    }
+  }
 
-form p textarea {
-  text-align: left;
-}
-
-form ul.errorlist li {
-  list-style: none;
-  font-size: .7em;
-  color: @light;
-  position: relative;
-  top: .6em;
+  ul.errorlist li {
+    list-style: none;
+    font-size: .7em;
+    color: @light;
+    position: relative;
+    top: .6em;
+  }
 }
 
 /* library updates */
@@ -711,30 +707,28 @@ form ul.errorlist li {
 
 #trivia {
   margin: 0 0 3em;
-}
 
-  #trivia .successful {
+  .successful {
     font-size: .6em;
     opacity: .8;
     margin-left: 2em;
   }
 
-  #trivia .successful .exchange .answer:after {
+  .successful .exchange .answer:after {
     content: '[correct]';
     color: @hl;
     margin-left: .5em;
   }
 
-  #trivia .created {
+  .created {
     color: @light;
     font-size: .8em;
   }
 
-  #trivia .exchange {
+  .exchange {
     margin: 0 0 1em;
-  }
 
-    #trivia .exchange p:before {
+    p:before {
       color: @light;
       width: 1em;
       margin-left: .3em;
@@ -743,22 +737,21 @@ form ul.errorlist li {
       font-style: normal;
     }
 
-    #trivia .trivia:hover p:before,
-    #trivia .trivia:hover .created {
+    .question {
+      font-style: italic;
+      &::before { content: '|' }
+    }
+
+    .answer::before { content: '>' }
+  }
+
+  .trivia:hover {
+    p:before, .created {
       color: @hl;
     }
+  }
+}
 
-    #trivia .exchange .question {
-      font-style: italic;
-    }
-
-    #trivia .exchange .question:before {
-      content: '|'
-    }
-
-    #trivia .exchange .answer:before {
-      content: '>'
-    }
 
 #requests {
   > li {
