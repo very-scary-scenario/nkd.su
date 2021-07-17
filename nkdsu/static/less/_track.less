@@ -187,17 +187,40 @@ body main .track {
   > .expansion-toggle {
     position: absolute;
     display: block;
-    top: 1em;
-    right: 1em;
+    top: 0.5em;
+    left: -1.3em;
+    text-shadow: none;
+    width: 1.4em;
+    height: 1.4em;
+    text-align: center;
 
-    &::before {
-      content: 'expand'
+    &:hover, &:focus {
+      &::before {
+        content: "expand";
+        position: absolute;
+        display: block;
+        left: 1em;
+        top: -1.3em;
+        background-color: @fg;
+        color: @bg;
+        padding: .1em .3em;
+        border-radius: .2em;
+        pointer-events: none;
+      }
+    }
+
+    &::after {
+      display: inline-block;
+      padding-top: .2em;
+      .fas();
+      content: @fa-var-chevron-right;
     }
   }
 
   &.expanded {
-    > .expansion-toggle::before {
-      content: 'collapse'
+    > .expansion-toggle {
+      &::after { content: @fa-var-chevron-down; }
+      &:hover, &:focus { &::before { content: "collapse" } }
     }
 
     div.first-row {
