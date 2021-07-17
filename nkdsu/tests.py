@@ -117,7 +117,7 @@ class EverythingTest(
 
 class LoggedInEverythingTest(EverythingTest):
     def setUp(self):
-        super(LoggedInEverythingTest, self).setUp()
+        super().setUp()
         user = get_user_model()(
             username='what',
             is_staff=True,

@@ -36,13 +36,13 @@ class AdminMixin:
     def as_view(cls, **kw):
         return user_passes_test(
             lambda u: u.is_authenticated and u.is_staff,
-        )(super(AdminMixin, cls).as_view(**kw))
+        )(super().as_view(**kw))
 
 
 class AnyLoggedInUserMixin:
     @classmethod
     def as_view(cls, **kw):
-        return login_required(super(AnyLoggedInUserMixin, cls).as_view(**kw))
+        return login_required(super().as_view(**kw))
 
 
 class TrackSpecificAdminMixin(AdminMixin):
@@ -50,8 +50,7 @@ class TrackSpecificAdminMixin(AdminMixin):
         return get_object_or_404(Track, pk=self.kwargs['pk'])
 
     def get_context_data(self, *args, **kwargs):
-        context = super(TrackSpecificAdminMixin, self
-                        ).get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         context['track'] = self.get_track()
         return context
 
@@ -114,8 +113,7 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
         return self.deets
 
     def get_context_data(self, *args, **kwargs):
-        context = super(DestructiveAdminAction, self
-                        ).get_context_data(*args, **kwargs)
+        context = super().get_context_data(*args, **kwargs)
 
         referer = self.request.META.get('HTTP_REFERER')
         if referer:
@@ -135,8 +133,7 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
         if request.GET.get('confirm') == 'true':
             return self.do_thing_and_redirect()
         else:
-            return super(DestructiveAdminAction, self).get(request, *args,
-                                                           **kwargs)
+            return super().get(request, *args, **kwargs)
 
 
 class SelectionAdminAction(AdminAction, View):
@@ -154,7 +151,7 @@ class SelectionAdminAction(AdminAction, View):
     def do_thing_and_redirect(self):
         # we only want to clear the selection if the rest of this process is
         # successful, or shillito will get understandably mad
-        resp = super(SelectionAdminAction, self).do_thing_and_redirect()
+        resp = super().do_thing_and_redirect()
 
         count = self.get_queryset().count()
         tracks = (
@@ -544,8 +541,7 @@ class RequestList(AnyLoggedInUserMixin, ListView):
     model = Request
 
     def get_queryset(self):
-        return super(RequestList, self).get_queryset().filter(
-            successful=True, filled=None)
+        return super().get_queryset().filter(successful=True, filled=None)
 
 
 class FillRequest(AnyLoggedInUserMixin, FormView):

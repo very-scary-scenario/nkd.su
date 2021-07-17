@@ -44,7 +44,13 @@
         <div id="breadcrumbs">
           <ul>
             {% for link, name in breadcrumbs %}
-              <li><a href="{{ link }}">{{ name }}</a></li>
+              <li>
+                {% if link %}
+                  <a href="{{ link }}">{{ name }}</a>
+                {% else %}
+                  {{ name }}
+                {% endif %}
+              </li>
             {% endfor %}
           </ul>
         </div>
