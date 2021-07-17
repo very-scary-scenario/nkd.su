@@ -60,6 +60,7 @@ class ArtistLexer(Lexer):
         r'OLIVIA inspi\' REIRA\(TRAPNEST\)|'
         r'Oranges\sand\sLemons|'
         r'Run Girls, Run!|'
+        r'Simon & Garfunkel|'
         r'THE RAMPAGE from EXILE TRIBE|'
         r'Tackey & Tsubasa|'
         r'Voices From Mars|'
