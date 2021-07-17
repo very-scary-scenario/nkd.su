@@ -58,7 +58,7 @@
               {% for role_detail in track.role_details %}
                 <span class="role">
                   {% if role_detail.anime %}
-                    <a href="{% url "vote:anime" anime=role_detail.anime %}">{{ role_detail.anime }}</a>
+                    <a class="anime" href="{% url "vote:anime" anime=role_detail.anime %}">{{ role_detail.anime }}</a>
                     {{ role_detail.caveat|default:"" }}
                     {{ role_detail.full_role }}
                   {% else %}
@@ -88,7 +88,7 @@
           <p class="meta">
             {% if track.composer %}
               composed by
-              <a href="{% url "vote:composer" composer=track.composer %}">{{ track.composer }}</a>{% if track.year %},{% endif %}
+              <a class="composer" href="{% url "vote:composer" composer=track.composer %}">{{ track.composer }}</a>{% if track.year %},{% endif %}
             {% endif %}
 
             {% if track.year %}
