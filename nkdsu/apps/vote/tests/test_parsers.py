@@ -92,10 +92,23 @@ ARTIST_EXAMPLES = [
         (True, 'Laura Pitt-Pulford'),
         (False, ')'),
     ]),
-    ('SawanoHiroyuki[nZk]:mizuki', [
+    ('SawanoHiroyuki[nZk]:collab', [
         (True, 'SawanoHiroyuki[nZk]'),
         (False, ':'),
-        (True, 'mizuki'),
+        (True, 'collab'),
+    ]),
+    ('SawanoHiroyuki[nZk]:Tielle&Gemie', [
+        (True, 'SawanoHiroyuki[nZk]'),
+        (False, ':'),
+        (True, 'Tielle&Gemie'),
+    ]),
+    ('SawanoHiroyuki[nZk]:someone:else', [
+        (True, 'SawanoHiroyuki[nZk]'),
+        (False, ':'),
+        (True, 'someone:else'),
+    ]),
+    ('SawanoHiroyuki[nzk]:collab', [
+        (True, 'SawanoHiroyuki[nzk]:collab'),
     ]),
     ('FLOWxGRANRODEO', [
         (True, 'FLOW'),
