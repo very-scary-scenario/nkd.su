@@ -52,7 +52,7 @@
 
   {% if tracks_as_composer %}
     <p class="subheading">
-    {{ artist }} is also credited as the <a href="{% url "vote:composer" composer=artist %}">composer for {{ tracks_as_composer }} track{{ tracks_as_composer|pluralize }}</a> in the library.
+      {{ artist }} is also credited as the <a href="{% url "vote:composer" composer=artist %}">composer for {{ tracks_as_composer }} track{{ tracks_as_composer|pluralize }}</a> in the library.
     </p>
   {% endif %}
 
