@@ -76,6 +76,35 @@ ARTIST_EXAMPLES = [
         (False, ' = '),
         (True, 'cv'),
     ]),
+    ('char + cv', [
+        (True, 'char'),
+        (False, ' + '),
+        (True, 'cv'),
+    ]),
+    ('Team.Nekokan [Neko] featuring. Amaoto Junca', [
+        (True, 'Team.Nekokan [Neko]'),
+        (False, ' featuring. '),
+        (True, 'Amaoto Junca'),
+    ]),
+    ('Lillian Weinberg (Performed by Laura Pitt-Pulford)', [
+        (True, 'Lillian Weinberg'),
+        (False, ' (Performed by '),
+        (True, 'Laura Pitt-Pulford'),
+        (False, ')'),
+    ]),
+    ('SawanoHiroyuki[nZk]:mizuki', [
+        (True, 'SawanoHiroyuki[nZk]'),
+        (False, ':'),
+        (True, 'mizuki'),
+    ]),
+    ('FLOWxGRANRODEO', [
+        (True, 'FLOW'),
+        (False, 'x'),
+        (True, 'GRANRODEO'),
+    ]),
+    ('FLOWxGRANDRODEO', [
+        (True, 'FLOWxGRANDRODEO'),
+    ]),
 ]
 
 
