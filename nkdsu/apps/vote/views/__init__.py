@@ -345,8 +345,9 @@ class TrackListWithAnimeGrouping(ListView):
         return context
 
 
-class Artist(TrackListWithAnimeGrouping):
+class Artist(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
     template_name = 'artist_detail.html'
+    breadcrumbs = [(None, 'Artists')]
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         response = super().get(request, *args, **kwargs)
@@ -412,8 +413,9 @@ class Anime(ListView):
         return context
 
 
-class Composer(TrackListWithAnimeGrouping):
+class Composer(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
     template_name = 'composer_detail.html'
+    breadcrumbs = [(None, 'Composers')]
 
     def get_queryset(self) -> QuerySet[Track]:
         if self.request.user.is_authenticated and self.request.user.is_staff:
