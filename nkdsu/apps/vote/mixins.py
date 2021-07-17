@@ -24,7 +24,7 @@ from .utils import memoize
 
 class CurrentShowMixin(ContextMixin):
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super(CurrentShowMixin, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['show'] = Show.current()
         return context
 
@@ -206,7 +206,7 @@ class MarkdownView(TemplateView):
     title: str
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super(MarkdownView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         words = markdown(codecs.open(
             path.join(settings.PROJECT_ROOT, self.filename),
@@ -250,12 +250,14 @@ class TwitterUserDetailMixin(LetMemoizeGetObject):
 
 
 class BreadcrumbMixin:
-    @abstractmethod
-    def get_breadcrumbs(self) -> List[Tuple[str, str]]:
-        raise NotImplementedError()
+    breadcrumbs: List[Tuple[Optional[str], str]] = []
 
-    def get_context_data(self, *a, **k):
+    @abstractmethod
+    def get_breadcrumbs(self) -> List[Tuple[Optional[str], str]]:
+        return self.breadcrumbs
+
+    def get_context_data(self, **k):
         return {
-            **super().get_context_data(*a, **k),
+            **super().get_context_data(**k),
             'breadcrumbs': self.get_breadcrumbs(),
         }

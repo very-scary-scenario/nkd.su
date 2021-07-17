@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from collections import OrderedDict
 from random import sample
-from typing import Any, Dict, Iterable, List, Set, Tuple, cast
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, cast
 
 from django.conf import settings
 from django.contrib import messages
@@ -136,7 +136,7 @@ class Roulette(ListView):
                                     kwargs={'mode': mode}))
 
         else:
-            return super(Roulette, self).get(request, *args, **kwargs)
+            return super().get(request, *args, **kwargs)
 
     def pro_roulette_session_key(self) -> str:
         return PRO_ROULETTE.format(Show.current().pk)
@@ -206,7 +206,7 @@ class Roulette(ListView):
         return (qs.order_by('?')[:5], qs.count())
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super(Roulette, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         mode = self.kwargs['mode']
         decade_str = self.kwargs.get('decade', str(self.default_decade))
         minutes_str = self.kwargs.get('minutes', str(self.default_minutes_count))
@@ -267,7 +267,7 @@ class Search(ListView):
         return self._queryset
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super(Search, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['query'] = self.request.GET.get('q', '')
         return context
 
@@ -282,7 +282,7 @@ class TrackDetail(DetailView):
         if kwargs.get('slug', None) != self.object.slug():
             return redirect(self.object.get_absolute_url())
         else:
-            return super(TrackDetail, self).get(request, *args, **kwargs)
+            return super().get(request, *args, **kwargs)
 
 
 class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
@@ -291,7 +291,7 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
     paginate_by = 100
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super(TwitterUserDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         votes = cast(TwitterUser, self.get_object()).votes_with_liberal_preselection()
         paginator = Paginator(votes, self.paginate_by)
@@ -340,7 +340,7 @@ class TrackListWithAnimeGrouping(ListView):
         return grouped_tracks
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super(TrackListWithAnimeGrouping, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['grouped_tracks'] = self.grouped_tracks
         return context
 
@@ -368,7 +368,7 @@ class Artist(TrackListWithAnimeGrouping):
         return Track.suggest_artists(self.kwargs['artist'])
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super(Artist, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         self.tracks = context['tracks']
         context.update({
             'artist': self.kwargs['artist'],
@@ -401,7 +401,7 @@ class Anime(ListView):
             )
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super(Anime, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'anime': self.kwargs['anime'],
             'related_anime': (
@@ -424,7 +424,7 @@ class Composer(TrackListWithAnimeGrouping):
         return qs.filter(composer=self.kwargs['composer'])
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super(Composer, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'composer': self.kwargs['composer'],
             'tracks_as_artist': len(Track.objects.by_artist(self.kwargs['composer'])),
@@ -478,7 +478,7 @@ class Stats(TemplateView):
         return sorted(tracks, key=lambda t: t[1], reverse=True)
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super(Stats, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'streaks': self.streaks,
             'batting_averages': self.batting_averages,
@@ -505,13 +505,12 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         return get_object_or_404(Track, pk=self.kwargs['pk'])
 
     def get_context_data(self, *args, **kwargs) -> Dict[str, Any]:
-        context = super(ReportBadMetadata, self).get_context_data(*args,
-                                                                  **kwargs)
+        context = super().get_context_data(*args, **kwargs)
         context['track'] = self.get_track()
         return context
 
     def get_form_kwargs(self) -> Dict[str, Any]:
-        kwargs = super(ReportBadMetadata, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs['track'] = self.get_track()
         return kwargs
 
@@ -540,9 +539,9 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
             ' None will know of its passing.'
         )
 
-        return super(ReportBadMetadata, self).form_valid(form)
+        return super().form_valid(form)
 
-    def get_breadcrumbs(self) -> List[Tuple[str, str]]:
+    def get_breadcrumbs(self) -> List[Tuple[Optional[str], str]]:
         track = self.get_track()
 
         return [
@@ -580,7 +579,7 @@ class RequestAddition(FormView):
             'indifference.'
         )
 
-        return super(RequestAddition, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class SetDarkModeView(FormView):

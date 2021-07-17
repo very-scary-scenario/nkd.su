@@ -56,7 +56,7 @@ class TriviaForm(forms.Form):
     track = None
 
     def __init__(self, *args, **kwargs):
-        super(TriviaForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields.move_to_end('trivia')
         self.fields['trivia_question'].initial = self.new_question()
 
@@ -103,7 +103,7 @@ class BadMetadataForm(TriviaForm):
 
     def __init__(self, *args, **kwargs):
         self.track = kwargs.pop('track')
-        super(BadMetadataForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class RequestForm(TriviaForm):
@@ -121,7 +121,7 @@ class RequestForm(TriviaForm):
                                   required=True)
 
     def clean(self) -> Dict[str, Any]:
-        cleaned_data = super(RequestForm, self).clean()
+        cleaned_data = super().clean()
 
         compulsory = Request.METADATA_KEYS
 
