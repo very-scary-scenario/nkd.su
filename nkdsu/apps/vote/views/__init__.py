@@ -374,6 +374,7 @@ class Artist(TrackListWithAnimeGrouping):
             'artist': self.kwargs['artist'],
             'played': [t for t in context['tracks'] if t.last_play()],
             'artist_suggestions': self.artist_suggestions,
+            'tracks_as_composer': Track.objects.filter(composer=self.kwargs['artist']).count(),
         })
         return context
 
@@ -426,6 +427,7 @@ class Composer(TrackListWithAnimeGrouping):
         context = super(Composer, self).get_context_data(**kwargs)
         context.update({
             'composer': self.kwargs['composer'],
+            'tracks_as_artist': len(Track.objects.by_artist(self.kwargs['composer'])),
         })
         return context
 

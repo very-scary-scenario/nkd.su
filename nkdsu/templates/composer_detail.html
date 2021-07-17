@@ -11,6 +11,12 @@
 
   <h2>{{ composer }}</h2>
 
+  {% if tracks_as_artist %}
+    <p class="subheading">
+    {{ composer }} is also credited as an artist for <a href="{% url "vote:artist" artist=composer %}">{{ tracks_as_artist }} track{{ tracks_as_artist|pluralize }}</a> in the library.
+    </p>
+  {% endif %}
+
   <div class="track-groups">
     {% for anime, tracks in grouped_tracks.items %}
       <div class="track-group">
