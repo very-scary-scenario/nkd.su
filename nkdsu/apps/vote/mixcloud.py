@@ -40,6 +40,7 @@ def _get_cloudcasts():
             try:
                 page = resp.json()
             except JSONDecodeError:
+                logger.exception(resp.text)
                 return []
 
             cache.set(ck, page, 60*20)
