@@ -1,4 +1,5 @@
 import logging
+from json import JSONDecodeError
 from typing import Any, List
 
 from django.conf import settings
@@ -36,7 +37,11 @@ def _get_cloudcasts():
                 logger.exception(e)
                 break
 
-            page = resp.json()
+            try:
+                page = resp.json()
+            except JSONDecodeError:
+                return []
+
             cache.set(ck, page, 60*20)
 
         data = page.get('data', [])
