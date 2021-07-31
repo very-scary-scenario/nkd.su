@@ -55,6 +55,7 @@ class ArtistLexer(Lexer):
         r'('
         r'AKIMA & NEOS|'
         r'ANNA TSUCHIYA inspi\' NANA\(BLACK STONES\)|'
+        r'Bird Bear Hare and Fish|'
         r'Bread & Butter|'
         r'Carole\s&\sTuesday|'
         r'Daisy x Daisy|'
