@@ -52,8 +52,12 @@
     {% if mode == "pro" %}
       well, i am a pro after all<br/>
       i guess i can wait until next week for another option
-    {% else %}
+    {% elif option_count > tracks|length %}
       these are all terrible
+    {% elif option_count > 1 %}
+      i would like to see these {{ option_count }} tracks in a new, random order
+    {% else %}
+      oh, just one, huh? can&hellip; can i try again anyway?
     {% endif %}
   </a></p>
   <p class="aside">
