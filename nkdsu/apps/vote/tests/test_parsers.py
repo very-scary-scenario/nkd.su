@@ -133,6 +133,8 @@ ARTIST_EXAMPLES = [
 
 
 class ArtistParserTests(TestCase):
-    def test_examples(self):
+    def test_examples(self) -> None:
         for string, expected_result in ARTIST_EXAMPLES:
-            self.assertEqual(list(parse_artist(string)),  expected_result)
+            self.assertEqual([
+                (a.is_artist, a.text) for a in parse_artist(string)
+            ],  expected_result)

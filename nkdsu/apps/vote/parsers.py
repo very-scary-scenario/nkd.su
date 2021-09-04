@@ -1,9 +1,16 @@
-from typing import Iterable, Tuple
+from dataclasses import dataclass
+from typing import Iterable, Optional, Tuple
 
 from django.conf import settings
 
 from sly import Lexer
 from sly.lex import LexError
+
+
+@dataclass
+class ArtistChunk:
+    text: str
+    is_artist: bool
 
 
 class ArtistLexer(Lexer):
@@ -89,25 +96,25 @@ class ArtistLexer(Lexer):
 artist_lexer = ArtistLexer()
 
 
-def handle_special_case(token) -> Iterable[Tuple[bool, str]]:
+def handle_special_case(token) -> Iterable[ArtistChunk]:
     if token.value == "FLOWxGRANRODEO":
-        yield (True, 'FLOW')
-        yield (False, 'x')
-        yield (True, 'GRANRODEO')
+        yield ArtistChunk('FLOW', is_artist=True)
+        yield ArtistChunk('x', is_artist=False)
+        yield ArtistChunk('GRANRODEO', is_artist=True)
     elif token.value.startswith('SawanoHiroyuki[nZk]:'):
         sawano, collaborators = token.value.split(':', 1)
-        yield (True, sawano)
-        yield (False, ':')
+        yield ArtistChunk(sawano, is_artist=True)
+        yield ArtistChunk(':', is_artist=False)
         for i, collaborator in enumerate(collaborators.split('&')):
             if i != 0:
-                yield (False, '&')
-            yield (True, collaborator)
+                yield ArtistChunk('&', is_artist=False)
+            yield ArtistChunk(collaborator, is_artist=True)
 
     else:
         raise NotImplementedError(token.value)
 
 
-def parse_artist(string: str, fail_silently: bool = True) -> Iterable[Tuple[bool, str]]:
+def parse_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChunk]:
     """
     Generate tuples of (whether or not this is the name of an arist,
     bit of this string), which when combined reform the original string handed
@@ -125,14 +132,14 @@ def parse_artist(string: str, fail_silently: bool = True) -> Iterable[Tuple[bool
         if fail_silently:
             if settings.DEBUG:
                 print(f'problem parsing artist name {string!r}:\n  {e}')
-            yield (True, string)
+            yield ArtistChunk(text=string, is_artist=True)
             return
         else:
             raise e
 
     artist_parts = ('ARTIST_COMPONENT', 'SPACE')
 
-    fragment = None
+    fragment: Optional[Tuple[bool, str]] = None
 
     for ti, token in enumerate(tokens):
         if token.type == 'SPECIAL_CASE':
@@ -163,9 +170,9 @@ def parse_artist(string: str, fail_silently: bool = True) -> Iterable[Tuple[bool
                 fragment = (fragment[0], fragment[1] + token.value)
                 continue
 
-            yield fragment
+            yield ArtistChunk(fragment[1], is_artist=fragment[0])
 
         fragment = (is_part_of_artist_name, token.value)
 
     if fragment:
-        yield fragment
+        yield ArtistChunk(fragment[1], is_artist=fragment[0])

@@ -843,9 +843,9 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def artist_names(self, fail_silently: bool = True) -> Iterable[str]:
         return (
-            name for is_artist_name, name in
+            chunk.text for chunk in
             parse_artist(self.artist, fail_silently=fail_silently)
-            if is_artist_name
+            if chunk.is_artist
         )
 
     @memoize
@@ -854,16 +854,16 @@ class Track(CleanOnSaveMixin, models.Model):
         return [
             {
                 'url': (
-                    reverse('vote:artist', kwargs={'artist': bit_of_string})
-                    if is_artist_name else None
+                    reverse('vote:artist', kwargs={'artist': chunk.text})
+                    if chunk.is_artist else None
                 ),
-                'name': bit_of_string,
+                'name': chunk.text,
                 'worth_linking_to': bool(
-                    is_artist_name and
-                    Track.objects.by_artist(bit_of_string)
+                    chunk.is_artist and
+                    Track.objects.by_artist(chunk.text)
                 )
             }
-            for is_artist_name, bit_of_string in parse_artist(self.artist)
+            for chunk in parse_artist(self.artist)
         ]
 
     def split_id3_title(self) -> Tuple[str, Optional[str]]:
