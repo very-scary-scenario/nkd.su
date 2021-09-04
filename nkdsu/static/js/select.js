@@ -85,8 +85,8 @@ function update_selection(data) {
 }
 
 function bindSelection() {
-  // prevent clicking on a voter from selecting a track 
-  $("li.vote a").click(function(event) {
+  // prevent clicking on a voter or an artist fold from selecting a track 
+  $("li.vote a, summary").click(function(event) {
     event.stopPropagation();
   });
 
