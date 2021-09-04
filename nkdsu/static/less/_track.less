@@ -80,6 +80,10 @@ body main .track {
           cursor: pointer;
           display: block;
 
+          &::marker, &::-webkit-details-marker {
+            display: none;
+          }
+
           &::before {
             .fas();
             content: @fa-var-angle-right;
