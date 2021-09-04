@@ -50,7 +50,7 @@ Long answer: [GitHub]. [Suggestions] welcome.
 
 Hopefully! Only Travis knows for sure:
 
-[![Build Status](https://travis-ci.com/very-scary-scenario/nkd.su.svg)][build status]
+[![Build Status](https://app.travis-ci.com/very-scary-scenario/nkd.su.svg?branch=main)][build status]
 
 [build status]: https://travis-ci.com/github/very-scary-scenario/nkd.su
 
