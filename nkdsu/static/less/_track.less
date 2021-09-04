@@ -72,6 +72,31 @@ body main .track {
 
     border-right: 1px solid @border;
 
+    .artist {
+      display: inline-block;
+
+      details {
+        summary {
+          cursor: pointer;
+          display: block;
+
+          &::before {
+            .fas();
+            content: @fa-var-angle-right;
+            padding: 0 .4em;
+          }
+
+          &:hover {
+            &::before {
+              color: @hl;
+            }
+          }
+        }
+
+        &[open] summary::before { content: @fa-var-angle-down; }
+      }
+    }
+
     .refusal, .meta {
       font-size: .8em;
       .child-iter();
