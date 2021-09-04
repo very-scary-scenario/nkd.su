@@ -67,9 +67,11 @@
           {% endif %}
         </h3>
         <ul class="tracks">
-          {% for track in tracks %}
-            {% include "include/track.html" %}
-          {% endfor %}
+          {% with artist as focus_artist %}
+            {% for track in tracks %}
+              {% include "include/track.html" %}
+            {% endfor %}
+          {% endwith %}
         </ul>
       </div>
     {% endfor %}

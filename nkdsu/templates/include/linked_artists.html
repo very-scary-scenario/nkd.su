@@ -1,1 +1,18 @@
-{% for artist in artists %}{% if artist.worth_linking_to %}<a href="{{ artist.url }}">{{ artist.name }}</a>{% else %}{{ artist.name }}{% endif %}{% endfor %}
+{% spaceless %}
+  {% for artist in artists %}
+    {% if artist.worth_linking_to %}
+      <a
+        href="{{ artist.url }}"
+        {% if artist.name == focus_artist %}
+          class="focus"
+        {% endif %}
+      >{{ artist.name }}</a>
+    {% else %}
+      <span
+        {% if artist.name == focus_artist %}
+          class="focus"
+        {% endif %}
+      >{{ artist.name }}</span>
+    {% endif %}
+  {% endfor %}
+{% endspaceless %}
