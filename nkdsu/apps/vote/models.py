@@ -858,10 +858,11 @@ class Track(CleanOnSaveMixin, models.Model):
                     if chunk.is_artist else None
                 ),
                 'name': chunk.text,
+                'is_group': chunk.is_group,
                 'worth_linking_to': bool(
                     chunk.is_artist and
                     Track.objects.by_artist(chunk.text)
-                )
+                ),
             }
             for chunk in parse_artist(self.artist)
         ]

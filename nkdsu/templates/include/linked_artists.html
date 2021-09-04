@@ -1,13 +1,16 @@
 {% spaceless %}
-  {% for artist in artists %}
-    {% if artist.worth_linking_to and artist.name != focus_artist %}
-      <a href="{{ artist.url }}">{{ artist.name }}</a>
-    {% else %}
-      <span
-        {% if artist.name == focus_artist %}
-          class="focus"
-        {% endif %}
-      >{{ artist.name }}</span>
-    {% endif %}
-  {% endfor %}
+  {% if artists.0.is_group %}
+    <details>
+      {% for artist in artists|slice:"0:1" %}
+        <summary>{% include "include/single_artist.html" %}</summary>
+      {% endfor %}
+      {% for artist in artists|slice:"1:" %}
+        {% include "include/single_artist.html" %}
+      {% endfor %}
+    </details>
+  {% else %}
+    {% for artist in artists %}
+      {% include "include/single_artist.html" %}
+    {% endfor %}
+  {% endif %}
 {% endspaceless %}

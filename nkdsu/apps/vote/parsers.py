@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Iterable, Optional, Tuple
 
 from django.conf import settings
@@ -11,6 +11,7 @@ from sly.lex import LexError
 class ArtistChunk:
     text: str
     is_artist: bool
+    is_group: bool = field(default=False)
 
 
 class ArtistLexer(Lexer):
@@ -114,6 +115,25 @@ def handle_special_case(token) -> Iterable[ArtistChunk]:
         raise NotImplementedError(token.value)
 
 
+def check_for_group(full_string: str, maybe_group_name: str) -> bool:
+    remainder = full_string.replace(maybe_group_name, '', 1)
+    if not remainder.startswith(' ('):
+        return False
+
+    paren_count = 0
+
+    for i, char in enumerate(remainder):
+        if char == '(':
+            paren_count += 1
+        elif char == ')':
+            paren_count -= 1
+
+        if (paren_count == 0) and (i > 0) and (i < (len(remainder) - 1)):
+            return False
+
+    return paren_count == 0
+
+
 def parse_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChunk]:
     """
     Generate tuples of (whether or not this is the name of an arist,
@@ -140,6 +160,7 @@ def parse_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChun
     artist_parts = ('ARTIST_COMPONENT', 'SPACE')
 
     fragment: Optional[Tuple[bool, str]] = None
+    we_have_yielded = False
 
     for ti, token in enumerate(tokens):
         if token.type == 'SPECIAL_CASE':
@@ -170,7 +191,14 @@ def parse_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChun
                 fragment = (fragment[0], fragment[1] + token.value)
                 continue
 
-            yield ArtistChunk(fragment[1], is_artist=fragment[0])
+            if fragment[0] and not we_have_yielded:
+                is_group = check_for_group(string, fragment[1])
+            else:
+                is_group = False
+
+            yield ArtistChunk(fragment[1], is_artist=fragment[0], is_group=is_group)
+
+            we_have_yielded = True
 
         fragment = (is_part_of_artist_name, token.value)
 

@@ -3,7 +3,7 @@ from django.test import TestCase
 from ..parsers import parse_artist
 
 
-ARTIST_EXAMPLES = [
+PART_EXAMPLES = [
     ('Oranges and Lemons', [
         (True, 'Oranges and Lemons'),
     ]),
@@ -131,10 +131,31 @@ ARTIST_EXAMPLES = [
     ]),
 ]
 
+GROUP_EXAMPLES = [
+    ('This is a group (it has other people in it)', True),
+    ('This is a group (the parens (are nested) (but do not end) until the end)', True),
+    ('This is not a group; there are no parens', False),
+    ('This is not a group (there are parens here) but not here', False),
+    ('This is not a group (the parens) (do not reach to the end)', False),
+    ('This is not a group (the parens (open too many times)', False),
+]
+
 
 class ArtistParserTests(TestCase):
-    def test_examples(self) -> None:
-        for string, expected_result in ARTIST_EXAMPLES:
+    def test_artist_parts(self) -> None:
+        for string, expected_result in PART_EXAMPLES:
             self.assertEqual([
                 (a.is_artist, a.text) for a in parse_artist(string)
             ],  expected_result)
+
+    def test_group_detection(self) -> None:
+        for string, first_part_should_be_group in GROUP_EXAMPLES:
+            parsed = list(parse_artist(string))
+
+            if first_part_should_be_group:
+                self.assertTrue(parsed[0].is_group, msg=string)
+            else:
+                self.assertFalse(parsed[0].is_group, msg=string)
+
+            for other_part in parsed[1:]:
+                self.assertFalse(other_part.is_group, msg=other_part.text)
