@@ -136,9 +136,8 @@ def check_for_group(full_string: str, maybe_group_name: str) -> bool:
 
 def parse_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChunk]:
     """
-    Generate tuples of (whether or not this is the name of an arist,
-    bit of this string), which when combined reform the original string handed
-    in.
+    Return a bunch of `ArtistChunk`s which, when combined, reform the string
+    handed in.
     """
 
     # look i don't understand how sly works, and i think i might need to spend
