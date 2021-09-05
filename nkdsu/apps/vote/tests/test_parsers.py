@@ -145,7 +145,7 @@ class ArtistParserTests(TestCase):
     def test_artist_parts(self) -> None:
         for string, expected_result in PART_EXAMPLES:
             self.assertEqual([
-                (a.is_artist, a.text) for a in parse_artist(string)
+                (a.is_artist, a.text) for a in parse_artist(string).chunks
             ],  expected_result)
 
     def test_group_detection(self) -> None:
