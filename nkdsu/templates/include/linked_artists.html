@@ -1,6 +1,6 @@
 {% spaceless %}
   {% if artists.should_collapse %}
-    <details>
+    <details class="collapsed-artist">
       {% for artist in artists.chunks|slice:"0:1" %}
         <summary>{% include "include/single_artist.html" %}</summary>
       {% endfor %}

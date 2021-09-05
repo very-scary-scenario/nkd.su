@@ -74,31 +74,6 @@ body main .track {
 
     .artist {
       display: inline-block;
-
-      details {
-        summary {
-          cursor: pointer;
-          display: block;
-
-          &::marker, &::-webkit-details-marker {
-            display: none;
-          }
-
-          &::before {
-            .fas();
-            content: @fa-var-angle-right;
-            padding: 0 .4em;
-          }
-
-          &:hover {
-            &::before {
-              color: @hl;
-            }
-          }
-        }
-
-        &[open] summary::before { content: @fa-var-angle-down; }
-      }
     }
 
     .refusal, .meta {
@@ -564,4 +539,29 @@ body.tracks-collapsed li.vote {
   .defer-to-playlist {
     width: 68%;
   }
+}
+
+details.collapsed-artist {
+  summary {
+    cursor: pointer;
+    display: block;
+
+    &::marker, &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::before {
+      .fas();
+      content: @fa-var-angle-right;
+      padding: 0 .4em;
+    }
+
+    &:hover {
+      &::before {
+        color: @hl;
+      }
+    }
+  }
+
+  &[open] summary::before { content: @fa-var-angle-down; }
 }
