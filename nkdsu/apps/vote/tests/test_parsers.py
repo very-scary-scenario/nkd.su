@@ -81,6 +81,16 @@ PART_EXAMPLES = [
         (False, ' + '),
         (True, 'cv'),
     ]),
+    ('Yamagami Lucy (…) (CV: Kayano Ai) Miyoshi Saya (CV: Nakahara Mai)', [
+        (True, 'Yamagami Lucy (…)'),
+        (False, ' (CV: '),
+        (True, 'Kayano Ai'),
+        (False, ') '),
+        (True, 'Miyoshi Saya'),
+        (False, ' (CV: '),
+        (True, 'Nakahara Mai'),
+        (False, ')'),
+    ]),
     ('Team.Nekokan [Neko] featuring. Amaoto Junca', [
         (True, 'Team.Nekokan [Neko]'),
         (False, ' featuring. '),

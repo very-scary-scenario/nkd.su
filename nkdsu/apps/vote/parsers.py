@@ -113,6 +113,7 @@ class ArtistLexer(Lexer):
         r'Tackey & Tsubasa|'
         r'Voices From Mars|'
         r'Wake Up, [^\s]+!|'
+        r'Yamagami Lucy \(…\)|'
         r'＊\(Asterisk\)|'
         r'[^\s=,()]+'
         r')'
