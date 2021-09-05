@@ -132,7 +132,7 @@ PART_EXAMPLES = [
 ]
 
 GROUP_EXAMPLES = [
-    ('This is a group (it has other people in it)', True),
+    ('This is a group (but it only has one paren section)', False),
     ('This is a group (the parens (are nested) (but do not end) until the end)', True),
     ('This is not a group; there are no parens', False),
     ('This is not a group (there are parens here) but not here', False),
