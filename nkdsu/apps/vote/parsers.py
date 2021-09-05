@@ -1,17 +1,42 @@
-from dataclasses import dataclass, field
-from typing import Iterable, Optional, Tuple
+from dataclasses import dataclass
+from typing import Iterable, List, Optional, Tuple
 
 from django.conf import settings
+from django.urls import reverse
 
 from sly import Lexer
 from sly.lex import LexError
 
 
-@dataclass
+@dataclass(frozen=True)
 class ArtistChunk:
     text: str
     is_artist: bool
-    is_group: bool = field(default=False)
+
+    @property
+    def url(self) -> Optional[str]:
+        return (
+            reverse('vote:artist', kwargs={'artist': self.text})
+            if self.is_artist else None
+        )
+
+    @property
+    def worth_linking_to(self) -> bool:
+        from .models import Track
+
+        return bool(
+            self.is_artist and
+            Track.objects.by_artist(self.text)
+        )
+
+
+@dataclass(frozen=True)
+class ParsedArtist:
+    chunks: List[ArtistChunk]
+    should_collapse: bool
+
+    def __iter__(self) -> Iterable[ArtistChunk]:
+        return iter(self.chunks)
 
 
 class ArtistLexer(Lexer):
@@ -134,7 +159,7 @@ def check_for_group(full_string: str, maybe_group_name: str) -> bool:
     return paren_count == 0
 
 
-def parse_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChunk]:
+def chunk_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChunk]:
     """
     Return a bunch of `ArtistChunk`s which, when combined, reform the string
     handed in.
@@ -159,7 +184,6 @@ def parse_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChun
     artist_parts = ('ARTIST_COMPONENT', 'SPACE')
 
     fragment: Optional[Tuple[bool, str]] = None
-    we_have_yielded = False
 
     for ti, token in enumerate(tokens):
         if token.type == 'SPECIAL_CASE':
@@ -190,16 +214,14 @@ def parse_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChun
                 fragment = (fragment[0], fragment[1] + token.value)
                 continue
 
-            if fragment[0] and not we_have_yielded:
-                is_group = check_for_group(string, fragment[1])
-            else:
-                is_group = False
-
-            yield ArtistChunk(fragment[1], is_artist=fragment[0], is_group=is_group)
-
-            we_have_yielded = True
+            yield ArtistChunk(fragment[1], is_artist=fragment[0])
 
         fragment = (is_part_of_artist_name, token.value)
 
     if fragment:
         yield ArtistChunk(fragment[1], is_artist=fragment[0])
+
+
+def parse_artist(string: str, fail_silently: bool = True) -> ParsedArtist:
+    chunks = list(chunk_artist(string, fail_silently=fail_silently))
+    return ParsedArtist(chunks=chunks, should_collapse=check_for_group(string, chunks[0].text))

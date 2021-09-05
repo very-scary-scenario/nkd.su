@@ -150,12 +150,9 @@ class ArtistParserTests(TestCase):
 
     def test_group_detection(self) -> None:
         for string, first_part_should_be_group in GROUP_EXAMPLES:
-            parsed = list(parse_artist(string))
+            parsed = parse_artist(string)
 
             if first_part_should_be_group:
-                self.assertTrue(parsed[0].is_group, msg=string)
+                self.assertTrue(parsed.should_collapse, msg=string)
             else:
-                self.assertFalse(parsed[0].is_group, msg=string)
-
-            for other_part in parsed[1:]:
-                self.assertFalse(other_part.is_group, msg=other_part.text)
+                self.assertFalse(parsed.should_collapse, msg=string)

@@ -1,15 +1,15 @@
 {% spaceless %}
-  {% if artists.0.is_group %}
+  {% if artists.should_collapse %}
     <details>
-      {% for artist in artists|slice:"0:1" %}
+      {% for artist in artists.chunks|slice:"0:1" %}
         <summary>{% include "include/single_artist.html" %}</summary>
       {% endfor %}
-      {% for artist in artists|slice:"1:" %}
+      {% for artist in artists.chunks|slice:"1:" %}
         {% include "include/single_artist.html" %}
       {% endfor %}
     </details>
   {% else %}
-    {% for artist in artists %}
+    {% for artist in artists.chunks %}
       {% include "include/single_artist.html" %}
     {% endfor %}
   {% endif %}

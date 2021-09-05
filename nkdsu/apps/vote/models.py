@@ -30,7 +30,7 @@ import requests
 import tweepy
 
 from .managers import NoteQuerySet, TrackQuerySet
-from .parsers import parse_artist
+from .parsers import ParsedArtist, parse_artist
 from .utils import (
     READING_USERNAME, indefinitely, lastfm, length_str, memoize,
     musicbrainzngs, pk_cached, posting_tw_api, reading_tw_api, reify,
@@ -844,28 +844,14 @@ class Track(CleanOnSaveMixin, models.Model):
     def artist_names(self, fail_silently: bool = True) -> Iterable[str]:
         return (
             chunk.text for chunk in
-            parse_artist(self.artist, fail_silently=fail_silently)
+            parse_artist(self.artist, fail_silently=fail_silently).chunks
             if chunk.is_artist
         )
 
     @memoize
     @pk_cached(90)
-    def artists(self) -> List[Dict[str, Any]]:
-        return [
-            {
-                'url': (
-                    reverse('vote:artist', kwargs={'artist': chunk.text})
-                    if chunk.is_artist else None
-                ),
-                'name': chunk.text,
-                'is_group': chunk.is_group,
-                'worth_linking_to': bool(
-                    chunk.is_artist and
-                    Track.objects.by_artist(chunk.text)
-                ),
-            }
-            for chunk in parse_artist(self.artist)
-        ]
+    def artists(self) -> ParsedArtist:
+        return parse_artist(self.artist)
 
     def split_id3_title(self) -> Tuple[str, Optional[str]]:
         return split_id3_title(self.id3_title)
