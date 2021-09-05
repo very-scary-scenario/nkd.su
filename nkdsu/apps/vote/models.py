@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from io import BytesIO
 from string import ascii_letters
 from typing import Any, Dict, Iterable, List, Literal, Optional, Set, Tuple, Union, cast
@@ -1142,7 +1142,7 @@ class Track(CleanOnSaveMixin, models.Model):
             ],
             'artist': self.artist,
             'artists': list(self.artist_names()),
-            'artists_parsed': self.artists(),
+            'artists_parsed': [asdict(a) for a in self.artists().chunks],
             'eligible': self.eligible(),
             'ineligibility_reason': self.ineligible() or None,
             'length': self.msec,
