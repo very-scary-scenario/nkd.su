@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from typing import Any, Dict, List
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
@@ -15,7 +16,7 @@ class APIView(View):
     def get_api_stuff(self):
         return self.get_object().api_dict(verbose=True)
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
         resp = HttpResponse(
             json.dumps(self.get_api_stuff(),
                        cls=DjangoJSONEncoder,
@@ -39,7 +40,7 @@ class TrackAPI(SingleObjectMixin, APIView):
 
 
 class SearchAPI(APIView, Search):
-    def get_api_stuff(self, *a, **k):
+    def get_api_stuff(self, *a, **k) -> List[Dict[str, Any]]:
         return [t.api_dict() for t in self.get_queryset()]
 
 
