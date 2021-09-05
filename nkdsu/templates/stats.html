@@ -65,9 +65,9 @@
         {% for track, value in popular_tracks|slice:":10" %}
           <tr class="stat">
             <td class="summary">
-              <p class="artist">
+              <div class="artist">
                 {% include "include/linked_artists.html" with artists=track.artists %}
-              </p>
+              </div>
               <p class="title"><a href="{{ track.get_absolute_url }}">{{ track.title }}</a></p>
               <p class="role">{{ track.role }}</p>
             </td>
