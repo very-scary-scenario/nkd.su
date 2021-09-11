@@ -104,7 +104,7 @@ class ArtistLexer(Lexer):
         r'Kisida Kyodan & The Akebosi Rockets|'
         r'MYTH\s&\sROID|'
         r'OLIVIA inspi\' REIRA\(TRAPNEST\)|'
-        r'Oranges\sand\sLemons|'
+        r'Oranges\s(and|&)\sLemons|'
         r'Rough & Ready|'
         r'Run Girls, Run!|'
         r'Simon & Garfunkel|'
