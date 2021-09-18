@@ -396,6 +396,22 @@ body {
       }
 
       &.grouped-tracks, &.stats-page {
+        details.track-group {
+          summary {
+            .reset-details-summary();
+
+            h3::before {
+              .fas();
+              content: @fa-var-angle-right;
+              padding: 0 .4em;
+            }
+
+            &:hover h3::before { color: @hl; }
+          }
+
+          &[open] summary h3::before { content: @fa-var-angle-down; }
+        }
+
         > p {
           max-width: @max-width;
           margin: 0 auto;

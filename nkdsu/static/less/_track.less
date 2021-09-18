@@ -543,12 +543,7 @@ body.tracks-collapsed li.vote {
 
 details.collapsed-artist {
   summary {
-    cursor: pointer;
-    display: block;
-
-    &::marker, &::-webkit-details-marker {
-      display: none;
-    }
+    .reset-details-summary();
 
     &::before {
       .fas();
