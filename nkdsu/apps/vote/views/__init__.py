@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-from collections import OrderedDict
 from random import sample
 from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, cast
 
@@ -90,16 +89,6 @@ class ListenRedirect(mixins.ShowDetail):
                 "take you to.",
             )
             return redirect(cast(Show, self.object).get_absolute_url())
-
-
-class Added(mixins.ShowDetailMixin, ListView):
-    default_to_current = True
-    section = 'new tracks'
-    template_name = 'added.html'
-    paginate_by = 50
-
-    def get_queryset(self) -> QuerySet[Track]:
-        return cast(Show, self.get_object()).revealed()
 
 
 class Roulette(ListView):
@@ -325,27 +314,7 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
         return HttpResponse(image, content_type=content_type)
 
 
-class TrackListWithAnimeGrouping(ListView):
-    model = Track
-    context_object_name = 'tracks'
-
-    def grouped_tracks(self) -> OrderedDict[str, List[Track]]:
-        tracks = self.get_queryset()
-        animes = sorted(set(rd.anime for t in tracks for rd in t.role_details))
-        grouped_tracks: OrderedDict[str, List[Track]] = OrderedDict()
-
-        for anime in animes:
-            grouped_tracks[anime] = [t for t in tracks if t.has_anime(anime)]
-
-        return grouped_tracks
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['grouped_tracks'] = self.grouped_tracks
-        return context
-
-
-class Artist(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
+class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
     template_name = 'artist_detail.html'
     breadcrumbs = [(None, 'Artists')]
 
@@ -357,8 +326,8 @@ class Artist(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
 
         return response
 
-    def get_queryset(self) -> QuerySet[Track]:
-        return self.model.objects.by_artist(
+    def get_track_queryset(self) -> QuerySet[Track]:
+        return Track.objects.by_artist(
             self.kwargs['artist'], show_secret_tracks=(
                 self.request.user.is_authenticated and
                 self.request.user.is_staff
@@ -413,15 +382,15 @@ class Anime(ListView):
         return context
 
 
-class Composer(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
+class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
     template_name = 'composer_detail.html'
     breadcrumbs = [(None, 'Composers')]
 
-    def get_queryset(self) -> QuerySet[Track]:
+    def get_track_queryset(self) -> QuerySet[Track]:
         if self.request.user.is_authenticated and self.request.user.is_staff:
-            qs = self.model.objects.all()
+            qs = Track.objects.all()
         else:
-            qs = self.model.objects.public()
+            qs = Track.objects.public()
 
         return qs.filter(composer=self.kwargs['composer'])
 
@@ -432,6 +401,16 @@ class Composer(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
             'tracks_as_artist': len(Track.objects.by_artist(self.kwargs['composer'])),
         })
         return context
+
+
+class Added(mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):
+    default_to_current = True
+    section = 'new tracks'
+    template_name = 'added.html'
+    paginate_by = 50
+
+    def get_track_queryset(self) -> QuerySet[Track]:
+        return cast(Show, self.get_object()).revealed()
 
 
 class Stats(TemplateView):

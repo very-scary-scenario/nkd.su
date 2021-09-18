@@ -2,6 +2,11 @@
 
 {% block title %}new tracks for {{ show.showtime|date:"F"|lower }} {{ show.showtime|date:"jS Y" }}{% endblock %}
 
+{% block main_classes %}
+  {{ block.super }}
+  grouped-tracks
+{% endblock %}
+
 {% block content %}
   <h2>tracks added for {{ show.showtime|date:"F"|lower }}&nbsp;{{ show.showtime|date:"jS Y" }}</h2>
   <p class="subheading">
@@ -32,12 +37,8 @@
     <p class="subheading"><a href="{{ show.get_absolute_url }}">{{ show.plays|length }} track{{ show.plays|pluralize }} played this week</a></p>
   {% endif %}
 
-  {% if object_list %}
-    <ul class="tracks">
-      {% include "include/tracklist.html" with tracks=object_list %}
-    </ul>
-
-    {% include "include/paginator.html" %}
+  {% if grouped_tracks %}
+    {% include "include/tracks_grouped_by_anime.html" %}
   {% else %}
     <p class="aside">no tracks added this week ( ´· _ ·`)<p>
   {% endif %}
