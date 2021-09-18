@@ -46,6 +46,9 @@ class TrackListWithAnimeGrouping(ContextMixin):
     def get_track_queryset(self) -> QuerySet[Track]:
         raise NotImplementedError()
 
+    def get_queryset(self) -> QuerySet:
+        return self.get_track_queryset()
+
     def grouped_tracks(self) -> OrderedDict[str, List[Track]]:
         tracks = self.get_track_queryset()
         animes = sorted(set(
