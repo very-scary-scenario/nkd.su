@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import re
 from functools import partial
-from typing import Any, Callable, List, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
+from typing import Any, Callable, List, Optional, TYPE_CHECKING, Tuple, TypeVar, TypedDict, cast
 
 from classtools import reify as ct_reify
 from django.conf import settings
@@ -34,6 +34,11 @@ posting_tw_api = tweepy.API(_post_tw_auth)
 
 
 indefinitely: int = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
+
+
+class BrowsableItem(TypedDict):
+    url: Optional[str]
+    name: str
 
 
 def _get_short_url_length() -> int:

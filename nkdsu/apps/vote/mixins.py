@@ -6,7 +6,7 @@ from abc import abstractmethod
 from collections import OrderedDict
 from copy import copy
 from os import path
-from typing import Any, Dict, List, Optional, Tuple, Type
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Type
 
 from django.conf import settings
 from django.db.models import Model, QuerySet
@@ -20,7 +20,7 @@ from django.views.generic.base import ContextMixin
 from markdown import markdown
 
 from .models import Show, Track, TwitterUser
-from .utils import memoize
+from .utils import BrowsableItem, memoize
 
 
 class CurrentShowMixin(ContextMixin):
@@ -291,4 +291,19 @@ class BreadcrumbMixin:
         return {
             **super().get_context_data(**k),
             'breadcrumbs': self.get_breadcrumbs(),
+        }
+
+
+class BrowseCategory(TemplateView):
+    template_name = "browse_category.html"
+    context_category_name = "items"
+
+    @abstractmethod
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        raise NotImplementedError()
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        return {
+            **super().get_context_data(**kwargs),
+            self.context_category_name: sorted(self.get_categories(), key=lambda i: i['name']),
         }

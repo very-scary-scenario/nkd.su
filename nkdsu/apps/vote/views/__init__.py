@@ -20,7 +20,7 @@ import tweepy
 
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm
 from ..models import Show, Track, TwitterUser
-from ..utils import reify
+from ..utils import BrowsableItem, reify
 from ...vote import mixins
 
 
@@ -58,6 +58,30 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
                                    show.tracks_sorted_by_votes())
 
         return context
+
+
+class BrowseAnime(mixins.BrowseCategory):
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for title in Track.all_anime_titles():
+            yield BrowsableItem(url=reverse("vote:anime", kwargs={"anime": title}), name=title)
+
+
+class BrowseArtists(mixins.BrowseCategory):
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for artist in Track.all_artists():
+            yield BrowsableItem(url=reverse("vote:artist", kwargs={"artist": artist}), name=artist)
+
+
+class BrowseComposers(mixins.BrowseCategory):
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for composer in Track.all_composers():
+            yield BrowsableItem(url=reverse("vote:composer", kwargs={"composer": composer}), name=composer)
+
+
+class BrowseRoles(mixins.BrowseCategory):
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for role in Track.all_non_inudesu_roles():
+            yield BrowsableItem(url=None, name=role)
 
 
 class Archive(mixins.ArchiveList):

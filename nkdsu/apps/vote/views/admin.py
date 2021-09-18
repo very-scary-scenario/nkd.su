@@ -1,7 +1,6 @@
 import os
 import plistlib
-from abc import abstractmethod
-from typing import Any, Dict, Iterable, List, Optional, TypedDict
+from typing import Any, Dict, List
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -513,50 +512,6 @@ class RemoveNote(DestructiveAdminAction, DetailView):
     def do_thing(self):
         self.get_object().delete()
         messages.success(self.request, 'note removed')
-
-
-class BrowsableItem(TypedDict):
-    url: Optional[str]
-    name: str
-
-
-class BrowseCategory(TemplateView):
-    template_name = "browse_category.html"
-    context_category_name = "items"
-
-    @abstractmethod
-    def get_categories(self) -> Iterable[BrowsableItem]:
-        raise NotImplementedError()
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        return {
-            **super().get_context_data(**kwargs),
-            self.context_category_name: sorted(self.get_categories(), key=lambda i: i['name']),
-        }
-
-
-class AllAnimeView(BrowseCategory):
-    def get_categories(self) -> Iterable[BrowsableItem]:
-        for title in Track.all_anime_titles():
-            yield BrowsableItem(url=reverse("vote:anime", kwargs={"anime": title}), name=title)
-
-
-class AllArtistsView(BrowseCategory):
-    def get_categories(self) -> Iterable[BrowsableItem]:
-        for artist in Track.all_artists():
-            yield BrowsableItem(url=reverse("vote:artist", kwargs={"artist": artist}), name=artist)
-
-
-class AllComposersView(BrowseCategory):
-    def get_categories(self) -> Iterable[BrowsableItem]:
-        for composer in Track.all_composers():
-            yield BrowsableItem(url=reverse("vote:composer", kwargs={"composer": composer}), name=composer)
-
-
-class AllRolesView(BrowseCategory):
-    def get_categories(self) -> Iterable[BrowsableItem]:
-        for role in Track.all_non_inudesu_roles():
-            yield BrowsableItem(url=None, name=role)
 
 
 class RequestList(AnyLoggedInUserMixin, ListView):

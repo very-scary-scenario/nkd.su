@@ -12,14 +12,6 @@ admin_patterns = ([
     url(r'^upload/confirm/$',
         admin.LibraryUploadConfirmView.as_view(), name='confirm_upload'),
 
-    url(r'^all-the-anime/$',
-        admin.AllAnimeView.as_view(), name='all_anime'),
-    url(r'^all-the-artists/$',
-        admin.AllArtistsView.as_view(), name='all_artists'),
-    url(r'^all-the-composers/$',
-        admin.AllComposersView.as_view(), name='all_composers'),
-    url(r'^all-the-roles/$',
-        admin.AllRolesView.as_view(), name='all_roles'),
     url(r'^requests/$',
         admin.RequestList.as_view(), name='requests'),
     url(r'^requests/fill/(?P<pk>[^/]+)/$',
@@ -111,6 +103,11 @@ urlpatterns = [
     url(r'^api/', include(api_patterns)),
 
     url(r'^$', views.IndexView.as_view(), name='index'),
+
+    url(r'^anime/$', views.BrowseAnime.as_view(), name='browse_anime'),
+    url(r'^artists/$', views.BrowseArtists.as_view(), name='browse_artists'),
+    url(r'^composers/$', views.BrowseComposers.as_view(), name='browse_composers'),
+    url(r'^roles/$', views.BrowseRoles.as_view(), name='browse_roles'),
 
     url(r'^archive/$', views.Archive.as_view(), name='archive'),
     url(r'^archive/(?P<year>\d{4})/$', views.Archive.as_view(),
