@@ -1,0 +1,19 @@
+{% extends parent %}
+
+{% block title %}Browse{% endblock %}
+
+{% block content %}
+
+  <ul>
+    {% for item in items %}
+      <li>
+        {% if item.url %}
+          <a href="{{ item.url }}">{{ item.name }}</a>
+        {% else %}
+          {{ item.name }}
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

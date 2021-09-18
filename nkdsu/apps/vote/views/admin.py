@@ -1,6 +1,7 @@
 import os
 import plistlib
-from typing import Any, Dict, List
+from abc import abstractmethod
+from typing import Any, Dict, Iterable, List, Optional, TypedDict
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -514,26 +515,48 @@ class RemoveNote(DestructiveAdminAction, DetailView):
         messages.success(self.request, 'note removed')
 
 
-class AllAnimeView(View):
-    get_names = Track.all_anime_titles
-
-    def get(self, request):
-        return HttpResponse(
-            '\n'.join(sorted(self.get_names(), key=lambda n: n.lower())),
-            content_type='text/plain; charset=utf-8',
-        )
+class BrowsableItem(TypedDict):
+    url: Optional[str]
+    name: str
 
 
-class AllArtistsView(AllAnimeView):
-    get_names = Track.all_artists
+class BrowseCategory(TemplateView):
+    template_name = "browse_category.html"
+    context_category_name = "items"
+
+    @abstractmethod
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        raise NotImplementedError()
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        return {
+            **super().get_context_data(**kwargs),
+            self.context_category_name: sorted(self.get_categories(), key=lambda i: i['name']),
+        }
 
 
-class AllComposersView(AllAnimeView):
-    get_names = Track.all_composers
+class AllAnimeView(BrowseCategory):
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for title in Track.all_anime_titles():
+            yield BrowsableItem(url=reverse("vote:anime", kwargs={"anime": title}), name=title)
 
 
-class AllRolesView(AllAnimeView):
-    get_names = Track.all_non_inudesu_roles
+class AllArtistsView(BrowseCategory):
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for artist in Track.all_artists():
+            yield BrowsableItem(url=reverse("vote:artist", kwargs={"artist": artist}), name=artist)
+
+
+class AllComposersView(BrowseCategory):
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for composer in Track.all_composers():
+            yield BrowsableItem(url=reverse("vote:composer", kwargs={"composer": composer}), name=composer)
+
+
+class AllRolesView(BrowseCategory):
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for role in Track.all_non_inudesu_roles():
+            yield BrowsableItem(url=None, name=role)
 
 
 class RequestList(AnyLoggedInUserMixin, ListView):
