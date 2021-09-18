@@ -1,6 +1,6 @@
 <div class="track-groups">
   {% for anime, tracks in grouped_tracks.items %}
-    <details class="track-group">
+    <details class="track-group" open>
       <summary>
         <h3>
           {{ tracks|length }} track{{ tracks|length|pluralize }} from
