@@ -104,6 +104,8 @@ urlpatterns = [
 
     url(r'^$', views.IndexView.as_view(), name='index'),
 
+    url(r'^browse/$', views.Browse.as_view(), name='browse'),
+
     url(r'^anime/$', views.BrowseAnime.as_view(), name='browse_anime'),
     url(r'^artists/$', views.BrowseArtists.as_view(), name='browse_artists'),
     url(r'^composers/$', views.BrowseComposers.as_view(), name='browse_composers'),

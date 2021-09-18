@@ -32,7 +32,7 @@ def get_sections(request):
         'active': name == active_section
     } for name, url in [
         ('home', reverse('vote:index')),
-        ('archive', reverse('vote:archive')),
+        ('browse', reverse('vote:browse')),
         ('new tracks',
          most_recent_track.show_revealed().get_revealed_url()
          if most_recent_track else None),

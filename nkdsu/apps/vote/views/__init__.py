@@ -60,25 +60,37 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
         return context
 
 
+class Browse(TemplateView):
+    section = 'browse'
+    template_name = 'browse.html'
+
+
 class BrowseAnime(mixins.BrowseCategory):
+    section = 'browse'
+
     def get_categories(self) -> Iterable[BrowsableItem]:
         for title in Track.all_anime_titles():
             yield BrowsableItem(url=reverse("vote:anime", kwargs={"anime": title}), name=title)
 
 
 class BrowseArtists(mixins.BrowseCategory):
+    section = 'browse'
+
     def get_categories(self) -> Iterable[BrowsableItem]:
         for artist in Track.all_artists():
             yield BrowsableItem(url=reverse("vote:artist", kwargs={"artist": artist}), name=artist)
 
 
 class BrowseComposers(mixins.BrowseCategory):
+    section = 'browse'
+
     def get_categories(self) -> Iterable[BrowsableItem]:
         for composer in Track.all_composers():
             yield BrowsableItem(url=reverse("vote:composer", kwargs={"composer": composer}), name=composer)
 
 
 class BrowseRoles(mixins.BrowseCategory):
+    section = 'browse'
     template_name = "browse_roles.html"
 
     def get_categories(self) -> Iterable[BrowsableItem]:
@@ -87,7 +99,7 @@ class BrowseRoles(mixins.BrowseCategory):
 
 
 class Archive(mixins.ArchiveList):
-    section = 'archive'
+    section = 'browse'
     template_name = 'archive.html'
 
     def get_queryset(self) -> QuerySet[Show]:
@@ -95,12 +107,12 @@ class Archive(mixins.ArchiveList):
 
 
 class ShowDetail(mixins.ShowDetail):
-    section = 'archive'
+    section = 'browse'
     template_name = 'show_detail.html'
 
 
 class ListenRedirect(mixins.ShowDetail):
-    section = 'archive'
+    section = 'browse'
     template_name = 'show_detail.html'
 
     def get(self, *a, **k) -> HttpResponse:
@@ -343,6 +355,7 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
 class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
     template_name = 'artist_detail.html'
     breadcrumbs = [(None, 'Artists')]
+    section = 'browse'
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         response = super().get(request, *args, **kwargs)
@@ -376,6 +389,7 @@ class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView
 
 
 class Anime(ListView):
+    section = 'browse'
     model = Track
     template_name = 'anime_detail.html'
     context_object_name = 'tracks'
@@ -409,6 +423,7 @@ class Anime(ListView):
 
 
 class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
+    section = 'browse'
     template_name = 'composer_detail.html'
     breadcrumbs = [(None, 'Composers')]
 
