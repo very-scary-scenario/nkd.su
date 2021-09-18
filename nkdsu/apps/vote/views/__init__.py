@@ -79,6 +79,8 @@ class BrowseComposers(mixins.BrowseCategory):
 
 
 class BrowseRoles(mixins.BrowseCategory):
+    template_name = "browse_roles.html"
+
     def get_categories(self) -> Iterable[BrowsableItem]:
         for role in Track.all_non_inudesu_roles():
             yield BrowsableItem(url=None, name=role)
