@@ -1,6 +1,6 @@
 function bindTrackGroupExpansionToggling() {
-  const groupsContainer = document.querySelector(".track-groups")
-  const toggleableTrackGroups = groupsContainer.querySelectorAll("details.track-group")
+  var groupsContainer = document.querySelector(".track-groups")
+  var toggleableTrackGroups = groupsContainer.querySelectorAll("details.track-group")
   if (toggleableTrackGroups.length === 0) {
     return
   }
@@ -12,17 +12,17 @@ function bindTrackGroupExpansionToggling() {
     })
   }
 
-  const buttonsParagraph = document.createElement("p")
+  var buttonsParagraph = document.createElement("p")
   buttonsParagraph.classList.add("subheading")
 
-  const collapseAllLink = document.createElement("a")
+  var collapseAllLink = document.createElement("a")
   collapseAllLink.append(new Text("collapse all"))
   collapseAllLink.addEventListener("click", function() { setOpenStatus(false) })
   buttonsParagraph.append(collapseAllLink)
 
   buttonsParagraph.append(new Text(" · "))
 
-  const expandAllLink = document.createElement("a")
+  var expandAllLink = document.createElement("a")
   expandAllLink.append(new Text("expand all"))
   expandAllLink.addEventListener("click", function() { setOpenStatus(true) })
   buttonsParagraph.append(expandAllLink)
