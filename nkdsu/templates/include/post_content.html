@@ -28,10 +28,10 @@
     {% if user.is_authenticated %}
       <span>
         all:
-        <a href="{% url "vote:admin:all_anime" %}">anime</a> /
-        <a href="{% url "vote:admin:all_artists" %}">artists</a> /
-        <a href="{% url "vote:admin:all_composers" %}">composers</a> /
-        <a href="{% url "vote:admin:all_roles" %}">roles</a>
+        <a href="{% url "vote:browse_anime" %}">anime</a> /
+        <a href="{% url "vote:browse_artists" %}">artists</a> /
+        <a href="{% url "vote:browse_composers" %}">composers</a> /
+        <a href="{% url "vote:browse_roles" %}">roles</a>
       </span>
       <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
       <span><a href="{% url "password_change" %}">change password</a></span>
