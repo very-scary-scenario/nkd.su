@@ -31,10 +31,6 @@ class EverythingTest(
         '/vote-admin/upload/',
         '/vote-admin/requests/',
         '/vote-admin/trivia/',
-        '/vote-admin/all-the-anime/',
-        '/vote-admin/all-the-artists/',
-        '/vote-admin/all-the-composers/',
-        '/vote-admin/all-the-roles/',
         '/vote-admin/play/0007C3F2760E0541/',
 
         '/js/deselect/',
@@ -50,6 +46,10 @@ class EverythingTest(
         '/api/user/EuricaeriS/',
 
         '/',
+        '/anime/',
+        '/artists/',
+        '/composers/',
+        '/roles/',
         '/info/',
         '/info/api/',
         '/request/',
