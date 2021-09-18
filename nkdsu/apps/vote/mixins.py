@@ -13,7 +13,7 @@ from django.db.models import Model, QuerySet
 from django.db.utils import NotSupportedError
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.base import ContextMixin
@@ -294,10 +294,11 @@ class BreadcrumbMixin:
         }
 
 
-class BrowseCategory(TemplateView):
+class BrowseCategory(BreadcrumbMixin, TemplateView):
     template_name = "browse_category.html"
     context_category_name = "items"
     category_name: Optional[str] = None
+    breadcrumbs = [(reverse_lazy("vote:browse"), "browse")]
 
     @abstractmethod
     def get_categories(self) -> Iterable[BrowsableItem]:

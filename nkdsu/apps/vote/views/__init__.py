@@ -358,7 +358,7 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
 
 class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
     template_name = 'artist_detail.html'
-    breadcrumbs = [(None, 'Artists')]
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_artists'), 'artists')]
     section = 'browse'
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -392,8 +392,9 @@ class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView
         return context
 
 
-class Anime(ListView):
+class Anime(mixins.BreadcrumbMixin, ListView):
     section = 'browse'
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_anime'), 'anime')]
     model = Track
     template_name = 'anime_detail.html'
     context_object_name = 'tracks'
@@ -429,7 +430,7 @@ class Anime(ListView):
 class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
     section = 'browse'
     template_name = 'composer_detail.html'
-    breadcrumbs = [(None, 'Composers')]
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_composers'), 'composers')]
 
     def get_track_queryset(self) -> QuerySet[Track]:
         if self.request.user.is_authenticated and self.request.user.is_staff:
