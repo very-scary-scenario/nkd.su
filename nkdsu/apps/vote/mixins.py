@@ -297,6 +297,7 @@ class BreadcrumbMixin:
 class BrowseCategory(TemplateView):
     template_name = "browse_category.html"
     context_category_name = "items"
+    category_name: Optional[str] = None
 
     @abstractmethod
     def get_categories(self) -> Iterable[BrowsableItem]:
@@ -305,5 +306,6 @@ class BrowseCategory(TemplateView):
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         return {
             **super().get_context_data(**kwargs),
+            'category_name': self.category_name,
             self.context_category_name: sorted(self.get_categories(), key=lambda i: i['name']),
         }

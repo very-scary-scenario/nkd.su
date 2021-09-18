@@ -1,8 +1,12 @@
 {% extends parent %}
 
-{% block title %}Browse{% endblock %}
+{% block title %}{{ category_name|default:"browse" }}{% endblock %}
 
 {% block content %}
+
+  {% if category_name %}
+    <h2>{{ category_name }}</h2>
+  {% endif %}
 
   <ul>
     {% for item in items %}

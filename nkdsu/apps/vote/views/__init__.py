@@ -67,6 +67,7 @@ class Browse(TemplateView):
 
 class BrowseAnime(mixins.BrowseCategory):
     section = 'browse'
+    category_name = 'Anime'
 
     def get_categories(self) -> Iterable[BrowsableItem]:
         for title in Track.all_anime_titles():
@@ -75,6 +76,7 @@ class BrowseAnime(mixins.BrowseCategory):
 
 class BrowseArtists(mixins.BrowseCategory):
     section = 'browse'
+    category_name = 'Artists'
 
     def get_categories(self) -> Iterable[BrowsableItem]:
         for artist in Track.all_artists():
@@ -83,6 +85,7 @@ class BrowseArtists(mixins.BrowseCategory):
 
 class BrowseComposers(mixins.BrowseCategory):
     section = 'browse'
+    category_name = 'Composers'
 
     def get_categories(self) -> Iterable[BrowsableItem]:
         for composer in Track.all_composers():
@@ -91,7 +94,8 @@ class BrowseComposers(mixins.BrowseCategory):
 
 class BrowseRoles(mixins.BrowseCategory):
     section = 'browse'
-    template_name = "browse_roles.html"
+    template_name = 'browse_roles.html'
+    category_name = 'Roles'
 
     def get_categories(self) -> Iterable[BrowsableItem]:
         for role in Track.all_non_inudesu_roles():
