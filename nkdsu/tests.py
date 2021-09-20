@@ -46,6 +46,7 @@ class EverythingTest(
         '/api/user/EuricaeriS/',
 
         '/',
+        '/browse/',
         '/anime/',
         '/artists/',
         '/composers/',
