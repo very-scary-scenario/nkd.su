@@ -2,6 +2,11 @@
 
 {% block title %}{{ category_name|default:"browse" }}{% endblock %}
 
+{% block main_classes %}
+  {{ block.super }}
+  wide
+{% endblock %}
+
 {% block content %}
 
   {% if category_name %}
@@ -10,20 +15,28 @@
 
   {% regroup items by initial_letter as letters %}
 
+  <p class="letter-buttons">
+    {% for letter in letters %}
+      <a href="#{{ letter.grouper.1|urlencode }}">{{ letter.grouper.1 }}</a>
+    {% endfor %}
+  </p>
+  
+
   {% for letter in letters %}
-    <section class="letter" id="{{ letter.grouper.1 }}">
+    <section class="browsable-group" id="{{ letter.grouper.1 }}">
       <h3>{{ letter.grouper.1 }}</h3>
 
-      {% for item in letter.list %}
-        <li>
-          {% if item.url %}
-            <a href="{{ item.url }}">{{ item.name }}</a>
-          {% else %}
-            {{ item.name }}
-          {% endif %}
-        </li>
-      {% endfor %}
+      <ul>
+        {% for item in letter.list %}
+          <li>
+            {% if item.url %}
+              <a href="{{ item.url }}">{{ item.name }}</a>
+            {% else %}
+              {{ item.name }}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
     </section>
   {% endfor %}
-
 {% endblock %}

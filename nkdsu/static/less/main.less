@@ -7,6 +7,7 @@
 @import "_fonts.less";
 
 @import "_archive.less";
+@import "_browse.less";
 @import "_selection.less";
 @import "_track.less";
 @import "_nanotrack.less";
@@ -419,9 +420,6 @@ body {
         }
 
         @media (min-width: @breakpoint * 2) {
-          &.grouped-tracks {
-            max-width: none;
-          }
           &.stats-page {
             max-width: @max-width * 1.7;
           }
@@ -438,6 +436,12 @@ body {
             width: 40%;
             max-width: @max-width;
           }
+        }
+      }
+
+      @media (min-width: @breakpoint * 2) {
+        &.wide, &.grouped-tracks {
+          max-width: none;
         }
       }
     }
