@@ -305,5 +305,5 @@ class BrowseCategory(TemplateView):
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         return {
             **super().get_context_data(**kwargs),
-            self.context_category_name: sorted(self.get_categories(), key=lambda i: i['name']),
+            self.context_category_name: sorted(self.get_categories(), key=lambda i: i['name'].lower()),
         }
