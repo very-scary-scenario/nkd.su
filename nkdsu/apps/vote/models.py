@@ -701,9 +701,7 @@ class Track(CleanOnSaveMixin, models.Model):
     @classmethod
     def all_artists(cls) -> Set[str]:
         return set(
-            a
-            for t in cls.objects.all()
-            for a in t.artist_names()
+            a for t in cls.objects.public() for a in t.artist_names()
         )
 
     @classmethod
