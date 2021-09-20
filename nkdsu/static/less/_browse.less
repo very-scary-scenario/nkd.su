@@ -19,15 +19,13 @@
 }
 
 ul.browsable-categories {
-  columns: 22em auto;
-  max-width: 90em;
-  margin: 0 auto;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
 
   li {
     text-shadow: none;
     font-size: 3em;
-    break-inside: avoid-column;
-    page-break-inside: avoid;  // for firefox
 
     a {
       display: block;
@@ -36,9 +34,12 @@ ul.browsable-categories {
       background-color: @hl;
       .noise();
       color: @fg;
+      min-width: 20rem;
+      width: 25vw;
+      max-width: 30rem;
       text-align: right;
       padding: 3em .2em 0;
-      margin: 0 .3em .5em;
+      margin: 0 .25em .5em;
       font-weight: bold;
       overflow: hidden;
       border-radius: .2em;
