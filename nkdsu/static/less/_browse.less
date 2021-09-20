@@ -12,7 +12,8 @@
 
     li {
       margin-bottom: .5em;
-      display: inline-block;  // to prevent breaking across columns
+      break-inside: avoid-column;
+      page-break-inside: avoid;  // for firefox
     }
   }
 }
