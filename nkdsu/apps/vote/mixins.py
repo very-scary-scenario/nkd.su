@@ -308,5 +308,5 @@ class BrowseCategory(BreadcrumbMixin, TemplateView):
         return {
             **super().get_context_data(**kwargs),
             'category_name': self.category_name,
-            self.context_category_name: sorted(self.get_categories(), key=lambda i: i['name']),
+            self.context_category_name: sorted(self.get_categories(), key=lambda i: i['name'].lower()),
         }
