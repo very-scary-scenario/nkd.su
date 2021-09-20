@@ -2,14 +2,19 @@
 
 {% block title %}Browse{% endblock %}
 
+{% block main_classes %}
+  {{ block.super }}
+  wide
+{% endblock %}
+
 {% block content %}
 
   <h2>Browse by:</h1>
 
-  <ul>
-    <li><p class="subheading"><a href="{% url "vote:archive" %}">Past shows</a></p></li>
-    <li><p class="subheading"><a href="{% url "vote:browse_anime" %}">Anime</a></p></li>
-    <li><p class="subheading"><a href="{% url "vote:browse_artists" %}">Artist</a></p></li>
+  <ul class="browsable-categories">
+    <li data-category="archive"><a href="{% url "vote:archive" %}"><span>past shows</span></a></li>
+    <li data-category="anime"><a href="{% url "vote:browse_anime" %}"><span>anime</span></a></li>
+    <li data-category="artists"><a href="{% url "vote:browse_artists" %}"><span>artists</span></a></li>
   </ul>
 
 {% endblock %}

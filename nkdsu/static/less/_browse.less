@@ -11,3 +11,64 @@
     columns: 15em auto;
   }
 }
+
+ul.browsable-categories {
+  columns: 22em auto;
+  max-width: 90em;
+  margin: 0 auto;
+
+  li {
+    text-shadow: none;
+    font-size: 3em;
+
+    a {
+      display: block;
+      position: relative;
+      box-sizing: border-box;
+      background-color: @hl;
+      .noise();
+      color: @fg;
+      text-align: right;
+      padding: 3em .2em 0;
+      margin: 0 .3em .5em;
+      font-weight: bold;
+      overflow: hidden;
+      border-radius: .2em;
+      
+      span {
+        display: inline-block;
+        position: relative;
+        z-index: 2;
+        transform: rotate(-2deg);
+      }
+
+      &::before {
+        .fas();
+        transform: rotate(13deg);
+        font-size: 6em;
+        position: absolute;
+        z-index: 1;
+        top: -.2em;
+        left: -.1em;
+        opacity: 0.15;
+        color: @bg;
+        .dark({ color: @fg !important; })
+      }
+
+      &:hover, &:focus {
+        background-color: @fg;
+        text-shadow: none;
+        color: @hl;
+
+        .dark({
+          color: @hl !important;
+          background-color: @bg;
+        })
+      }
+    }
+
+    &[data-category=archive] a::before { content: @fa-var-archive; }
+    &[data-category=anime] a::before { content: @fa-var-tv; }
+    &[data-category=artists] a::before { content: @fa-var-microphone; }
+  }
+}
