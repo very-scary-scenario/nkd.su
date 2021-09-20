@@ -44,7 +44,11 @@ class BrowsableItem:
     name: str
 
     def initial_letter(self) -> Tuple[int, str]:
+        if not self.name:
+            return (3, '')
+
         first_character = self.name[0]
+
         if first_character in string.ascii_letters:
             return (0, first_character.lower())
         elif first_character in string.digits:
