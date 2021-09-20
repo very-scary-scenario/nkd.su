@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import logging
 import re
+import string
+from dataclasses import dataclass
 from functools import partial
-from typing import Any, Callable, List, Optional, TYPE_CHECKING, Tuple, TypeVar, TypedDict, cast
+from typing import Any, Callable, List, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
 
 from classtools import reify as ct_reify
 from django.conf import settings
@@ -36,9 +38,19 @@ posting_tw_api = tweepy.API(_post_tw_auth)
 indefinitely: int = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
 
 
-class BrowsableItem(TypedDict):
+@dataclass
+class BrowsableItem:
     url: Optional[str]
     name: str
+
+    def initial_letter(self) -> Tuple[int, str]:
+        first_character = self.name[0]
+        if first_character in string.ascii_letters:
+            return (0, first_character.lower())
+        elif first_character in string.digits:
+            return (1, '0-9')
+        else:
+            return (2, '#')
 
 
 def _get_short_url_length() -> int:

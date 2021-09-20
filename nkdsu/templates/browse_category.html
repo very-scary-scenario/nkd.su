@@ -8,16 +8,22 @@
     <h2>{{ category_name }}</h2>
   {% endif %}
 
-  <ul>
-    {% for item in items %}
-      <li>
-        {% if item.url %}
-          <a href="{{ item.url }}">{{ item.name }}</a>
-        {% else %}
-          {{ item.name }}
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
+  {% regroup items by initial_letter as letters %}
+
+  {% for letter in letters %}
+    <section class="letter" id="{{ letter.grouper.1 }}">
+      <h3>{{ letter.grouper.1 }}</h3>
+
+      {% for item in letter.list %}
+        <li>
+          {% if item.url %}
+            <a href="{{ item.url }}">{{ item.name }}</a>
+          {% else %}
+            {{ item.name }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </section>
+  {% endfor %}
 
 {% endblock %}

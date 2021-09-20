@@ -102,9 +102,10 @@ class BrowseRoles(mixins.BrowseCategory):
             yield BrowsableItem(url=None, name=role)
 
 
-class Archive(mixins.ArchiveList):
+class Archive(mixins.BreadcrumbMixin, mixins.ArchiveList):
     section = 'browse'
     template_name = 'archive.html'
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs
 
     def get_queryset(self) -> QuerySet[Show]:
         return super().get_queryset().prefetch_related('play_set', 'vote_set')
