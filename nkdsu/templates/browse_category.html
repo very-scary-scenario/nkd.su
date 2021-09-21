@@ -13,30 +13,33 @@
     <h2>{{ category_name }}</h2>
   {% endif %}
 
-  {% regroup items by group as letters %}
+  {% regroup items by group as groups %}
 
-  <p class="letter-buttons">
-    {% for letter in letters %}
-      <a href="#{{ letter.grouper.1|urlencode }}">{{ letter.grouper.1 }}</a>
+  {% if contents_required %}
+    <p class="group-buttons">
+      {% for group in groups %}
+        <a href="#{{ group.grouper.1|urlencode }}">{{ group.grouper.1 }}</a>
+      {% endfor %}
+    </p>
+  {% endif %}
+
+  <div class="browsable-groups" data-category-name="{{ category_name }}">
+    {% for group in groups %}
+      <section class="browsable-group" id="{{ group.grouper.1 }}" >
+        <h3>{{ group.grouper.1 }}</h3>
+
+        <ul>
+          {% for item in group.list %}
+            <li>
+              {% if item.url %}
+                <a href="{{ item.url }}">{{ item.name }}</a>
+              {% else %}
+                {{ item.name }}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
     {% endfor %}
-  </p>
-  
-
-  {% for letter in letters %}
-    <section class="browsable-group" id="{{ letter.grouper.1 }}" data-category-name="{{ category_name }}">
-      <h3>{{ letter.grouper.1 }}</h3>
-
-      <ul>
-        {% for item in letter.list %}
-          <li>
-            {% if item.url %}
-              <a href="{{ item.url }}">{{ item.name }}</a>
-            {% else %}
-              {{ item.name }}
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    </section>
-  {% endfor %}
+  </div>
 {% endblock %}

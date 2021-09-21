@@ -1,4 +1,4 @@
-.letter-buttons {
+.group-buttons {
   text-align: center;
 
   a {
@@ -7,27 +7,33 @@
   }
 }
 
-.browsable-group {
-  ul {
-    columns: 15em auto;
+.browsable-groups {
+  .browsable-group {
+    ul {
+      columns: 15em auto;
 
-    li {
-      margin-bottom: .5em;
-      break-inside: avoid-column;
-      display: inline-block;  // for firefox
-      width: 100%;  // to prevent multiple items appearing on one line
+      li {
+        margin-bottom: .5em;
+        break-inside: avoid-column;
+        display: inline-block;  // for firefox
+        width: 100%;  // to prevent multiple items appearing on one line
+      }
     }
   }
 
   &[data-category-name="years"] {
-    max-width: 12em;
-    margin: 0 auto;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
 
-    ul {
-      columns: 2 auto;
-      
-      li {
-        text-align: center;
+    .browsable-group {
+      ul {
+        columns: auto;
+        width: 6em;
+
+        li {
+          text-align: center;
+        }
       }
     }
   }

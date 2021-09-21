@@ -299,6 +299,7 @@ class BrowseCategory(BreadcrumbMixin, TemplateView):
     context_category_name = "items"
     category_name: Optional[str] = None
     breadcrumbs = [(reverse_lazy("vote:browse"), "browse")]
+    contents_required = True
 
     @abstractmethod
     def get_categories(self) -> Iterable[BrowsableItem]:
@@ -308,6 +309,7 @@ class BrowseCategory(BreadcrumbMixin, TemplateView):
         return {
             **super().get_context_data(**kwargs),
             'category_name': self.category_name,
+            'contents_required': self.contents_required,
             self.context_category_name: sorted(
                 self.get_categories(), key=lambda i: (i.group(), i.name.lower())
             ),
