@@ -729,6 +729,19 @@ class Track(CleanOnSaveMixin, models.Model):
             })
 
     @classmethod
+    def complete_decade_range(cls) -> List[Tuple[int, bool]]:
+        present_years = cls.all_years()
+        if not present_years:
+            return []
+
+        start_of_earliest_decade = (present_years[0] // 10) * 10
+
+        return [
+            (year, year in present_years)
+            for year in range(start_of_earliest_decade, present_years[-1] + 1)
+        ]
+
+    @classmethod
     def all_decades(cls) -> List[int]:
         return sorted({(year // 10) * 10 for year in cls.all_years()})
 

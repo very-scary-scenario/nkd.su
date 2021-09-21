@@ -98,8 +98,11 @@ class BrowseYears(mixins.BrowseCategory):
     contents_required = False
 
     def get_categories(self) -> Iterable[BrowsableItem]:
-        for year in Track.all_years():
-            yield BrowsableYear(url=reverse("vote:year", kwargs={"year": year}), name=str(year))
+        for year, has_tracks in Track.complete_decade_range():
+            yield BrowsableYear(
+                name=str(year),
+                url=reverse("vote:year", kwargs={"year": year}) if has_tracks else None,
+            )
 
 
 class BrowseRoles(mixins.BrowseCategory):
