@@ -41,6 +41,7 @@ ul.browsable-categories {
   li {
     text-shadow: none;
     font-size: 3em;
+    position: relative;
 
     a {
       display: block;
@@ -54,7 +55,7 @@ ul.browsable-categories {
       max-width: 30rem;
       text-align: right;
       padding: 3em .2em 0;
-      margin: 0 .25em .5em;
+      margin: 0 .25em 1em;
       font-weight: bold;
       overflow: hidden;
       border-radius: .2em;
@@ -89,6 +90,14 @@ ul.browsable-categories {
           background-color: @bg;
         })
       }
+    }
+
+    &::after {
+      content: attr(title);
+      font-size: .3em;
+      position: absolute;
+      right: 1em;
+      bottom: 1.8rem;
     }
 
     &[data-category=archive] a::before { content: @fa-var-archive; }
