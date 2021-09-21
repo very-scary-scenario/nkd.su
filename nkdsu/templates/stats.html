@@ -6,39 +6,43 @@
 {% block main_classes %}stats-page{% endblock %}
 
 {% block content %}
-  {% cache indefinitely stats current_show %}
-    {% with batting_averages as ba %}
-      <section class="stat">
-        <h2 id="most-successful-users">most successful users</h2>
-        <p class="subheading">in the last six months</p>
-        <table class="stats users">
-          <tr>
-            <th class="summary"><span>user</span></th>
-            <th class="value">batting average</th>
-          </tr>
+  {% if request.user.is_staff %}
+    {% cache indefinitely user_batting_average_ranks current_show %}
+      {% with batting_averages as ba %}
+        <section class="stat">
+          <h2 id="most-successful-users">most successful users</h2>
+          <p class="subheading">in the last six months</p>
+          <table class="stats users">
+            <tr>
+              <th class="summary"><span>user</span></th>
+              <th class="value">batting average</th>
+            </tr>
 
-          {% for voter in ba|slice:":10" %}
-            {% include "include/stats/user_batting_average.html" %}
-          {% endfor %}
-        </table>
-      </section>
+            {% for voter in ba|slice:":10" %}
+              {% include "include/stats/user_batting_average.html" %}
+            {% endfor %}
+          </table>
+        </section>
 
-      <section class="stat">
-        <h2 id="least-successful-users">least successful users</h2>
-        <p class="subheading">in the last six months</p>
-        <table class="stats users">
-          <tr>
-            <th class="summary"><span>user</span></th>
-            <th class="value">batting average</th>
-          </tr>
+        <section class="stat">
+          <h2 id="least-successful-users">least successful users</h2>
+          <p class="subheading">in the last six months</p>
+          <table class="stats users">
+            <tr>
+              <th class="summary"><span>user</span></th>
+              <th class="value">batting average</th>
+            </tr>
 
-          {% for voter in ba|slice:":-11:-1" %}
-            {% include "include/stats/user_batting_average.html" %}
-          {% endfor %}
-        </table>
-      </section>
-    {% endwith %}
+            {% for voter in ba|slice:":-11:-1" %}
+              {% include "include/stats/user_batting_average.html" %}
+            {% endfor %}
+          </table>
+        </section>
+      {% endwith %}
+    {% endcache %}
+  {% endif %}
 
+  {% cache indefinitely user_streaks_rank current_show %}
     <section class="stat">
       <h2 id="most-dedicated-users">most dedicated users</h2>
       <table class="stats users">
@@ -52,7 +56,9 @@
         {% endfor %}
       </table>
     </section>
+  {% endcache %}
 
+  {% cache indefinitely track_popularity_contest current_show %}
     <section class="stat">
       <h2 id="most-popular-tracks">most popular tracks</h2>
       <p class="subheading">in the last six months</p>
