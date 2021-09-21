@@ -1,21 +1,26 @@
 @import "_mixins.less";
 
-ul.archive {
-  columns: 20em auto;
-  margin: 1em 0 2em;
+.archive-months {
+  display: flex;
+  flex-flow: row wrap;
   justify-content: space-evenly;
 
-  li.show {
-    display: block;
-    padding: 0 0 1em;
-    break-inside: avoid-column;
+  .month {
+    width: 23em;
 
-    > :first-child {
-      margin-top: 0;
-    }
+    ul {
+      margin: 1em 0 2em;
+      justify-content: space-evenly;
 
-    p.subheading {
-      .child-iter();
+      li.show {
+        > :first-child {
+          margin-top: 0;
+        }
+
+        p.subheading {
+          .child-iter();
+        }
+      }
     }
   }
 }
