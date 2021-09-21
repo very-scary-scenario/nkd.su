@@ -1467,6 +1467,18 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             self.track.revealed = timezone.now()
             self.track.save()
 
+    def get_tweet_text(self) -> str:
+        # here we add a zwsp after every . to prevent twitter from turning
+        # things into links
+        delinked_name = str(self.track).replace('.', '.\u200b')
+
+        status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
+
+        if len(status) > settings.TWEET_LENGTH:
+            status = status[:settings.TWEET_LENGTH-1].strip() + '…'
+
+        return status
+
     def tweet(self) -> None:
         """
         Send out a tweet for this play, set self.tweet_id and save.
@@ -1475,16 +1487,7 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         if self.tweet_id is not None:
             raise TypeError('This play has already been tweeted')
 
-        # here we add a zwsp after every . to prevent twitter from turning
-        # things into links
-        canon = str(self.track).replace('.', '.\u200b')
-        hashtag = settings.HASHTAG
-
-        if len(canon) > settings.TWEET_LENGTH - (len(hashtag) + 1):
-            canon = canon[0:settings.TWEET_LENGTH-(len(hashtag)+2)]+u'…'
-
-        status = u'%s %s' % (canon, hashtag)
-        tweet = posting_tw_api.update_status(status)
+        tweet = posting_tw_api.update_status(self.get_tweet_text())
         self.tweet_id = tweet.id
         self.save()
 
