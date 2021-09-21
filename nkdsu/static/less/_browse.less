@@ -13,8 +13,9 @@
 
     li {
       margin-bottom: .5em;
-      break-inside: avoid-column;
-      page-break-inside: avoid;  // for firefox
+      break-inside: avoid;
+      display: inline-block;  // for firefox
+      width: 100%;  // to prevent multiple items appearing on one line
     }
   }
 
