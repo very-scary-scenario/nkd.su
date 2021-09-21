@@ -2,6 +2,11 @@
 
 {% block title %}archive{% endblock %}
 
+{% block main_classes %}
+  {{ block.super }}
+  wide
+{% endblock %}
+
 {% block content %}
   {% include "include/archive_paginator.html" %}
 
