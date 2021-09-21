@@ -108,6 +108,7 @@ urlpatterns = [
 
     url(r'^anime/$', views.BrowseAnime.as_view(), name='browse_anime'),
     url(r'^artists/$', views.BrowseArtists.as_view(), name='browse_artists'),
+    url(r'^years/$', views.BrowseYears.as_view(), name='browse_years'),
     url(r'^composers/$', views.BrowseComposers.as_view(), name='browse_composers'),
     url(r'^roles/$', views.BrowseRoles.as_view(), name='browse_roles'),
 
@@ -142,6 +143,7 @@ urlpatterns = [
     url(r'^artist/(?P<artist>.*)/$', views.Artist.as_view(), name='artist'),
     url(r'^anime/(?P<anime>.*)/$', views.Anime.as_view(), name='anime'),
     url(r'^composer/(?P<composer>.*)/$', views.Composer.as_view(), name='composer'),
+    url(r'^year/(?P<year>\d*)/$', views.Year.as_view(), name='year'),
 
     url(r'^stats/$', views.Stats.as_view(), name='stats'),
 

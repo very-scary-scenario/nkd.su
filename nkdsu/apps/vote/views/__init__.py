@@ -20,7 +20,7 @@ import tweepy
 
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm
 from ..models import Show, Track, TwitterUser
-from ..utils import BrowsableItem, reify
+from ..utils import BrowsableItem, BrowsableYear, reify
 from ...vote import mixins
 
 
@@ -90,6 +90,15 @@ class BrowseComposers(mixins.BrowseCategory):
     def get_categories(self) -> Iterable[BrowsableItem]:
         for composer in Track.all_composers():
             yield BrowsableItem(url=reverse("vote:composer", kwargs={"composer": composer}), name=composer)
+
+
+class BrowseYears(mixins.BrowseCategory):
+    section = 'browse'
+    category_name = 'years'
+
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for year in Track.all_years():
+            yield BrowsableYear(url=reverse("vote:year", kwargs={"year": year}), name=str(year))
 
 
 class BrowseRoles(mixins.BrowseCategory):
@@ -357,10 +366,25 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
         return HttpResponse(image, content_type=content_type)
 
 
+class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
+    section = 'browse'
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_years'), 'years')]
+    template_name = 'year.html'
+
+    def get_track_queryset(self) -> QuerySet[Track]:
+        return Track.objects.filter(year=int(self.kwargs['year']))
+
+    def get_context_data(self):
+        return {
+            **super().get_context_data(),
+            'year': self.kwargs['year'],
+        }
+
+
 class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
     template_name = 'artist_detail.html'
-    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_artists'), 'artists')]
     section = 'browse'
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_artists'), 'artists')]
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         response = super().get(request, *args, **kwargs)

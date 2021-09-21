@@ -1,0 +1,13 @@
+{% extends parent %}
+
+{% block title %}{{ year }}{% endblock %}
+
+{% block main_classes %}
+  {{ block.super }}
+  grouped-tracks
+{% endblock %}
+
+{% block content %}
+  <h2>{{ year }}</h2>
+  {% include "include/tracks_grouped_by_anime.html" %}
+{% endblock %}

@@ -43,7 +43,12 @@ class BrowsableItem:
     url: Optional[str]
     name: str
 
-    def initial_letter(self) -> Tuple[int, str]:
+    def group(self) -> Tuple[int, str]:
+        """
+        Return a sort order and a user-facing name for the group to put this
+        item in. By default, an initial letter.
+        """
+
         if not self.name:
             return (3, '')
 
@@ -55,6 +60,13 @@ class BrowsableItem:
             return (1, '0-9')
         else:
             return (2, '#')
+
+
+@dataclass
+class BrowsableYear(BrowsableItem):
+    def group(self) -> Tuple[int, str]:
+        decade = (int(self.name) // 10) * 10
+        return (decade, f"{decade}s")
 
 
 def _get_short_url_length() -> int:
