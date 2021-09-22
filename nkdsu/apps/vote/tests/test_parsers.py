@@ -139,6 +139,12 @@ PART_EXAMPLES = [
     ('FLOWxGRANDRODEO', [
         (True, 'FLOWxGRANDRODEO'),
     ]),
+    ('fu_mou (Hifumi,inc.)', [
+        (True, 'fu_mou'),
+        (False, ' ('),
+        (True, 'Hifumi,inc.'),
+        (False, ')'),
+    ]),
 ]
 
 GROUP_EXAMPLES = [
