@@ -97,6 +97,7 @@ class ArtistLexer(Lexer):
         r'Fear,\sand\sLoathing\sin\sLas\sVegas|'
         r'GENERATIONS from EXILE TRIBE|'
         r'HIGH and MIGHTY COLOR|'
+        r'Hifumi,inc\.|'
         r'Hello, Happy World!|'
         r'Kamisama, Boku wa Kizuite shimatta|'
         r'Kevin & Cherry|'
