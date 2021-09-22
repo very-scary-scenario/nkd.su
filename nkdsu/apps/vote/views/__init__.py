@@ -416,7 +416,7 @@ class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView
             'artist': self.kwargs['artist'],
             'played': [t for t in context['tracks'] if t.last_play()],
             'artist_suggestions': self.artist_suggestions,
-            'tracks_as_composer': Track.objects.filter(composer=self.kwargs['artist']).count(),
+            'tracks_as_composer': len(Track.objects.by_composer(self.kwargs['artist'])),
         })
         return context
 
@@ -467,7 +467,7 @@ class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListVi
         else:
             qs = Track.objects.public()
 
-        return qs.filter(composer=self.kwargs['composer'])
+        return qs.by_composer(self.kwargs['composer'])
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)

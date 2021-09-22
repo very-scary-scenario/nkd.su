@@ -707,7 +707,7 @@ class Track(CleanOnSaveMixin, models.Model):
     @classmethod
     def all_composers(cls) -> Set[str]:
         return set(
-            (t.composer for t in cls.objects.public())
+            c for t in cls.objects.public() for c in t.composer_names()
         )
 
     @classmethod
@@ -852,6 +852,11 @@ class Track(CleanOnSaveMixin, models.Model):
     def artist(self) -> str:
         return self.id3_artist
 
+    @memoize
+    @pk_cached(90)
+    def artists(self) -> ParsedArtist:
+        return parse_artist(self.artist)
+
     def artist_names(self, fail_silently: bool = True) -> Iterable[str]:
         return (
             chunk.text for chunk in
@@ -861,8 +866,15 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @memoize
     @pk_cached(90)
-    def artists(self) -> ParsedArtist:
-        return parse_artist(self.artist)
+    def composers(self) -> ParsedArtist:
+        return parse_artist(self.composer)
+
+    def composer_names(self, fail_silently: bool = True) -> Iterable[str]:
+        return (
+            chunk.text for chunk in
+            parse_artist(self.composer, fail_silently=fail_silently).chunks
+            if chunk.is_artist
+        )
 
     def split_id3_title(self) -> Tuple[str, Optional[str]]:
         return split_id3_title(self.id3_title)

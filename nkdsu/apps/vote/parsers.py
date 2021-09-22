@@ -224,6 +224,9 @@ def chunk_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChun
 
 
 def parse_artist(string: str, fail_silently: bool = True) -> ParsedArtist:
+    if not string:
+        return ParsedArtist(chunks=[], should_collapse=False)
+
     chunks = list(chunk_artist(string, fail_silently=fail_silently))
     naive_is_group = check_for_group(string, chunks[0].text)
     return ParsedArtist(chunks=chunks, should_collapse=naive_is_group and len([

@@ -37,6 +37,11 @@ class TrackQuerySet(models.QuerySet):
         qs = base_qs.filter(id3_artist__contains=artist).order_by('id3_title')
         return [t for t in qs if artist in t.artist_names()]
 
+    def by_composer(self, composer: str, show_secret_tracks: bool = False) -> List[Track]:
+        base_qs = self._everything(show_secret_tracks)
+        qs = base_qs.filter(composer__contains=composer).order_by('id3_title')
+        return [t for t in qs if composer in t.composer_names()]
+
     def by_anime(self, anime: str, show_secret_tracks: bool = False) -> List[Track]:
         """
         Behaves similarly to by_artist.
