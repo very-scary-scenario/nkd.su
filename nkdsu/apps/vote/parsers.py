@@ -93,6 +93,7 @@ class ArtistLexer(Lexer):
         r'Carole\s&\sTuesday|'
         r'Daisy x Daisy|'
         r'Dejo & Bon|'
+        r'Digz, Inc. Group|'
         r'Dimitri From Paris|'
         r'Fear,\sand\sLoathing\sin\sLas\sVegas|'
         r'GENERATIONS from EXILE TRIBE|'
