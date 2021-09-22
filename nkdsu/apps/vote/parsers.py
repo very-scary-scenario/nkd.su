@@ -86,6 +86,7 @@ class ArtistLexer(Lexer):
     SPACE = r'\s+'
     ARTIST_COMPONENT = (
         r'('
+        r'\(K\)NoW_NAME|'
         r'AKIMA & NEOS|'
         r'ANNA TSUCHIYA inspi\' NANA\(BLACK STONES\)|'
         r'Bird Bear Hare and Fish|'
