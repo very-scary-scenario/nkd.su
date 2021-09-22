@@ -59,6 +59,7 @@ class ArtistLexer(Lexer):
         r'and|'
         r'with|'
         r'adding|'
+        r'a\.k\.a|'
         r'x|'
         r'×|'
         r'n\'|'
