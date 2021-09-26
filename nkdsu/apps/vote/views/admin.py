@@ -514,28 +514,6 @@ class RemoveNote(DestructiveAdminAction, DetailView):
         messages.success(self.request, 'note removed')
 
 
-class AllAnimeView(View):
-    get_names = Track.all_anime_titles
-
-    def get(self, request):
-        return HttpResponse(
-            '\n'.join(sorted(self.get_names(), key=lambda n: n.lower())),
-            content_type='text/plain; charset=utf-8',
-        )
-
-
-class AllArtistsView(AllAnimeView):
-    get_names = Track.all_artists
-
-
-class AllComposersView(AllAnimeView):
-    get_names = Track.all_composers
-
-
-class AllRolesView(AllAnimeView):
-    get_names = Track.all_non_inudesu_roles
-
-
 class RequestList(AnyLoggedInUserMixin, ListView):
     template_name = 'requests.html'
     model = Request

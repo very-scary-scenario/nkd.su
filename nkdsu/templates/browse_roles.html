@@ -1,0 +1,13 @@
+{% extends "browse_category.html" %}
+
+{% block content %}
+
+  <ul>
+    {% for item in items %}
+      <li>
+        <pre>{{ item.name }}</pre>
+      </li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}

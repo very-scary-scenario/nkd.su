@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from io import BytesIO
 from string import ascii_letters
 from typing import Any, Dict, Iterable, List, Literal, Optional, Set, Tuple, Union, cast
@@ -30,7 +30,7 @@ import requests
 import tweepy
 
 from .managers import NoteQuerySet, TrackQuerySet
-from .parsers import parse_artist
+from .parsers import ParsedArtist, parse_artist
 from .utils import (
     READING_USERNAME, indefinitely, lastfm, length_str, memoize,
     musicbrainzngs, pk_cached, posting_tw_api, reading_tw_api, reify,
@@ -701,15 +701,13 @@ class Track(CleanOnSaveMixin, models.Model):
     @classmethod
     def all_artists(cls) -> Set[str]:
         return set(
-            a
-            for t in cls.objects.all()
-            for a in t.artist_names()
+            a for t in cls.objects.public() for a in t.artist_names()
         )
 
     @classmethod
     def all_composers(cls) -> Set[str]:
         return set(
-            (t.composer for t in cls.objects.public())
+            c for t in cls.objects.public() for c in t.composer_names()
         )
 
     @classmethod
@@ -729,6 +727,19 @@ class Track(CleanOnSaveMixin, models.Model):
             return sorted({
                 year for year in tracks.values_list('year', flat=True)
             })
+
+    @classmethod
+    def complete_decade_range(cls) -> List[Tuple[int, bool]]:
+        present_years = cls.all_years()
+        if not present_years:
+            return []
+
+        start_of_earliest_decade = (present_years[0] // 10) * 10
+
+        return [
+            (year, year in present_years)
+            for year in range(start_of_earliest_decade, present_years[-1] + 1)
+        ]
 
     @classmethod
     def all_decades(cls) -> List[int]:
@@ -841,30 +852,29 @@ class Track(CleanOnSaveMixin, models.Model):
     def artist(self) -> str:
         return self.id3_artist
 
+    @memoize
+    @pk_cached(90)
+    def artists(self) -> ParsedArtist:
+        return parse_artist(self.artist)
+
     def artist_names(self, fail_silently: bool = True) -> Iterable[str]:
         return (
-            name for is_artist_name, name in
-            parse_artist(self.artist, fail_silently=fail_silently)
-            if is_artist_name
+            chunk.text for chunk in
+            parse_artist(self.artist, fail_silently=fail_silently).chunks
+            if chunk.is_artist
         )
 
     @memoize
     @pk_cached(90)
-    def artists(self) -> List[Dict[str, Any]]:
-        return [
-            {
-                'url': (
-                    reverse('vote:artist', kwargs={'artist': bit_of_string})
-                    if is_artist_name else None
-                ),
-                'name': bit_of_string,
-                'worth_linking_to': bool(
-                    is_artist_name and
-                    Track.objects.by_artist(bit_of_string)
-                )
-            }
-            for is_artist_name, bit_of_string in parse_artist(self.artist)
-        ]
+    def composers(self) -> ParsedArtist:
+        return parse_artist(self.composer)
+
+    def composer_names(self, fail_silently: bool = True) -> Iterable[str]:
+        return (
+            chunk.text for chunk in
+            parse_artist(self.composer, fail_silently=fail_silently).chunks
+            if chunk.is_artist
+        )
 
     def split_id3_title(self) -> Tuple[str, Optional[str]]:
         return split_id3_title(self.id3_title)
@@ -1155,7 +1165,7 @@ class Track(CleanOnSaveMixin, models.Model):
             ],
             'artist': self.artist,
             'artists': list(self.artist_names()),
-            'artists_parsed': self.artists(),
+            'artists_parsed': [asdict(a) for a in self.artists().chunks],
             'eligible': self.eligible(),
             'ineligibility_reason': self.ineligible() or None,
             'length': self.msec,
@@ -1482,6 +1492,18 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             self.track.revealed = timezone.now()
             self.track.save()
 
+    def get_tweet_text(self) -> str:
+        # here we add a zwsp after every . to prevent twitter from turning
+        # things into links
+        delinked_name = str(self.track).replace('.', '.\u200b')
+
+        status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
+
+        if len(status) > settings.TWEET_LENGTH:
+            status = status[:settings.TWEET_LENGTH-1].strip() + '…'
+
+        return status
+
     def tweet(self) -> None:
         """
         Send out a tweet for this play, set self.tweet_id and save.
@@ -1490,16 +1512,7 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         if self.tweet_id is not None:
             raise TypeError('This play has already been tweeted')
 
-        # here we add a zwsp after every . to prevent twitter from turning
-        # things into links
-        canon = str(self.track).replace('.', '.\u200b')
-        hashtag = settings.HASHTAG
-
-        if len(canon) > settings.TWEET_LENGTH - (len(hashtag) + 1):
-            canon = canon[0:settings.TWEET_LENGTH-(len(hashtag)+2)]+u'…'
-
-        status = u'%s %s' % (canon, hashtag)
-        tweet = posting_tw_api.update_status(status)
+        tweet = posting_tw_api.update_status(self.get_tweet_text())
         self.tweet_id = tweet.id
         self.save()
 

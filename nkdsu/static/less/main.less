@@ -7,6 +7,7 @@
 @import "_fonts.less";
 
 @import "_archive.less";
+@import "_browse.less";
 @import "_selection.less";
 @import "_track.less";
 @import "_nanotrack.less";
@@ -91,7 +92,7 @@ body {
         }
 
         &#home-header-link i::before { content: @fa-var-home; }
-        &#archive-header-link i::before { content: @fa-var-archive; }
+        &#browse-header-link i::before { content: @fa-var-folder; }
         &#new-tracks-header-link i::before { content: @fa-var-concierge-bell; }
         &#roulette-header-link i::before { content: @fa-var-dice; }
         &#stats-header-link i::before { content: @fa-var-chart-bar; }
@@ -396,6 +397,22 @@ body {
       }
 
       &.grouped-tracks, &.stats-page {
+        details.track-group {
+          summary {
+            .reset-details-summary();
+
+            h3::before {
+              .fas();
+              content: @fa-var-angle-right;
+              padding: 0 .4em;
+            }
+
+            &:hover h3::before { color: @hl; }
+          }
+
+          &[open] summary h3::before { content: @fa-var-angle-down; }
+        }
+
         > p {
           max-width: @max-width;
           margin: 0 auto;
@@ -403,9 +420,6 @@ body {
         }
 
         @media (min-width: @breakpoint * 2) {
-          &.grouped-tracks {
-            max-width: none;
-          }
           &.stats-page {
             max-width: @max-width * 1.7;
           }
@@ -423,6 +437,12 @@ body {
             width: 40%;
             max-width: @narrow-track-width;
           }
+        }
+      }
+
+      @media (min-width: @breakpoint * 2) {
+        &.wide, &.grouped-tracks {
+          max-width: none;
         }
       }
     }

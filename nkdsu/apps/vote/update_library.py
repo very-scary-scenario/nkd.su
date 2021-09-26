@@ -206,12 +206,18 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
 
     for track in [tr for tr in alltracks
                   if tr not in tracks_kept and not tr.hidden]:
-        changes.append({
-            'type': 'hide',
-            'item': str(track),
-        })
-        if not dry_run:
-            track.hidden = True
-            track.save()
+        if not track.metadata_locked:
+            changes.append({
+                'type': 'hide',
+                'item': str(track),
+            })
+            if not dry_run:
+                track.hidden = True
+                track.save()
+        else:
+            changes.append({
+                'type': 'locked',
+                'item': str(track),
+            })
 
     return changes

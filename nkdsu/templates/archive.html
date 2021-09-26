@@ -2,24 +2,39 @@
 
 {% block title %}archive{% endblock %}
 
+{% block main_classes %}
+  {{ block.super }}
+  wide
+{% endblock %}
+
 {% block content %}
   {% include "include/archive_paginator.html" %}
 
-  <ul class="archive">
-    {% for show in object_list %}
-      <li class="show">
-        <h2><a href="{{ show.get_absolute_url }}">{{ show.showtime|date:"F jS Y" }}</a></h2>
-        <p class="subheading">
-          <span><a href="{{ show.get_absolute_url }}">{{ show.play_set.count }} play{{ show.play_set.count|pluralize }}</a></span>
-          <span>{{ show.vote_set.count }} vote{{ show.vote_set.count|pluralize }}</span>
-          {% if show.revealed.count %}
-            <span><a href="{{ show.get_revealed_url }}">{{ show.revealed.count }} new track{{ show.revealed.count|pluralize }}</a></span>
-          {% endif %}
-          <span><a href="{{ show.get_listen_url }}">listen</a></span>
-        </p>
-      </li>
+  {% regroup object_list by showtime.month as months %}
+
+  <div class="archive-months">
+    {% for month in months %}
+      <section class="month">
+        <h3>{{ month.list.0.showtime|date:"F" }}</h3>
+
+        <ul>
+          {% for show in month.list %}
+            <li class="show">
+              <h2><a href="{{ show.get_absolute_url }}">{{ show.showtime|date:"F jS Y" }}</a></h2>
+              <p class="subheading">
+                <span><a href="{{ show.get_absolute_url }}">{{ show.play_set.count }} play{{ show.play_set.count|pluralize }}</a></span>
+                <span>{{ show.vote_set.count }} vote{{ show.vote_set.count|pluralize }}</span>
+                {% if show.revealed.count %}
+                  <span><a href="{{ show.get_revealed_url }}">{{ show.revealed.count }} new track{{ show.revealed.count|pluralize }}</a></span>
+                {% endif %}
+                <span><a href="{{ show.get_listen_url }}">listen</a></span>
+              </p>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
     {% endfor %}
-  </ul>
+  </div>
 
   {% include "include/archive_paginator.html" %}
 {% endblock %}

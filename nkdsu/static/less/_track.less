@@ -81,6 +81,18 @@ body main .track {
       }
     }
 
+    .artist {
+      display: inline-block;
+    }
+
+    .refusal, .meta {
+      font-size: .8em;
+    }
+
+    .refusal, .meta.role-etc {
+      .child-iter();
+    }
+
     div.metadata {
       text-align: left;
       border-left: 1px solid @border;
@@ -616,8 +628,29 @@ li.vote {
   }
 }
 
+
 .dark({
   .expansion-toggle:hover::after {
     color: @bg;
   }
 });
+
+details.collapsed-artist {
+  summary {
+    .reset-details-summary();
+
+    &::before {
+      .fas();
+      content: @fa-var-angle-right;
+      padding: 0 .4em;
+    }
+
+    &:hover {
+      &::before {
+        color: @hl;
+      }
+    }
+  }
+
+  &[open] summary::before { content: @fa-var-angle-down; }
+}

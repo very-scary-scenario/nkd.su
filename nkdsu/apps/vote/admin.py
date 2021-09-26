@@ -8,8 +8,8 @@ class ShowAdmin(admin.ModelAdmin):
 
 
 class TwitterUserAdmin(admin.ModelAdmin):
-    list_display = ('screen_name', 'is_abuser')
-    list_filter = ('is_abuser',)
+    list_display = ('screen_name', 'is_abuser', 'is_patron')
+    list_filter = ('is_abuser', 'is_patron')
 
 
 class UserBadgeAdmin(admin.ModelAdmin):

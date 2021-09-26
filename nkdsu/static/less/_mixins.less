@@ -68,6 +68,15 @@
   }
 }
 
+.reset-details-summary() {
+  cursor: pointer;
+  display: block;
+
+  &::marker, &::-webkit-details-marker {
+    display: none;
+  }
+}
+
 .bell-strike {
   animation: bell-strike 2s ease-in infinite;
 }

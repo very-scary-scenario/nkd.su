@@ -3,7 +3,7 @@ from django.test import TestCase
 from ..parsers import parse_artist
 
 
-ARTIST_EXAMPLES = [
+PART_EXAMPLES = [
     ('Oranges and Lemons', [
         (True, 'Oranges and Lemons'),
     ]),
@@ -76,10 +76,99 @@ ARTIST_EXAMPLES = [
         (False, ' = '),
         (True, 'cv'),
     ]),
+    ('char + cv', [
+        (True, 'char'),
+        (False, ' + '),
+        (True, 'cv'),
+    ]),
+    ('Yamagami Lucy (…) (CV: Kayano Ai) Miyoshi Saya (CV: Nakahara Mai)', [
+        (True, 'Yamagami Lucy (…)'),
+        (False, ' (CV: '),
+        (True, 'Kayano Ai'),
+        (False, ') '),
+        (True, 'Miyoshi Saya'),
+        (False, ' (CV: '),
+        (True, 'Nakahara Mai'),
+        (False, ')'),
+    ]),
+    ('Team.Nekokan [Neko] featuring. Amaoto Junca', [
+        (True, 'Team.Nekokan [Neko]'),
+        (False, ' featuring. '),
+        (True, 'Amaoto Junca'),
+    ]),
+    ('Lillian Weinberg (Performed by Laura Pitt-Pulford)', [
+        (True, 'Lillian Weinberg'),
+        (False, ' (Performed by '),
+        (True, 'Laura Pitt-Pulford'),
+        (False, ')'),
+    ]),
+    ('SawanoHiroyuki[nZk]:collab', [
+        (True, 'SawanoHiroyuki[nZk]'),
+        (False, ':'),
+        (True, 'collab'),
+    ]),
+    ('SawanoHiroyuki[nZk]:Tielle&Gemie', [
+        (True, 'SawanoHiroyuki[nZk]'),
+        (False, ':'),
+        (True, 'Tielle'),
+        (False, '&'),
+        (True, 'Gemie'),
+    ]),
+    ('SawanoHiroyuki[nZk]:someone:else', [
+        (True, 'SawanoHiroyuki[nZk]'),
+        (False, ':'),
+        (True, 'someone:else'),
+    ]),
+    ('SawanoHiroyuki[nZk]:someone&someone:else&yet another person', [
+        (True, 'SawanoHiroyuki[nZk]'),
+        (False, ':'),
+        (True, 'someone'),
+        (False, '&'),
+        (True, 'someone:else'),
+        (False, '&'),
+        (True, 'yet another person'),
+    ]),
+    ('SawanoHiroyuki[nzk]:collab', [
+        (True, 'SawanoHiroyuki[nzk]:collab'),
+    ]),
+    ('FLOWxGRANRODEO', [
+        (True, 'FLOW'),
+        (False, 'x'),
+        (True, 'GRANRODEO'),
+    ]),
+    ('FLOWxGRANDRODEO', [
+        (True, 'FLOWxGRANDRODEO'),
+    ]),
+    ('fu_mou (Hifumi,inc.)', [
+        (True, 'fu_mou'),
+        (False, ' ('),
+        (True, 'Hifumi,inc.'),
+        (False, ')'),
+    ]),
+]
+
+GROUP_EXAMPLES = [
+    ('This is a group (but it only has one paren section)', False),
+    ('This is a group (the parens (are nested) (but do not end) until the end)', True),
+    ('This is not a group; there are no parens', False),
+    ('This is not a group (there are parens here) but not here', False),
+    ('This is not a group (the parens) (do not reach to the end)', False),
+    ('This is not a group (the parens (open too many times)', False),
 ]
 
 
 class ArtistParserTests(TestCase):
-    def test_examples(self):
-        for string, expected_result in ARTIST_EXAMPLES:
-            self.assertEqual(list(parse_artist(string)),  expected_result)
+    def test_artist_parts(self) -> None:
+        for string, expected_result in PART_EXAMPLES:
+            self.assertEqual([
+                (a.is_artist, a.text) for a in parse_artist(string).chunks
+            ],  expected_result)
+
+    def test_group_detection(self) -> None:
+        for string, first_part_should_be_group in GROUP_EXAMPLES:
+            parsed = parse_artist(string)
+
+            if first_part_should_be_group:
+                self.assertTrue(parsed.should_collapse, msg=string)
+            else:
+                self.assertFalse(parsed.should_collapse, msg=string)

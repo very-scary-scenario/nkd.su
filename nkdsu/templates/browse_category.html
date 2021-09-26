@@ -1,0 +1,45 @@
+{% extends parent %}
+
+{% block title %}{{ category_name|default:"browse" }}{% endblock %}
+
+{% block main_classes %}
+  {{ block.super }}
+  wide
+{% endblock %}
+
+{% block content %}
+
+  {% if category_name %}
+    <h2>{{ category_name }}</h2>
+  {% endif %}
+
+  {% regroup items by group as groups %}
+
+  {% if contents_required %}
+    <p class="group-buttons">
+      {% for group in groups %}
+        <a href="#{{ group.grouper.1|urlencode }}">{{ group.grouper.1 }}</a>
+      {% endfor %}
+    </p>
+  {% endif %}
+
+  <div class="browsable-groups" data-category-name="{{ category_name }}">
+    {% for group in groups %}
+      <section class="browsable-group" id="{{ group.grouper.1 }}" >
+        <h3>{{ group.grouper.1 }}</h3>
+
+        <ul>
+          {% for item in group.list %}
+            <li>
+              {% if item.url %}
+                <a href="{{ item.url }}">{{ item.name }}</a>
+              {% else %}
+                {{ item.name }}
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endfor %}
+  </div>
+{% endblock %}

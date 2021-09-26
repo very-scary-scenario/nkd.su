@@ -1,9 +1,26 @@
 @import "_mixins.less";
 
-ul.archive {
-  li.show {
-    p.subheading {
-      .child-iter();
+.archive-months {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+
+  .month {
+    width: 23em;
+
+    ul {
+      margin: 1em 0 2em;
+      justify-content: space-evenly;
+
+      li.show {
+        > :first-child {
+          margin-top: 0;
+        }
+
+        p.subheading {
+          .child-iter();
+        }
+      }
     }
   }
 }

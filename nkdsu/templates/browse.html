@@ -1,0 +1,37 @@
+{% extends parent %}
+
+{% block title %}Browse{% endblock %}
+
+{% block main_classes %}
+  {{ block.super }}
+  wide
+{% endblock %}
+
+{% block content %}
+
+  <h2>browse by:</h2>
+
+  <ul class="browsable-categories">
+    <li data-category="archive" title="when tracks were added or played">
+      <a href="{% url "vote:archive" %}">
+        <span class="main">past shows</span>
+      </a>
+    </li>
+    <li data-category="anime" title="which anime tracks appear in">
+      <a href="{% url "vote:browse_anime" %}">
+        <span class="main">anime</span>
+      </a>
+    </li>
+    <li data-category="artists" title="who performs the tracks">
+      <a href="{% url "vote:browse_artists" %}">
+        <span class="main">artists</span>
+      </a>
+    </li>
+    <li data-category="years" title="when tracks were released">
+      <a href="{% url "vote:browse_years" %}">
+        <span class="main">years</span>
+      </a>
+    </li>
+  </ul>
+
+{% endblock %}

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-from collections import OrderedDict
 from random import sample
 from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, cast
 
@@ -21,7 +20,7 @@ import tweepy
 
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm
 from ..models import Show, Track, TwitterUser
-from ..utils import reify
+from ..utils import BrowsableItem, BrowsableYear, reify
 from ...vote import mixins
 
 
@@ -61,21 +60,77 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
         return context
 
 
-class Archive(mixins.ArchiveList):
-    section = 'archive'
+class Browse(TemplateView):
+    section = 'browse'
+    template_name = 'browse.html'
+
+
+class BrowseAnime(mixins.BrowseCategory):
+    section = 'browse'
+    category_name = 'anime'
+
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for title in Track.all_anime_titles():
+            yield BrowsableItem(url=reverse("vote:anime", kwargs={"anime": title}), name=title)
+
+
+class BrowseArtists(mixins.BrowseCategory):
+    section = 'browse'
+    category_name = 'artists'
+
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for artist in Track.all_artists():
+            yield BrowsableItem(url=reverse("vote:artist", kwargs={"artist": artist}), name=artist)
+
+
+class BrowseComposers(mixins.BrowseCategory):
+    section = 'browse'
+    category_name = 'composers'
+
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for composer in Track.all_composers():
+            yield BrowsableItem(url=reverse("vote:composer", kwargs={"composer": composer}), name=composer)
+
+
+class BrowseYears(mixins.BrowseCategory):
+    section = 'browse'
+    category_name = 'years'
+    contents_required = False
+
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for year, has_tracks in Track.complete_decade_range():
+            yield BrowsableYear(
+                name=str(year),
+                url=reverse("vote:year", kwargs={"year": year}) if has_tracks else None,
+            )
+
+
+class BrowseRoles(mixins.BrowseCategory):
+    section = 'browse'
+    template_name = 'browse_roles.html'
+    category_name = 'roles'
+
+    def get_categories(self) -> Iterable[BrowsableItem]:
+        for role in Track.all_non_inudesu_roles():
+            yield BrowsableItem(url=None, name=role)
+
+
+class Archive(mixins.BreadcrumbMixin, mixins.ArchiveList):
+    section = 'browse'
     template_name = 'archive.html'
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs
 
     def get_queryset(self) -> QuerySet[Show]:
         return super().get_queryset().prefetch_related('play_set', 'vote_set')
 
 
 class ShowDetail(mixins.ShowDetail):
-    section = 'archive'
+    section = 'browse'
     template_name = 'show_detail.html'
 
 
 class ListenRedirect(mixins.ShowDetail):
-    section = 'archive'
+    section = 'browse'
     template_name = 'show_detail.html'
 
     def get(self, *a, **k) -> HttpResponse:
@@ -90,16 +145,6 @@ class ListenRedirect(mixins.ShowDetail):
                 "take you to.",
             )
             return redirect(cast(Show, self.object).get_absolute_url())
-
-
-class Added(mixins.ShowDetailMixin, ListView):
-    default_to_current = True
-    section = 'new tracks'
-    template_name = 'added.html'
-    paginate_by = 50
-
-    def get_queryset(self) -> QuerySet[Track]:
-        return cast(Show, self.get_object()).revealed()
 
 
 class Roulette(ListView):
@@ -325,29 +370,25 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
         return HttpResponse(image, content_type=content_type)
 
 
-class TrackListWithAnimeGrouping(ListView):
-    model = Track
-    context_object_name = 'tracks'
+class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
+    section = 'browse'
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_years'), 'years')]
+    template_name = 'year.html'
 
-    def grouped_tracks(self) -> OrderedDict[str, List[Track]]:
-        tracks = self.get_queryset()
-        animes = sorted(set(rd.anime for t in tracks for rd in t.role_details))
-        grouped_tracks: OrderedDict[str, List[Track]] = OrderedDict()
+    def get_track_queryset(self) -> QuerySet[Track]:
+        return Track.objects.filter(year=int(self.kwargs['year']))
 
-        for anime in animes:
-            grouped_tracks[anime] = [t for t in tracks if t.has_anime(anime)]
-
-        return grouped_tracks
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['grouped_tracks'] = self.grouped_tracks
-        return context
+    def get_context_data(self):
+        return {
+            **super().get_context_data(),
+            'year': self.kwargs['year'],
+        }
 
 
-class Artist(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
+class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
     template_name = 'artist_detail.html'
-    breadcrumbs = [(None, 'Artists')]
+    section = 'browse'
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_artists'), 'artists')]
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         response = super().get(request, *args, **kwargs)
@@ -357,8 +398,8 @@ class Artist(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
 
         return response
 
-    def get_queryset(self) -> QuerySet[Track]:
-        return self.model.objects.by_artist(
+    def get_track_queryset(self) -> QuerySet[Track]:
+        return Track.objects.by_artist(
             self.kwargs['artist'], show_secret_tracks=(
                 self.request.user.is_authenticated and
                 self.request.user.is_staff
@@ -375,12 +416,14 @@ class Artist(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
             'artist': self.kwargs['artist'],
             'played': [t for t in context['tracks'] if t.last_play()],
             'artist_suggestions': self.artist_suggestions,
-            'tracks_as_composer': Track.objects.filter(composer=self.kwargs['artist']).count(),
+            'tracks_as_composer': len(Track.objects.by_composer(self.kwargs['artist'])),
         })
         return context
 
 
-class Anime(ListView):
+class Anime(mixins.BreadcrumbMixin, ListView):
+    section = 'browse'
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_anime'), 'anime')]
     model = Track
     template_name = 'anime_detail.html'
     context_object_name = 'tracks'
@@ -413,17 +456,18 @@ class Anime(ListView):
         return context
 
 
-class Composer(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
+class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
+    section = 'browse'
     template_name = 'composer_detail.html'
-    breadcrumbs = [(None, 'Composers')]
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_composers'), 'composers')]
 
-    def get_queryset(self) -> QuerySet[Track]:
+    def get_track_queryset(self) -> QuerySet[Track]:
         if self.request.user.is_authenticated and self.request.user.is_staff:
-            qs = self.model.objects.all()
+            qs = Track.objects.all()
         else:
-            qs = self.model.objects.public()
+            qs = Track.objects.public()
 
-        return qs.filter(composer=self.kwargs['composer'])
+        return qs.by_composer(self.kwargs['composer'])
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -432,6 +476,16 @@ class Composer(mixins.BreadcrumbMixin, TrackListWithAnimeGrouping):
             'tracks_as_artist': len(Track.objects.by_artist(self.kwargs['composer'])),
         })
         return context
+
+
+class Added(mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):
+    default_to_current = True
+    section = 'new tracks'
+    template_name = 'added.html'
+    paginate_by = 50
+
+    def get_track_queryset(self) -> QuerySet[Track]:
+        return cast(Show, self.get_object()).revealed()
 
 
 class Stats(TemplateView):

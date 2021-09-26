@@ -1,0 +1,9 @@
+{% spaceless %}
+  {% if artist.worth_linking_to and artist.text != focus_artist %}
+    <a href="{{ artist.url }}">{{ artist.text }}</a>
+  {% elif artist.text == focus_artist %}
+    <strong>{{ artist.text }}</strong>
+  {% else %}
+    <span>{{ artist.text }}</span>
+  {% endif %}
+{% endspaceless %}

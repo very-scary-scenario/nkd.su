@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import logging
 import re
+import string
+from dataclasses import dataclass
 from functools import partial
 from typing import Any, Callable, List, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
 
@@ -34,6 +36,37 @@ posting_tw_api = tweepy.API(_post_tw_auth)
 
 
 indefinitely: int = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
+
+
+@dataclass
+class BrowsableItem:
+    url: Optional[str]
+    name: str
+
+    def group(self) -> Tuple[int, str]:
+        """
+        Return a sort order and a user-facing name for the group to put this
+        item in. By default, an initial letter.
+        """
+
+        if not self.name:
+            return (3, '')
+
+        first_character = self.name[0]
+
+        if first_character in string.ascii_letters:
+            return (0, first_character.lower())
+        elif first_character in string.digits:
+            return (1, '0-9')
+        else:
+            return (2, '#')
+
+
+@dataclass
+class BrowsableYear(BrowsableItem):
+    def group(self) -> Tuple[int, str]:
+        decade = (int(self.name) // 10) * 10
+        return (decade, f"{decade}s")
 
 
 def _get_short_url_length() -> int:

@@ -1,0 +1,114 @@
+.group-buttons {
+  text-align: center;
+
+  a {
+    display: inline-block;
+    padding: .2em .5em;
+  }
+}
+
+.browsable-groups {
+  .browsable-group {
+    ul {
+      columns: 15em auto;
+
+      li {
+        margin-bottom: .5em;
+        break-inside: avoid-column;
+        display: inline-block;  // for firefox
+        width: 100%;  // to prevent multiple items appearing on one line
+      }
+    }
+  }
+
+  &[data-category-name="years"] {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+
+    .browsable-group {
+      ul {
+        columns: auto;
+        width: 6em;
+
+        li {
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+
+ul.browsable-categories {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+
+  li {
+    text-shadow: none;
+    font-size: 3em;
+    position: relative;
+
+    a {
+      display: block;
+      position: relative;
+      box-sizing: border-box;
+      background-color: @hl;
+      .noise();
+      color: @fg;
+      min-width: 20rem;
+      width: 25vw;
+      max-width: 30rem;
+      text-align: right;
+      padding: 3em .2em 0;
+      margin: 0 .25em 1em;
+      font-weight: bold;
+      overflow: hidden;
+      border-radius: .2em;
+      
+      span {
+        display: inline-block;
+        position: relative;
+        z-index: 2;
+        transform: rotate(-2deg);
+      }
+
+      &::before {
+        .fas();
+        transform: rotate(13deg);
+        font-size: 6em;
+        position: absolute;
+        z-index: 1;
+        top: -.2em;
+        left: -.1em;
+        opacity: 0.15;
+        color: @bg;
+        .dark({ color: @fg !important; })
+      }
+
+      &:hover, &:focus {
+        background-color: @fg;
+        text-shadow: none;
+        color: @hl;
+
+        .dark({
+          color: @hl !important;
+          background-color: @bg;
+        })
+      }
+    }
+
+    &::after {
+      content: attr(title);
+      font-size: .3em;
+      position: absolute;
+      right: 1em;
+      bottom: 1.8rem;
+    }
+
+    &[data-category=archive] a::before { content: @fa-var-archive; }
+    &[data-category=anime] a::before { content: @fa-var-tv; }
+    &[data-category=artists] a::before { content: @fa-var-microphone; }
+    &[data-category=years] a::before { content: @fa-var-calendar-alt; }
+  }
+}

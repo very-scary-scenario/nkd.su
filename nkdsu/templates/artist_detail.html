@@ -56,24 +56,7 @@
     </p>
   {% endif %}
 
-  <div class="track-groups">
-    {% for anime, tracks in grouped_tracks.items %}
-      <div class="track-group">
-        <h3>
-          {% if anime %}
-            <a href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>
-          {% else %}
-            Other
-          {% endif %}
-        </h3>
-        <ul class="tracks">
-          {% for track in tracks %}
-            {% include "include/track.html" %}
-          {% endfor %}
-        </ul>
-      </div>
-    {% endfor %}
-  </div>
+  {% include "include/tracks_grouped_by_anime.html" %}
 
   <p class="aligned everything">Are we missing a good track by {{ artist }}? <a href="{% url "vote:request_addition" %}?artist={{ artist|urlencode }}">Get it added to the library</a>!</p>
 

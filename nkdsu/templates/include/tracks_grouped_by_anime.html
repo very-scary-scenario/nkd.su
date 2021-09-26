@@ -1,0 +1,23 @@
+<div class="track-groups">
+  {% for anime, tracks in grouped_tracks.items %}
+    <details class="track-group" open>
+      <summary>
+        <h3>
+          {{ tracks|length }} track{{ tracks|length|pluralize }} from
+          {% if anime %}
+            <a href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>
+          {% else %}
+            Other
+          {% endif %}
+        </h3>
+      </summary>
+      <ul class="tracks">
+        {% with artist as focus_artist %}
+          {% for track in tracks %}
+            {% include "include/track.html" %}
+          {% endfor %}
+        {% endwith %}
+      </ul>
+    </details>
+  {% endfor %}
+</div>
