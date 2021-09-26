@@ -57,7 +57,12 @@ class TriviaForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields.move_to_end('trivia')
+
+        # move trivia to the end:
+        trivia = self.fields['trivia']
+        del self.fields['trivia']
+        self.fields['trivia'] = trivia
+
         self.fields['trivia_question'].initial = self.new_question()
 
     def new_question(self) -> str:

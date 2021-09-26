@@ -193,7 +193,7 @@ LOGIN_REDIRECT_URL = 'vote:index'
 
 # STATIC
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineManifestStorage'
 
 PIPELINE = {
     'CSS_COMPRESSOR': None,
