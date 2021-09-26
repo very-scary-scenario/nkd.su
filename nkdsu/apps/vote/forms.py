@@ -57,6 +57,9 @@ class TriviaForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.order_fields([
+            k for k in self.fields.keys() if k != 'trivia'
+        ] + ['trivia'])
         self.fields['trivia_question'].initial = self.new_question()
 
     def new_question(self) -> str:
