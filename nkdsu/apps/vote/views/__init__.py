@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
 from django.db.models import Count, DurationField, F, QuerySet
 from django.db.models.functions import Cast, Now
+from django.forms import BaseForm
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -573,7 +574,7 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
     def get_success_url(self) -> str:
         return self.get_track().get_absolute_url()
 
-    def form_valid(self, form: BadMetadataForm) -> HttpResponse:
+    def form_valid(self, form: BaseForm) -> HttpResponse:
         f = form.cleaned_data
 
         track = Track.objects.get(pk=self.kwargs['pk'])
@@ -616,7 +617,7 @@ class RequestAddition(FormView):
             **{k: v for (k, v) in self.request.GET.items()},
         }
 
-    def form_valid(self, form: RequestForm) -> HttpResponse:
+    def form_valid(self, form: BaseForm) -> HttpResponse:
         f = form.cleaned_data
 
         fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
@@ -646,7 +647,7 @@ class SetDarkModeView(FormView):
     def get_success_url(self) -> str:
         return self.request.META.get('HTTP_REFERER', self.success_url)
 
-    def form_valid(self, form: DarkModeForm) -> HttpResponse:
+    def form_valid(self, form: BaseForm) -> HttpResponse:
         session = self.request.session
         session['dark_mode'] = {
             'light': False,
@@ -656,5 +657,5 @@ class SetDarkModeView(FormView):
         session.save()
         return super().form_valid(form)
 
-    def form_invalid(self, form: DarkModeForm) -> HttpResponse:
+    def form_invalid(self, form: BaseForm) -> HttpResponse:
         return redirect(self.get_success_url())
