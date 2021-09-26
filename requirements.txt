@@ -1,5 +1,5 @@
 Markdown==3.1.1
-Pillow==8.2.0
+Pillow==8.3.2
 celery==4.1
 classtools
 django-instant-coverage==1.1.0
@@ -10,14 +10,14 @@ django>=3.2,<3.3
 flake8-import-order<2
 flake8>=3.8
 musicbrainzngs==0.5
-mypy==0.790
+mypy>=0.910,<1
 ndg-httpsclient
 psycopg2
 pyasn1
 python-Levenshtein
 python-dateutil==2.8.1
 python-memcached==1.59
-requests==2.22.0
+requests==2.26.0
 slimit==0.8.1
 sly==0.4
 tweepy==3.8.0
