@@ -1033,7 +1033,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return vote_tweet_intent_url([self])
 
-    def get_lastfm_track(self):
+    def get_lastfm_track(self) -> Dict[str, Any]:
         return lastfm(
             method='track.getInfo',
             track=self.title,
@@ -1042,7 +1042,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @memoize
     @pk_cached(3600)
-    def musicbrainz_release(self):
+    def musicbrainz_release(self) -> Optional[Dict[str, Any]]:
         releases = musicbrainzngs.search_releases(
             tracks=self.title,
             release=self.album,
@@ -1056,15 +1056,17 @@ class Track(CleanOnSaveMixin, models.Model):
             return official_releases[0]
         elif releases:
             return releases[0]
+        else:
+            return None
 
-    def _get_lastfm_album_from_album_tag(self):
+    def _get_lastfm_album_from_album_tag(self) -> Optional[Dict[str, Any]]:
         return lastfm(
             method='album.getInfo',
             artist=self.artist,
             album=self.album,
         ).get('album')
 
-    def _get_lastfm_album_from_musicbrainz_release(self):
+    def _get_lastfm_album_from_musicbrainz_release(self) -> Optional[Dict[str, Any]]:
         release = self.musicbrainz_release()
 
         if release is not None:
@@ -1073,14 +1075,16 @@ class Track(CleanOnSaveMixin, models.Model):
                 artist=release['artist-credit-phrase'],
                 album=release['title'],
             ).get('album')
+        else:
+            return None
 
-    def _get_lastfm_album_from_track_tag(self):
+    def _get_lastfm_album_from_track_tag(self) -> Optional[Dict[str, Any]]:
         track = self.get_lastfm_track()
 
         if track is not None:
             return track.get('album')
 
-    def get_lastfm_album(self):
+    def get_lastfm_album(self) -> Optional[Dict[str, Any]]:
         album = self._get_lastfm_album_from_album_tag()
 
         if album is not None:
@@ -1088,11 +1092,11 @@ class Track(CleanOnSaveMixin, models.Model):
         else:
             return self._get_lastfm_album_from_track_tag()
 
-    def get_lastfm_artist(self):
+    def get_lastfm_artist(self) -> Optional[Dict[str, Any]]:
         return lastfm(method='artist.getInfo', artist=self.artist
                       ).get('artist')
 
-    def get_biggest_lastfm_image_url(self):
+    def get_biggest_lastfm_image_url(self) -> Optional[str]:
         for getter in [
             self._get_lastfm_album_from_album_tag,
             self._get_lastfm_album_from_track_tag,
@@ -1113,6 +1117,8 @@ class Track(CleanOnSaveMixin, models.Model):
 
             if image_url and not image_url.endswith('lastfm_wrongtag.png'):
                 return image_url
+        else:
+            return None
 
     def update_background_art(self) -> None:
         image_url = self.get_biggest_lastfm_image_url()
@@ -1338,7 +1344,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         else:
             return static('i/vote-kinds/{0}.png'.format(self.kind))
 
-    def __str__(self):
+    def __str__(self) -> str:
         tracks = u', '.join([t.title for t in self.tracks.all()])
 
         return u'{user} at {date} for {tracks}'.format(
@@ -1626,7 +1632,7 @@ class Note(CleanOnSaveMixin, models.Model):
 
     objects = models.Manager.from_queryset(NoteQuerySet)()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.content
 
 

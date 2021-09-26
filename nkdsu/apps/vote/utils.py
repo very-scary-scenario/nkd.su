@@ -5,7 +5,7 @@ import re
 import string
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Callable, List, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
+from typing import Any, Callable, Iterable, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
 
 from classtools import reify as ct_reify
 from django.conf import settings
@@ -133,11 +133,11 @@ def tweet_url(tweet: str) -> str:
     )
 
 
-def vote_url(tracks) -> str:
+def vote_url(tracks: Iterable[Track]) -> str:
     return tweet_url(vote_tweet(tracks))
 
 
-def vote_tweet(tracks: List[Track]) -> str:
+def vote_tweet(tracks: Iterable[Track]) -> str:
     """
     Return what a person should tweet to request `tracks`.
     """
@@ -145,7 +145,7 @@ def vote_tweet(tracks: List[Track]) -> str:
     return ' '.join([t.get_public_url() for t in tracks])
 
 
-def vote_tweet_intent_url(tracks: List[Track]) -> str:
+def vote_tweet_intent_url(tracks: Iterable[Track]) -> str:
     tweet = vote_tweet(tracks)
     return tweet_url(tweet)
 

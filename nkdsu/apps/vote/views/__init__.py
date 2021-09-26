@@ -42,7 +42,7 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         show = context['show']
 
-        def track_should_be_in_main_list(track):
+        def track_should_be_in_main_list(track: Track) -> bool:
             if (
                 self.request.user.is_authenticated and
                 self.request.user.is_staff

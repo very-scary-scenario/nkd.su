@@ -119,7 +119,7 @@ class EverythingTest(
 
 
 class LoggedInEverythingTest(EverythingTest):
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         user = get_user_model()(
             username='what',
