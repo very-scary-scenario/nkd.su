@@ -1,5 +1,8 @@
 function bindTrackGroupExpansionToggling() {
   var groupsContainer = document.querySelector(".track-groups")
+  if (!groupsContainer) {
+    return
+  }
   var toggleableTrackGroups = groupsContainer.querySelectorAll("details.track-group")
   if (toggleableTrackGroups.length === 0) {
     return
