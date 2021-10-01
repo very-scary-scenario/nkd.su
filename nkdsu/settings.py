@@ -198,8 +198,9 @@ LOGIN_REDIRECT_URL = 'vote:index'
 STATICFILES_STORAGE = 'pipeline.storage.PipelineManifestStorage'
 
 PIPELINE = {
-    'CSS_COMPRESSOR': None,
-    'JS_COMPRESSOR': 'pipeline.compressors.slimit.SlimItCompressor',
+    'CSS_COMPRESSOR': 'pipeline.compressors.yui.YUICompressor',
+    'JS_COMPRESSOR': 'pipeline.compressors.yui.YUICompressor',
+    'YUI_BINARY': '/usr/bin/env yui-compressor',
     'COMPILERS': ['pipeline.compilers.less.LessCompiler'],
     'DISABLE_WRAPPER': True,
 

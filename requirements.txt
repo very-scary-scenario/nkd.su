@@ -18,7 +18,6 @@ python-Levenshtein
 python-dateutil==2.8.1
 python-memcached==1.59
 requests==2.26.0
-slimit==0.8.1
 sly==0.4
 tweepy==3.8.0
 typeguard>=2.12.1,<3
