@@ -1,10 +1,9 @@
-function bindCollapseToggle() {
-  $('body.staff a.vote-link').click(function(e) {
-    e.preventDefault();
-    $('body').toggleClass('tracks-expanded').toggleClass('tracks-collapsed');
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('body.staff a.vote-link').forEach(function(voteLink) {
+    voteLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.body.classList.toggle('tracks-expanded')
+      document.body.classList.toggle('tracks-collapsed');
+    });
   });
-}
-
-$(document).ready(function(){
-  bindCollapseToggle();
-});
+})

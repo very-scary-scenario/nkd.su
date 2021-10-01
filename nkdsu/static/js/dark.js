@@ -35,4 +35,4 @@ function bindDarkModeForm() {
   });
 }
 
-$(document).ready(bindDarkModeForm);
+document.addEventListener('DOMContentLoaded', bindDarkModeForm);
