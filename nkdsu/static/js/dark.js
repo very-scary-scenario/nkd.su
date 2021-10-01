@@ -1,10 +1,10 @@
 function bindDarkModeForm() {
-  var darkModeForm = document.getElementById('dark-mode-settings');
-  var lastSubmitButtonClicked;
+  const darkModeForm = document.getElementById('dark-mode-settings');
+  let lastSubmitButtonClicked;
 
   if (fetch !== undefined) {
     darkModeForm.addEventListener('submit', function(e) {
-      var data = new FormData(darkModeForm);
+      const data = new FormData(darkModeForm);
 
       if (e.submitter) {
         data.set('mode', e.submitter.getAttribute('value'));
