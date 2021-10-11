@@ -327,6 +327,9 @@ class Show(CleanOnSaveMixin, models.Model):
 
 
 class TwitterUser(CleanOnSaveMixin, models.Model):
+    class Meta:
+        ordering = ['screen_name']
+
     # Twitter stuff
     screen_name = models.CharField(max_length=100)
     user_id = models.BigIntegerField(unique=True)
@@ -1712,12 +1715,21 @@ BADGES: List[Badge] = [
         'charity-2020',
         u'{user.name} donated to the Very Scary Scenario charity streams '
         u'in 2020.',
-        'likes depriving people of sleep, but somehow also likes bodily '
-        'health',
+        'donated to the 2020 Very Scary Scenario charity streams',
         'heartbeat',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2020',
         datetime.datetime(2020, 10, 1, tzinfo=get_default_timezone()),
         datetime.datetime(2020, 11, 27, tzinfo=get_default_timezone()),
+    ),
+    Badge(
+        'charity-2021',
+        u'{user.name} donated to the Very Scary Scenario charity streams '
+        u'in 2021.',
+        'donated to the 2021 Very Scary Scenario charity streams',
+        'brain',
+        'https://www.justgiving.com/fundraising/very-charity-scenario-2021',
+        datetime.datetime(2021, 10, 9, tzinfo=get_default_timezone()),
+        datetime.datetime(2021, 11, 27, tzinfo=get_default_timezone()),
     ),
 ]
 
