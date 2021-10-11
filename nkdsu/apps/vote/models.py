@@ -327,6 +327,9 @@ class Show(CleanOnSaveMixin, models.Model):
 
 
 class TwitterUser(CleanOnSaveMixin, models.Model):
+    class Meta:
+        ordering = ['screen_name']
+
     # Twitter stuff
     screen_name = models.CharField(max_length=100)
     user_id = models.BigIntegerField(unique=True)
