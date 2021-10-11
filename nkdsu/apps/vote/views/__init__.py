@@ -122,7 +122,7 @@ class Archive(mixins.BreadcrumbMixin, mixins.ArchiveList):
     breadcrumbs = mixins.BrowseCategory.breadcrumbs
 
     def get_queryset(self) -> QuerySet[Show]:
-        return super().get_queryset().prefetch_related('play_set', 'vote_set')
+        return super().get_queryset().filter(end__lt=timezone.now()).prefetch_related('play_set', 'vote_set')
 
 
 class ShowDetail(mixins.ShowDetail):
