@@ -1,4 +1,4 @@
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function(){
   function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
   }

@@ -33,4 +33,4 @@ function bindTrackGroupExpansionToggling() {
   groupsContainer.before(buttonsParagraph)
 }
 
-$(document).ready(bindTrackGroupExpansionToggling);
+document.addEventListener("DOMContentLoaded", bindTrackGroupExpansionToggling)

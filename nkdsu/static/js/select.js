@@ -112,6 +112,4 @@ function bindSelection() {
   });
 }
 
-$(document).ready(function(){
-  bindSelection();
-});
+document.addEventListener('DOMContentLoaded', bindSelection)
