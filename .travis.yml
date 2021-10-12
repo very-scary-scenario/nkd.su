@@ -1,3 +1,4 @@
+os: linux
 language: python
 dist: focal
 
@@ -17,9 +18,7 @@ jobs:
   include:
     - stage: test
       script: "python ./manage.py test --settings=nkdsu.settings_testing"
-    - stage: lint-js
+    - stage: lint
       script: "npm run-script lint-js"
-    - stage: lint-flake8
-      script: "npm run-script lint-flake8"
-    - stage: lint-mypy
-      script: "npm run-script lint-mypy"
+    - script: "npm run-script lint-flake8"
+    - script: "npm run-script lint-mypy"
