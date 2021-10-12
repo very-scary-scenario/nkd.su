@@ -139,13 +139,20 @@ class ListenRedirect(mixins.ShowDetail):
         cloudcasts = cast(Show, self.object).cloudcasts()
         if len(cloudcasts) == 1:
             return redirect(cloudcasts[0]['url'])
+        elif len(cloudcasts) > 1:
+            messages.warning(
+                self.request,
+                "There's more than one Mixcloud upload for this show. "
+                "Please pick one of the {} listed below."
+                .format(len(cloudcasts)),
+            )
         else:
             messages.error(
                 self.request,
                 "Sorry, we couldn't find an appropriate Mixcloud upload to "
                 "take you to.",
             )
-            return redirect(cast(Show, self.object).get_absolute_url())
+        return redirect(cast(Show, self.object).get_absolute_url())
 
 
 class Roulette(ListView):

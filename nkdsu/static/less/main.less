@@ -525,6 +525,8 @@ body[data-dark-mode=system] [value=system] {
   li {
     &.success {background-color: @green}
     &.error {background-color: @pink}
+    &.warning {background-color: @yellow}
+    &.info {background-color: @blue}
   }
 
   &::before {
@@ -705,7 +707,7 @@ form ul.errorlist li {
 
       &.update-warning {
         background-color: mix(@pink, @bg, 25%);
-        color: @warning;
+        color: @danger;
         border: 1px solid darken(@pink, 20);
 
         &::before {
