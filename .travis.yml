@@ -17,6 +17,7 @@ jobs:
   include:
     - stage: test
       script: "python ./manage.py test --settings=nkdsu.settings_testing"
+    - script: "python ./manage.py collectstatic --noinput"
     - script: "npm run-script lint-js"
     - script: "npm run-script lint-flake8"
     - script: "npm run-script lint-mypy"
