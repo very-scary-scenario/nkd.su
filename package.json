@@ -8,6 +8,7 @@
     "test": "python manage.py test"
   },
   "devDependencies": {
-    "eslint": "^8.0.0"
+    "eslint": "^8.0.0",
+    "less": "^4.1.2"
   }
 }

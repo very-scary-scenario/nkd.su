@@ -4,11 +4,20 @@ python:
 
 before_install:
   - "sudo apt-get install npm"
-  - "sudo npm -g install less"
 
 install:
   - "pip install -r requirements.txt"
+  - "npm install"
   - "python ./manage.py migrate --settings=nkdsu.settings_testing"
   - "python ./manage.py collectstatic --no-input --settings=nkdsu.settings_testing"
-script:
-  - "python ./manage.py test --settings=nkdsu.settings_testing"
+
+jobs:
+  include:
+    - stage: test
+      script: "python ./manage.py test --settings=nkdsu.settings_testing"
+    - stage: lint-js
+      script: "npm run-script lint-js"
+    - stage: lint-flake8
+      script: "npm run-script lint-flake8"
+    - stage: lint-mypy
+      script: "npm run-script lint-mypy"
