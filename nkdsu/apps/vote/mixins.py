@@ -79,7 +79,7 @@ class ShowDetailMixin(LetMemoizeGetObject):
     in context.
     """
 
-    model: Type[Model] = Show
+    model = Show
     view_name: Optional[str] = None
     default_to_current = False
 
@@ -180,7 +180,7 @@ class ThisShowDetailMixin(ShowDetailMixin):
 
 
 class ShowDetail(ShowDetailMixin, DetailView):
-    model: Type[Model] = Show
+    model = Show
 
 
 class ArchiveList(ListView):
@@ -253,7 +253,7 @@ class MarkdownView(TemplateView):
 
 
 class TwitterUserDetailMixin(LetMemoizeGetObject):
-    model: Type[Model] = TwitterUser
+    model = TwitterUser
 
     @memoize
     def _get_object(self):

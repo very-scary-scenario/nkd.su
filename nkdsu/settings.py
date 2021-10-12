@@ -2,6 +2,10 @@ import os
 
 from dateutil.relativedelta import SA, relativedelta
 
+import django_stubs_ext
+
+django_stubs_ext.monkeypatch()
+
 # note the sensitive settings marked as 'secret' below; these must be
 # replicated in settings_local.py in any functional nkd.su instance. Settings
 # defined there will override settings here.

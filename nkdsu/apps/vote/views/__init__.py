@@ -342,6 +342,7 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
     template_name = 'twitter_user_detail.html'
     context_object_name = 'voter'
     paginate_by = 100
+    model = TwitterUser
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -363,6 +364,8 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
 
 
 class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
+    model = TwitterUser
+
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
             content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
@@ -491,6 +494,7 @@ class Added(mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):
     section = 'new tracks'
     template_name = 'added.html'
     paginate_by = 50
+    model = Show
 
     def get_track_queryset(self) -> QuerySet[Track]:
         return cast(Show, self.get_object()).revealed()
