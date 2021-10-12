@@ -13,10 +13,15 @@ installed.
 
 - Talk to Peter. They have some passwords and keys and other things that you'll
   want if you're going to set up a replacement instance.
+- Make sure you have Python 3.8 or newer and some kind of recent version of
+  npm.
 - Make and activate a virtualenv.
-    - I use [virtualenvwrapper][vew]. I strongly recommend you do the same.
+    - I use [virtualenvwrapper][vew], but it's up to you how to set this up.
 - Clone the repository.
-- `pip install -r requirements.txt` from the repository root.
+- Run `pip install -r requirements.txt` from the repository root to install
+  Python requirements.
+- Run `npm install` from the repository root to install the node tools used for
+  static file preprocessing and linting.
 - Create a `nkdsu/settings_local.py`
     - Add Twitter API keys as `CONSUMER_KEY`, `CONSUMER_SECRET`,
       `READING_ACCESS_TOKEN`, `READING_ACCESS_TOKEN_SECRET`,
@@ -44,8 +49,6 @@ installed.
       replace `[fixtures]` with the path to that file.
 - Set up a `MEDIA_ROOT` directory and a `MEDIA_URL` that is pointed at it, then
   run `python manage.py collectstatic`
-    - Requires less (the node app, not the pager; available on npm) to be
-      installed and for `lessc` to be accessible in your `PATH`.
     - Not necessary for development instances where the `DEBUG` setting is
       true; [Pipeline][pl] will host static media transparently in development.
 

@@ -198,10 +198,12 @@ LOGIN_REDIRECT_URL = 'vote:index'
 STATICFILES_STORAGE = 'pipeline.storage.PipelineManifestStorage'
 
 PIPELINE = {
-    'CSS_COMPRESSOR': 'pipeline.compressors.yui.YUICompressor',
-    'JS_COMPRESSOR': 'pipeline.compressors.yui.YUICompressor',
-    'YUI_BINARY': '/usr/bin/env yui-compressor',
+    'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
+    'YUGLIFY_BINARY': '/usr/bin/env npx yuglify',
+    'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
+    'UGLIFYJS_BINARY': '/usr/bin/env npx uglifyjs',
     'COMPILERS': ['pipeline.compilers.less.LessCompiler'],
+    'LESS_BINARY': '/usr/bin/env npx lessc',
     'DISABLE_WRAPPER': True,
 
     'STYLESHEETS': {
