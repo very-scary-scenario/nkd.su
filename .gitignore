@@ -1,3 +1,4 @@
+node_modules/
 *.pyc
 nkdsu/settings_local.py
 nkdsu/db*
