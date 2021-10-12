@@ -223,22 +223,19 @@ PIPELINE = {
             'source_filenames': [
                 'js/libs/jquery.js',
                 'js/libs/jquery.cookie.js',
+                'js/libs/Sortable.js',
+
                 'js/csrf.js',
+
                 'js/collapse-toggle.js',
                 'js/select.js',
                 'js/messages.js',
                 'js/ajax-actions.js',
+                'js/shortlist-sorting.js',
                 'js/dark.js',
                 'js/toggle-group-folds.js',
             ],
             'output_filename': 'js/min/base.js',
-        },
-        'ui': {
-            'source_filenames': [
-                'js/libs/jquery-ui.js',
-                'js/libs/jquery.ui.sortable.js',
-            ],
-            'output_filename': 'js/min/ui.js',
         },
     },
 }

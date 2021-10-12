@@ -25,7 +25,7 @@
     "
 
     data-pk="{{ track.pk }}"
-    data-shortlist-pk="shortlist_{{ track.pk }}">
+    data-shortlist-pk="{{ track.pk }}">
 
     {% if track.background_art %}
       <div class="art" style="background-image: url('{{ track.background_art.url }}');"></div>

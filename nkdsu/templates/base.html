@@ -70,10 +70,9 @@
       {% include "include/post_content.html" %}
     </div>
 
+    <script type="text/x-nkdsu-data" id="shortlist-order-url">{% url 'vote:admin:shortlist_order' %}</script>
+
     {% javascript "base" %}
-    {% if user.is_staff %}
-      {% javascript "ui" %}
-    {% endif %}
     {% block footer_scripts %}{% endblock %}
   </body>
 </html>
