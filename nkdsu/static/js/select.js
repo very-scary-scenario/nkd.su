@@ -9,11 +9,11 @@ function stick(time) {
 }
 
 // selection representation 
-function updateSelection(data) {
+function updateSelection(text) {
   const selectionElement = document.getElementById('selection')
 
   // update document
-  selectionElement.innerHTML = data
+  selectionElement.innerHTML = text
   document.getElementById('stick').innerHTML = document.getElementById('selhead').innerHTML
 
   // build a list of IDs of selected tracks
@@ -90,36 +90,36 @@ function updateSelection(data) {
   });
 
   // scroll to bottom when asked
-  $('div#stick div.stuck h3').on("click", function() {
+  document.querySelector('#stick div.stuck h3').addEventListener('click', function() {
     window.scrollTo(0,$('div#selection').offset().top)
   })
 }
 
 function bindSelection() {
   // prevent clicking on a voter or an artist fold from selecting a track 
-  $("li.vote a, summary").click(function(event) {
-    event.stopPropagation()
+  document.querySelectorAll('li.vote a, summary').forEach(function(element) {
+    element.addEventListener('click', function(e) {
+      e.stopPropagation()
+    })
   })
 
-  $.post(getSelectionURL, function(data) {
-    updateSelection(data)
+  csrfPost(getSelectionURL, { method: 'post' }).then(function(text) {
+    updateSelection(text)
   })
 
   // toggling selection
-  $(".track.selectable").on("click", function(event) {
-    if (!$(event.target).is('a')) {
-      $(this).addClass('pending')
-      var pk_map = { track_pk: [$(this).attr('data-pk')] }
-      if (!$(this).hasClass("selected")) {
-        $.post(selectURL, pk_map, function(data) {
-          updateSelection(data)
-        })
-      } else {
-        $.post(deselectURL, pk_map, function(data) {
-          updateSelection(data)
+  document.querySelectorAll('.track.selectable').forEach(function(trackElement) {
+    trackElement.addEventListener('click', function(e) {
+      if (e.target.tagName !== 'A') {
+        trackElement.classList.add('pending')
+        const data = new FormData()
+        data.append('track_pk[]', trackElement.getAttribute('data-pk'))
+        const url = trackElement.classList.contains('selected') ? deselectURL : selectURL
+        csrfPost(url, { method: 'post', body: data }).then(function(text) {
+          updateSelection(text)
         })
       }
-    }
+    })
   })
 }
 
