@@ -3,9 +3,18 @@
 // selection representation
 function updateSelection(text) {
   const selectionElement = document.getElementById('selection')
+  let wasOpenBeforeUpdate = false
+  const originalDetailsElement = document.getElementById('selection-details')
+  if (originalDetailsElement !== null) {
+    wasOpenBeforeUpdate = !!(originalDetailsElement.hasAttribute('open'))
+  }
 
   // update document
   selectionElement.innerHTML = text
+
+  if (wasOpenBeforeUpdate) {
+    document.getElementById('selection-details').setAttribute('open', 'true')
+  }
 
   // build a list of IDs of selected tracks
   const selectedTracks = []
