@@ -9,22 +9,16 @@ function bindShortlistSorting() {
   function handleChange(e) {
     const data = new FormData()
     const items = sortable.toArray()
-    const request = new Request(shortlistOrderURL, {
-      headers: {'X-CSRFToken': csrftoken},
-    })
 
     for (let i = 0; i < items.length; i++) {
       data.append('shortlist[]', items[i])
     }
 
-    fetch(request, {
+    csrfPost(shortlistOrderURL, {
       method: 'post',
       body: data,
       redirect: 'manual',
-    }).then(function(response) {
-      return response.text()
     }).then(function(text) {
-      console.log(text)
       if (text === 'reload') {
         alert("You've added stuff to the shortlist since you last loaded the front page. Please reload before making any more changes.")
       }

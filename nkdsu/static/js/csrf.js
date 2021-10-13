@@ -30,3 +30,12 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   });
 });
+
+function csrfPost(url, params) {
+  const request = new Request(url, {
+    headers: {'X-CSRFToken': csrftoken},
+  })
+  return fetch(request, params).then(function(response) {
+    return response.text()
+  })
+}
