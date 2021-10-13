@@ -3,7 +3,7 @@ function bindDarkModeForm() {
   let lastSubmitButtonClicked
 
   if (fetch !== undefined) {
-    darkModeForm.addEventListener('submit', function(e) {
+    darkModeForm.addEventListener('submit', e => {
       const data = new FormData(darkModeForm)
 
       if (e.submitter) {
@@ -20,7 +20,7 @@ function bindDarkModeForm() {
 
       fetch(darkModeForm.getAttribute('action'),
         { method: 'post', body: data, redirect: 'manual' })
-        .then(function(response) {
+        .then(response => {
           console.log(response)
         })
 
@@ -28,8 +28,8 @@ function bindDarkModeForm() {
     })
   }
 
-  darkModeForm.querySelectorAll('button[name=mode]').forEach(function(button) {
-    button.addEventListener('click', function(e) {
+  darkModeForm.querySelectorAll('button[name=mode]').forEach(button => {
+    button.addEventListener('click', e => {
       lastSubmitButtonClicked = button
     })
   })

@@ -20,7 +20,7 @@ function bindShortlistSorting() {
       method: 'post',
       body: data,
       redirect: 'manual',
-    }).then(function(text) {
+    }).then(text => {
       if (text === 'reload') {
         alert("You've added stuff to the shortlist since you last loaded the front page. Please reload before making any more changes.")
       }

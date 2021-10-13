@@ -1,12 +1,15 @@
 root: true
 env:
   browser: true
-  es2021: true
+  es2015: true
 extends:
   - standard
 parserOptions:
   ecmaVersion: 12
 rules:
+  arrow-parens:
+    - error
+    - as-needed
   brace-style:
     - error
     - 1tbs
@@ -14,6 +17,7 @@ rules:
   comma-dangle:
     - error
     - always-multiline
+  prefer-arrow-callback: error
   space-before-function-paren:
     - error
     - never

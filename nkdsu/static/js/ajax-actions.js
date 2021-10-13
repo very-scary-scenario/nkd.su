@@ -3,8 +3,8 @@ function bindAjaxableLinks(trackElement) {
 
   if (trackElement.hasAttribute(BOUND_ATTR)) { return }
 
-  trackElement.querySelectorAll('.ajaxable').forEach(function(link) {
-    link.addEventListener('click', function(e) {
+  trackElement.querySelectorAll('.ajaxable').forEach(link => {
+    link.addEventListener('click', e => {
       e.preventDefault()
       e.stopPropagation()
 
@@ -12,9 +12,9 @@ function bindAjaxableLinks(trackElement) {
       url.searchParams.append('ajax', 'yeah')
 
       trackElement.classList.add('pending')
-      fetch(url).then(function(response) {
+      fetch(url).then(response => {
         return response.text()
-      }).then(function(text) {
+      }).then(text => {
         trackElement.outerHTML = text
         bindAllAjaxableLinks()
       })

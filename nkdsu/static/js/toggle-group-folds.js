@@ -9,7 +9,7 @@ function bindTrackGroupExpansionToggling() {
   }
 
   function setOpenStatus(open) {
-    toggleableTrackGroups.forEach(function(detailsElement) {
+    toggleableTrackGroups.forEach(detailsElement => {
       if (open) {
         detailsElement.setAttribute('open', true)
       } else {
@@ -23,14 +23,14 @@ function bindTrackGroupExpansionToggling() {
 
   const collapseAllLink = document.createElement('a')
   collapseAllLink.append(new Text('collapse all'))
-  collapseAllLink.addEventListener('click', function() { setOpenStatus(false) })
+  collapseAllLink.addEventListener('click', () => { setOpenStatus(false) })
   buttonsParagraph.append(collapseAllLink)
 
   buttonsParagraph.append(new Text(' · '))
 
   const expandAllLink = document.createElement('a')
   expandAllLink.append(new Text('expand all'))
-  expandAllLink.addEventListener('click', function() { setOpenStatus(true) })
+  expandAllLink.addEventListener('click', () => { setOpenStatus(true) })
   buttonsParagraph.append(expandAllLink)
 
   groupsContainer.before(buttonsParagraph)

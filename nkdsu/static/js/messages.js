@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.messages').forEach(function(messageElement) {
-    messageElement.addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.messages').forEach(messageElement => {
+    messageElement.addEventListener('click', () => {
       messageElement.classList.add('dismissed')
     })
   })
