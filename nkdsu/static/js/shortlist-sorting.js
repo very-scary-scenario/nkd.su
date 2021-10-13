@@ -1,3 +1,5 @@
+/* global Sortable csrfPost */
+
 function bindShortlistSorting() {
   const shortlistContainer = document.getElementById('shortlist')
   const shortlistOrderURL = document.getElementById('shortlist-order-url').innerText

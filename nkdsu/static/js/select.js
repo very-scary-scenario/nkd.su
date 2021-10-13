@@ -1,4 +1,6 @@
-// selection representation 
+/* global csrfPost clearSelectionURL deselectURL getSelectionURL selectURL */
+
+// selection representation
 function updateSelection(text) {
   const selectionElement = document.getElementById('selection')
 
@@ -6,15 +8,15 @@ function updateSelection(text) {
   selectionElement.innerHTML = text
 
   // build a list of IDs of selected tracks
-  let selectedTracks = []
+  const selectedTracks = []
   selectionElement.querySelectorAll('.minitrack').forEach(function(miniTrackElement) {
     selectedTracks.push(miniTrackElement.getAttribute('data-pk'))
   })
-  
+
   // ensure selected tracks elsewhere in the page are marked as such and vice-versa
   document.querySelectorAll('.track[data-pk]').forEach(function(trackElement) {
     // if the selectedTracks doesn't match one of our selection statuses...
-    if ((selectedTracks.indexOf(trackElement.getAttribute('data-pk')) != -1) != trackElement.classList.contains('selected')) {
+    if ((selectedTracks.indexOf(trackElement.getAttribute('data-pk')) !== -1) !== trackElement.classList.contains('selected')) {
       trackElement.classList.toggle('selected')
     }
     trackElement.classList.remove('pending')
@@ -25,7 +27,7 @@ function updateSelection(text) {
   selectAllButtons.forEach(function(selectAllButton) {
     selectAllButton.addEventListener('click', function(e) {
       e.preventDefault()
-      const data = new FormData
+      const data = new FormData()
       document.querySelectorAll('.track.selectable').forEach(function(selectableTrack) {
         data.append('track_pk[]', selectableTrack.getAttribute('data-pk'))
         selectableTrack.classList.add('pending')
@@ -69,7 +71,7 @@ function updateSelection(text) {
 }
 
 function bindSelection() {
-  // prevent clicking on a voter or an artist fold from selecting a track 
+  // prevent clicking on a voter or an artist fold from selecting a track
   document.querySelectorAll('li.vote a, summary').forEach(function(element) {
     element.addEventListener('click', function(e) {
       e.stopPropagation()
