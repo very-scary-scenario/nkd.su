@@ -16,21 +16,6 @@ function getCookie(name) {
 
 const csrftoken = getCookie('csrftoken');
 
-document.addEventListener('DOMContentLoaded', function(){
-  function csrfSafeMethod(method) {
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-  }
-
-  $.ajaxSetup({
-    crossDomain: false,
-    beforeSend: function(xhr, settings) {
-      if (!csrfSafeMethod(settings.type)) {
-          xhr.setRequestHeader("X-CSRFToken", csrftoken);
-      }
-    }
-  });
-});
-
 function csrfPost(url, params) {
   const request = new Request(url, {
     headers: {'X-CSRFToken': csrftoken},

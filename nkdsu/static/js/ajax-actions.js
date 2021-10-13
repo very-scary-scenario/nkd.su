@@ -1,21 +1,31 @@
-function handleAjaxClick(e) {
-  e.stopPropagation();
-  e.preventDefault();
+function bindAjaxableLinks(trackElement) {
+  const BOUND_ATTR = 'data-ajax-bound'
 
-  var trackElement = $($(e.currentTarget).parents('.track'));
-  trackElement.addClass('pending');
+  if (trackElement.hasAttribute(BOUND_ATTR)) { return }
 
-  $.get(e.currentTarget.getAttribute('href'), {ajax: 'yeah'}, function(data) {
-    trackElement.after(data);
-    trackElement.remove();
-    rebind();
-  });
+  trackElement.querySelectorAll('.ajaxable').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault()
+      e.stopPropagation()
+
+      const url = new URL(link.getAttribute('href'), document.baseURI)
+      url.searchParams.append('ajax', 'yeah')
+
+      trackElement.classList.add('pending')
+      fetch(url).then(function(response) {
+        return response.text()
+      }).then(function(text) {
+        trackElement.outerHTML = text
+        bindAllAjaxableLinks()
+      })
+    })
+  })
+
+  trackElement.setAttribute(BOUND_ATTR, 'true')
 }
 
-
-function rebind() {
-  $('.ajaxable').off('click', handleAjaxClick);
-  $('.ajaxable').on('click', handleAjaxClick);
+function bindAllAjaxableLinks() {
+  document.querySelectorAll('.track').forEach(bindAjaxableLinks)
 }
 
-rebind();
+document.addEventListener('DOMContentLoaded', bindAllAjaxableLinks)
