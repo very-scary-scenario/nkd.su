@@ -1,6 +1,7 @@
 @import "_mixins.less";
 
 #selection {
+  pointer-events: none;
   position: sticky;
   bottom: -.5em;
 
@@ -10,6 +11,7 @@
   margin: 2em 0;
 
   #selhead .stuck {
+    pointer-events: auto;
     .noise();
     background-color: @bg;
     pointer-events: auto;
@@ -43,26 +45,26 @@
 
       &[open] summary h3::before { content: @fa-var-angle-down; }
     }
-  }
 
-  p.actions {
-    .child-iter();
-
-    &.minor {
-      font-size: .8em;
-      margin-bottom: .3em;
-      clear: both;
-    }
-  }
-
-  ul.selection li {
-    margin: 1em 0;
-    p.deselect {
-      font-size: .8em;
-    }
-
-    p.roles {
+    p.actions {
       .child-iter();
+
+      &.minor {
+        font-size: .8em;
+        margin-bottom: .3em;
+        clear: both;
+      }
+    }
+
+    ul.selection li {
+      margin: 1em 0;
+      p.deselect {
+        font-size: .8em;
+      }
+
+      p.roles {
+        .child-iter();
+      }
     }
   }
 }
