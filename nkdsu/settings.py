@@ -206,6 +206,7 @@ PIPELINE = {
     'YUGLIFY_BINARY': '/usr/bin/env npx yuglify',
     'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
     'UGLIFYJS_BINARY': '/usr/bin/env npx uglifyjs',
+    'UGLIFYJS_ARGUMENTS': '--mangle',
     'COMPILERS': ['pipeline.compilers.less.LessCompiler'],
     'LESS_BINARY': '/usr/bin/env npx lessc',
     'DISABLE_WRAPPER': True,
