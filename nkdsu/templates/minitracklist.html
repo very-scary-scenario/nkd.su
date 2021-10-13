@@ -2,7 +2,30 @@
 <div id="selhead">
   {% if selection %}
     <div class="stuck">
-      <h3>{{ selection|length }} track{{ selection|pluralize }} selected</h3>
+      <details>
+        <summary><h3>{{ selection|length }} track{{ selection|pluralize }} selected</h3></summary>
+
+        <ul class="selection">
+          {% for track in selection %}
+            <li class="minitrack selected" data-pk="{{ track.pk }}">
+              <div class="metadata">
+                <p class="title">
+                  <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
+                </p>
+                {% if track.role %}
+                <p class="roles">
+                  {% for role in track.role_details %}
+                    <span class="role">{{ role }}</span>
+                  {% endfor %}
+                </p>
+                {% endif %}
+              </div>
+              <p class="deselect"><a name="deselect" data-href="{% url "vote:js:clear_selection" %}">deselect</a></p>
+            </li>
+          {% endfor %}
+        </ul>
+      </details>
+
       {% if user.is_staff %}
         <p class="actions">
           <span><a href="{% url "vote:admin:shortlist_selection" %}">shortlist</a></span>
@@ -29,23 +52,3 @@
     </div> <!-- stuck -->
   {% endif %}
 </div> <!-- selhead -->
-
-{% for track in selection %}
-<ul class="selection">
-  <li class="minitrack selected" data-pk="{{ track.pk }}">
-    <div class="metadata">
-      <p class="title">
-        <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
-      </p>
-      {% if track.role %}
-      <p class="roles">
-        {% for role in track.role_details %}
-          <span class="role">{{ role }}</span>
-        {% endfor %}
-      </p>
-      {% endif %}
-    </div>
-    <p class="deselect"><a name="deselect" data-href="{% url "vote:js:clear_selection" %}">deselect</a></p>
-  </li>
-</ul>
-{% endfor %}

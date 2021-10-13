@@ -1,20 +1,9 @@
-function stick(time) {
-  if (($('div#selhead').offset().top < ($(window).scrollTop() + $(window).height() - $('div#selhead').height())) == ($('div#stick div.stuck').css('display') != 'none')) {
-    if ($('div#stick div.stuck').css('display') != 'none') {
-      $('div#stick div.stuck').slideUp(time);
-    } else {
-      $('div#stick div.stuck').slideDown(time);
-    }
-  }
-}
-
 // selection representation 
 function updateSelection(text) {
   const selectionElement = document.getElementById('selection')
 
   // update document
   selectionElement.innerHTML = text
-  document.getElementById('stick').innerHTML = document.getElementById('selhead').innerHTML
 
   // build a list of IDs of selected tracks
   let selectedTracks = []
@@ -76,22 +65,6 @@ function updateSelection(text) {
         updateSelection(text)
       })
     })
-  })
-
-  // make div#stick.invisible if necessary
-  // ...but don't check too often, thanks stackoverflow question 8915376
-  var scroll_ok = true;
-  setInterval(function() { scroll_ok = true; }, 50);
-  $(window).scroll(function() {
-    if (scroll_ok === true) {
-      scroll_ok = false;
-      stick(200);
-    }
-  });
-
-  // scroll to bottom when asked
-  document.querySelector('#stick div.stuck h3').addEventListener('click', function() {
-    window.scrollTo(0,$('div#selection').offset().top)
   })
 }
 

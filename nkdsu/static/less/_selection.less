@@ -1,39 +1,48 @@
 @import "_mixins.less";
 
-div#stick {
-  pointer-events: none;
-  position: fixed;
-  bottom: -1em;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 10;
+#selection {
+  position: sticky;
+  bottom: -.5em;
 
-  div.stuck {
+  text-align: center;
+  clear: both;
+  text-align: center;
+  margin: 2em 0;
+
+  #selhead .stuck {
+    .noise();
     background-color: @bg;
     pointer-events: auto;
     display: inline-block;
-    .noise();
-    box-shadow: #888 0 .5em 2em; /*,inset #ddd 0 0 2em;*/
+    box-shadow: rgba(128, 128, 128, 0.2) 0 .5em 2em;
     border: 1px solid #aaa;
-    padding: .5em 1em 1.5em;
+    padding: .5em 1em;
     margin: 0 auto;
-    border-radius: 1em;
-  }
-}
+    border-radius: .5em;
 
-.dark({
-  div#stick div.stuck {
-    .invert();
-  }
-});
+    details {
+      summary {
+        .reset-details-summary();
 
-#selection, #stick {
-  text-align: center;
+        h3 {
+          padding: 0;
+          margin: 0;
 
-  h3 {
-    padding: 0;
-    margin: 0;
+          &::before {
+            .fa();
+            color: @hl;
+            padding-right: .4em;
+            content: @fa-var-angle-right;
+          }
+        }
+
+        &:hover h3::before {
+          color: inherit;
+        }
+      }
+
+      &[open] summary h3::before { content: @fa-var-angle-down; }
+    }
   }
 
   p.actions {
@@ -46,17 +55,20 @@ div#stick {
     }
   }
 
-  p.deselect {
-    font-size: .8em;
-  }
+  ul.selection li {
+    margin: 1em 0;
+    p.deselect {
+      font-size: .8em;
+    }
 
-  p.roles {
-    .child-iter();
+    p.roles {
+      .child-iter();
+    }
   }
 }
 
-#selection {
-  clear: both;
-  text-align: center;
-  padding-top: 1em;
-}
+.dark({
+  #selection #selhead .stuck {
+    .invert();
+  }
+});
