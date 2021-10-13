@@ -10,14 +10,26 @@ rules:
   arrow-parens:
     - error
     - as-needed
+  block-scoped-var: error
   brace-style:
     - error
     - 1tbs
     - allowSingleLine: true
+  camelcase: error
   comma-dangle:
     - error
     - always-multiline
+  no-invalid-this: error
+  no-lone-blocks: error
+  no-magic-numbers:
+    - error
+    - ignore:
+      - -1
+      - 0
+      - 1
+  no-useless-call: error
   prefer-arrow-callback: error
+  radix: error
   space-before-function-paren:
     - error
     - never
