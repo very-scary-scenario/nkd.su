@@ -6,11 +6,11 @@ import string
 from dataclasses import dataclass
 from functools import partial
 from typing import Any, Callable, Iterable, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
+from urllib.parse import quote
 
 from classtools import reify as ct_reify
 from django.conf import settings
 from django.core.cache import cache
-from django.utils.http import urlquote
 import musicbrainzngs
 import requests
 import tweepy
@@ -129,7 +129,7 @@ def length_str(msec: float) -> str:
 def tweet_url(tweet: str) -> str:
     return (
         'https://twitter.com/intent/tweet?in_reply_to={reply_id}&text={text}'
-        .format(reply_id='744237593164980224', text=urlquote(tweet))
+        .format(reply_id='744237593164980224', text=quote(tweet))
     )
 
 
