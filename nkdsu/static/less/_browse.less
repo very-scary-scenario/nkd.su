@@ -44,6 +44,24 @@
       }
     }
   }
+
+  &.searchable {
+    .browsable-group {
+      display: none;
+
+      &[data-contains-matches~=true] {
+        display: block;
+      }
+
+      > ul > li {
+        display: none;
+
+        &.matched {
+          display: block;
+        }
+      }
+    }
+  }
 }
 
 ul.browsable-categories {

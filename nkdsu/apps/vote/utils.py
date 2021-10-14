@@ -42,6 +42,7 @@ indefinitely: int = (60*60*24*7) + (60*60) + 60  # one week, one hour and one mi
 class BrowsableItem:
     url: Optional[str]
     name: str
+    visible: bool = True
 
     def group(self) -> Tuple[int, str]:
         """

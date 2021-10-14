@@ -311,7 +311,10 @@ class BrowseCategory(BreadcrumbMixin, TemplateView):
         query = self.request.GET.get('q', '')
         if not query:
             return items
-        return filter(lambda i: re.findall(query, i.name, re.IGNORECASE), items)
+        for item in items:
+            if not re.findall(query, item.name, re.IGNORECASE):
+                item.visible = False
+            yield item
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         return {

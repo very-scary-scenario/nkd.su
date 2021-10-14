@@ -234,6 +234,7 @@ PIPELINE = {
                 'js/ajax-actions.js',
                 'js/shortlist-sorting.js',
                 'js/dark.js',
+                'js/browse.js',
                 'js/toggle-group-folds.js',
             ],
             'output_filename': 'js/min/base.js',
