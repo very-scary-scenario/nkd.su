@@ -23,17 +23,18 @@ function bindCategorySearch() {
 
   function highlightMatches(item, re, hideAll) {
     const textElement = item.querySelector('a') || item
-    textElement.innerText = item.getAttribute('data-name')
+    let text = item.getAttribute('data-name')
     if (!hideAll) {
-      textElement.innerText = textElement.innerText.replace(re, match => {
-        return `[[[[${match}]]]]`
-      })
-      textElement.innerHTML = textElement.innerHTML.replace('[[[[', '<span class="fragment">').replace(']]]]', '</span>')
+      text = text.replaceAll(re, match => { return `[[[[${match}]]]]` })
+    }
+    textElement.innerText = text
+    if (!hideAll) {
+      textElement.innerHTML = textElement.innerHTML.replaceAll('[[[[', '<span class="fragment">').replaceAll(']]]]', '</span>')
     }
   }
 
   function updatePage(pushNewHistoryState) {
-    const re = new RegExp(currentQuery || '.*', 'i')
+    const re = new RegExp(currentQuery || '.*', 'ig')
     sections.forEach(section => {
       section.setAttribute('data-contains-matches', '')
 
