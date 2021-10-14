@@ -60,15 +60,20 @@
           display: block;
 
           span.fragment {
-            background-color: @hl;
-            color: @bg;
-            text-shadow: none;
+            background-color: fade(@hl, 40%);
+            color: mix(@fg, @hl, 70%);
           }
         }
       }
     }
   }
 }
+
+.dark({
+  .browsable-groups.searchable .browsable-group > ul > li.matched span.fragment {
+    color: mix(@bg, @hl, 70%);
+  }
+});
 
 ul.browsable-categories {
   display: flex;
