@@ -21,12 +21,15 @@ function bindCategorySearch() {
   // the query that was present at "page load" (or history state push)
   let submittedQuery = currentQuery
 
-  function highlightMatches(item, re) {
+  function highlightMatches(item, re, hideAll) {
     const textElement = item.querySelector('a') || item
-    textElement.innerText = item.getAttribute('data-name').replace(re, match => {
-      return `[[[[${match}]]]]`
-    })
-    textElement.innerHTML = textElement.innerHTML.replace('[[[[', '<span class="fragment">').replace(']]]]', '</span>')
+    textElement.innerText = item.getAttribute('data-name')
+    if (!hideAll) {
+      textElement.innerText = textElement.innerText.replace(re, match => {
+        return `[[[[${match}]]]]`
+      })
+      textElement.innerHTML = textElement.innerHTML.replace('[[[[', '<span class="fragment">').replace(']]]]', '</span>')
+    }
   }
 
   function updatePage(pushNewHistoryState) {
@@ -36,9 +39,7 @@ function bindCategorySearch() {
 
       section.querySelectorAll('ul > li').forEach(item => {
         const matched = item.getAttribute('data-name').search(re) !== -1
-        if (currentQuery) {
-          highlightMatches(item, re)
-        }
+        highlightMatches(item, re, !currentQuery)
         if (matched !== (item.classList.contains('matched'))) {
           item.classList.toggle('matched')
         }
