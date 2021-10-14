@@ -310,7 +310,7 @@ class BrowseCategory(BreadcrumbMixin, TemplateView):
     def filter_categories(self, items: Iterable[BrowsableItem]) -> Iterable[BrowsableItem]:
         query = self.request.GET.get('q', '')
         if not query:
-            return items
+            yield from items
         for item in items:
             if not re.findall(query, item.name, re.IGNORECASE):
                 item.visible = False
