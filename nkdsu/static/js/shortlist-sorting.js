@@ -1,6 +1,7 @@
 /* global Sortable csrfPost */
 
 function bindShortlistSorting() {
+  const TOUCH_DELAY = 300
   const shortlistContainer = document.getElementById('shortlist')
   const shortlistOrderURL = document.getElementById('shortlist-order-url').innerText
 
@@ -28,6 +29,8 @@ function bindShortlistSorting() {
   }
 
   const sortable = Sortable.create(shortlistContainer, {
+    delay: TOUCH_DELAY,
+    delayOnTouchOnly: true,
     onSort: handleChange,
     dataIdAttr: 'data-shortlist-pk',
   })
