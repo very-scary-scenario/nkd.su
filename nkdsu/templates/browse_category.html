@@ -44,13 +44,14 @@
               class="
                 {% if item.visible %} matched {% endif %}
               "
-              >{% spaceless %}
+              data-name="{{ item.name }}"
+            >
               {% if item.url %}
                 <a href="{{ item.url }}">{{ item.name }}</a>
               {% else %}
                 {{ item.name }}
               {% endif %}
-            {% endspaceless %}</li>
+            </li>
           {% endfor %}
         </ul>
       </section>

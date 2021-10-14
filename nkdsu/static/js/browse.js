@@ -21,13 +21,24 @@ function bindCategorySearch() {
   // the query that was present at "page load" (or history state push)
   let submittedQuery = currentQuery
 
+  function highlightMatches(item, re) {
+    const textElement = item.querySelector('a') || item
+    textElement.innerText = item.getAttribute('data-name').replace(re, match => {
+      return `[[[[${match}]]]]`
+    })
+    textElement.innerHTML = textElement.innerHTML.replace('[[[[', '<span class="fragment">').replace(']]]]', '</span>')
+  }
+
   function updatePage(pushNewHistoryState) {
     const re = new RegExp(currentQuery || '.*', 'i')
     sections.forEach(section => {
       section.setAttribute('data-contains-matches', '')
 
       section.querySelectorAll('ul > li').forEach(item => {
-        const matched = item.innerText.search(re) !== -1
+        const matched = item.getAttribute('data-name').search(re) !== -1
+        if (currentQuery) {
+          highlightMatches(item, re)
+        }
         if (matched !== (item.classList.contains('matched'))) {
           item.classList.toggle('matched')
         }
@@ -76,6 +87,8 @@ function bindCategorySearch() {
     filterInput.value = currentQuery
     updatePage(false)
   }
+
+  updatePage()
 }
 
 document.addEventListener('DOMContentLoaded', bindCategorySearch)
