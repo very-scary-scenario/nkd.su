@@ -107,8 +107,8 @@ class EverythingTest(
 
         # would require me to put twitter credentials in the public settings
         # file
-        '/pic/46162630/',
-        '/pic/46162630/?size=original',
+        '/twitter-avatar/46162630/',
+        '/twitter-avatar/46162630/?size=original',
     ]
 
     uncovered_includes = [
