@@ -5,6 +5,7 @@
 
 @avatar-border-radius: 0.3em;
 @avatar-thumb-size: 32px;
+@avatar-size: 48px;
 @key-avatar-thumb-size: @avatar-thumb-size * 1.5;
 
 @fhl: fade(@hl, 0%);
@@ -329,6 +330,8 @@ body.tracks-expanded li.vote {
 
   .avatar {
     float: right;
+    width: @avatar-size;
+    height: @avatar-size;
     margin-left: .5em;
 
     &.thumb {
@@ -398,8 +401,8 @@ body.tracks-collapsed li.vote {
 
         img {
           float: right;
-          width: 48px;
-          height: 48px;
+          width: @avatar-size;
+          height: @avatar-size;
         }
 
         .meta {
