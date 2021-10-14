@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import codecs
 import datetime
+import re
 from abc import abstractmethod
 from collections import OrderedDict
 from copy import copy
@@ -300,17 +301,27 @@ class BrowseCategory(BreadcrumbMixin, TemplateView):
     category_name: Optional[str] = None
     breadcrumbs = [(reverse_lazy("vote:browse"), "browse")]
     contents_required = True
+    searchable = True
 
     @abstractmethod
     def get_categories(self) -> Iterable[BrowsableItem]:
         raise NotImplementedError()
+
+    def filter_categories(self, items: Iterable[BrowsableItem]) -> Iterable[BrowsableItem]:
+        query = self.request.GET.get('q', '')
+        if not query:
+            return items
+        return filter(lambda i: re.findall(query, i.name, re.IGNORECASE), items)
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         return {
             **super().get_context_data(**kwargs),
             'category_name': self.category_name,
             'contents_required': self.contents_required,
+            'searchable': self.searchable,
+            'query': self.request.GET.get('q', ''),
             self.context_category_name: sorted(
-                self.get_categories(), key=lambda i: (i.group(), i.name.lower())
+                self.filter_categories(self.get_categories()),
+                key=lambda i: (i.group(), i.name.lower())
             ),
         }

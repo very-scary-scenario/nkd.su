@@ -97,6 +97,7 @@ class BrowseYears(mixins.BrowseCategory):
     section = 'browse'
     category_name = 'years'
     contents_required = False
+    searchable = False
 
     def get_categories(self) -> Iterable[BrowsableItem]:
         for year, has_tracks in Track.complete_decade_range():

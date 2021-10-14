@@ -23,6 +23,12 @@
     </p>
   {% endif %}
 
+  {% if searchable %}
+    <form id="category-search-form">
+      <input type="text" placeholder="filter" name="q" value="{{ query }}"></input>
+    </form>
+  {% endif %}
+
   <div class="browsable-groups" data-category-name="{{ category_name }}">
     {% for group in groups %}
       <section class="browsable-group" id="{{ group.grouper.1 }}" >
