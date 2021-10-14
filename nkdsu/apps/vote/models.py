@@ -14,6 +14,7 @@ from PIL import Image, ImageFilter
 from dateutil import parser as date_parser
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.staticfiles import finders
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files import File
@@ -370,18 +371,30 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             if hit:
                 return hit
 
-        url = self.get_twitter_user().profile_image_url_https
-        if size is not None:
-            # `size` here can, I think, also be stuff like '400x400' or whatever,
-            # but i'm not sure exactly what the limits are and we're not using any
-            # of them anyway, so here's what we support:
-            if size != 'original':
-                url_size = '_{}'.format(size)
+        try:
+            url = self.get_twitter_user().profile_image_url_https
+        except tweepy.TweepError as e:
+            if (e.api_code == 63) or (e.api_code == 50):
+                # 63: user is suspended; 50: no such user
+                found = finders.find('i/suspended.png')
+                if found is None or isinstance(found, list):
+                    raise RuntimeError(f'could not find the placeholder image: {found}')
+                rv = ('image/png', open(found, 'rb').read())
             else:
-                url_size = ''
-            url = re.sub(r'_normal(?=\.[^.]+$)', url_size, url)
-        resp = requests.get(url)
-        rv = (resp.headers['content-type'], resp.content)
+                raise
+        else:
+            if size is not None:
+                # `size` here can, I think, also be stuff like '400x400' or whatever,
+                # but i'm not sure exactly what the limits are and we're not using any
+                # of them anyway, so here's what we support:
+                if size != 'original':
+                    url_size = '_{}'.format(size)
+                else:
+                    url_size = ''
+                url = re.sub(r'_normal(?=\.[^.]+$)', url_size, url)
+
+            resp = requests.get(url)
+            rv = (resp.headers['content-type'], resp.content)
 
         # update_twitter_avatars will call this every day with
         # from_cache=False, and might sometimes fail, so:

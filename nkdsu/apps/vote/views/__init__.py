@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 from random import sample
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, cast
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union, cast
 
 from django.conf import settings
 from django.contrib import messages
@@ -367,17 +367,9 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
     model = TwitterUser
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        try:
-            content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
-                size='original' if request.GET.get('size') == 'original' else None)
-        except tweepy.TweepError as e:
-            if e.api_code == 50:
-                raise Http404('No such user :<')
-            elif e.api_code == 63:
-                raise Http404('User got suspended :<')
-            else:
-                raise
-
+        image: Union[bytes, str]
+        content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
+            size='original' if request.GET.get('size') == 'original' else None)
         return HttpResponse(image, content_type=content_type)
 
 
