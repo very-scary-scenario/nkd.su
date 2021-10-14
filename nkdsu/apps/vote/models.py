@@ -363,10 +363,6 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     def get_avatar(
         self, size: Optional[Union[Literal['original'], Literal['normal']]] = None, from_cache: bool = True
     ) -> Tuple[str, bytes]:
-        # `size` here can, I think, also be stuff like '400x400' or whatever,
-        # but i'm not sure exactly what the limits are and we're not using any
-        # of them anyway, so here's what we support:
-
         ck = f'twav:{size}:{self.pk}'
 
         if from_cache:
@@ -376,6 +372,9 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
         url = self.get_twitter_user().profile_image_url_https
         if size is not None:
+            # `size` here can, I think, also be stuff like '400x400' or whatever,
+            # but i'm not sure exactly what the limits are and we're not using any
+            # of them anyway, so here's what we support:
             if size != 'original':
                 url_size = '_{}'.format(size)
             else:
