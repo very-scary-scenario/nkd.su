@@ -62,7 +62,9 @@ These will be used to:
 - authenticate you
 - represent you to other users
 
-You can change your names or avatar at any time.
+You can change your names or avatar at any time. Please contact an admin if you
+would like to have this information modified or deleted in a way that the
+website doesn't give you controls for.
 
 ### webserver logs
 
