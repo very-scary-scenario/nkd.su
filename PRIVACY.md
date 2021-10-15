@@ -14,7 +14,7 @@ We also have a hosting provider, who technically could get access to a lot of
 this information, but we don't expect them to. If you want, you can have a look
 at [their privacy policy][linode-privacy], too.
 
-[linode-privacy]: https://docs.djangoproject.com/en/3.2/topics/auth/passwords/#how-django-stores-passwords "Linode's privacy policy"
+[linode-privacy]: https://www.linode.com/legal-privacy/ "Linode's privacy policy"
 
 ## things we gather and how they will be used
 
