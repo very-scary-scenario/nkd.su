@@ -563,6 +563,11 @@ class Privacy(mixins.MarkdownView):
     filename = 'PRIVACY.md'
 
 
+class TermsOfService(mixins.MarkdownView):
+    title = 'tos'
+    filename = 'TOS.md'
+
+
 class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
     form_class = BadMetadataForm
     template_name = 'report.html'

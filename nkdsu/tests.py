@@ -55,6 +55,7 @@ class EverythingTest(
         '/info/',
         '/info/api/',
         '/info/privacy/',
+        '/info/tos/',
         '/request/',
         '/roulette/',
         '/roulette/hipster/',
