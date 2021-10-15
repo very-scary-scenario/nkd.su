@@ -209,13 +209,25 @@ body {
 
         > * {
           text-align: left;
-          margin-top: .5em;
+          margin-top: 1em;
         }
 
-        ul > li::before {
-          .fas();
-          content: '·';
-          padding: 0 .3em;
+        > ul {
+          > li {
+            margin-top: .5em;
+            margin-left: 1.5em;
+            position: relative;
+
+            &::before {
+              .fas();
+              display: inline-block;
+              content: '·';
+              position: absolute;
+              left: -1.5em;
+              width: 1.5em;
+              text-align: center;
+            }
+          }
         }
       }
 
