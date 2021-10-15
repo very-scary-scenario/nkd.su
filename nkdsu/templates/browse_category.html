@@ -31,12 +31,12 @@
 
   <div class="browsable-groups {% if searchable %} searchable {% endif %}" data-category-name="{{ category_name }}">
     {% for group in groups %}
-    <section
-      class="browsable-group"
-      id="{{ group.grouper.1 }}"
-      data-contains-matches="{% for item in group.list %}{% if item.visible %} true {% endif %}{% endfor %}"
-    >
-        <h3>{{ group.grouper.1 }}</h3>
+      <section
+        class="browsable-group"
+        id="{{ group.grouper.1 }}"
+        data-contains-matches="{% for item in group.list %}{% if item.visible %} true {% endif %}{% endfor %}"
+      >
+        <h3><span>{{ group.grouper.1 }}</span></h3>
 
         <ul>
           {% for item in group.list %}

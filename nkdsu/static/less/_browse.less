@@ -15,7 +15,22 @@
 }
 
 .browsable-groups {
-  .browsable-group {
+  section.browsable-group {
+    h3 {
+      position: sticky;
+      top: 0;
+
+      span {
+        z-index: 2;
+        display: inline-block;
+        padding: 0 1em .2em;
+        margin: 0;
+        border-radius: 0 0 .5em .5em;
+        background-color: @bg;
+        .noise() !important;
+      }
+    }
+
     ul {
       columns: 15em auto;
 
@@ -68,6 +83,12 @@
     }
   }
 }
+
+.dark({
+  .browsable-groups section.browsable-group h3 span {
+    .invert();
+  }
+});
 
 .dark({
   .browsable-groups.searchable .browsable-group > ul > li.matched span.fragment {
