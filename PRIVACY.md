@@ -1,0 +1,76 @@
+# nkd.su privacy policy
+
+## who we are
+
+The **admins**, who control the the website and the server it runs on; we are
+colons and Peter Shillito.
+
+The **elves**, who deal with getting new music for the library and correcting
+metadata issues.
+
+The **host**, Peter Shillito, who runs the show.
+
+We also have a hosting provider, who technically could get access to a lot of
+this information, but we don't expect them to. If you want, you can have a look
+at [their privacy policy][linode-privacy], too.
+
+[linode-privacy]: https://docs.djangoproject.com/en/3.2/topics/auth/passwords/#how-django-stores-passwords "Linode's privacy policy"
+
+## things we gather and how they will be used
+
+### track requests
+
+These include:
+
+- an attribution to your account
+- the time that they are made
+- what tracks they are for
+- any comment you write
+
+These will be used to:
+
+- act as public-facing track requests for the radio show
+- provide aggregate information to the host to inform playlist decisions
+
+### library addition and metadata correction suggestions
+
+These include:
+
+- the information you type into the form
+- any contact information you choose to provide
+
+They will be used to:
+
+- improve the library
+
+Only elves and admins can see them.
+
+### account information
+
+These can include:
+
+- tokens for authenticating you against a third-party authentication provider
+  (like Twitter, for instance)
+- a [hashed][django-password-storage] password
+- a screen name and a display name
+- an avatar
+
+[django-password-storage]: https://docs.djangoproject.com/en/3.2/topics/auth/passwords/#how-django-stores-passwords "how Django stores passwords"
+
+These will be used to:
+
+- authenticate you
+- represent you to other users
+
+You can change your names or avatar at any time.
+
+### webserver logs
+
+These include:
+
+- IP addresses
+- time of access
+- URLs accessed
+
+Only admins can see these, and they will only ever be used for threat
+mitigation.

@@ -558,6 +558,11 @@ class APIDocs(mixins.MarkdownView):
     filename = 'API.md'
 
 
+class Privacy(mixins.MarkdownView):
+    title = 'privacy'
+    filename = 'PRIVACY.md'
+
+
 class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
     form_class = BadMetadataForm
     template_name = 'report.html'
