@@ -163,6 +163,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.postgres',
 
+    'django_extensions',
     'django_nose',
     'pipeline',
 
