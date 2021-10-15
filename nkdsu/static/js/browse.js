@@ -64,30 +64,32 @@ function bindCategorySearch() {
       // current history state with how it was when it was last pushed to, and
       // then push a new state with the newly-submitted value. that way, they
       // can hit back and get to the last query they loaded or submitted:
-      history.replaceState(submittedQuery, submittedQuery, newUrl)
-      history.pushState(currentQuery, currentQuery, newUrl)
+      history.replaceState({ query: submittedQuery }, submittedQuery, newUrl)
+      history.pushState({ query: currentQuery }, currentQuery, newUrl)
       submittedQuery = currentQuery
     } else {
-      history.replaceState(currentQuery, currentQuery, newUrl)
+      history.replaceState({ query: currentQuery }, currentQuery, newUrl)
     }
   }
 
-  function respondToInput(e) {
+  function respondToInput(immediateNewState) {
     const newQuery = filterInput.value
-    if (currentQuery !== newQuery) {
-      currentQuery = newQuery
-      if (debounce !== null) { clearTimeout(debounce) }
+    if (currentQuery !== newQuery) { currentQuery = newQuery }
+    if (debounce !== null) { clearTimeout(debounce) }
+    if (immediateNewState) { updatePage(true) } else {
       debounce = setTimeout(() => { updatePage(false) }, DEBOUNCE_DELAY)
     }
   }
 
-  filterInput.addEventListener('change', respondToInput)
-  filterInput.addEventListener('input', respondToInput)
+  filterInput.addEventListener('change', e => { respondToInput(true) })
+  filterInput.addEventListener('input', e => { respondToInput(false) })
 
   window.onpopstate = e => {
-    currentQuery = submittedQuery = e.state
-    filterInput.value = currentQuery
-    updatePage(false)
+    if (e.state !== null && e.state.query !== undefined) {
+      currentQuery = submittedQuery = e.state
+      filterInput.value = currentQuery
+      updatePage(false)
+    }
   }
 
   updatePage()
