@@ -67,6 +67,9 @@ READING_ACCESS_TOKEN_SECRET = ''  # secret
 POSTING_ACCESS_TOKEN = ''  # secret
 POSTING_ACCESS_TOKEN_SECRET = ''  # secret
 
+# social-auth
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
 MIXCLOUD_USERNAME = 'NekoDesu'
 
 LASTFM_API_KEY = ''  # secret
@@ -88,6 +91,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
                 'nkdsu.apps.vote.context_processors.nkdsu_context_processor',
             ],
         },
@@ -165,6 +170,7 @@ INSTALLED_APPS = [
 
     'django_nose',
     'pipeline',
+    'social_django',
 
     'nkdsu.apps.vote',
 ]
@@ -192,6 +198,11 @@ LOGGING = {
         },
     }
 }
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.twitter.TwitterOAuth',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
@@ -248,3 +259,6 @@ try:
     from nkdsu.settings_local import *  # noqa
 except ImportError:
     pass
+
+SOCIAL_AUTH_TWITTER_KEY = CONSUMER_KEY
+SOCIAL_AUTH_TWITTER_KEY = CONSUMER_SECRET
