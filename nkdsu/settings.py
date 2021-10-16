@@ -68,6 +68,8 @@ POSTING_ACCESS_TOKEN = ''  # secret
 POSTING_ACCESS_TOKEN_SECRET = ''  # secret
 
 # social-auth
+SOCIAL_AUTH_TWITTER_KEY = ''  # secret
+SOCIAL_AUTH_TWITTER_SECRET = ''  # secret
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 MIXCLOUD_USERNAME = 'NekoDesu'
@@ -200,7 +202,7 @@ LOGGING = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'social_core.backends.twitter.TwitterOAuth',
+    'nkdsu.apps.vote.twitter_auth.NkdsuTwitterAuth',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -259,6 +261,3 @@ try:
     from nkdsu.settings_local import *  # noqa
 except ImportError:
     pass
-
-SOCIAL_AUTH_TWITTER_KEY = CONSUMER_KEY
-SOCIAL_AUTH_TWITTER_SECRET = CONSUMER_SECRET
