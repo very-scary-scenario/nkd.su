@@ -148,6 +148,8 @@ urlpatterns = [
     url(r'^stats/$', views.Stats.as_view(), name='stats'),
 
     url(r'^info/$', views.Info.as_view(), name='info'),
+    url(r'^info/privacy/$', views.Privacy.as_view(), name='privacy'),
+    url(r'^info/tos/$', views.TermsOfService.as_view(), name='tos'),
     url(r'^info/api/$', views.APIDocs.as_view(), name='api_docs'),
 
     url(r'^request/$',

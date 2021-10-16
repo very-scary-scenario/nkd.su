@@ -193,14 +193,32 @@ body {
       padding-bottom: 13em;
 
       .markdown {
+        h1 {
+          text-align: center;
+        }
+
         @media (min-width: @breakpoint) {
           width: 80%;
           margin: 0 auto;
+
+          h2, h3, h4, h5 {
+            padding-top: 1em;
+            margin-left: -1rem;
+          }
         }
 
         > * {
           text-align: left;
-          margin-top: .5em;
+          margin-top: 1em;
+        }
+
+        > ul {
+          list-style: disc;
+          margin-left: 1.3em;
+
+          > li {
+            margin-top: .5em;
+          }
         }
       }
 
