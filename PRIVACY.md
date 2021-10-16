@@ -32,6 +32,9 @@ These will be used to:
 - act as public-facing track requests for the radio show
 - provide aggregate information to the host to inform playlist decisions
 
+Your requests, comments, and name may also be read and broadcast as part of the
+radio show.
+
 ### library addition and metadata correction suggestions
 
 These include:
