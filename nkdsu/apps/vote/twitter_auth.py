@@ -4,7 +4,8 @@ from social_core.backends.twitter import TwitterOAuth
 
 class NkdsuTwitterAuth(TwitterOAuth):
     def __init__(self, *args, **kwargs):
-        kwargs['redirect_uri'] = settings.SITE_URL + kwargs['redirect_uri']
+        if 'redirect_uri' in kwargs:
+            kwargs['redirect_uri'] = settings.SITE_URL + kwargs['redirect_uri']
         super().__init__(*args, **kwargs)
 
     def get_user_details(self, response):
