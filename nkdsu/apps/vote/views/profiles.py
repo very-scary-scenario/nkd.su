@@ -12,7 +12,7 @@ User = get_user_model()
 
 class ProfileView(DetailView):
     model = User
-    context_object_name = 'user'
+    context_object_name = 'object'
 
     def get_object(self, queryset: Optional[QuerySet[AbstractBaseUser]] = None) -> AbstractBaseUser:
         if queryset is None:

@@ -1,7 +1,12 @@
 {% extends parent %}
 
-{% block title %}{{ user }}{% endblock %}
+{% block title %}{{ object }}{% endblock %}
 
 {% block content %}
-  <h1>{{ user }}</h1>
+  <h1>{{ object }}</h1>
+
+  {% if object == request.user %}
+    <p>edit profile</p>
+    <p>link twitter account</p>
+  {% endif %}
 {% endblock %}
