@@ -44,19 +44,19 @@
       </ul>
 
       {% if show.voting_allowed %}
-        <p class="aside">Want to request something else?</p>
+        <p class="aside">want to request something else?</p>
       {% endif %}
 
     {% elif show.voting_allowed %}
-      <h2 class="message">No requests yet</h2>
+      <h2 class="message">no requests yet</h2>
 
     {% else %}
-      <h2 class="message">We're not taking requests this week, sorry</h2>
-      <p class="aside">Don't worry, your <a href="{% url "vote:stats" %}#most-dedicated-users">impressive streaks</a> will not be considered broken, as long as you're back next week.</p>
+      <h2 class="message">we're not taking requests this week, sorry</h2>
+      <p class="aside">don't worry, your <a href="{% url "vote:stats" %}#most-dedicated-users">impressive streaks</a> will not be considered broken, as long as you're back next week.</p>
     {% endif %}
 
     {% if show.voting_allowed %}
-      <p class="aside">Have a <a href="{% url "vote:browse" %}">browse</a>, do a search, or just <a href="{% url "vote:roulette" %}">throw darts at the wall</a>.</p>
+      <p class="aside">have a <a href="{% url "vote:browse" %}">browse</a>, do a search, or just <a href="{% url "vote:roulette" %}">throw darts at the wall</a>.</p>
     {% endif %}
 
     {% if user.is_staff and show.discarded %}
