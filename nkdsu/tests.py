@@ -82,6 +82,7 @@ class EverythingTest(
         '/added/',
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
+        '/folks/what/',
 
         '/login/',
         '/cpw/',
@@ -120,8 +121,6 @@ class EverythingTest(
 
     instant_tracebacks = True
 
-
-class LoggedInEverythingTest(EverythingTest):
     def setUp(self) -> None:
         super().setUp()
         user = get_user_model()(
@@ -131,4 +130,9 @@ class LoggedInEverythingTest(EverythingTest):
         )
         user.set_password('what')
         user.save()
+
+
+class LoggedInEverythingTest(EverythingTest):
+    def setUp(self) -> None:
+        super().setUp()
         self.assertTrue(self.client.login(username='what', password='what'))
