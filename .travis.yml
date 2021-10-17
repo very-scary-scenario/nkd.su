@@ -15,9 +15,13 @@ install:
 
 jobs:
   include:
-    - stage: test
-      script: "python ./manage.py test --settings=nkdsu.settings_testing"
+    - script: "python ./manage.py test --settings=nkdsu.settings_testing"
+      name: "django tests"
     - script: "python ./manage.py collectstatic --noinput"
+      name: "collectstatic"
     - script: "npm run-script lint-js"
+      name: "lint js"
     - script: "npm run-script lint-flake8"
+      name: "flake8"
     - script: "npm run-script lint-mypy"
+      name: "mypy"
