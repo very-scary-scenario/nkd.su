@@ -7,6 +7,6 @@
 
   {% if object == request.user %}
     <p>edit profile</p>
-    <p>link twitter account</p>
+    <p><a href="{% url "social:begin" backend="twitter" %}">link twitter account</a></p>
   {% endif %}
 {% endblock %}

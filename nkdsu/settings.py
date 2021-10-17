@@ -71,6 +71,7 @@ POSTING_ACCESS_TOKEN_SECRET = ''  # secret
 SOCIAL_AUTH_TWITTER_KEY = ''  # secret
 SOCIAL_AUTH_TWITTER_SECRET = ''  # secret
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
+SOCIAL_AUTH_STRATEGY = 'nkdsu.apps.vote.twitter_auth.NkdsuStrategy'
 
 MIXCLOUD_USERNAME = 'NekoDesu'
 

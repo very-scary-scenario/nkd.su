@@ -1,5 +1,7 @@
 from django.conf import settings
 from social_core.backends.twitter import TwitterOAuth
+from social_core.pipeline import DEFAULT_AUTH_PIPELINE
+from social_django.strategy import DjangoStrategy
 
 
 class NkdsuTwitterAuth(TwitterOAuth):
@@ -16,6 +18,16 @@ class NkdsuTwitterAuth(TwitterOAuth):
 
         return {
             'username': response['screen_name'],
-            'email': response.get('email', ''),
             'fullname': response['name'],
         }
+
+
+class NkdsuStrategy(DjangoStrategy):
+    """
+    Django social auth respects the "PIPELINE" Django setting, which we're
+    already using for django-pipeline, so we need to override that behaviour to
+    ignore it.
+    """
+
+    def get_pipeline(self, backend=None):
+        return DEFAULT_AUTH_PIPELINE
