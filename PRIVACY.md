@@ -6,7 +6,7 @@ You can look at [the history of changes to this document][history] if you want.
 
 ## who we are
 
-The **admins**, who control the the website and the server it runs on; we are
+The **admins**, who control the website and the server it runs on; we are
 colons and Peter Shillito.
 
 The **elves**, who deal with getting new music for the library and correcting
