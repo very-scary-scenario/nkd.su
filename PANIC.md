@@ -61,6 +61,7 @@ to accept votes and generally be responsible, though:
   manage.py [command]`) as cron jobs.
     - You should run the `refresh_votes` management command every two minutes
       or so.
+    - You should run the `clearsessions` management command daily.
     - So that we don't start getting broken images for Twitter users who've
       changed their avatar since they last voted, you should run the
       `update_twitter_avatars` management command daily.

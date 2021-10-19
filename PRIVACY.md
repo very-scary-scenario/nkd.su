@@ -78,7 +78,8 @@ information about what you're currently doing. In particular, we store:
 - which theme (dark, light, or system) you've chosen
 - your login status, if you are logged in
 
-These will only ever be used within your browsing session.
+These will only ever be used within your browsing session, and expired sessions
+are cleared daily.
 
 ### webserver logs
 
