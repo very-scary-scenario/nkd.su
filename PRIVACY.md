@@ -1,5 +1,9 @@
 # nkd.su privacy policy
 
+You can look at [the history of changes to this document][history] if you want.
+
+[history]: https://github.com/very-scary-scenario/nkd.su/commits/main/PRIVACY.md "the history of this privacy policy"
+
 ## who we are
 
 The **admins**, who control the the website and the server it runs on; we are
