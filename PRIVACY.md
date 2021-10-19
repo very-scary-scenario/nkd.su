@@ -69,6 +69,17 @@ You can change your names or avatar at any time. Please contact an admin if you
 would like to have this information modified or deleted in a way that the
 website doesn't give you controls for.
 
+### sessions
+
+Some nkd.su features require the use of a session cookie associated with
+information about what you're currently doing. In particular, we store:
+
+- the tracks that you have selected
+- which theme (dark, light, or system) you've chosen
+- your login status, if you are logged in
+
+These will only ever be used within your browsing session.
+
 ### webserver logs
 
 These include:
