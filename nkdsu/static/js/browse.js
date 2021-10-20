@@ -86,7 +86,7 @@ function bindCategorySearch() {
 
   window.onpopstate = e => {
     if (e.state !== null && e.state.query !== undefined) {
-      currentQuery = submittedQuery = e.state
+      currentQuery = submittedQuery = e.state.query
       filterInput.value = currentQuery
       updatePage(false)
     }
