@@ -46,14 +46,6 @@ Long answer: [GitHub]. [Suggestions] welcome.
 [Github]: https://github.com/very-scary-scenario/nkd.su
 [Suggestions]: https://github.com/very-scary-scenario/nkd.su/issues/new
 
-## Does it work?
-
-Hopefully! Only Travis knows for sure:
-
-[![Build Status](https://app.travis-ci.com/very-scary-scenario/nkd.su.svg?branch=main)][build status]
-
-[build status]: https://travis-ci.com/github/very-scary-scenario/nkd.su
-
 ## Can I build things with this data?
 
 Totally! There's a JSON API documented [here](https://nkd.su/info/api/). If
