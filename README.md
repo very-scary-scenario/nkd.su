@@ -4,7 +4,7 @@
 radio show currently broadcast on [The Cat].
 
 [nkd.su]: https://nkd.su
-[The Cat]: http://thisisthecat.com
+[The Cat]: https://thisisthecat.com
 [Neko Desu]: https://nekodesu.radio
 
 ### How do I vote?
