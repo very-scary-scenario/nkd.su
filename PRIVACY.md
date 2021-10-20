@@ -54,7 +54,7 @@ Only elves and admins can see them.
 
 ### account information
 
-These can include:
+This can include:
 
 - tokens for authenticating you against a third-party authentication provider
   (like Twitter, for instance)
