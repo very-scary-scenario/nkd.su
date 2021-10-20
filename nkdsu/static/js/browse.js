@@ -1,5 +1,7 @@
 function bindCategorySearch() {
   const DEBOUNCE_DELAY = 300
+  const MATCH_OPEN = 'i dont think anyone will include this text in their metadata'
+  const MATCH_CLOSE = 'im willing to be proven wrong, though, and will respond appropriately'
   let debounce = null
 
   const filterForm = document.getElementById('category-search-form')
@@ -25,11 +27,11 @@ function bindCategorySearch() {
     const textElement = item.querySelector('a') || item
     let text = item.getAttribute('data-name')
     if (!hideAll) {
-      text = text.replaceAll(re, match => { return `[[[[${match}]]]]` })
+      text = text.replaceAll(re, match => { return `${MATCH_OPEN}${match}${MATCH_CLOSE}` })
     }
     textElement.innerText = text
     if (!hideAll) {
-      textElement.innerHTML = textElement.innerHTML.replaceAll('[[[[', '<span class="fragment">').replaceAll(']]]]', '</span>')
+      textElement.innerHTML = textElement.innerHTML.replaceAll(MATCH_OPEN, '<span class="fragment">').replaceAll(MATCH_CLOSE, '</span>')
     }
   }
 
