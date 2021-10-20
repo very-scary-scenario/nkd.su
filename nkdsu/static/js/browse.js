@@ -2,19 +2,18 @@ function bindCategorySearch() {
   const DEBOUNCE_DELAY = 300
   const MATCH_OPEN = 'i dont think anyone will include this text in their metadata'
   const MATCH_CLOSE = 'im willing to be proven wrong, though, and will respond appropriately'
-  let debounce = null
 
   const filterForm = document.getElementById('category-search-form')
-  const sections = document.querySelectorAll('.browsable-groups section')
+  if (filterForm === null) return // don't do anything if there's no filter form on this page
 
   filterForm.addEventListener('submit', e => {
     e.preventDefault() // we're gonna do filtering locally
     updatePage(true)
   })
 
-  if (filterForm === null) {
-    return
-  }
+  let debounce = null
+
+  const sections = document.querySelectorAll('.browsable-groups section')
   const filterInput = filterForm.querySelector('input')
 
   // the query we're currently actually filtering with
