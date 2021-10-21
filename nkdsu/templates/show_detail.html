@@ -66,6 +66,18 @@
         </ul>
       </div>
     {% endfor %}
+
+    {% if request.user.is_authenticated and request.user.is_staff and show.shortlisted %}
+      <div class="track-group">
+        <h3>shortlist</h3>
+        <ul class="tracks">
+          {% for track in show.shortlisted %}
+            {% include "include/track.html" with vote_show=show %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
   </div>
+
 
 {% endblock %}

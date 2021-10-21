@@ -4,6 +4,7 @@
 
 @avatar-border-radius: 0.3em;
 @avatar-thumb-size: 32px;
+@avatar-size: 48px;
 @key-avatar-thumb-size: @avatar-thumb-size * 1.5;
 
 @fhl: fade(@hl, 0%);
@@ -421,11 +422,6 @@ li.plusone {
       border-color: @hl;
       color: @hl !important;
       cursor: pointer;
-
-      &:hover, &:focus {
-        border: 1px dashed @fg;
-        color: @fg !important;
-      }
     }
   }
 }
@@ -482,8 +478,8 @@ li.vote {
 
         img {
           float: left;
-          width: 48px;
-          height: 48px;
+          width: @avatar-size;
+          height: @avatar-size;
         }
 
         .meta {
@@ -642,7 +638,7 @@ details.collapsed-artist {
     &::before {
       .fas();
       content: @fa-var-angle-right;
-      padding: 0 .4em;
+      padding-right: .4em;
     }
 
     &:hover {

@@ -1,117 +1,110 @@
-function stick(time) {
-  if (($('div#selhead').offset().top < ($(window).scrollTop() + $(window).height() - $('div#selhead').height())) == ($('div#stick div.stuck').css('display') != 'none')) {
-    if ($('div#stick div.stuck').css('display') != 'none') {
-      $('div#stick div.stuck').slideUp(time);
-    } else {
-      $('div#stick div.stuck').slideDown(time);
-    }
-  }
-}
+/* global csrfPost clearSelectionURL deselectURL getSelectionURL selectURL */
 
-// selection representation 
-function update_selection(data) {
+// selection representation
+function updateSelection(text) {
+  const selectionElement = document.getElementById('selection')
+  let wasOpenBeforeUpdate = false
+  const originalDetailsElement = document.getElementById('selection-details')
+  if (originalDetailsElement !== null) {
+    wasOpenBeforeUpdate = !!(originalDetailsElement.hasAttribute('open'))
+  }
+
   // update document
-  $("div#selection").html(data);
-  $("div#stick").html($("div#selhead").html());
-  stick(0);
+  selectionElement.innerHTML = text
+
+  if (wasOpenBeforeUpdate) {
+    document.getElementById('selection-details').setAttribute('open', 'true')
+  }
 
   // build a list of IDs of selected tracks
-  var selected_tracks = [];
-  $('.selection .minitrack').each(function() {
-    selected_tracks.push($(this).attr('data-pk'));
-  });
-  
-  // ensure selected tracks are marked as such and vice-versa
-  $("li.track").each(function() {
-    // if the selected_tracks doesn't match one of our selection statuses...
-    if (($.inArray($(this).attr('data-pk'), selected_tracks) != -1) != $(this).hasClass('selected')) {
-      $(this).toggleClass('selected');
+  const selectedTracks = []
+  selectionElement.querySelectorAll('.minitrack').forEach(miniTrackElement => {
+    selectedTracks.push(miniTrackElement.getAttribute('data-pk'))
+  })
+
+  // ensure selected tracks elsewhere in the page are marked as such and vice-versa
+  document.querySelectorAll('.track[data-pk]').forEach(trackElement => {
+    // if the selectedTracks doesn't match one of our selection statuses...
+    if ((selectedTracks.indexOf(trackElement.getAttribute('data-pk')) !== -1) !== trackElement.classList.contains('selected')) {
+      trackElement.classList.toggle('selected')
     }
-    $(this).removeClass('pending');
-  });
+    trackElement.classList.remove('pending')
+  })
 
   // enable select all button
-  $("a.select_all").click(function(event) {
-    event.preventDefault();
-    var all_selectable = [];
-    $('.track.selectable').each(function() {
-      all_selectable.push($(this).attr('data-pk'));
-      $(this).addClass('pending');
-    });
-    var pk_map = { track_pk: all_selectable };
-    $.post($(this).attr('data-href'), pk_map, function(data) {
-      update_selection(data);
-    });
-  });
+  const selectAllButtons = document.querySelectorAll('.select_all')
+  selectAllButtons.forEach(selectAllButton => {
+    selectAllButton.addEventListener('click', e => {
+      e.preventDefault()
+      const data = new FormData()
+      document.querySelectorAll('.track.selectable').forEach(selectableTrack => {
+        data.append('track_pk[]', selectableTrack.getAttribute('data-pk'))
+        selectableTrack.classList.add('pending')
+      })
+
+      csrfPost(selectAllButton.getAttribute('data-href'), { method: 'post', body: data }).then(text => {
+        updateSelection(text)
+      })
+    })
+  })
 
   // explicitly clear selection when user mass-votes
-  $('a.mass_vote').click(function(event) {
-    $.post(clearSelectionURL, function(data) {
-      update_selection(data);
-    });
-  });
+  document.querySelectorAll('a.mass_vote').forEach(massVoteElement => {
+    massVoteElement.addEventListener('click', e => {
+      csrfPost(clearSelectionURL, { method: 'post' }).then(text => {
+        updateSelection(text)
+      })
+    })
+  })
 
   // do js-friendly actions without reloading if possible
-  $("a[data-href='" + deselectURL + "']").click(function(event) {
-    event.preventDefault();
-    var pk_map = { track_pk: $(this).closest('div.minitrack').text() };
-    $.post($(this).attr('data-href'), id_map, function(data) {
-      update_selection(data);
-    });
-  });
+  document.querySelectorAll('.selection .minitrack').forEach(minitrack => {
+    minitrack.querySelector("a[name='deselect']").addEventListener('click', e => {
+      e.preventDefault()
+      const data = new FormData()
+      data.append('track_pk[]', minitrack.getAttribute('data-pk'))
+      csrfPost(deselectURL, { method: 'post', body: data }).then(text => {
+        updateSelection(text)
+      })
+    })
+  })
 
-  $("a[data-href='" + clearSelectionURL + "']").click(function(event) {
-    event.preventDefault();
-    $.post($(this).attr('data-href'), function(data) {
-      update_selection(data);
-    });
-  });
-
-  // make div#stick.invisible if necessary
-  // ...but don't check too often, thanks stackoverflow question 8915376
-  var scroll_ok = true;
-  setInterval(function() { scroll_ok = true; }, 50);
-  $(window).scroll(function() {
-    if (scroll_ok === true) {
-      scroll_ok = false;
-      stick(200);
-    }
-  });
-
-  // scroll to bottom when asked
-  $('div#stick div.stuck h3').on("click", function() {
-    window.scrollTo(0,$('div#selection').offset().top);
-  });
+  document.querySelectorAll("a[name='clear_selection']").forEach(clearSelectionElement => {
+    clearSelectionElement.addEventListener('click', e => {
+      e.preventDefault()
+      csrfPost(clearSelectionURL, { method: 'post' }).then(text => {
+        updateSelection(text)
+      })
+    })
+  })
 }
 
 function bindSelection() {
-  // prevent clicking on a voter or an artist fold from selecting a track 
-  $("li.vote a, summary").click(function(event) {
-    event.stopPropagation();
-  });
+  // prevent clicking on a voter or an artist fold from selecting a track
+  document.querySelectorAll('li.vote a, summary').forEach(element => {
+    element.addEventListener('click', e => {
+      e.stopPropagation()
+    })
+  })
 
-  $.post(getSelectionURL, function(data) {
-    update_selection(data);
-  });
+  csrfPost(getSelectionURL, { method: 'post' }).then(text => {
+    updateSelection(text)
+  })
 
   // toggling selection
-  $(".track.selectable").on("click", function(event) {
-    if (!$(event.target).is('a')) {
-      $(this).addClass('pending');
-      var pk_map = { track_pk: [$(this).attr('data-pk')] };
-      if (!$(this).hasClass("selected")) {
-        $.post(selectURL, pk_map, function(data) {
-          update_selection(data);
-        });
-      } else {
-        $.post(deselectURL, pk_map, function(data) {
-          update_selection(data);
-        });
+  document.querySelectorAll('.track.selectable').forEach(trackElement => {
+    trackElement.addEventListener('click', e => {
+      if (e.target.tagName !== 'A') {
+        trackElement.classList.add('pending')
+        const data = new FormData()
+        data.append('track_pk[]', trackElement.getAttribute('data-pk'))
+        const url = trackElement.classList.contains('selected') ? deselectURL : selectURL
+        csrfPost(url, { method: 'post', body: data }).then(text => {
+          updateSelection(text)
+        })
       }
-    }
-  });
+    })
+  })
 }
 
-$(document).ready(function(){
-  bindSelection();
-});
+document.addEventListener('DOMContentLoaded', bindSelection)

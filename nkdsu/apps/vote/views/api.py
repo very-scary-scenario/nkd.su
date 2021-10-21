@@ -3,7 +3,7 @@ import json
 from typing import Any, Dict, List
 
 from django.core.serializers.json import DjangoJSONEncoder
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 
@@ -16,7 +16,7 @@ class APIView(View):
     def get_api_stuff(self):
         return self.get_object().api_dict(verbose=True)
 
-    def get(self, request, *args, **kwargs) -> HttpResponse:
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         resp = HttpResponse(
             json.dumps(self.get_api_stuff(),
                        cls=DjangoJSONEncoder,

@@ -5,12 +5,12 @@ import re
 import string
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Callable, List, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
+from typing import Any, Callable, Iterable, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
+from urllib.parse import quote
 
 from classtools import reify as ct_reify
 from django.conf import settings
 from django.core.cache import cache
-from django.utils.http import urlquote
 import musicbrainzngs
 import requests
 import tweepy
@@ -42,6 +42,7 @@ indefinitely: int = (60*60*24*7) + (60*60) + 60  # one week, one hour and one mi
 class BrowsableItem:
     url: Optional[str]
     name: str
+    visible: bool = True
 
     def group(self) -> Tuple[int, str]:
         """
@@ -129,15 +130,15 @@ def length_str(msec: float) -> str:
 def tweet_url(tweet: str) -> str:
     return (
         'https://twitter.com/intent/tweet?in_reply_to={reply_id}&text={text}'
-        .format(reply_id='744237593164980224', text=urlquote(tweet))
+        .format(reply_id='744237593164980224', text=quote(tweet))
     )
 
 
-def vote_url(tracks) -> str:
+def vote_url(tracks: Iterable[Track]) -> str:
     return tweet_url(vote_tweet(tracks))
 
 
-def vote_tweet(tracks: List[Track]) -> str:
+def vote_tweet(tracks: Iterable[Track]) -> str:
     """
     Return what a person should tweet to request `tracks`.
     """
@@ -145,7 +146,7 @@ def vote_tweet(tracks: List[Track]) -> str:
     return ' '.join([t.get_public_url() for t in tracks])
 
 
-def vote_tweet_intent_url(tracks: List[Track]) -> str:
+def vote_tweet_intent_url(tracks: Iterable[Track]) -> str:
     tweet = vote_tweet(tracks)
     return tweet_url(tweet)
 

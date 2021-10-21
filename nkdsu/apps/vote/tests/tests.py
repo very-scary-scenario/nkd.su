@@ -8,7 +8,7 @@ from django.utils import timezone
 from ..models import Play, Show, Track
 
 
-def mkutc(*args, **kwargs):
+def mkutc(*args, **kwargs) -> datetime.datetime:
     return timezone.make_aware(datetime.datetime(*args, **kwargs),
                                timezone.utc)
 
@@ -19,11 +19,11 @@ class ShowTest(TestCase):
     broadcast at 9-11pm.
     """
 
-    def setUp(self):
+    def setUp(self) -> None:
         Show.objects.all().delete()
         cache.clear()
 
-    def test_make_show(self, wipe=True):
+    def test_make_show(self, wipe: bool = True) -> None:
         # this may seem overly thorough, but it has already found bugs that
         # would otherwise have been missed:
         for hours in range(366*24, 0, -1):
@@ -50,14 +50,14 @@ class ShowTest(TestCase):
 
             self.assertGreater(show.end, starter)
 
-    def test_get_show(self):
+    def test_get_show(self) -> None:
         self.test_make_show(wipe=False)
         show_count = Show.objects.all().count()
         self.assertGreater(show_count, 51)
         self.assertLess(show_count, 55)
 
-    def test_get_show_far_in_future(self):
-        def make_current(t):
+    def test_get_show_far_in_future(self) -> None:
+        def make_current(t: datetime.datetime) -> datetime.datetime:
             return timezone.make_aware(t, timezone.get_current_timezone())
 
         for x in range(2):
@@ -73,7 +73,7 @@ class ShowTest(TestCase):
             self.assertEqual(Show.objects.all().count(), 523)
             self.assertEqual(ours.end.date(), datetime.date(3010, 1, 6))
 
-    def test_cannot_make_overlapping_shows(self):
+    def test_cannot_make_overlapping_shows(self) -> None:
         Show(showtime=mkutc(2010, 1, 1),
              end=mkutc(2011, 1, 1)).save()
 
@@ -87,7 +87,7 @@ class ShowTest(TestCase):
             # before they begin
             (mkutc(2010, 1, 1), mkutc(2009, 1, 1), True),
         ]:
-            def func():
+            def func() -> None:
                 show = Show(showtime=showtime, end=end)
                 show.save()
                 show.delete()
@@ -97,7 +97,7 @@ class ShowTest(TestCase):
             else:
                 func()
 
-    def test_calling_next_or_prev_on_only_show_returns_none(self):
+    def test_calling_next_or_prev_on_only_show_returns_none(self) -> None:
         self.assertIs(None, Show.current().next())
         self.assertIs(None, Show.current().prev())
 
@@ -105,17 +105,17 @@ class ShowTest(TestCase):
 class TrackTest(TestCase):
     fixtures = ['vote.json']
 
-    def test_can_delete_tracks(self):
+    def test_can_delete_tracks(self) -> None:
         Track.objects.all()[0].delete()
 
 
 class PlayTest(TestCase):
     fixtures = ['vote.json']
 
-    def setUp(self):
+    def setUp(self) -> None:
         Play.objects.all().delete()
 
-    def test_plays_for_already_played_tracks_can_not_be_added(self):
+    def test_plays_for_already_played_tracks_can_not_be_added(self) -> None:
         track_1, track_2 = Track.objects.all()[:2]
         track_1.play(tweet=False)
         track_2.play(tweet=False)
@@ -124,7 +124,7 @@ class PlayTest(TestCase):
         self.assertRaises(ValidationError, lambda: track_2.play(tweet=False))
         self.assertEqual(Play.objects.all().count(), 2)
 
-    def test_plays_can_be_edited_after_the_fact(self):
+    def test_plays_can_be_edited_after_the_fact(self) -> None:
         play = Track.objects.all()[0].play(tweet=False)
         play.date = mkutc(2009, 1, 1)
         play.save()

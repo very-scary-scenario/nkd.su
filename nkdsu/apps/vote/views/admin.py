@@ -441,7 +441,7 @@ class BadTrivia(AdminMixin, ListView):
 class ShortlistSelection(SelectionAdminAction):
     fmt = u'{} shortlisted'
 
-    def do_thing(self):
+    def do_thing(self) -> None:
         for track in self.get_queryset():
             track.shortlist()
 
@@ -449,7 +449,7 @@ class ShortlistSelection(SelectionAdminAction):
 class HideSelection(SelectionAdminAction):
     fmt = u'{} hidden'
 
-    def do_thing(self):
+    def do_thing(self) -> None:
         for track in self.get_queryset():
             track.hide()
 
@@ -457,7 +457,7 @@ class HideSelection(SelectionAdminAction):
 class UnhideSelection(SelectionAdminAction):
     fmt = u'{} unhidden'
 
-    def do_thing(self):
+    def do_thing(self) -> None:
         for track in self.get_queryset():
             track.unhide()
 
@@ -465,7 +465,7 @@ class UnhideSelection(SelectionAdminAction):
 class DiscardSelection(SelectionAdminAction):
     fmt = u'{} discarded'
 
-    def do_thing(self):
+    def do_thing(self) -> None:
         for track in self.get_queryset():
             track.discard()
 
@@ -473,7 +473,7 @@ class DiscardSelection(SelectionAdminAction):
 class ResetShortlistAndDiscardSelection(SelectionAdminAction):
     fmt = u'{} reset'
 
-    def do_thing(self):
+    def do_thing(self) -> None:
         for track in self.get_queryset():
             track.reset_shortlist_discard()
 
@@ -501,7 +501,7 @@ class RemoveNote(DestructiveAdminAction, DetailView):
 
     model = Note
 
-    def get_deets(self):
+    def get_deets(self) -> str:
         obj = self.get_object()
 
         return '"{content}"; {track}'.format(
@@ -509,7 +509,7 @@ class RemoveNote(DestructiveAdminAction, DetailView):
             content=obj.content,
         )
 
-    def do_thing(self):
+    def do_thing(self) -> None:
         self.get_object().delete()
         messages.success(self.request, 'note removed')
 

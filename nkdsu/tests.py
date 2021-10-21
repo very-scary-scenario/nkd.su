@@ -54,6 +54,8 @@ class EverythingTest(
         '/roles/',
         '/info/',
         '/info/api/',
+        '/info/privacy/',
+        '/info/tos/',
         '/request/',
         '/roulette/',
         '/roulette/hipster/',
@@ -107,8 +109,8 @@ class EverythingTest(
 
         # would require me to put twitter credentials in the public settings
         # file
-        '/pic/46162630/',
-        '/pic/46162630/?size=original',
+        '/twitter-avatar/46162630/',
+        '/twitter-avatar/46162630/?size=original',
     ]
 
     uncovered_includes = [
@@ -119,7 +121,7 @@ class EverythingTest(
 
 
 class LoggedInEverythingTest(EverythingTest):
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         user = get_user_model()(
             username='what',

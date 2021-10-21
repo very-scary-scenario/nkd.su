@@ -14,6 +14,7 @@ from PIL import Image, ImageFilter
 from dateutil import parser as date_parser
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.staticfiles import finders
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files import File
@@ -327,6 +328,9 @@ class Show(CleanOnSaveMixin, models.Model):
 
 
 class TwitterUser(CleanOnSaveMixin, models.Model):
+    class Meta:
+        ordering = ['screen_name']
+
     # Twitter stuff
     screen_name = models.CharField(max_length=100)
     user_id = models.BigIntegerField(unique=True)
@@ -354,16 +358,12 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
                        kwargs={'user_id': self.user_id})
 
     def get_avatar_url(self) -> str:
-        return reverse('vote:avatar', kwargs={'user_id': self.user_id})
+        return reverse('vote:twitter-avatar', kwargs={'user_id': self.user_id})
 
     @memoize
     def get_avatar(
         self, size: Optional[Union[Literal['original'], Literal['normal']]] = None, from_cache: bool = True
     ) -> Tuple[str, bytes]:
-        # `size` here can, I think, also be stuff like '400x400' or whatever,
-        # but i'm not sure exactly what the limits are and we're not using any
-        # of them anyway, so here's what we support:
-
         ck = f'twav:{size}:{self.pk}'
 
         if from_cache:
@@ -371,15 +371,30 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             if hit:
                 return hit
 
-        url = self.get_twitter_user().profile_image_url_https
-        if size is not None:
-            if size != 'original':
-                url_size = '_{}'.format(size)
+        try:
+            url = self.get_twitter_user().profile_image_url_https
+        except tweepy.TweepError as e:
+            if (e.api_code == 63) or (e.api_code == 50):
+                # 63: user is suspended; 50: no such user
+                found = finders.find('i/suspended.png')
+                if found is None or isinstance(found, list):
+                    raise RuntimeError(f'could not find the placeholder image: {found}')
+                rv = ('image/png', open(found, 'rb').read())
             else:
-                url_size = ''
-            url = re.sub(r'_normal(?=\.[^.]+$)', url_size, url)
-        resp = requests.get(url)
-        rv = (resp.headers['content-type'], resp.content)
+                raise
+        else:
+            if size is not None:
+                # `size` here can, I think, also be stuff like '400x400' or whatever,
+                # but i'm not sure exactly what the limits are and we're not using any
+                # of them anyway, so here's what we support:
+                if size != 'original':
+                    url_size = '_{}'.format(size)
+                else:
+                    url_size = ''
+                url = re.sub(r'_normal(?=\.[^.]+$)', url_size, url)
+
+            resp = requests.get(url)
+            rv = (resp.headers['content-type'], resp.content)
 
         # update_twitter_avatars will call this every day with
         # from_cache=False, and might sometimes fail, so:
@@ -1033,7 +1048,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return vote_tweet_intent_url([self])
 
-    def get_lastfm_track(self):
+    def get_lastfm_track(self) -> Dict[str, Any]:
         return lastfm(
             method='track.getInfo',
             track=self.title,
@@ -1042,7 +1057,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @memoize
     @pk_cached(3600)
-    def musicbrainz_release(self):
+    def musicbrainz_release(self) -> Optional[Dict[str, Any]]:
         releases = musicbrainzngs.search_releases(
             tracks=self.title,
             release=self.album,
@@ -1056,15 +1071,17 @@ class Track(CleanOnSaveMixin, models.Model):
             return official_releases[0]
         elif releases:
             return releases[0]
+        else:
+            return None
 
-    def _get_lastfm_album_from_album_tag(self):
+    def _get_lastfm_album_from_album_tag(self) -> Optional[Dict[str, Any]]:
         return lastfm(
             method='album.getInfo',
             artist=self.artist,
             album=self.album,
         ).get('album')
 
-    def _get_lastfm_album_from_musicbrainz_release(self):
+    def _get_lastfm_album_from_musicbrainz_release(self) -> Optional[Dict[str, Any]]:
         release = self.musicbrainz_release()
 
         if release is not None:
@@ -1073,14 +1090,16 @@ class Track(CleanOnSaveMixin, models.Model):
                 artist=release['artist-credit-phrase'],
                 album=release['title'],
             ).get('album')
+        else:
+            return None
 
-    def _get_lastfm_album_from_track_tag(self):
+    def _get_lastfm_album_from_track_tag(self) -> Optional[Dict[str, Any]]:
         track = self.get_lastfm_track()
 
         if track is not None:
             return track.get('album')
 
-    def get_lastfm_album(self):
+    def get_lastfm_album(self) -> Optional[Dict[str, Any]]:
         album = self._get_lastfm_album_from_album_tag()
 
         if album is not None:
@@ -1088,11 +1107,11 @@ class Track(CleanOnSaveMixin, models.Model):
         else:
             return self._get_lastfm_album_from_track_tag()
 
-    def get_lastfm_artist(self):
+    def get_lastfm_artist(self) -> Optional[Dict[str, Any]]:
         return lastfm(method='artist.getInfo', artist=self.artist
                       ).get('artist')
 
-    def get_biggest_lastfm_image_url(self):
+    def get_biggest_lastfm_image_url(self) -> Optional[str]:
         for getter in [
             self._get_lastfm_album_from_album_tag,
             self._get_lastfm_album_from_track_tag,
@@ -1113,6 +1132,8 @@ class Track(CleanOnSaveMixin, models.Model):
 
             if image_url and not image_url.endswith('lastfm_wrongtag.png'):
                 return image_url
+        else:
+            return None
 
     def update_background_art(self) -> None:
         image_url = self.get_biggest_lastfm_image_url()
@@ -1338,7 +1359,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         else:
             return static('i/vote-kinds/{0}.png'.format(self.kind))
 
-    def __str__(self):
+    def __str__(self) -> str:
         tracks = u', '.join([t.title for t in self.tracks.all()])
 
         return u'{user} at {date} for {tracks}'.format(
@@ -1626,7 +1647,7 @@ class Note(CleanOnSaveMixin, models.Model):
 
     objects = models.Manager.from_queryset(NoteQuerySet)()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.content
 
 
@@ -1706,12 +1727,21 @@ BADGES: List[Badge] = [
         'charity-2020',
         u'{user.name} donated to the Very Scary Scenario charity streams '
         u'in 2020.',
-        'likes depriving people of sleep, but somehow also likes bodily '
-        'health',
+        'donated to the 2020 Very Scary Scenario charity streams',
         'heartbeat',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2020',
         datetime.datetime(2020, 10, 1, tzinfo=get_default_timezone()),
         datetime.datetime(2020, 11, 27, tzinfo=get_default_timezone()),
+    ),
+    Badge(
+        'charity-2021',
+        u'{user.name} donated to the Very Scary Scenario charity streams '
+        u'in 2021.',
+        'donated to the 2021 Very Scary Scenario charity streams',
+        'brain',
+        'https://www.justgiving.com/fundraising/very-charity-scenario-2021',
+        datetime.datetime(2021, 10, 9, tzinfo=get_default_timezone()),
+        datetime.datetime(2021, 11, 27, tzinfo=get_default_timezone()),
     ),
 ]
 

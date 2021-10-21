@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 from random import sample
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, cast
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union, cast
 
 from django.conf import settings
 from django.contrib import messages
@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
 from django.db.models import Count, DurationField, F, QuerySet
 from django.db.models.functions import Cast, Now
+from django.forms import BaseForm
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -41,7 +42,7 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         show = context['show']
 
-        def track_should_be_in_main_list(track):
+        def track_should_be_in_main_list(track: Track) -> bool:
             if (
                 self.request.user.is_authenticated and
                 self.request.user.is_staff
@@ -96,6 +97,7 @@ class BrowseYears(mixins.BrowseCategory):
     section = 'browse'
     category_name = 'years'
     contents_required = False
+    searchable = False
 
     def get_categories(self) -> Iterable[BrowsableItem]:
         for year, has_tracks in Track.complete_decade_range():
@@ -121,7 +123,7 @@ class Archive(mixins.BreadcrumbMixin, mixins.ArchiveList):
     breadcrumbs = mixins.BrowseCategory.breadcrumbs
 
     def get_queryset(self) -> QuerySet[Show]:
-        return super().get_queryset().prefetch_related('play_set', 'vote_set')
+        return super().get_queryset().filter(end__lt=timezone.now()).prefetch_related('play_set', 'vote_set')
 
 
 class ShowDetail(mixins.ShowDetail):
@@ -138,13 +140,20 @@ class ListenRedirect(mixins.ShowDetail):
         cloudcasts = cast(Show, self.object).cloudcasts()
         if len(cloudcasts) == 1:
             return redirect(cloudcasts[0]['url'])
+        elif len(cloudcasts) > 1:
+            messages.warning(
+                self.request,
+                "There's more than one Mixcloud upload for this show. "
+                "Please pick one of the {} listed below."
+                .format(len(cloudcasts)),
+            )
         else:
             messages.error(
                 self.request,
                 "Sorry, we couldn't find an appropriate Mixcloud upload to "
                 "take you to.",
             )
-            return redirect(cast(Show, self.object).get_absolute_url())
+        return redirect(cast(Show, self.object).get_absolute_url())
 
 
 class Roulette(ListView):
@@ -334,6 +343,7 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
     template_name = 'twitter_user_detail.html'
     context_object_name = 'voter'
     paginate_by = 100
+    model = TwitterUser
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -355,18 +365,12 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
 
 
 class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        try:
-            content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
-                size='original' if request.GET.get('size') == 'original' else None)
-        except tweepy.TweepError as e:
-            if e.api_code == 50:
-                raise Http404('No such user :<')
-            elif e.api_code == 63:
-                raise Http404('User got suspended :<')
-            else:
-                raise
+    model = TwitterUser
 
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        image: Union[bytes, str]
+        content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
+            size='original' if request.GET.get('size') == 'original' else None)
         return HttpResponse(image, content_type=content_type)
 
 
@@ -483,6 +487,7 @@ class Added(mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):
     section = 'new tracks'
     template_name = 'added.html'
     paginate_by = 50
+    model = Show
 
     def get_track_queryset(self) -> QuerySet[Track]:
         return cast(Show, self.get_object()).revealed()
@@ -553,6 +558,16 @@ class APIDocs(mixins.MarkdownView):
     filename = 'API.md'
 
 
+class Privacy(mixins.MarkdownView):
+    title = 'privacy'
+    filename = 'PRIVACY.md'
+
+
+class TermsOfService(mixins.MarkdownView):
+    title = 'tos'
+    filename = 'TOS.md'
+
+
 class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
     form_class = BadMetadataForm
     template_name = 'report.html'
@@ -573,7 +588,7 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
     def get_success_url(self) -> str:
         return self.get_track().get_absolute_url()
 
-    def form_valid(self, form: BadMetadataForm) -> HttpResponse:
+    def form_valid(self, form: BaseForm) -> HttpResponse:
         f = form.cleaned_data
 
         track = Track.objects.get(pk=self.kwargs['pk'])
@@ -616,7 +631,7 @@ class RequestAddition(FormView):
             **{k: v for (k, v) in self.request.GET.items()},
         }
 
-    def form_valid(self, form: RequestForm) -> HttpResponse:
+    def form_valid(self, form: BaseForm) -> HttpResponse:
         f = form.cleaned_data
 
         fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
@@ -646,7 +661,7 @@ class SetDarkModeView(FormView):
     def get_success_url(self) -> str:
         return self.request.META.get('HTTP_REFERER', self.success_url)
 
-    def form_valid(self, form: DarkModeForm) -> HttpResponse:
+    def form_valid(self, form: BaseForm) -> HttpResponse:
         session = self.request.session
         session['dark_mode'] = {
             'light': False,
@@ -656,5 +671,5 @@ class SetDarkModeView(FormView):
         session.save()
         return super().form_valid(form)
 
-    def form_invalid(self, form: DarkModeForm) -> HttpResponse:
+    def form_invalid(self, form: BaseForm) -> HttpResponse:
         return redirect(self.get_success_url())

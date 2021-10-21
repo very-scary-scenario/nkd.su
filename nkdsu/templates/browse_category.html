@@ -23,14 +23,29 @@
     </p>
   {% endif %}
 
-  <div class="browsable-groups" data-category-name="{{ category_name }}">
+  {% if searchable %}
+    <form id="category-search-form">
+      <input type="text" placeholder="filter" name="q" value="{{ query }}">
+    </form>
+  {% endif %}
+
+  <div class="browsable-groups {% if searchable %} searchable {% endif %}" data-category-name="{{ category_name }}">
     {% for group in groups %}
-      <section class="browsable-group" id="{{ group.grouper.1 }}" >
-        <h3>{{ group.grouper.1 }}</h3>
+      <section
+        class="browsable-group"
+        id="{{ group.grouper.1 }}"
+        data-contains-matches="{% for item in group.list %}{% if item.visible %} true {% endif %}{% endfor %}"
+      >
+        <h3><span>{{ group.grouper.1 }}</span></h3>
 
         <ul>
           {% for item in group.list %}
-            <li>
+            <li
+              class="
+                {% if item.visible %} matched {% endif %}
+              "
+              data-name="{{ item.name }}"
+            >
               {% if item.url %}
                 <a href="{{ item.url }}">{{ item.name }}</a>
               {% else %}

@@ -137,8 +137,8 @@ urlpatterns = [
 
     url(r'^user/(?P<screen_name>[_0-9a-zA-Z]+)/$',
         views.TwitterUserDetail.as_view(), name='user'),
-    url(r'^pic/(?P<user_id>\d+)/$', views.TwitterAvatarView.as_view(),
-        name='avatar'),
+    url(r'^twitter-avatar/(?P<user_id>\d+)/$', views.TwitterAvatarView.as_view(),
+        name='twitter-avatar'),
 
     url(r'^artist/(?P<artist>.*)/$', views.Artist.as_view(), name='artist'),
     url(r'^anime/(?P<anime>.*)/$', views.Anime.as_view(), name='anime'),
@@ -148,6 +148,8 @@ urlpatterns = [
     url(r'^stats/$', views.Stats.as_view(), name='stats'),
 
     url(r'^info/$', views.Info.as_view(), name='info'),
+    url(r'^info/privacy/$', views.Privacy.as_view(), name='privacy'),
+    url(r'^info/tos/$', views.TermsOfService.as_view(), name='tos'),
     url(r'^info/api/$', views.APIDocs.as_view(), name='api_docs'),
 
     url(r'^request/$',

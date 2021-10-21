@@ -43,12 +43,12 @@ class SelectionView(JSApiMixin, TemplateView):
 
 
 class GetSelection(SelectionView):
-    def do_thing(self):
+    def do_thing(self) -> None:
         pass
 
 
 class Select(SelectionView):
-    def do_thing(self):
+    def do_thing(self) -> None:
         new_pks = self.request.POST.getlist('track_pk[]', [])
         selection = set(self.request.session.get('selection', []))
 
@@ -73,7 +73,7 @@ class Select(SelectionView):
 
 
 class Deselect(SelectionView):
-    def do_thing(self):
+    def do_thing(self) -> None:
         unwanted_pks = self.request.POST.getlist('track_pk[]', [])
         selection = set(self.request.session.get('selection', []))
 
@@ -85,5 +85,5 @@ class Deselect(SelectionView):
 
 
 class ClearSelection(SelectionView):
-    def do_thing(self):
+    def do_thing(self) -> None:
         self.request.session['selection'] = []

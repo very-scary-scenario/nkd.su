@@ -55,9 +55,11 @@ class TriviaForm(forms.Form):
     trivia = forms.CharField(required=False)
     track = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.fields.move_to_end('trivia')
+        self.order_fields([
+            k for k in self.fields.keys() if k != 'trivia'
+        ] + ['trivia'])
         self.fields['trivia_question'].initial = self.new_question()
 
     def new_question(self) -> str:
@@ -101,7 +103,7 @@ class BadMetadataForm(TriviaForm):
     contact = EmailOrTwitterField(label="Email/Twitter (not required)",
                                   required=False)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.track = kwargs.pop('track')
         super().__init__(*args, **kwargs)
 

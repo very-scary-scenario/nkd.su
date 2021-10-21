@@ -1,5 +1,7 @@
-$(document).ready(function() {
-  $('.messages').click(function() {
-    $(this).addClass('dismissed');
-  });
-});
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.messages').forEach(messageElement => {
+    messageElement.addEventListener('click', () => {
+      messageElement.classList.add('dismissed')
+    })
+  })
+})

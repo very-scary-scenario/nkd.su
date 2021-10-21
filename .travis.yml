@@ -1,14 +1,27 @@
-language: python
-python:
-  - "3.8"
+os: linux
+language: node_js
+dist: focal
+
+node_js: "12.22"
 
 before_install:
-  - "sudo apt-get install npm"
-  - "sudo npm -g install less"
+  - "sudo apt install python3 python3-pip"
 
 install:
   - "pip install -r requirements.txt"
+  - "npm install"
   - "python ./manage.py migrate --settings=nkdsu.settings_testing"
   - "python ./manage.py collectstatic --no-input --settings=nkdsu.settings_testing"
-script:
-  - "python ./manage.py test --settings=nkdsu.settings_testing"
+
+jobs:
+  include:
+    - script: "python ./manage.py test --settings=nkdsu.settings_testing"
+      name: "django tests"
+    - script: "python ./manage.py collectstatic --noinput"
+      name: "collectstatic"
+    - script: "npm run-script lint-js"
+      name: "lint js"
+    - script: "npm run-script lint-flake8"
+      name: "flake8"
+    - script: "npm run-script lint-mypy"
+      name: "mypy"

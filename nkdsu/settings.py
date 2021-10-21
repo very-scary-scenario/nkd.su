@@ -2,6 +2,10 @@ import os
 
 from dateutil.relativedelta import SA, relativedelta
 
+import django_stubs_ext
+
+django_stubs_ext.monkeypatch()
+
 # note the sensitive settings marked as 'secret' below; these must be
 # replicated in settings_local.py in any functional nkd.su instance. Settings
 # defined there will override settings here.
@@ -148,6 +152,8 @@ ROOT_URLCONF = 'nkdsu.urls'
 
 WSGI_APPLICATION = 'nkdsu.wsgi.application'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -157,6 +163,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.postgres',
 
+    'django_extensions',
     'django_nose',
     'pipeline',
 
@@ -193,12 +200,16 @@ LOGIN_REDIRECT_URL = 'vote:index'
 
 # STATIC
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineManifestStorage'
 
 PIPELINE = {
-    'CSS_COMPRESSOR': None,
-    'JS_COMPRESSOR': 'pipeline.compressors.slimit.SlimItCompressor',
+    'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
+    'YUGLIFY_BINARY': '/usr/bin/env npx yuglify',
+    'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
+    'UGLIFYJS_BINARY': '/usr/bin/env npx uglifyjs',
+    'UGLIFYJS_ARGUMENTS': '--mangle',
     'COMPILERS': ['pipeline.compilers.less.LessCompiler'],
+    'LESS_BINARY': '/usr/bin/env npx lessc',
     'DISABLE_WRAPPER': True,
 
     'STYLESHEETS': {
@@ -212,24 +223,20 @@ PIPELINE = {
     'JAVASCRIPT': {
         'base': {
             'source_filenames': [
-                'js/libs/jquery.js',
-                'js/libs/jquery.cookie.js',
+                'js/libs/Sortable.js',
+
                 'js/csrf.js',
                 'js/expand.js',
                 'js/select.js',
                 'js/messages.js',
                 'js/ajax-actions.js',
+                'js/roulette.js',
+                'js/shortlist-sorting.js',
                 'js/dark.js',
+                'js/browse.js',
                 'js/toggle-group-folds.js',
             ],
             'output_filename': 'js/min/base.js',
-        },
-        'ui': {
-            'source_filenames': [
-                'js/libs/jquery-ui.js',
-                'js/libs/jquery.ui.sortable.js',
-            ],
-            'output_filename': 'js/min/ui.js',
         },
     },
 }
