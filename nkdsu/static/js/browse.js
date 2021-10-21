@@ -1,18 +1,19 @@
 function bindCategorySearch() {
   const DEBOUNCE_DELAY = 300
-  let debounce = null
+  const MATCH_OPEN = 'i dont think anyone will include this text in their metadata'
+  const MATCH_CLOSE = 'im willing to be proven wrong, though, and will respond appropriately'
 
   const filterForm = document.getElementById('category-search-form')
-  const sections = document.querySelectorAll('.browsable-groups section')
+  if (filterForm === null) return // don't do anything if there's no filter form on this page
 
   filterForm.addEventListener('submit', e => {
     e.preventDefault() // we're gonna do filtering locally
     updatePage(true)
   })
 
-  if (filterForm === null) {
-    return
-  }
+  let debounce = null
+
+  const sections = document.querySelectorAll('.browsable-groups section')
   const filterInput = filterForm.querySelector('input')
 
   // the query we're currently actually filtering with
@@ -25,11 +26,11 @@ function bindCategorySearch() {
     const textElement = item.querySelector('a') || item
     let text = item.getAttribute('data-name')
     if (!hideAll) {
-      text = text.replaceAll(re, match => { return `[[[[${match}]]]]` })
+      text = text.replaceAll(re, match => { return `${MATCH_OPEN}${match}${MATCH_CLOSE}` })
     }
     textElement.innerText = text
     if (!hideAll) {
-      textElement.innerHTML = textElement.innerHTML.replaceAll('[[[[', '<span class="fragment">').replaceAll(']]]]', '</span>')
+      textElement.innerHTML = textElement.innerHTML.replaceAll(MATCH_OPEN, '<span class="fragment">').replaceAll(MATCH_CLOSE, '</span>')
     }
   }
 
@@ -86,7 +87,7 @@ function bindCategorySearch() {
 
   window.onpopstate = e => {
     if (e.state !== null && e.state.query !== undefined) {
-      currentQuery = submittedQuery = e.state
+      currentQuery = submittedQuery = e.state.query
       filterInput.value = currentQuery
       updatePage(false)
     }

@@ -247,6 +247,7 @@ PIPELINE = {
                 'js/select.js',
                 'js/messages.js',
                 'js/ajax-actions.js',
+                'js/roulette.js',
                 'js/shortlist-sorting.js',
                 'js/dark.js',
                 'js/browse.js',

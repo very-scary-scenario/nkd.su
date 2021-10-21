@@ -1,8 +1,12 @@
 # nkd.su privacy policy
 
+You can look at [the history of changes to this document][history] if you want.
+
+[history]: https://github.com/very-scary-scenario/nkd.su/commits/main/PRIVACY.md "the history of this privacy policy"
+
 ## who we are
 
-The **admins**, who control the the website and the server it runs on; we are
+The **admins**, who control the website and the server it runs on; we are
 colons and Peter Shillito.
 
 The **elves**, who deal with getting new music for the library and correcting
@@ -50,7 +54,7 @@ Only elves and admins can see them.
 
 ### account information
 
-These can include:
+This can include:
 
 - tokens for authenticating you against a third-party authentication provider
   (like Twitter, for instance)
@@ -68,6 +72,18 @@ These will be used to:
 You can change your names or avatar at any time. Please contact an admin if you
 would like to have this information modified or deleted in a way that the
 website doesn't give you controls for.
+
+### sessions
+
+Some nkd.su features require the use of a session cookie associated with
+information about what you're currently doing. In particular, we store:
+
+- the tracks that you have selected
+- which theme (dark, light, or system) you've chosen
+- your login status, if you are logged in
+
+These will only ever be used within your browsing session, and expired sessions
+are cleared daily.
 
 ### webserver logs
 
