@@ -66,8 +66,6 @@
               {% endfor %}
             </span>
           {% endif %}
-          {% if track.composer %}composed by
-            {% for chunk in track.composers %}{% if chunk.is_artist %}<a href="{% url "vote:composer" composer=chunk.text %}">{{ chunk.text }}</a>{% else %}{{ chunk.text }}{% endif %}{% endfor %}{% if track.year %},{% endif %}{% endif %}
 
           {% if track.last_play %}
             <span class="last_played">played <a href="{{ track.last_play.show.get_absolute_url }}">
