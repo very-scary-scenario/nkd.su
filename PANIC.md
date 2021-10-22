@@ -8,14 +8,14 @@ cool if the site could continue to work.
 Here, then, are some instructions that I'm pretty sure should be all you need
 to do to get the site up and running on your own server. A passing familiarity
 with Django will help greatly. I'm assuming you have a server of some kind that
-has Python 3.7 and Apache or nginx or some httpd capable of hosting WSGI apps
+has Python 3.8 and Apache or nginx or some httpd capable of hosting WSGI apps
 installed.
 
 - Talk to Peter. They have some passwords and keys and other things that you'll
   want if you're going to set up a replacement instance.
 - Make sure you have Python 3.8 or newer and some kind of recent version of
   npm.
-- Make and activate a virtualenv.
+- Make and activate a [virtualenv][venv].
     - I use [virtualenvwrapper][vew], but it's up to you how to set this up.
 - Clone the repository.
 - Run `pip install -r requirements.txt` from the repository root to install
@@ -73,8 +73,8 @@ to accept votes and generally be responsible, though:
 - Make Peter an account with staff and admin permissions.
     - You can do this from the admin interface at /admin. Make them a super
       user.
-- Make non-staff accounts for the gnomes who gather tracks, so that they can
-  get to the request list
+- Make non-staff accounts for the elves who gather tracks, so that they can get
+  to the request list
 
 ----
 
@@ -84,5 +84,6 @@ do that too.
 
 [lastfmapikeys]: http://www.last.fm/api/account/create
 [db]: https://docs.djangoproject.com/en/dev/ref/settings/#databases
+[venv]: https://docs.python.org/3.8/tutorial/venv.html#tut-venv
 [vew]: http://virtualenvwrapper.readthedocs.org/
 [pl]: http://django-pipeline.readthedocs.org/
