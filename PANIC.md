@@ -8,7 +8,7 @@ cool if the site could continue to work.
 Here, then, are some instructions that I'm pretty sure should be all you need
 to do to get the site up and running on your own server. A passing familiarity
 with Django will help greatly. I'm assuming you have a server of some kind that
-has Python 3.7 and Apache or nginx or some httpd capable of hosting WSGI apps
+has Python 3.8 and Apache or nginx or some httpd capable of hosting WSGI apps
 installed.
 
 - Talk to Peter. They have some passwords and keys and other things that you'll
