@@ -15,7 +15,7 @@ installed.
   want if you're going to set up a replacement instance.
 - Make sure you have Python 3.8 or newer and some kind of recent version of
   npm.
-- Make and activate a virtualenv.
+- Make and activate a [virtualenv][venv].
     - I use [virtualenvwrapper][vew], but it's up to you how to set this up.
 - Clone the repository.
 - Run `pip install -r requirements.txt` from the repository root to install
@@ -84,5 +84,6 @@ do that too.
 
 [lastfmapikeys]: http://www.last.fm/api/account/create
 [db]: https://docs.djangoproject.com/en/dev/ref/settings/#databases
+[venv]: https://docs.python.org/3.8/tutorial/venv.html#tut-venv
 [vew]: http://virtualenvwrapper.readthedocs.org/
 [pl]: http://django-pipeline.readthedocs.org/
