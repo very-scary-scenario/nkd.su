@@ -89,7 +89,7 @@
             {% endif %}
 
             {% if track.year %}
-              {{ track.year }}
+              <a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a>
             {% endif %}
           </p>
         {% endif %}
