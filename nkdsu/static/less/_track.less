@@ -197,16 +197,12 @@ body main .track {
   }
 
   // fold and unfold controls
-  > .expansion-toggle {
-    position: absolute;
-    display: block;
-    top: 0.5em;
-    left: -1.3em;
-    text-shadow: none;
+  .expansion-toggle {
+    position: relative;
+    display: inline-block;
     width: 1.4em;
     height: 1.4em;
     text-align: center;
-    z-index: 3;  // above "New!"
 
     &:hover, &:focus {
       &::before {
@@ -215,6 +211,7 @@ body main .track {
         display: block;
         left: 1em;
         top: -1.3em;
+        text-shadow: none;
         background-color: @fg;
         color: @bg;
         padding: .1em .3em;
@@ -232,7 +229,7 @@ body main .track {
   }
 
   &.expanded {
-    > .expansion-toggle {
+    .expansion-toggle {
       &::after { content: @fa-var-chevron-down; }
       &:hover, &:focus { &::before { content: "collapse" } }
     }
@@ -623,13 +620,6 @@ li.vote {
     width: 68%;
   }
 }
-
-
-.dark({
-  .expansion-toggle:hover::after {
-    color: @bg;
-  }
-});
 
 details.collapsed-artist {
   summary {
