@@ -179,6 +179,13 @@ body {
           &:last-child::after {
             padding-right: 0;
           }
+
+          &[data-breadcrumb-name]::before { .fas(); font-size: .8em; }
+          &[data-breadcrumb-name=anime]::before { content: @fa-var-tv; }
+          &[data-breadcrumb-name=artists]::before { content: @fa-var-microphone; }
+          &[data-breadcrumb-name=browse]::before { content: @fa-var-folder; }
+          &[data-breadcrumb-name=composers]::before { content: @fa-var-pen-nib; }
+          &[data-breadcrumb-name=years]::before { content: @fa-var-calendar-alt; }
         }
       }
     }
