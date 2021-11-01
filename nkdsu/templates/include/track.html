@@ -1,7 +1,7 @@
 {% load vote_tags %}
 {% load cache %}
 
-{% cache 20 track track.pk vote_show.pk user.is_staff show_all_metadata focus_artist cache_invalidator %}
+{% cache 20 track track.pk vote_show.pk user.is_staff focus_artist cache_invalidator %}
   <li class="track
     {% if track.eligible %}
       eligible
@@ -71,16 +71,14 @@
         <span class="length">{{ track.length_str }}</span>
       </p>
 
-      {% if show_all_metadata %}
-        <p class="meta">
-          {% if track.composer %}composed by
-            {% for chunk in track.composers %}{% if chunk.is_artist %}<a href="{% url "vote:composer" composer=chunk.text %}">{{ chunk.text }}</a>{% else %}{{ chunk.text }}{% endif %}{% endfor %}{% if track.year %},{% endif %}{% endif %}
+      <p class="meta">
+        {% if track.composer %}composed by
+          {% for chunk in track.composers %}{% if chunk.is_artist %}<a href="{% url "vote:composer" composer=chunk.text %}">{{ chunk.text }}</a>{% else %}{{ chunk.text }}{% endif %}{% endfor %}{% if track.year %},{% endif %}{% endif %}
 
-          {% if track.year %}
-            <a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a>
-          {% endif %}
-        </p>
-      {% endif %}
+        {% if track.year %}
+          <a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a>
+        {% endif %}
+      </p>
 
       {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
         <p class="refusal">{{ track.ineligible }}</p>
