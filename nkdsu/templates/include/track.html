@@ -84,9 +84,7 @@
 
         <p class="meta composer-etc">
           {% if track.composer %}
-            <span class="composer">
-              {% for chunk in track.composers %}{% if chunk.is_artist %}<a href="{% url "vote:composer" composer=chunk.text %}">{{ chunk.text }}</a>{% else %}{{ chunk.text }}{% endif %}{% endfor %}
-            </span>
+            <span class="composer">{% for chunk in track.composers %}{% if chunk.is_artist %}<a href="{% url "vote:composer" composer=chunk.text %}">{{ chunk.text }}</a>{% else %}{{ chunk.text }}{% endif %}{% endfor %}</span>
           {% endif %}
 
           {% if track.year %}

@@ -6,6 +6,7 @@
 @avatar-thumb-size: 32px;
 @avatar-size: 48px;
 @key-avatar-thumb-size: @avatar-thumb-size * 1.5;
+@meta-left-margin: 1.5rem;
 
 @fhl: fade(@hl, 0%);
 
@@ -94,6 +95,20 @@ body main .track {
       .child-iter();
     }
 
+    .composer, .anime, .artist {
+      // align stuff with these icons consistently
+      position: relative;
+      padding-left: @meta-left-margin;
+
+      &::before {
+        left: 0;
+        top: .1rem;
+        position: absolute;
+        width: @meta-left-margin;
+        text-align: center;
+      }
+    }
+
     div.metadata {
       text-align: left;
       border-left: 1px solid @border;
@@ -108,7 +123,7 @@ body main .track {
       }
 
       .title {
-        margin: -.1em 0 .1em;
+        margin: -.1em 0 .1em @meta-left-margin;
         font-size: 1.4em;
         font-weight: bold;
       }
