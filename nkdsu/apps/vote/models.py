@@ -568,6 +568,8 @@ def _name_is_related(a: str, b: str) -> bool:
 class Role:
     anime: Optional[str]
     sortkey_group: float
+    caveat: Optional[str] = None
+    full_role: str
 
     def __init__(self, full_tag: str):
         self.full_tag = full_tag
