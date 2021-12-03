@@ -177,13 +177,15 @@ class ArtistParserTests(TestCase):
                 self.assertFalse(parsed.should_collapse, msg=string)
 
 
-ROLE_EXAMPLES: Dict[str, Tuple[Optional[str], Optional[str], str]] = {
-    '': (None, None, ''),
-    'unmatchable': ('unmatchable', None, ''),
-    'Mobile Suit Gundam SEED ED3': ('Mobile Suit Gundam SEED', None, 'ED3'),
-    "Vivy -Fluorite Eye's Song- Character Song": ("Vivy -Fluorite Eye's Song-", None, 'Character Song'),
-    'Pop Team Epic Rebroadcast OP': ('Pop Team Epic', 'Rebroadcast ', 'OP'),
-    'takt op.Destiny ED': ('takt op.Destiny', None, 'ED'),
+ROLE_EXAMPLES: Dict[str, Tuple[Optional[str], Optional[str], str, str, str]] = {
+    '': (None, None, '', '', ''),
+    'unmatchable': ('unmatchable', None, '', '', ''),
+    'Mobile Suit Gundam SEED ED3': ('Mobile Suit Gundam SEED', None, 'ED', '3', 'ED3'),
+    "Vivy -Fluorite Eye's Song- Character Song": (
+        "Vivy -Fluorite Eye's Song-", None, 'Character Song', '', 'Character Song',
+    ),
+    'Pop Team Epic Rebroadcast OP': ('Pop Team Epic', 'Rebroadcast ', 'OP', '', 'OP'),
+    'takt op.Destiny ED': ('takt op.Destiny', None, 'ED', '', 'ED'),
 }
 
 
@@ -191,4 +193,6 @@ class RoleParserTests(TestCase):
     def test_role_parsing(self) -> None:
         for full_tag, expected_result in ROLE_EXAMPLES.items():
             role = Role(full_tag)
-            self.assertEqual((role.anime, role.caveat, role.full_role), expected_result)
+            self.assertEqual((
+                role.anime, role.caveat, role.kind, role.specifics, role.full_role,
+            ), expected_result)

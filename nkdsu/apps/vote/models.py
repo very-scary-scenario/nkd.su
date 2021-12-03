@@ -570,6 +570,8 @@ class Role:
     sortkey_group: float
     caveat: Optional[str] = None
     full_role: str
+    kind: str
+    specifics: str
 
     def __init__(self, full_tag: str):
         self.full_tag = full_tag
