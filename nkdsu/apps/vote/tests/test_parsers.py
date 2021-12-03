@@ -183,6 +183,7 @@ ROLE_EXAMPLES: Dict[str, Tuple[Optional[str], Optional[str], str]] = {
     'Mobile Suit Gundam SEED ED3': ('Mobile Suit Gundam SEED', None, 'ED3'),
     "Vivy -Fluorite Eye's Song- Character Song": ("Vivy -Fluorite Eye's Song-", None, 'Character Song'),
     'Pop Team Epic Rebroadcast OP': ('Pop Team Epic', 'Rebroadcast ', 'OP'),
+    'takt op.Destiny ED': ('takt op.Destiny', None, 'ED'),
 }
 
 
