@@ -1525,7 +1525,8 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
 
         if len(status) > settings.TWEET_LENGTH:
-            status = status[:settings.TWEET_LENGTH-1].strip() + '…'
+            # twitter counts ellipses as two characters for some reason, so we get rid of two:
+            status = status[:settings.TWEET_LENGTH-2].strip() + '…'
 
         return status
 
