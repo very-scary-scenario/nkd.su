@@ -31,125 +31,129 @@
       <div class="art" style="background-image: url('{{ track.background_art.url }}');"></div>
     {% endif %}
 
-    <div class="metadata">
-      <div class="artist">
-        {% include "include/linked_artists.html" with artists=track.artists %}
-      </div>
-      <p class="title">
-        <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
-      </p>
-
-      <p class="meta role-etc">
-        {% if track.role %}
-          <span class="roles">
-            {% for role_detail in track.role_details %}
-              <span class="role">
-                {% if role_detail.anime %}
-                  <a href="{% url "vote:anime" anime=role_detail.anime %}">{{ role_detail.anime }}</a>
-                  {{ role_detail.caveat|default:"" }}
-                  {{ role_detail.full_role }}
-                {% else %}
-                  {{ role_detail }}
-                {% endif %}
-              </span>
-            {% endfor %}
-          </span>
-        {% endif %}
-
-        {% if track.last_play %}
-          <span class="last_played">played <a href="{{ track.last_play.show.get_absolute_url }}">
-            {% if track.weeks_since_play == 0 %}
-              this week
-            {% elif track.weeks_since_play == 1 %}
-              last week
-            {% else %}
-              {{ track.weeks_since_play }} weeks ago
-            {% endif %}
-          </a></span>
-        {% endif %}
-
-        <span class="length">{{ track.length_str }}</span>
-      </p>
-
-      <p class="meta composer-etc">
-        {% if track.composer %}
-          <span class="composer">
-            composed by
-            {% for chunk in track.composers %}{% if chunk.is_artist %}<a href="{% url "vote:composer" composer=chunk.text %}">{{ chunk.text }}</a>{% else %}{{ chunk.text }}{% endif %}{% endfor %}
-          </span>
-        {% endif %}
-
-        {% if track.year %}
-          <a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a>
-        {% endif %}
-      </p>
-
-      {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
-        <p class="refusal">{{ track.ineligible }}</p>
-      {% endif %}
-
-      {% if user.is_staff %}
-        {% include "include/notes.html" with notes=track.notes %}
-      {% else %}
-        {% include "include/notes.html" with notes=track.public_notes %}
-      {% endif %}
-    </div>
-    {% if track|votes_for:vote_show %}
+    <div class="first-row">
       <div class="key-vote">
         <ul class="votes">
-          {% for vote in track|votes_for:vote_show|slice:":1" %}
+          {% if track|votes_for:vote_show %}
+            {% for vote in track|votes_for:vote_show|slice:":1" %}
+              {% include "include/inline_vote.html" %}
+            {% endfor %}
+          {% else %}
+            {% include "include/plusone.html" %}
+          {% endif %}
+        </ul>
+      </div>
+
+      <div class="metadata">
+        <p class="artist">{% include "include/linked_artists.html" with artists=track.artists %}</p>
+        <p class="title">
+          <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
+        </p>
+
+        <p class="meta role-etc">
+          {% if track.role %}
+            <span class="roles">
+              {% for role_detail in track.role_details %}
+                <span class="role">
+                  {% if role_detail.anime %}
+                    <span class="anime"><a href="{% url "vote:anime" anime=role_detail.anime %}">{{ role_detail.anime }}</a></span>
+                    {{ role_detail.caveat|default:"" }}
+                    {{ role_detail.full_role }}
+                  {% else %}
+                    {{ role_detail }}
+                  {% endif %}
+                </span>
+              {% endfor %}
+            </span>
+          {% endif %}
+
+          {% if track.last_play %}
+            <span class="last_played">played <a href="{{ track.last_play.show.get_absolute_url }}">
+              {% if track.weeks_since_play == 0 %}
+                this week
+              {% elif track.weeks_since_play == 1 %}
+                last week
+              {% else %}
+                {{ track.weeks_since_play }} weeks ago
+              {% endif %}
+            </a></span>
+          {% endif %}
+
+          <span class="length">{{ track.length_str }}</span>
+        </p>
+
+        <p class="meta composer-etc">
+          {% if track.composer %}
+            <span class="composer">{% for chunk in track.composers %}{% if chunk.is_artist %}<a href="{% url "vote:composer" composer=chunk.text %}">{{ chunk.text }}</a>{% else %}{{ chunk.text }}{% endif %}{% endfor %}</span>
+          {% endif %}
+
+          {% if track.year %}
+            <a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a>
+          {% endif %}
+        </p>
+
+        {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
+          <p class="refusal">{{ track.ineligible }}</p>
+        {% endif %}
+
+        {% if user.is_staff %}
+          {% include "include/notes.html" with notes=track.notes %}
+        {% else %}
+          {% include "include/notes.html" with notes=track.public_notes %}
+        {% endif %}
+      </div>
+    </div>
+
+    {% if track|votes_for:vote_show %}
+      <div class="voting">
+        <ul class="votes">
+          {% for vote in track|votes_for:vote_show|slice:"1:" %}
             {% include "include/inline_vote.html" %}
           {% endfor %}
+          {% include "include/plusone.html" %}
         </ul>
       </div>
     {% endif %}
-    <div class="voting">
-      <ul class="votes">
-        {% for vote in track|votes_for:vote_show|slice:"1:" %}
-          {% include "include/inline_vote.html" %}
-        {% endfor %}
-        {% if track.eligible and not user.is_staff %}
-          <li class="plusone"><a target="_blank" title="request this track" href="{{ track.get_vote_url }}">
-            +
-          </a></li>
-        {% endif %}
-      </ul>
 
-      {% if user.is_staff %}
-        <p class="admin">
+    {% if user.is_staff %}
+      <div class="admin">
+        <p class="useful-when-live">
           <span><a href="{% url "vote:admin:play" pk=track.pk %}">play</a></span>
-          <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
-          {% if track.ineligible %}
-            <span><a href="{% url "vote:admin:unblock" pk=track.pk %}">unblock</a></span>
-          {% elif track.eligible %}
-            <span><a href="{% url "vote:admin:block" pk=track.pk %}">block</a></span>
-            <span><a class="ajaxable" href="{% url "vote:admin:block_with_reason" pk=track.pk %}?reason=announced">announce</a></span>
-          {% endif %}
-        </p>
-        <p class="admin">
-          {% if track.hidden %}
-            <span><a href="{% url "vote:admin:unhide" pk=track.pk %}">unhide</a></span>
-          {% else %}
-            <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
-          {% endif %}
+
           {% if track in current_show.discarded or track in current_show.shortlisted %}
             <span><a class="ajaxable" href="{% url "vote:admin:reset" pk=track.pk %}">reset shortlist/discard</a></span>
           {% else %}
             <span><a class="ajaxable" href="{% url "vote:admin:shortlist" pk=track.pk %}">shortlist</a></span>
             <span><a class="ajaxable" href="{% url "vote:admin:discard" pk=track.pk %}">discard</a></span>
           {% endif %}
+
+          {% if track.eligible %}
+            <span><a class="ajaxable" href="{% url "vote:admin:block_with_reason" pk=track.pk %}?reason=announced">announce</a></span>
+          {% endif %}
+        </p>
+        <p class="useful-less-often">
+          {% if track.ineligible %}
+            <span><a href="{% url "vote:admin:unblock" pk=track.pk %}">unblock</a></span>
+          {% else %}
+            <span><a href="{% url "vote:admin:block" pk=track.pk %}">block</a></span>
+          {% endif %}
+
+          {% if track.hidden %}
+            <span><a href="{% url "vote:admin:unhide" pk=track.pk %}">unhide</a></span>
+          {% else %}
+            <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
+          {% endif %}
+
+          <span><a href="{% url "vote:admin:manual_vote" pk=track.pk %}">manual vote</a></span>
+
           {% if track.metadata_locked %}
             <span><a title="let library updates affect this track" href="{% url "vote:admin:unlock_metadata" pk=track.pk %}">unlock</a></span>
           {% else %}
             <span><a title="prevent library updates from affecting this track" href="{% url "vote:admin:lock_metadata" pk=track.pk %}">lock</a></span>
           {% endif %}
+
           <span><a href="{% url "vote:admin:make_note" pk=track.pk %}">add note</a></span>
         </p>
-      {% endif %}
-    </div>
-    {% if user.is_staff %}
-      <div class="invitation">
-        {{ track|votes_for:vote_show|length }}
       </div>
     {% endif %}
   </li>

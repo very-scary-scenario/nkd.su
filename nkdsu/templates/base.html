@@ -25,12 +25,6 @@
       {% if user.is_staff %}
         staff
       {% endif %}
-
-      {% if tracks_expanded %}
-        tracks-expanded
-      {% else %}
-        tracks-collapsed
-      {% endif %}
     "
 
     {% if dark_mode %}
@@ -50,7 +44,7 @@
         <div id="breadcrumbs">
           <ul>
             {% for link, name in breadcrumbs %}
-              <li>
+              <li data-breadcrumb-name="{{ name }}">
                 {% if link %}
                   <a href="{{ link }}">{{ name }}</a>
                 {% else %}

@@ -33,3 +33,15 @@ button.link {
   font-family: inherit;
   font-size: inherit;
 }
+
+.artist, .anime, .composer {
+  &::before {
+    .fas();
+    display: inline-block;
+    margin-right: .3em;
+  }
+}
+
+.artist::before { content: @fa-var-microphone; }
+.anime::before { content: @fa-var-tv; }
+.composer::before { content: @fa-var-pen-nib; }

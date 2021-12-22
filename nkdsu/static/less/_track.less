@@ -1,12 +1,12 @@
 @import "_mixins.less"; 
 
-@metadata-width: 60%;
 @new-compensation: 2.7em;
 
 @avatar-border-radius: 0.3em;
 @avatar-thumb-size: 32px;
 @avatar-size: 48px;
 @key-avatar-thumb-size: @avatar-thumb-size * 1.5;
+@meta-left-margin: 1.5rem;
 
 @fhl: fade(@hl, 0%);
 
@@ -16,11 +16,6 @@
 
 .tinytrack() {
   display: block;
-
-  div.metadata, div.key-vote, div.voting, div.invitation {
-    text-align: left;
-    display: block;
-  }
 
   div.metadata {
     width: auto;
@@ -56,22 +51,37 @@ body main .track {
   border: 1px solid @border;
   border-radius: @track-border-radius;
 
-  display: table;
   background-clip: padding-box;
   position: relative;
 
-  div.metadata, div.key-vote, div.voting, div.invitation {
-    display: table-cell;
-    vertical-align: middle;
-    padding: 0 .6em;
-    position: relative;
-  }
+  div.first-row {
+    display: table-row;
 
-  div.metadata {
-    text-align: right;
-    width: @metadata-width;
+    div.metadata, div.key-vote {
+      display: table-cell;
+      vertical-align: middle;
+      padding: 0 .6em;
+      position: relative;
+    }
 
-    border-right: 1px solid @border;
+    div.key-vote {
+      width: @key-avatar-thumb-size + 4px;
+
+      img.avatar.thumb, .plusone a {
+        height: @key-avatar-thumb-size !important;
+        width: @key-avatar-thumb-size !important;
+      }
+
+      .plusone a {
+        padding-top: .25em;
+        font-size: 1.5em;
+      }
+
+      .deets {
+        top: -.35em !important;
+        left: -.35em !important;
+      }
+    }
 
     .artist {
       display: inline-block;
@@ -85,59 +95,76 @@ body main .track {
       .child-iter();
     }
 
-    .refusal {
-      color: #aaa;
+    .composer, .anime, .artist {
+      // align stuff with these icons consistently
+      position: relative;
+      padding-left: @meta-left-margin;
+
+      &::before {
+        left: 0;
+        top: .1rem;
+        position: absolute;
+        width: @meta-left-margin;
+        text-align: center;
+      }
     }
 
-    .title {
-      margin: -.1em 0 .1em;
-      font-size: 1.4em;
-      font-weight: bold;
-    }
+    div.metadata {
+      text-align: left;
+      border-left: 1px solid @border;
 
-    .roles {
-      .child-iter();
-    }
+      .refusal, .meta {
+        font-size: .8em;
+        .child-iter();
+      }
 
-    .notes {
-      li {
-        margin-top: .2em;
-        font-family: "Comic Neue", sans-serif;
+      .refusal {
+        color: #aaa;
+      }
 
-        &.transient {
-          font-weight: bold;
-        }
+      .title {
+        margin: -.1em 0 .1em @meta-left-margin;
+        font-size: 1.4em;
+        font-weight: bold;
+      }
 
-        &.public-warn .note::after {
-          opacity: .7;
-          content: " PUBLIC";
+      .roles {
+        .child-iter();
+      }
+
+      .notes {
+        li {
+          margin-top: .2em;
+          font-family: "Comic Neue", sans-serif;
+
+          &.transient {
+            font-weight: bold;
+          }
+
+          &.public-warn .note::after {
+            opacity: .7;
+            content: " PUBLIC";
+          }
         }
       }
     }
   }
 
-  div.key-vote {
-    width: @key-avatar-thumb-size + 4px;
-    padding-right: 0;
-
-    img.avatar.thumb {
-      height: @key-avatar-thumb-size !important;
-      width: @key-avatar-thumb-size !important;
-    }
-
-    .deets {
-      top: -.35em !important;
-      right: -.35em !important;
-    }
+  div.voting, div.admin {
+    position: relative;
+    z-index: 2;
+    display: block;
+    margin: .6em .6em 0;
+    padding: .6em 0 0;
+    border-top: 1px solid @border;
   }
 
-  .admin {
+  div.admin {
+    z-index: 1;
     font-size: .8em;
-    .child-iter();
-  }
-
-  .invitation {
-    text-align: right;
+    > p {
+      .child-iter();
+    }
   }
 
   // stamps
@@ -184,6 +211,98 @@ body main .track {
     opacity: .08;
   }
 
+  // fold and unfold controls
+  .expansion-toggle {
+    position: relative;
+    display: inline-block;
+    width: 1.4em;
+    height: 1.4em;
+    text-align: center;
+
+    &:hover, &:focus {
+      &::before {
+        content: "expand";
+        position: absolute;
+        display: block;
+        left: 1em;
+        top: -1.3em;
+        text-shadow: none;
+        background-color: @fg;
+        color: @bg;
+        padding: .1em .3em;
+        border-radius: .2em;
+        pointer-events: none;
+      }
+    }
+
+    &::after {
+      display: inline-block;
+      padding-top: .2em;
+      .fas();
+      content: @fa-var-chevron-right;
+    }
+  }
+
+  &.expanded {
+    .expansion-toggle {
+      &::after { content: @fa-var-chevron-down; }
+      &:hover, &:focus { &::before { content: "collapse" } }
+    }
+
+    div.first-row {
+      display: flex;
+      flex-direction: column;
+
+      div.metadata, div.key-vote {
+        width: auto;
+      }
+
+      div.metadata { order: 0 }
+      div.key-vote { order: 1 }
+    }
+
+    .voting {
+      margin-top: 0;
+      border: none;
+    }
+
+    .vote {
+      border-top: 1px solid rgba(136, 136, 136, 0.5);
+      margin-top: .6em;
+      display: block;
+
+      .avatar.thumb { display: none; }
+
+      &::after {
+        content: none;
+      }
+
+      .deets {
+        padding: 0.6em 0;
+        background: none;
+        box-shadow: none;
+        border: none;
+        transform: none;
+        pointer-events: auto;
+        position: static;
+        opacity: 1;
+        max-width: none;
+        
+        .text {
+          text-align: left;
+
+          &::before, &::after {
+            content: none;
+          }
+        }
+      }
+    }
+
+    .voting {
+      padding-top: 0;
+    }
+  }
+
   // variants
   &.ineligible {
     .invert();
@@ -198,7 +317,7 @@ body main .track {
       a {
         color: @inv_inu_hl;
 
-        &:hover {
+        &[href]:hover {
           border-color: @inv_inu_hl;
           color: @inv_fg;
         }
@@ -302,53 +421,24 @@ li.plusone {
     margin: 2px;
     display: block;
     background-color: fade(black, 10);
-    border: 1px dashed @hl;
+    border: 1px dashed @fg;
     border-radius: @avatar-border-radius;
     height: @avatar-thumb-size;
     width: @avatar-thumb-size;
     padding-top: .1em;
     font-size: 1.2em;
-
-    &:hover, &:focus {
-      border: 1px dashed @fg;
-    }
-  }
-}
-
-body.tracks-expanded li.vote {
-  display: block;
-  margin-bottom: 1em;
-  clear: both;
-
-  .hat {
-    display: none;
-  }
-
-  .hat-info .fa {
-    color: @badge-colour;
-  }
-
-  .avatar {
-    float: right;
-    width: @avatar-size;
-    height: @avatar-size;
-    margin-left: .5em;
-
-    &.thumb {
-      display: none;
-    }
-  }
-
-  .deets {
     color: @fg !important;
+    cursor: default;
+
+    &[href] {
+      border-color: @hl;
+      color: @hl !important;
+      cursor: pointer;
+    }
   }
 }
 
-body.tracks-expanded .track.ineligible li.vote .deets {
-  color: @inv_fg !important;
-}
-
-body.tracks-collapsed li.vote {
+li.vote {
   position: relative;
   display: inline-block;
 
@@ -383,10 +473,9 @@ body.tracks-collapsed li.vote {
 
       .deets {
         position: absolute;
-        right: -.8em;
+        left: -.8em;
         top: -.8em;
         pointer-events: none;
-        text-align: right;
         z-index: 3;
 
         .uninvert();
@@ -400,13 +489,13 @@ body.tracks-collapsed li.vote {
         border-radius: .4em;
 
         img {
-          float: right;
+          float: left;
           width: @avatar-size;
           height: @avatar-size;
         }
 
         .meta {
-          margin-right: 55px;
+          margin-left: 55px;
           color: #666;
         }
 
@@ -469,7 +558,7 @@ body.tracks-collapsed li.vote {
       opacity: 0;
       transition: opacity .1s, transform .1s;
       transform: scale(0.9, 0.9);
-      transform-origin: 85% 2em;
+      transform-origin: 15% 2em;
     }
 
     &:hover {

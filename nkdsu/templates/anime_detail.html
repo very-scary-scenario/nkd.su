@@ -9,13 +9,13 @@
 
 {% block content %}
 
-  <h2>{{ anime }}</h2>
+  <h2 class="anime">{{ anime }}</h2>
 
   {% if related_anime %}
     <p class="related-anime">
       Related anime:
       {% for anime in related_anime %}
-      <a href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>{% if not forloop.last %},{% endif %}
+      <a class="anime" href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>{% if not forloop.last %},{% endif %}
       {% endfor %}
     </p>
   {% endif %}

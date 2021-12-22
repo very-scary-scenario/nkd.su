@@ -9,11 +9,11 @@
 
 {% block content %}
 
-  <h2>{{ composer }}</h2>
+  <h2 class="composer">{{ composer }}</h2>
 
   {% if tracks_as_artist %}
     <p class="subheading">
-    {{ composer }} is also credited as an <a href="{% url "vote:artist" artist=composer %}">artist for {{ tracks_as_artist }} track{{ tracks_as_artist|pluralize }}</a> in the library.
+      <span class="composer">{{ composer }}</span> is also credited as an <a class="artist" href="{% url "vote:artist" artist=composer %}">artist for {{ tracks_as_artist }} track{{ tracks_as_artist|pluralize }}</a> in the library.
     </p>
   {% endif %}
 

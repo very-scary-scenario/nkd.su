@@ -223,13 +223,10 @@ PIPELINE = {
     'JAVASCRIPT': {
         'base': {
             'source_filenames': [
-                'js/libs/jquery.js',
-                'js/libs/jquery.cookie.js',
                 'js/libs/Sortable.js',
 
                 'js/csrf.js',
-
-                'js/collapse-toggle.js',
+                'js/expand.js',
                 'js/select.js',
                 'js/messages.js',
                 'js/ajax-actions.js',

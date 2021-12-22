@@ -1,0 +1,17 @@
+{% load vote_tags %}
+
+<li class="plusone">
+  {% if user.is_staff %}
+    <a>
+      {{ track|votes_for:vote_show|length }}
+    </a>
+  {% elif track.ineligible %}
+    <a title="{{ track.ineligible }}">
+      -
+    </a>
+  {% else %}
+    <a target="_blank" title="request this track" href="{{ track.get_vote_url }}">
+      +
+    </a>
+  {% endif %}
+</li>
