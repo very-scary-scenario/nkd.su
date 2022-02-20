@@ -599,7 +599,7 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         send_mail(
             '[nkd.su report] %s' % track.get_absolute_url(),
             '\n\n'.join(fields),
-            '"nkd.su" <nkdsu@bldm.us>',
+            f'"nkd.su" <{settings.EMAIL_HOST_USER}>',
             [settings.REQUEST_CURATOR],
         )
 
@@ -639,7 +639,7 @@ class RequestAddition(FormView):
         send_mail(
             '[nkd.su] %s' % f['title'],
             '\n\n'.join(fields),
-            '"nkd.su" <nkdsu@bldm.us>',
+            '"nkd.su" <noreply@vscary.co>',
             [settings.REQUEST_CURATOR],
         )
 
