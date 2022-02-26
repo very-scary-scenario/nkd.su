@@ -1,5 +1,7 @@
 from nkdsu.settings import *  # noqa
 
+HASHTAG = '#usedoken'
+
 STATIC_URL = '/static/'
 
 CACHES = {
