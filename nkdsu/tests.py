@@ -119,6 +119,12 @@ class EverythingTest(
 
     instant_tracebacks = True
 
+    def ensure_all_urls_resolve(self, urls):
+        # linode has robot protection that makes automated testing of links to their site impossible, so:
+        del urls['https://www.linode.com/legal-privacy/']
+
+        return super().ensure_all_urls_resolve(urls)
+
 
 class LoggedInEverythingTest(EverythingTest):
     def setUp(self) -> None:
