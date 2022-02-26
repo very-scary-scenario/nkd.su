@@ -5,7 +5,7 @@
     "lint-flake8": "flake8 .",
     "lint-js": "eslint nkdsu/static/js",
     "lint-mypy": "mypy --config-file mypy.ini",
-    "test": "python manage.py test"
+    "test": "python manage.py test --settings=nkdsu.settings_testing"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
