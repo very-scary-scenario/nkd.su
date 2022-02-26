@@ -122,6 +122,17 @@ DEFAULT_TRACKS = [
         "211905",
         "2012-11-16T00:05:05Z",
         "00D12BB6D5ED72A7"
+    ),
+    TrackMeta(
+        "8",
+        "CAT'S EYE (Cat's Eye OP1|Gintama Insert Song EP84)",
+        "Anri",
+        "Cat's Eye",
+        "",
+        "1983",
+        "195604",
+        "2020-12-19T17:59:17Z",
+        "89EE2CEBC58E2CAE"
     )
 ]
 
