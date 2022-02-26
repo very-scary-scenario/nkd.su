@@ -695,8 +695,8 @@ class Track(CleanOnSaveMixin, models.Model):
         The string that, for instance, would be tweeted
         """
 
-        if self.role:
-            return u'‘%s’ (%s) - %s' % (self.title, self.role, self.artist)
+        if self.roles:
+            return u'‘%s’ (%s) - %s' % (self.title, self.roles[0], self.artist)
         else:
             return u'‘%s’ - %s' % (self.title, self.artist)
 
