@@ -3,14 +3,17 @@
 {% block content %}
   <h2 class=message>Test metadata parsing</h2>
 
-  <form method="post" action=".">
+  <form method="post" action="." class="check-parser">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="test these tags">
   </form>
 
   {% if track %}
-    <dl>
+    <dl class="parser-check">
+      <dt>title</td>
+      <dd>{{ track.title }}
+
       <dt>role</td>
       <dd>
         {% if track.role %}
@@ -18,6 +21,11 @@
         {% else %}
           <code>no role</code>
         {% endif %}
+      </dd>
+
+      <dt>artists</td>
+      <dd>
+        {% include "include/linked_artists.html" with artists=track.artists %}
       </dd>
     </dl>
   {% endif %}
