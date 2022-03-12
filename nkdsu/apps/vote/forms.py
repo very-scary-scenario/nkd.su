@@ -7,7 +7,7 @@ from django.core.validators import validate_email
 from django.utils.safestring import mark_safe
 import tweepy
 
-from .models import Note, Request, Track
+from .models import Note, Request
 from .utils import reading_tw_api
 from ..vote import trivia
 
