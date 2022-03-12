@@ -566,3 +566,7 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
             messages.success(self.request, u"request claimed")
 
         return redirect(reverse('vote:admin:requests'))
+
+
+class CheckParser(AnyLoggedInUserMixin, FormView):
+    pass
