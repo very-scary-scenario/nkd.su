@@ -1,5 +1,7 @@
 {% extends parent %}
 
+{% load pipeline %}
+
 {% block content %}
   <h2 class=message>Test metadata parsing</h2>
 
@@ -45,4 +47,6 @@
     {{ form.as_p }}
     <input type="submit" value="test these tags">
   </form>
+
+  {% javascript "check-metadata" %}
 {% endblock %}

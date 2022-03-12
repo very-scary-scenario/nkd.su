@@ -241,6 +241,13 @@ PIPELINE = {
             ],
             'output_filename': 'js/min/base.js',
         },
+
+        'check-metadata': {
+            'source_filenames': [
+                'js/libs/id3js/id3.js',
+                'js/check-metadata.js',
+            ]
+        }
     },
 }
 
