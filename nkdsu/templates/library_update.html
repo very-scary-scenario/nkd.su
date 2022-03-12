@@ -9,7 +9,7 @@
           <p class="title"><strong>{{ change.item }}</strong></p>
 
           {% for warning in change.warnings %}
-            <p class="update-message update-warning"><strong>{{ warning.field }}</strong>: {{ warning.message }}</p>
+            {% include "include/consistency_warning.html" %}
           {% endfor %}
 
           {% if change.type == 'new' %}

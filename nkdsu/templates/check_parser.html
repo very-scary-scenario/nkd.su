@@ -10,7 +10,9 @@
   </form>
 
   {% if warnings %}
-    <pre>{{ warnings }}</pre>
+    {% for warning in warnings %}
+      {% include "include/consistency_warning.html" %}
+    {% endfor %}
   {% endif %}
 
   {% if track %}
