@@ -15,7 +15,7 @@ from django.views.generic import CreateView, DetailView, FormView, ListView, Tem
 from django.views.generic.base import TemplateResponseMixin
 
 from .js import JSApiMixin
-from ..forms import CheckParserForm, LibraryUploadForm, NoteForm
+from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
 from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
 from ..update_library import metadata_consistency_checks, update_library
 
@@ -568,11 +568,11 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
         return redirect(reverse('vote:admin:requests'))
 
 
-class CheckParser(AnyLoggedInUserMixin, FormView):
-    form_class = CheckParserForm
+class CheckMetadata(AnyLoggedInUserMixin, FormView):
+    form_class = CheckMetadataForm
     template_name = 'check_parser.html'
 
-    def form_valid(self, form: CheckParserForm) -> HttpResponse:
+    def form_valid(self, form: CheckMetadataForm) -> HttpResponse:
         context = self.get_context_data()
         track = Track(
             id3_title=form.cleaned_data['id3_title'],

@@ -1,7 +1,9 @@
 {% extends parent %}
 
+{% block title %}Check metadata{% endblock %}
+
 {% block content %}
-  <h2 class=message>Test metadata parsing</h2>
+  <h2 class=message>Check metadata</h2>
 
   {% if warnings %}
     {% for warning in warnings %}
@@ -10,7 +12,7 @@
   {% endif %}
 
   {% if track %}
-    <dl class="parser-check">
+    <dl class="metadata-check">
       <dt>title</td>
       <dd>{{ track.title }}
 
@@ -40,7 +42,7 @@
     </dl>
   {% endif %}
 
-  <form method="post" action="." class="check-parser">
+  <form method="post" action="." class="check-metadata">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="test these tags">
