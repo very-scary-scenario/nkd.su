@@ -138,8 +138,8 @@ class RequestForm(TriviaForm):
 
 
 class CheckParserForm(forms.Form):
-    id3_title = forms.CharField()
-    id3_artist = forms.CharField()
+    id3_title = forms.CharField(widget=forms.Textarea())
+    id3_artist = forms.CharField(widget=forms.Textarea())
 
 
 class LibraryUploadForm(forms.Form):
