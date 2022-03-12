@@ -570,7 +570,7 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
 
 class CheckMetadata(AnyLoggedInUserMixin, FormView):
     form_class = CheckMetadataForm
-    template_name = 'check_parser.html'
+    template_name = 'check_metadata.html'
 
     def form_valid(self, form: CheckMetadataForm) -> HttpResponse:
         context = self.get_context_data()
