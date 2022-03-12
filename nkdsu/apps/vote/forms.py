@@ -141,6 +141,7 @@ class CheckParserForm(forms.Form):
     id3_title = forms.CharField(widget=forms.Textarea())
     id3_artist = forms.CharField(widget=forms.Textarea())
     composer = forms.CharField(widget=forms.Textarea())
+    year = forms.IntegerField(required=False)
 
 
 class LibraryUploadForm(forms.Form):

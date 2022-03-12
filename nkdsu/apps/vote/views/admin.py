@@ -578,6 +578,7 @@ class CheckParser(AnyLoggedInUserMixin, FormView):
             id3_title=form.cleaned_data['id3_title'],
             id3_artist=form.cleaned_data['id3_artist'],
             composer=form.cleaned_data['composer'],
+            year=form.cleaned_data['year'],
         )
         context.update({
             'track': track,
