@@ -27,6 +27,11 @@
       <dd>
         {% include "include/linked_artists.html" with artists=track.artists %}
       </dd>
+
+      <dt>composer</td>
+      <dd>
+        {% include "include/linked_composers.html" with composers=track.composers %}
+      </dd>
     </dl>
   {% endif %}
 
