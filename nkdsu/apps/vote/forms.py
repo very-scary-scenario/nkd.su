@@ -137,7 +137,7 @@ class RequestForm(TriviaForm):
         return cleaned_data
 
 
-class CheckParserForm(forms.Form):
+class CheckMetadataForm(forms.Form):
     id3_title = forms.CharField(widget=forms.Textarea())
     id3_artist = forms.CharField(widget=forms.Textarea())
     composer = forms.CharField(widget=forms.Textarea())
