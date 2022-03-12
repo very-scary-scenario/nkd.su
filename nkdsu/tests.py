@@ -31,7 +31,7 @@ class EverythingTest(
         '/vote-admin/upload/',
         '/vote-admin/requests/',
         '/vote-admin/trivia/',
-        '/vote-admin/test-metadata/',
+        '/vote-admin/check-metadata/',
         '/vote-admin/play/0007C3F2760E0541/',
 
         '/js/deselect/',

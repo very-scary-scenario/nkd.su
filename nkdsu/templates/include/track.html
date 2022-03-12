@@ -63,7 +63,7 @@
         {% if track.composer %}
           <span class="composer">
             composed by
-            {% for chunk in track.composers %}{% if chunk.is_artist %}<a href="{% url "vote:composer" composer=chunk.text %}">{{ chunk.text }}</a>{% else %}{{ chunk.text }}{% endif %}{% endfor %}
+            {% include "include/linked_composers.html" with composers=track.composers %}
           </span>
         {% endif %}
 

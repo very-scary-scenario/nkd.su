@@ -1,16 +1,18 @@
 {% extends parent %}
 
-{% block content %}
-  <h2 class=message>Test metadata parsing</h2>
+{% block title %}Check metadata{% endblock %}
 
-  <form method="post" action="." class="check-parser">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="test these tags">
-  </form>
+{% block content %}
+  <h2 class=message>Check metadata</h2>
+
+  {% if warnings %}
+    {% for warning in warnings %}
+      {% include "include/consistency_warning.html" %}
+    {% endfor %}
+  {% endif %}
 
   {% if track %}
-    <dl class="parser-check">
+    <dl class="metadata-check">
       <dt>title</td>
       <dd>{{ track.title }}
 
@@ -27,6 +29,22 @@
       <dd>
         {% include "include/linked_artists.html" with artists=track.artists %}
       </dd>
+
+      <dt>composer</td>
+      <dd>
+        {% include "include/linked_composers.html" with composers=track.composers %}
+      </dd>
+
+      <dt>year</td>
+      <dd>
+        {{ track.year }}
+      </dd>
     </dl>
   {% endif %}
+
+  <form method="post" action="." class="check-metadata">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="test these tags">
+  </form>
 {% endblock %}

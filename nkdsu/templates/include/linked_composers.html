@@ -1,0 +1,1 @@
+{% for chunk in composers %}{% if chunk.is_artist %}<a href="{% url "vote:composer" composer=chunk.text %}">{{ chunk.text }}</a>{% else %}{{ chunk.text }}{% endif %}{% endfor %}
