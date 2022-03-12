@@ -7,7 +7,7 @@ from django.core.validators import validate_email
 from django.utils.safestring import mark_safe
 import tweepy
 
-from .models import Note, Request
+from .models import Note, Request, Track
 from .utils import reading_tw_api
 from ..vote import trivia
 
@@ -135,6 +135,11 @@ class RequestForm(TriviaForm):
                 "I'm sure you can give us more information than that.")
 
         return cleaned_data
+
+
+class CheckParserForm(forms.Form):
+    id3_title = forms.CharField()
+    id3_artist = forms.CharField()
 
 
 class LibraryUploadForm(forms.Form):

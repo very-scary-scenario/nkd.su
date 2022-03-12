@@ -15,7 +15,7 @@ from django.views.generic import CreateView, DetailView, FormView, ListView, Tem
 from django.views.generic.base import TemplateResponseMixin
 
 from .js import JSApiMixin
-from ..forms import LibraryUploadForm, NoteForm
+from ..forms import CheckParserForm, LibraryUploadForm, NoteForm
 from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
 from ..update_library import update_library
 
@@ -569,4 +569,13 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
 
 
 class CheckParser(AnyLoggedInUserMixin, FormView):
-    pass
+    form_class = CheckParserForm
+    template_name = 'check_parser.html'
+
+    def form_valid(self, form: CheckParserForm) -> HttpResponse:
+        context = self.get_context_data()
+        context['track'] = Track(
+            id3_title=form.cleaned_data['id3_title'],
+            id3_artist=form.cleaned_data['id3_artist'],
+        )
+        return self.render_to_response(context)
