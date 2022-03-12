@@ -1,12 +1,25 @@
 #!/usr/bin/env python
 
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Literal, Optional, Tuple, TypedDict
 
 from Levenshtein import ratio
 from django.utils.timezone import get_default_timezone, make_aware
 from sly.lex import LexError
 
 from .models import Track
+
+
+UpdateFieldName = Literal[
+    'added',
+    'album',
+    'anime',
+    'artist',
+    'composer',
+    'msec',
+    'role',
+    'title',
+    'year',
+]
 
 
 def check_closeness_against_list(name, canonical_names: Iterable[str], reverse: bool = False) -> Optional[str]:
@@ -38,12 +51,25 @@ def check_closeness_against_list(name, canonical_names: Iterable[str], reverse: 
     return best_match
 
 
+class MetadataWarning(TypedDict):
+    """
+    A warning about a potential problem with a proposed metadata update.
+    """
+
+    field: UpdateFieldName
+    message: str
+
+
 def metadata_consistency_checks(
     db_track: Track,
     all_anime_titles: Iterable[str],
     all_artists: Iterable[str],
-) -> List[Dict[str, str]]:
-    warnings = []
+) -> List[MetadataWarning]:
+    """
+    Take a proposed update to the library, and check it for various types of things that might be wrong with it.
+    """
+
+    warnings: List[MetadataWarning] = []
     track_animes = [rd.anime for rd in db_track.role_details]
     track_roles = [rd.full_role for rd in db_track.role_details]
 
@@ -105,7 +131,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
     for tid in tree['Tracks']:
         changed = False
         new = False
-        warnings = []
+        warnings: List[MetadataWarning] = []
         field_alterations = []
 
         t = tree['Tracks'][tid]
@@ -122,7 +148,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
             db_track = Track()
 
         else:
-            db_dict = {
+            db_dict: Dict[UpdateFieldName, Any] = {
                 'title': db_track.id3_title,
                 'artist': db_track.id3_artist,
                 'album': db_track.id3_album,
@@ -131,7 +157,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
                 'year': db_track.year,
                 'added': db_track.added,
             }
-            track_dict = {
+            track_dict: Dict[UpdateFieldName, Any] = {
                 'title': t['Name'],
                 'artist': t['Artist'],
                 'album': t['Album'],
