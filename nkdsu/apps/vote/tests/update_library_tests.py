@@ -5,7 +5,7 @@ from ..update_library import metadata_consistency_checks
 
 
 class MetadataConsistencyCheckTest(TestCase):
-    def test_anime_and_role_required_if_inudesu_false(self):
+    def test_anime_and_role_required_if_inudesu_false(self) -> None:
         self.assertEqual(
             metadata_consistency_checks(Track(id3_title='Complete role (Some kind of anime)'), [], []),
             [],
@@ -24,7 +24,7 @@ class MetadataConsistencyCheckTest(TestCase):
             [],
         )
 
-    def test_slight_artist_mismatch(self):
+    def test_slight_artist_mismatch(self) -> None:
         self.assertEqual(
             metadata_consistency_checks(Track(
                 id3_title='title (role)',
