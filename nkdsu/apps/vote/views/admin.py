@@ -17,7 +17,7 @@ from django.views.generic.base import TemplateResponseMixin
 from .js import JSApiMixin
 from ..forms import CheckParserForm, LibraryUploadForm, NoteForm
 from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
-from ..update_library import update_library
+from ..update_library import metadata_consistency_checks, update_library
 
 
 class AdminMixin:
@@ -574,8 +574,12 @@ class CheckParser(AnyLoggedInUserMixin, FormView):
 
     def form_valid(self, form: CheckParserForm) -> HttpResponse:
         context = self.get_context_data()
-        context['track'] = Track(
+        track = Track(
             id3_title=form.cleaned_data['id3_title'],
             id3_artist=form.cleaned_data['id3_artist'],
         )
+        context.update({
+            'track': track,
+            'warnings': metadata_consistency_checks(track, Track.all_anime_titles(), track.all_artists()),
+        })
         return self.render_to_response(context)
