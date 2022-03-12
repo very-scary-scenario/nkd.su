@@ -582,6 +582,8 @@ class CheckMetadata(AnyLoggedInUserMixin, FormView):
         )
         context.update({
             'track': track,
-            'warnings': metadata_consistency_checks(track, Track.all_anime_titles(), track.all_artists()),
+            'warnings': metadata_consistency_checks(
+                track, Track.all_anime_titles(), Track.all_artists(), Track.all_composers(),
+            ),
         })
         return self.render_to_response(context)

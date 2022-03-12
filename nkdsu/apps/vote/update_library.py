@@ -64,6 +64,7 @@ def metadata_consistency_checks(
     db_track: Track,
     all_anime_titles: Iterable[str],
     all_artists: Iterable[str],
+    all_composers: Iterable[str],
 ) -> List[MetadataWarning]:
     """
     Take a proposed update to the library, and check it for various types of things that might be wrong with it.
@@ -127,6 +128,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
     alltracks = Track.objects.filter(inudesu=inudesu)
     all_anime_titles = Track.all_anime_titles()
     all_artists = Track.all_artists()
+    all_composers = Track.all_composers()
     tracks_kept = []
     for tid in tree['Tracks']:
         changed = False
@@ -198,7 +200,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
             db_track.inudesu = inudesu
             warnings.extend(
                 metadata_consistency_checks(
-                    db_track, all_anime_titles, all_artists
+                    db_track, all_anime_titles, all_artists, all_composers,
                 )
             )
 

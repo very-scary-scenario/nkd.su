@@ -7,12 +7,12 @@ from ..update_library import metadata_consistency_checks
 class MetadataConsistencyCheckTest(TestCase):
     def test_anime_and_role_required_if_inudesu_false(self) -> None:
         self.assertEqual(
-            metadata_consistency_checks(Track(id3_title='Complete role (Some kind of anime)'), [], []),
+            metadata_consistency_checks(Track(id3_title='Complete role (Some kind of anime)'), [], [], []),
             [],
         )
 
         self.assertEqual(
-            metadata_consistency_checks(Track(id3_title='No role at all'), [], []),
+            metadata_consistency_checks(Track(id3_title='No role at all'), [], [], []),
             [
                 {'field': 'anime', 'message': 'field is missing'},
                 {'field': 'role', 'message': 'field is missing'},
@@ -20,7 +20,7 @@ class MetadataConsistencyCheckTest(TestCase):
         )
 
         self.assertEqual(
-            metadata_consistency_checks(Track(id3_title='no role, but who cares', inudesu=True), [], []),
+            metadata_consistency_checks(Track(id3_title='no role, but who cares', inudesu=True), [], [], []),
             [],
         )
 
@@ -31,7 +31,7 @@ class MetadataConsistencyCheckTest(TestCase):
                 id3_artist='an artist of some kind',
             ), [], [
                 'an artist of some kind',
-            ]),
+            ], []),
             [],
         )
 
@@ -41,7 +41,7 @@ class MetadataConsistencyCheckTest(TestCase):
                 id3_artist='an artist of some knid',
             ), [], [
                 'an artist of some kind',
-            ]),
+            ], []),
             [{
                 'field': 'artist',
                 'message': (
@@ -57,7 +57,7 @@ class MetadataConsistencyCheckTest(TestCase):
                 id3_artist='a completely different artist',
             ), [], [
                 'an artist of some kind',
-            ]),
+            ], []),
             [],
         )
 
@@ -68,7 +68,7 @@ class MetadataConsistencyCheckTest(TestCase):
                 id3_artist='kind some of artist an',
             ), [], [
                 'an artist of some kind',
-            ]),
+            ], []),
             [{
                 'field': 'artist',
                 'message': (
