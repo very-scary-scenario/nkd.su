@@ -50,7 +50,7 @@ They will be used to:
 
 - improve the library
 
-Only elves and admins can see them.
+The website only shows these to elves and admins, but they are emailed in plain text and will be shared among the elves.
 
 ### account information
 
