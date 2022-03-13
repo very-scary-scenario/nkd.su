@@ -15,8 +15,9 @@
       onSuccess: tag => {
         metadataForm.querySelector('[name=id3_title]').value = tag.tags.title || ''
         metadataForm.querySelector('[name=id3_artist]').value = tag.tags.artist || ''
-        metadataForm.querySelector('[name=composer]').value = tag.tags.composer || ''
+        metadataForm.querySelector('[name=composer]').value = tag.tags.TCOM.data || ''
         metadataForm.querySelector('[name=year]').value = tag.tags.year || ''
+        console.log(tag.tags)
 
         metadataForm.submit()
       },
