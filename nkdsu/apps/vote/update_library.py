@@ -109,8 +109,7 @@ def metadata_consistency_checks(
         artists = db_track.artist_names()
 
     for artist in artists:
-        match = check_closeness_against_list(artist, all_artists,
-                                             reverse=True)
+        match = check_closeness_against_list(artist, all_artists, reverse=True)
         if match:
             warnings.append({
                 'field': 'artist',

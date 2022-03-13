@@ -519,3 +519,55 @@ class MetadataConsistencyCheckTest(TestCase):
                 ),
             }],
         )
+
+    def test_multiple_artists(self) -> None:
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='one artist, a character (CV: a VA)',
+            ), [], [
+                'one artist',
+                'a character',
+                'a VA',
+            ], []),
+            [],
+        )
+
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='one artist, a character (CV: a VAN)',
+            ), [], [
+                'one artist',
+                'a character',
+                'a VA',
+            ], []),
+            [
+                {
+                    'field': 'artist',
+                    'message': '"a VAN" was not found in the database, but it looks similar to "a VA"',
+                },
+            ],
+        )
+
+    def test_lexer_error(self) -> None:
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='(()',
+            ), [], [
+                '(('
+            ], []),
+            [
+                # it should both complain about the syntax...
+                {
+                    'field': 'artist',
+                    'message': "Illegal character '(' at index 0",
+                },
+                # ...and also treat the invalid artist name as one complete artist:
+                {
+                    'field': 'artist',
+                    'message': '"(()" was not found in the database, but it looks similar to "(("',
+                },
+            ],
+        )
