@@ -241,6 +241,13 @@ PIPELINE = {
             ],
             'output_filename': 'js/min/base.js',
         },
+        'check-metadata': {
+            'source_filenames': [
+                'js/libs/jsmediatags.min.js',
+                'js/check-metadata.js',
+            ],
+            'output_filename': 'js/min/check-metadata.js',
+        },
     },
 }
 

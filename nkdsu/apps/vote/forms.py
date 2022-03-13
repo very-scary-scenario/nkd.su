@@ -138,9 +138,9 @@ class RequestForm(TriviaForm):
 
 
 class CheckMetadataForm(forms.Form):
-    id3_title = forms.CharField(widget=forms.Textarea())
-    id3_artist = forms.CharField(widget=forms.Textarea())
-    composer = forms.CharField(widget=forms.Textarea())
+    id3_title = forms.CharField(required=False, widget=forms.Textarea())
+    id3_artist = forms.CharField(required=False, widget=forms.Textarea())
+    composer = forms.CharField(required=False, widget=forms.Textarea())
     year = forms.IntegerField(required=False)
 
 
