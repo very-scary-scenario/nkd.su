@@ -2,12 +2,15 @@
 
 (() => {
   const metadataForm = document.getElementById('check-metadata-form')
-  metadataForm.style.display = 'none'
+
+  const docs = document.createElement('p')
+  docs.appendChild(document.createTextNode('You can populate this form from a tagged music file, if you have one.'))
 
   const fileField = document.createElement('input')
   fileField.setAttribute('type', 'file')
 
   metadataForm.parentNode.insertBefore(fileField, metadataForm)
+  metadataForm.parentNode.insertBefore(docs, fileField)
 
   fileField.addEventListener('change', e => {
     const file = fileField.files[0]
