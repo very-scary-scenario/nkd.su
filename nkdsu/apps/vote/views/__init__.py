@@ -620,10 +620,12 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         ]
 
 
-class RequestAddition(FormView):
+class RequestAddition(mixins.MarkdownView, FormView):
     form_class = RequestForm
     template_name = 'request.html'
     success_url = reverse_lazy('vote:index')
+    filename = 'ELIGIBILITY.md'
+    title = 'Request an addition to the library'
 
     def get_initial(self) -> Dict[str, Any]:
         return {

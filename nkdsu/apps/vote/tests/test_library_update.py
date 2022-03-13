@@ -5,7 +5,7 @@ from typing import Any, Dict, Iterable, Optional
 from django.test import TestCase
 
 from ..models import Track
-from ..update_library import update_library
+from ..update_library import metadata_consistency_checks, update_library
 
 
 SINGLE_TRACK_XML = '''
@@ -444,3 +444,148 @@ class LibraryUpdateWetRunTest(LibraryUpdateTest):
         update_library(tree, dry_run=False)
         db_track = Track.objects.get(id=hex_id)
         self.assertEqual(db_track.artist, 'Death in Vegas')
+
+
+class MetadataConsistencyCheckTest(TestCase):
+    def test_anime_and_role_required_if_inudesu_false(self) -> None:
+        self.assertEqual(
+            metadata_consistency_checks(Track(id3_title='Complete role (Some kind of anime)'), [], [], []),
+            [],
+        )
+
+        self.assertEqual(
+            metadata_consistency_checks(Track(id3_title='No role at all'), [], [], []),
+            [
+                {'field': 'anime', 'message': 'field is missing'},
+                {'field': 'role', 'message': 'field is missing'},
+            ],
+        )
+
+        self.assertEqual(
+            metadata_consistency_checks(Track(id3_title='no role, but who cares', inudesu=True), [], [], []),
+            [],
+        )
+
+    def test_slight_artist_mismatch(self) -> None:
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='an artist of some kind',
+            ), [], [
+                'an artist of some kind',
+            ], []),
+            [],
+        )
+
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='an artist of some knid',
+            ), [], [
+                'an artist of some kind',
+            ], []),
+            [{
+                'field': 'artist',
+                'message': (
+                    '"an artist of some knid" was not found in the database, but it looks similar to '
+                    '"an artist of some kind"'
+                ),
+            }],
+        )
+
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='a completely different artist',
+            ), [], [
+                'an artist of some kind',
+            ], []),
+            [],
+        )
+
+        # the artist name but with the words reversed is a special case that we also handle:
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='kind some of artist an',
+            ), [], [
+                'an artist of some kind',
+            ], []),
+            [{
+                'field': 'artist',
+                'message': (
+                    '"kind some of artist an" was not found in the database, but it looks similar to '
+                    '"an artist of some kind"'
+                ),
+            }],
+        )
+
+    def test_multiple_artists(self) -> None:
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='one artist, a character (CV: a VA)',
+            ), [], [
+                'one artist',
+                'a character',
+                'a VA',
+            ], []),
+            [],
+        )
+
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='one artist, a character (CV: a VAN)',
+            ), [], [
+                'one artist',
+                'a character',
+                'a VA',
+            ], []),
+            [
+                {
+                    'field': 'artist',
+                    'message': '"a VAN" was not found in the database, but it looks similar to "a VA"',
+                },
+            ],
+        )
+
+    def test_lexer_error(self) -> None:
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='(()',
+            ), [], ['(('], []),
+            [
+                # it should both complain about the syntax...
+                {
+                    'field': 'artist',
+                    'message': "Illegal character '(' at index 0",
+                },
+                # ...and also treat the invalid artist name as one complete artist:
+                {
+                    'field': 'artist',
+                    'message': '"(()" was not found in the database, but it looks similar to "(("',
+                },
+            ],
+        )
+
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='artist',
+                composer='(()'
+            ), [], [], ['((']),
+            [
+                # it should both complain about the syntax...
+                {
+                    'field': 'composer',
+                    'message': "Illegal character '(' at index 0",
+                },
+                # ...and also treat the invalid artist name as one complete artist:
+                {
+                    'field': 'composer',
+                    'message': '"(()" was not found in the database, but it looks similar to "(("',
+                },
+            ],
+        )
