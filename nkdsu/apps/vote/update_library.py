@@ -60,6 +60,25 @@ class MetadataWarning(TypedDict):
     message: str
 
 
+def check_artist_consistency(
+    track_artists: Iterable[str], all_artists: Iterable[str], field: UpdateFieldName,
+) -> List[MetadataWarning]:
+    warnings: List[MetadataWarning] = []
+
+    for artist in track_artists:
+        match = check_closeness_against_list(artist, all_artists, reverse=True)
+        if match:
+            warnings.append({
+                'field': field,
+                'message': (
+                    u'"{track_artist}" was not found in the database, but it '
+                    u'looks similar to "{canonical_artist}"'
+                ).format(track_artist=artist, canonical_artist=match)
+            })
+
+    return warnings
+
+
 def metadata_consistency_checks(
     db_track: Track,
     all_anime_titles: Iterable[str],
@@ -98,7 +117,6 @@ def metadata_consistency_checks(
             })
 
     artists: Iterable[str]
-
     try:
         artists = list(db_track.artist_names(fail_silently=False))
     except LexError as e:
@@ -108,16 +126,18 @@ def metadata_consistency_checks(
         })
         artists = db_track.artist_names()
 
-    for artist in artists:
-        match = check_closeness_against_list(artist, all_artists, reverse=True)
-        if match:
-            warnings.append({
-                'field': 'artist',
-                'message': (
-                    u'"{track_artist}" was not found in the database, but it '
-                    u'looks similar to "{canonical_artist}"'
-                ).format(track_artist=artist, canonical_artist=match)
-            })
+    composers: Iterable[str]
+    try:
+        composers = list(db_track.composer_names(fail_silently=False))
+    except LexError as e:
+        warnings.append({
+            'field': 'composer',
+            'message': str(e),
+        })
+        composers = db_track.composer_names()
+
+    warnings.extend(check_artist_consistency(artists, all_artists, 'artist'))
+    warnings.extend(check_artist_consistency(composers, all_composers, 'composer'))
 
     return warnings
 

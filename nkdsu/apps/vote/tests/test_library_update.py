@@ -555,9 +555,7 @@ class MetadataConsistencyCheckTest(TestCase):
             metadata_consistency_checks(Track(
                 id3_title='title (role)',
                 id3_artist='(()',
-            ), [], [
-                '(('
-            ], []),
+            ), [], ['(('], []),
             [
                 # it should both complain about the syntax...
                 {
@@ -567,6 +565,26 @@ class MetadataConsistencyCheckTest(TestCase):
                 # ...and also treat the invalid artist name as one complete artist:
                 {
                     'field': 'artist',
+                    'message': '"(()" was not found in the database, but it looks similar to "(("',
+                },
+            ],
+        )
+
+        self.assertEqual(
+            metadata_consistency_checks(Track(
+                id3_title='title (role)',
+                id3_artist='artist',
+                composer='(()'
+            ), [], [], ['((']),
+            [
+                # it should both complain about the syntax...
+                {
+                    'field': 'composer',
+                    'message': "Illegal character '(' at index 0",
+                },
+                # ...and also treat the invalid artist name as one complete artist:
+                {
+                    'field': 'composer',
                     'message': '"(()" was not found in the database, but it looks similar to "(("',
                 },
             ],
