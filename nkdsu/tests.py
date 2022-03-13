@@ -31,6 +31,7 @@ class EverythingTest(
         '/vote-admin/upload/',
         '/vote-admin/requests/',
         '/vote-admin/trivia/',
+        '/vote-admin/check-metadata/',
         '/vote-admin/play/0007C3F2760E0541/',
 
         '/js/deselect/',
@@ -130,6 +131,12 @@ class EverythingTest(
         )
         user.set_password('what')
         user.save()
+
+    def ensure_all_urls_resolve(self, urls):
+        # linode has robot protection that makes automated testing of links to their site impossible, so:
+        del urls['https://www.linode.com/legal-privacy/']
+
+        return super().ensure_all_urls_resolve(urls)
 
 
 class LoggedInEverythingTest(EverythingTest):

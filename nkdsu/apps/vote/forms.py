@@ -137,6 +137,13 @@ class RequestForm(TriviaForm):
         return cleaned_data
 
 
+class CheckMetadataForm(forms.Form):
+    id3_title = forms.CharField(widget=forms.Textarea())
+    id3_artist = forms.CharField(widget=forms.Textarea())
+    composer = forms.CharField(widget=forms.Textarea())
+    year = forms.IntegerField(required=False)
+
+
 class LibraryUploadForm(forms.Form):
     library_xml = forms.FileField(label='Library XML')
     inudesu = forms.BooleanField(label='Inu Desu', required=False)

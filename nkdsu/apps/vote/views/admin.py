@@ -15,9 +15,9 @@ from django.views.generic import CreateView, DetailView, FormView, ListView, Tem
 from django.views.generic.base import TemplateResponseMixin
 
 from .js import JSApiMixin
-from ..forms import LibraryUploadForm, NoteForm
+from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
 from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
-from ..update_library import update_library
+from ..update_library import metadata_consistency_checks, update_library
 
 
 class AdminMixin:
@@ -566,3 +566,24 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
             messages.success(self.request, u"request claimed")
 
         return redirect(reverse('vote:admin:requests'))
+
+
+class CheckMetadata(AnyLoggedInUserMixin, FormView):
+    form_class = CheckMetadataForm
+    template_name = 'check_metadata.html'
+
+    def form_valid(self, form: CheckMetadataForm) -> HttpResponse:
+        context = self.get_context_data()
+        track = Track(
+            id3_title=form.cleaned_data['id3_title'],
+            id3_artist=form.cleaned_data['id3_artist'],
+            composer=form.cleaned_data['composer'],
+            year=form.cleaned_data['year'],
+        )
+        context.update({
+            'track': track,
+            'warnings': metadata_consistency_checks(
+                track, Track.all_anime_titles(), Track.all_artists(), Track.all_composers(),
+            ),
+        })
+        return self.render_to_response(context)

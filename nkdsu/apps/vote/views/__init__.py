@@ -599,7 +599,7 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         send_mail(
             '[nkd.su report] %s' % track.get_absolute_url(),
             '\n\n'.join(fields),
-            '"nkd.su" <nkdsu@bldm.us>',
+            f'"nkd.su" <{settings.EMAIL_HOST_USER}>',
             [settings.REQUEST_CURATOR],
         )
 
@@ -620,10 +620,12 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         ]
 
 
-class RequestAddition(FormView):
+class RequestAddition(mixins.MarkdownView, FormView):
     form_class = RequestForm
     template_name = 'request.html'
     success_url = reverse_lazy('vote:index')
+    filename = 'ELIGIBILITY.md'
+    title = 'Request an addition to the library'
 
     def get_initial(self) -> Dict[str, Any]:
         return {
@@ -639,7 +641,7 @@ class RequestAddition(FormView):
         send_mail(
             '[nkd.su] %s' % f['title'],
             '\n\n'.join(fields),
-            '"nkd.su" <nkdsu@bldm.us>',
+            '"nkd.su" <noreply@vscary.co>',
             [settings.REQUEST_CURATOR],
         )
 

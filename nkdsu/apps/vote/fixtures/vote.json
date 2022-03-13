@@ -156,6 +156,21 @@
   }
 },
 {
+  "pk": "89EE2CEBC58E2CAE",
+  "model": "vote.track",
+  "fields": {
+    "id3_artist": "Anri",
+    "added": "2020-12-19T17:59:17Z",
+    "inudesu": false,
+    "msec": 195604,
+    "id3_title": "CAT'S EYE (Cat's Eye OP1|Gintama Insert Song EP84)",
+    "year": 1983,
+    "hidden": false,
+    "id3_album": "Cat's Eye",
+    "revealed": "2020-12-19T19:59:22Z"
+  }
+},
+{
   "pk": 1,
   "model": "vote.vote",
   "fields": {

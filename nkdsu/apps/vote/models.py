@@ -695,8 +695,8 @@ class Track(CleanOnSaveMixin, models.Model):
         The string that, for instance, would be tweeted
         """
 
-        if self.role:
-            return u'‘%s’ (%s) - %s' % (self.title, self.role, self.artist)
+        if self.roles:
+            return u'‘%s’ (%s) - %s' % (self.title, self.roles[0], self.artist)
         else:
             return u'‘%s’ - %s' % (self.title, self.artist)
 
@@ -1525,7 +1525,8 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
 
         if len(status) > settings.TWEET_LENGTH:
-            status = status[:settings.TWEET_LENGTH-1].strip() + '…'
+            # twitter counts ellipses as two characters for some reason, so we get rid of two:
+            status = status[:settings.TWEET_LENGTH-2].strip() + '…'
 
         return status
 

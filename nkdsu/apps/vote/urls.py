@@ -19,6 +19,8 @@ admin_patterns = ([
     url(r'^requests/claim/(?P<pk>[^/]+)/$',
         admin.ClaimRequest.as_view(), name='claim_request'),
 
+    url(r'^check-metadata/$', admin.CheckMetadata.as_view(), name='check_metadata'),
+
     url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
 
     url(r'^add-manual-vote/(?P<pk>.+)/$',

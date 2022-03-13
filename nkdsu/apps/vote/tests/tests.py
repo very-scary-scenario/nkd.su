@@ -128,3 +128,25 @@ class PlayTest(TestCase):
         play = Track.objects.all()[0].play(tweet=False)
         play.date = mkutc(2009, 1, 1)
         play.save()
+
+    def test_play_truncates_tweet_properly(self) -> None:
+        track = Track.objects.create(
+            id="longname",
+            hidden=False,
+            inudesu=False,
+            id3_title="a track with a lot of artists",
+            id3_artist=(
+                "this string has to be long enough that it makes us have to truncate the tweet we're gonna post "
+                "when this track is played, so here's some words about that! here are some more words because "
+                "tweets got long Jiosajfdoisapfjdiosuapfjdiosapfdjisoafjdsoiafdsa"
+            ),
+            added=timezone.now(),
+            revealed=timezone.now(),
+        )
+        tweet_text = Play.objects.create(
+            date=timezone.now(),
+            show=Show.at(timezone.now()),
+            track=track,
+        ).get_tweet_text()
+        self.assertRegex(tweet_text, r'^.{278}…$')
+        self.assertEqual(len(tweet_text), 279)

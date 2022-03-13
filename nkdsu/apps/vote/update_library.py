@@ -1,12 +1,25 @@
 #!/usr/bin/env python
 
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, Literal, Optional, Tuple, TypedDict
 
 from Levenshtein import ratio
 from django.utils.timezone import get_default_timezone, make_aware
 from sly.lex import LexError
 
 from .models import Track
+
+
+UpdateFieldName = Literal[
+    'added',
+    'album',
+    'anime',
+    'artist',
+    'composer',
+    'msec',
+    'role',
+    'title',
+    'year',
+]
 
 
 def check_closeness_against_list(name, canonical_names: Iterable[str], reverse: bool = False) -> Optional[str]:
@@ -38,12 +51,45 @@ def check_closeness_against_list(name, canonical_names: Iterable[str], reverse: 
     return best_match
 
 
+class MetadataWarning(TypedDict):
+    """
+    A warning about a potential problem with a proposed metadata update.
+    """
+
+    field: UpdateFieldName
+    message: str
+
+
+def check_artist_consistency(
+    track_artists: Iterable[str], all_artists: Iterable[str], field: UpdateFieldName,
+) -> List[MetadataWarning]:
+    warnings: List[MetadataWarning] = []
+
+    for artist in track_artists:
+        match = check_closeness_against_list(artist, all_artists, reverse=True)
+        if match:
+            warnings.append({
+                'field': field,
+                'message': (
+                    u'"{track_artist}" was not found in the database, but it '
+                    u'looks similar to "{canonical_artist}"'
+                ).format(track_artist=artist, canonical_artist=match)
+            })
+
+    return warnings
+
+
 def metadata_consistency_checks(
     db_track: Track,
     all_anime_titles: Iterable[str],
     all_artists: Iterable[str],
-) -> List[Dict[str, str]]:
-    warnings = []
+    all_composers: Iterable[str],
+) -> List[MetadataWarning]:
+    """
+    Take a proposed update to the library, and check it for various types of things that might be wrong with it.
+    """
+
+    warnings: List[MetadataWarning] = []
     track_animes = [rd.anime for rd in db_track.role_details]
     track_roles = [rd.full_role for rd in db_track.role_details]
 
@@ -71,7 +117,6 @@ def metadata_consistency_checks(
             })
 
     artists: Iterable[str]
-
     try:
         artists = list(db_track.artist_names(fail_silently=False))
     except LexError as e:
@@ -81,17 +126,18 @@ def metadata_consistency_checks(
         })
         artists = db_track.artist_names()
 
-    for artist in artists:
-        match = check_closeness_against_list(artist, all_artists,
-                                             reverse=True)
-        if match:
-            warnings.append({
-                'field': 'artist',
-                'message': (
-                    u'"{track_artist}" was not found in the database, but it '
-                    u'looks similar to "{canonical_artist}"'
-                ).format(track_artist=artist, canonical_artist=match)
-            })
+    composers: Iterable[str]
+    try:
+        composers = list(db_track.composer_names(fail_silently=False))
+    except LexError as e:
+        warnings.append({
+            'field': 'composer',
+            'message': str(e),
+        })
+        composers = db_track.composer_names()
+
+    warnings.extend(check_artist_consistency(artists, all_artists, 'artist'))
+    warnings.extend(check_artist_consistency(composers, all_composers, 'composer'))
 
     return warnings
 
@@ -101,11 +147,12 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
     alltracks = Track.objects.filter(inudesu=inudesu)
     all_anime_titles = Track.all_anime_titles()
     all_artists = Track.all_artists()
+    all_composers = Track.all_composers()
     tracks_kept = []
     for tid in tree['Tracks']:
         changed = False
         new = False
-        warnings = []
+        warnings: List[MetadataWarning] = []
         field_alterations = []
 
         t = tree['Tracks'][tid]
@@ -122,7 +169,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
             db_track = Track()
 
         else:
-            db_dict = {
+            db_dict: Dict[UpdateFieldName, Any] = {
                 'title': db_track.id3_title,
                 'artist': db_track.id3_artist,
                 'album': db_track.id3_album,
@@ -131,7 +178,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
                 'year': db_track.year,
                 'added': db_track.added,
             }
-            track_dict = {
+            track_dict: Dict[UpdateFieldName, Any] = {
                 'title': t['Name'],
                 'artist': t['Artist'],
                 'album': t['Album'],
@@ -172,7 +219,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
             db_track.inudesu = inudesu
             warnings.extend(
                 metadata_consistency_checks(
-                    db_track, all_anime_titles, all_artists
+                    db_track, all_anime_titles, all_artists, all_composers,
                 )
             )
 

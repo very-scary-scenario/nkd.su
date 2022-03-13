@@ -9,7 +9,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
 
     'django_nose',
-    'djcelery',
     'pipeline',
     'south',
     'debug_toolbar',
