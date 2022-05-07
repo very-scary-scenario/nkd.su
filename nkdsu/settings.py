@@ -154,6 +154,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'nkdsu.middleware.SocialAuthBetaMiddleware'
 ]
 
 ROOT_URLCONF = 'nkdsu.urls'
