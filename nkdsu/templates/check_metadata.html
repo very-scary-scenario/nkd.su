@@ -1,5 +1,7 @@
 {% extends parent %}
 
+{% load pipeline %}
+
 {% block title %}Check metadata{% endblock %}
 
 {% block content %}
@@ -42,9 +44,17 @@
     </dl>
   {% endif %}
 
-  <form method="post" action="." class="check-metadata">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="test these tags">
-  </form>
+  <div class="markdown">
+    <p>
+      This is a place where you can check metadata for a library addition. It will take your metadata and parse it using the same machinery that is used everywhere else on the site. It also runs the checks that are run when doing a library update, and shows the same warnings.
+    </p>
+
+    <form method="post" action="." class="check-metadata" id="check-metadata-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="test these tags">
+    </form>
+  </div>
+
+  {% javascript "check-metadata" %}
 {% endblock %}

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "jsmediatags": "^3.9.7",
     "sortablejs": "^1.14.0"
   }
 }
