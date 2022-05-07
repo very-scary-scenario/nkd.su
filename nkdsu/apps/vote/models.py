@@ -675,7 +675,7 @@ class Track(CleanOnSaveMixin, models.Model):
     # derived from iTunes
     id = models.CharField(max_length=16, primary_key=True)
     id3_title = models.CharField(max_length=500)
-    id3_artist = models.CharField(max_length=500)
+    id3_artist = models.CharField(max_length=1000)
     id3_album = models.CharField(max_length=500, blank=True)
     msec = models.IntegerField(blank=True, null=True)
     added = models.DateTimeField()
