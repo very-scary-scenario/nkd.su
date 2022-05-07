@@ -153,6 +153,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'nkdsu.middleware.SocialAuthBetaMiddleware'
 ]
@@ -176,6 +177,10 @@ INSTALLED_APPS = [
     'django_nose',
     'pipeline',
     'social_django',
+
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_static',
 
     'nkdsu.apps.vote',
 ]
