@@ -83,6 +83,7 @@ class EverythingTest(
         '/added/',
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
+        '/folks/what/',
 
         '/login/',
         '/cpw/',
@@ -115,10 +116,21 @@ class EverythingTest(
     ]
 
     uncovered_includes = [
-        (r'^admin/',)
+        (r'^admin/',),
+        (r'^s/',),
     ]
 
     instant_tracebacks = True
+
+    def setUp(self) -> None:
+        super().setUp()
+        user = get_user_model()(
+            username='what',
+            is_staff=True,
+            is_superuser=True,
+        )
+        user.set_password('what')
+        user.save()
 
     def ensure_all_urls_resolve(self, urls):
         # linode has robot protection that makes automated testing of links to their site impossible, so:
@@ -130,11 +142,4 @@ class EverythingTest(
 class LoggedInEverythingTest(EverythingTest):
     def setUp(self) -> None:
         super().setUp()
-        user = get_user_model()(
-            username='what',
-            is_staff=True,
-            is_superuser=True,
-        )
-        user.set_password('what')
-        user.save()
         self.assertTrue(self.client.login(username='what', password='what'))

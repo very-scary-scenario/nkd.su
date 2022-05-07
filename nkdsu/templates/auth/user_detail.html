@@ -1,0 +1,18 @@
+{% extends parent %}
+
+{% block title %}{{ object.username }}{% endblock %}
+
+{% block content %}
+  <h1>{{ object.username }}</h1>
+
+  {% if object.social_auth.all %}
+    <p>
+      {% for social_auth in object.social_auth.all %}
+        <strong>{{ social_auth.provider }}:</strong>
+        {{ social_auth.extra_data.access_token.screen_name }}
+      {% endfor %}
+    </p>
+  {% elif object == request.user %}
+    <p><a href="{% url "social:begin" backend="twitter" %}">link twitter account</a></p>
+  {% endif %}
+{% endblock %}

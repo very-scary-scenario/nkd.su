@@ -67,6 +67,12 @@ READING_ACCESS_TOKEN_SECRET = ''  # secret
 POSTING_ACCESS_TOKEN = ''  # secret
 POSTING_ACCESS_TOKEN_SECRET = ''  # secret
 
+# social-auth
+SOCIAL_AUTH_TWITTER_KEY = ''  # secret
+SOCIAL_AUTH_TWITTER_SECRET = ''  # secret
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+SOCIAL_AUTH_STRATEGY = 'nkdsu.apps.vote.twitter_auth.NkdsuStrategy'
+
 MIXCLOUD_USERNAME = 'NekoDesu'
 
 LASTFM_API_KEY = ''  # secret
@@ -88,6 +94,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
                 'nkdsu.apps.vote.context_processors.nkdsu_context_processor',
             ],
         },
@@ -146,6 +154,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'nkdsu.middleware.SocialAuthBetaMiddleware'
 ]
 
 ROOT_URLCONF = 'nkdsu.urls'
@@ -166,6 +175,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_nose',
     'pipeline',
+    'social_django',
 
     'nkdsu.apps.vote',
 ]
@@ -193,6 +203,11 @@ LOGGING = {
         },
     }
 }
+
+AUTHENTICATION_BACKENDS = [
+    'nkdsu.apps.vote.twitter_auth.NkdsuTwitterAuth',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'

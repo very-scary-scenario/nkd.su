@@ -1,7 +1,7 @@
-from django.urls import include, re_path as url
+from django.urls import include, path, re_path as url
 
 from nkdsu.apps.vote import views
-from nkdsu.apps.vote.views import admin, api, js
+from nkdsu.apps.vote.views import admin, api, js, profiles
 
 
 app_name = 'vote'
@@ -98,11 +98,16 @@ api_patterns = ([
     url(r'^search/$', api.SearchAPI.as_view(), name='search'),
 ], 'api')
 
+profile_patterns = ([
+    path('<str:username>/', profiles.ProfileView.as_view(), name='profile')
+], 'profiles')
+
 
 urlpatterns = [
     url(r'^vote-admin/', include(admin_patterns)),
     url(r'^js/', include(js_patterns)),
     url(r'^api/', include(api_patterns)),
+    url(r'^folks/', include(profile_patterns)),
 
     url(r'^$', views.IndexView.as_view(), name='index'),
 

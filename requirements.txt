@@ -19,6 +19,8 @@ python-dateutil==2.8.2
 python-memcached==1.59
 requests==2.27.1
 sly==0.4
+social-auth-app-django==5.0.0
+social-auth-core==4.1.0
 tweepy==3.8.0
 typeguard>=2.12.3,<3
 types-markdown==3.3.12
