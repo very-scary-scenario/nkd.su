@@ -834,7 +834,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
         show = Show.current()
 
-        return (show.end - last_play.date).days // 7
+        return ((show.end - last_play.date).days + 1) // 7
 
     @reify
     def title(self) -> str:
