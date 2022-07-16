@@ -100,9 +100,11 @@ class Show(CleanOnSaveMixin, models.Model):
         Get (or create, if necessary) the show for `time`. Use .at() instead.
         """
 
-        return cls.objects.filter(end__gt=time).order_by('showtime').first()
+        existing_show = cls.objects.filter(end__gt=time).order_by('showtime').first()
 
-        if not create:
+        if existing_show is not None:
+            return existing_show
+        elif not create:
             return None
         else:
             # We have to switch to naive and back to make relativedelta
