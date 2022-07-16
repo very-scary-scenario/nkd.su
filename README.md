@@ -20,7 +20,7 @@ You can personalise your vote with a message that will appear when people hover
 over your user icon. All text that is not either a valid track URL or the
 [@nkdsu] mention at the start of the tweet will be displayed.
 
-If you have javascript enabled, You can select tracks so that you can request
+If you have javascript enabled, you can select tracks so that you can request
 several at once by clicking anywhere in a track box that is not a link.
 
 None of your Twitter followers will see your vote in their timelines unless
