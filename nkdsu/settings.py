@@ -173,7 +173,6 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
 
     'django_extensions',
-    'django_nose',
     'pipeline',
     'social_django',
 
@@ -265,8 +264,6 @@ PIPELINE = {
         },
     },
 }
-
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 try:
     from nkdsu.settings_local import *  # noqa
