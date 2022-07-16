@@ -15,17 +15,17 @@ class NoteQuerySet(models.QuerySet):
         return self.filter(models.Q(show=show) | models.Q(show=None))
 
 
-class TrackQuerySet(models.QuerySet):
-    def _everything(self, show_secret_tracks: bool = False) -> models.QuerySet[Track]:
+class TrackQuerySet(models.QuerySet["Track"]):
+    def _everything(self, show_secret_tracks: bool = False) -> TrackQuerySet:
         if show_secret_tracks:
             return self.all()
         else:
             return self.public()
 
-    def for_decade(self, start_year: int) -> models.QuerySet[Track]:
+    def for_decade(self, start_year: int) -> TrackQuerySet:
         return self.filter(year__gte=start_year, year__lt=start_year + 10)
 
-    def public(self) -> models.QuerySet[Track]:
+    def public(self) -> TrackQuerySet:
         return self.filter(hidden=False, inudesu=False)
 
     def by_artist(self, artist: str, show_secret_tracks: bool = False) -> List[Track]:
@@ -51,7 +51,7 @@ class TrackQuerySet(models.QuerySet):
         qs = base_qs.filter(id3_title__contains=anime).order_by('id3_title')
         return [t for t in qs if t.has_anime(anime)]
 
-    def search(self, query: models.QuerySet[Track], show_secret_tracks: bool = False) -> models.QuerySet[Track]:
+    def search(self, query: str, show_secret_tracks: bool = False) -> TrackQuerySet:
         keywords = split_query_into_keywords(query)
 
         if len(keywords) == 0:

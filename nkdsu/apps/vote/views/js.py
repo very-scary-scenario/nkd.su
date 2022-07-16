@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -49,7 +49,7 @@ class GetSelection(SelectionView):
 
 class Select(SelectionView):
     def do_thing(self) -> None:
-        new_pks = self.request.POST.getlist('track_pk[]', [])
+        new_pks: List[str] = self.request.POST.getlist('track_pk[]', [])
         selection = set(self.request.session.get('selection', []))
 
         for new_pk in new_pks:
@@ -74,7 +74,7 @@ class Select(SelectionView):
 
 class Deselect(SelectionView):
     def do_thing(self) -> None:
-        unwanted_pks = self.request.POST.getlist('track_pk[]', [])
+        unwanted_pks: List[str] = self.request.POST.getlist('track_pk[]', [])
         selection = set(self.request.session.get('selection', []))
 
         for unwanted_pk in unwanted_pks:

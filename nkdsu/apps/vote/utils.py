@@ -5,7 +5,7 @@ import re
 import string
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Callable, Iterable, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
+from typing import Any, Callable, Iterable, List, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
 from urllib.parse import quote
 
 from classtools import reify as ct_reify
@@ -189,7 +189,7 @@ def split_id3_title(id3_title: str) -> Tuple[str, Optional[str]]:
 
 
 # http://zeth.net/post/327/
-def split_query_into_keywords(query):
+def split_query_into_keywords(query: str) -> List[str]:
     """Split the query into keywords,
     where keywords are double quoted together,
     use as one keyword."""

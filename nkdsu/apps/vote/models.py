@@ -100,12 +100,7 @@ class Show(CleanOnSaveMixin, models.Model):
         Get (or create, if necessary) the show for `time`. Use .at() instead.
         """
 
-        shows_after_time = cls.objects.filter(end__gt=time)
-
-        try:
-            return shows_after_time.order_by('showtime')[0]
-        except IndexError:
-            pass
+        return cls.objects.filter(end__gt=time).order_by('showtime').first()
 
         if not create:
             return None
@@ -268,7 +263,7 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     @pk_cached(60)
-    def revealed(self, show_hidden: bool = False) -> models.QuerySet[Track]:
+    def revealed(self, show_hidden: bool = False) -> TrackQuerySet:
         """
         Return a all public (unhidden, non-inudesu) tracks revealed in the
         library this week.
@@ -398,7 +393,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
         # update_twitter_avatars will call this every day with
         # from_cache=False, and might sometimes fail, so:
-        cache.set(ck, rv, (60 * 60 * 24 * 2.1))
+        cache.set(ck, rv, int(60 * 60 * 24 * 2.1))
 
         return rv
 
@@ -669,8 +664,11 @@ class Role:
                 if a != self.anime and self.anime_is_related(a)]
 
 
+TrackManager = models.Manager.from_queryset(TrackQuerySet)
+
+
 class Track(CleanOnSaveMixin, models.Model):
-    objects = models.Manager.from_queryset(TrackQuerySet)()
+    objects = TrackManager()
 
     # derived from iTunes
     id = models.CharField(max_length=16, primary_key=True)
@@ -714,7 +712,7 @@ class Track(CleanOnSaveMixin, models.Model):
     @classmethod
     def all_anime_titles(cls) -> Set[str]:
         return set(
-            (rd.anime for t in cls.objects.public() for rd in t.role_details)
+            (rd.anime for t in cls.objects.public() for rd in t.role_details if rd.anime is not None)
         )
 
     @classmethod
@@ -738,13 +736,13 @@ class Track(CleanOnSaveMixin, models.Model):
             'django.db.backends.postgresql'
         ):
             return list(
-                year for year in tracks
+                year for year in tracks  # type: ignore # we filtered out the null years
                 .order_by('year').distinct('year')
                 .values_list('year', flat=True)
             )
         else:
             return sorted({
-                year for year in tracks.values_list('year', flat=True)
+                year for year in tracks.values_list('year', flat=True)  # type: ignore # same reason as above
             })
 
     @classmethod
@@ -947,7 +945,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @memoize
     def notes(self) -> models.QuerySet[Note]:
-        return self.note_set.for_show_or_none(Show.current())  # type: ignore
+        return self.note_set.for_show_or_none(Show.current())
 
     @memoize
     def public_notes(self) -> models.QuerySet[Note]:
@@ -1640,17 +1638,20 @@ class Request(CleanOnSaveMixin, models.Model):
         ordering = ['-created']
 
 
+NoteManager = models.Manager.from_queryset(NoteQuerySet)
+
+
 class Note(CleanOnSaveMixin, models.Model):
     """
     A note about whatever for a particular track.
     """
 
+    objects = NoteManager()
+
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
     show = models.ForeignKey(Show, blank=True, null=True, on_delete=models.CASCADE)
     public = models.BooleanField(default=False)
     content = models.TextField()
-
-    objects = models.Manager.from_queryset(NoteQuerySet)()
 
     def __str__(self) -> str:
         return self.content

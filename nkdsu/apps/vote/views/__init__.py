@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 from random import sample
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union, cast
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple, Union, cast
 
 from django.conf import settings
 from django.contrib import messages
@@ -20,7 +20,7 @@ from django.views.generic import DetailView, FormView, ListView, TemplateView
 import tweepy
 
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm
-from ..models import Show, Track, TwitterUser
+from ..models import Show, Track, TrackQuerySet, TwitterUser
 from ..utils import BrowsableItem, BrowsableYear, reify
 from ...vote import mixins
 
@@ -137,7 +137,7 @@ class ListenRedirect(mixins.ShowDetail):
 
     def get(self, *a, **k) -> HttpResponse:
         super().get(*a, **k)
-        cloudcasts = cast(Show, self.object).cloudcasts()
+        cloudcasts = self.object.cloudcasts()
         if len(cloudcasts) == 1:
             return redirect(cloudcasts[0]['url'])
         elif len(cloudcasts) > 1:
@@ -291,7 +291,7 @@ class Search(ListView):
         resp = super().get(request, *args, **kwargs)
         qs = self.get_queryset()
         animes = set((
-            role_detail.anime for t in qs for role_detail in t.role_details
+            role_detail.anime for t in qs for role_detail in t.role_details if role_detail.anime is not None
         ))
 
         # if our search results are identical to an anime detail page, take us
@@ -308,7 +308,7 @@ class Search(ListView):
         return resp
 
     @reify
-    def _queryset(self) -> QuerySet[Track]:
+    def _queryset(self) -> TrackQuerySet:
         return self.model.objects.search(
             self.request.GET.get('q', ''),
             show_secret_tracks=(
@@ -379,7 +379,7 @@ class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
     breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_years'), 'years')]
     template_name = 'year.html'
 
-    def get_track_queryset(self) -> QuerySet[Track]:
+    def get_track_queryset(self) -> TrackQuerySet:
         return Track.objects.filter(year=int(self.kwargs['year']))
 
     def get_context_data(self):
@@ -402,7 +402,7 @@ class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView
 
         return response
 
-    def get_track_queryset(self) -> QuerySet[Track]:
+    def get_track_queryset(self) -> Sequence[Track]:
         return Track.objects.by_artist(
             self.kwargs['artist'], show_secret_tracks=(
                 self.request.user.is_authenticated and
@@ -432,7 +432,7 @@ class Anime(mixins.BreadcrumbMixin, ListView):
     template_name = 'anime_detail.html'
     context_object_name = 'tracks'
 
-    def get_queryset(self) -> List[Track]:  # type: ignore
+    def get_queryset(self) -> List[Track]:
         tracks = self.model.objects.by_anime(
             self.kwargs['anime'], show_secret_tracks=(
                 self.request.user.is_authenticated and
@@ -465,7 +465,7 @@ class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListVi
     template_name = 'composer_detail.html'
     breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_composers'), 'composers')]
 
-    def get_track_queryset(self) -> QuerySet[Track]:
+    def get_track_queryset(self) -> Sequence[Track]:
         if self.request.user.is_authenticated and self.request.user.is_staff:
             qs = Track.objects.all()
         else:
@@ -482,15 +482,15 @@ class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListVi
         return context
 
 
-class Added(mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):
+class Added(mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):  # type: ignore # querysets can be sequences for now
     default_to_current = True
     section = 'new tracks'
     template_name = 'added.html'
     paginate_by = 50
     model = Show
 
-    def get_track_queryset(self) -> QuerySet[Track]:
-        return cast(Show, self.get_object()).revealed()
+    def get_track_queryset(self) -> TrackQuerySet:
+        return self.get_object().revealed()
 
 
 class Stats(TemplateView):

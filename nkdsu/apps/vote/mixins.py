@@ -7,7 +7,7 @@ from abc import abstractmethod
 from collections import OrderedDict
 from copy import copy
 from os import path
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Type
+from typing import Any, Dict, Generic, Iterable, List, Optional, Sequence, Tuple, Type, TypeVar, cast
 
 from django.conf import settings
 from django.db.models import Model, QuerySet
@@ -20,8 +20,11 @@ from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.base import ContextMixin
 from markdown import markdown
 
-from .models import Show, Track, TwitterUser
+from .models import Show, Track, TrackQuerySet, TwitterUser
 from .utils import BrowsableItem, memoize
+
+
+M = TypeVar("M", bound=Model)
 
 
 class CurrentShowMixin(ContextMixin):
@@ -31,23 +34,23 @@ class CurrentShowMixin(ContextMixin):
         return context
 
 
-class LetMemoizeGetObject:
-    def get_object(self, queryset: Optional[QuerySet] = None) -> Model:
+class LetMemoizeGetObject(Generic[M]):
+    def get_object(self, queryset: Optional[QuerySet] = None) -> M:
         if queryset is None:
             return self._get_object()
         else:
             return super().get_object(queryset=queryset)  # type: ignore
 
     @abstractmethod
-    def _get_object(self) -> Model:
+    def _get_object(self) -> M:
         raise NotImplementedError()
 
 
 class TrackListWithAnimeGrouping(ContextMixin):
-    def get_track_queryset(self) -> QuerySet[Track]:
+    def get_track_queryset(self) -> Sequence[Track] | TrackQuerySet:
         raise NotImplementedError()
 
-    def get_queryset(self) -> QuerySet:
+    def get_queryset(self) -> Sequence[Track] | TrackQuerySet:
         return self.get_track_queryset()
 
     def grouped_tracks(self) -> OrderedDict[str, List[Track]]:
@@ -73,7 +76,7 @@ class TrackListWithAnimeGrouping(ContextMixin):
         return context
 
 
-class ShowDetailMixin(LetMemoizeGetObject):
+class ShowDetailMixin(LetMemoizeGetObject[Show]):
     """
     A view that will find a show for any date in the past, redirect to the
     showtime date if necessary, and then render a view with the correct show
@@ -147,7 +150,7 @@ class ShowDetailMixin(LetMemoizeGetObject):
         ):
             return super().get(request, *args, **kwargs)  # type: ignore
         else:
-            assert request.resolver_match.url_name is not None
+            assert request.resolver_match is not None and request.resolver_match.url_name is not None
             new_kwargs = copy(kwargs)
             name = (self.view_name or
                     ':'.join([request.resolver_match.namespace,
@@ -180,7 +183,7 @@ class ThisShowDetailMixin(ShowDetailMixin):
             return super().get_object()
 
 
-class ShowDetail(ShowDetailMixin, DetailView):
+class ShowDetail(ShowDetailMixin, DetailView[Show]):
     model = Show
 
 
@@ -214,7 +217,7 @@ class ArchiveList(ListView):
         assert self.model is not None
         assert issubclass(self.model, Show)
 
-        qs = super().get_queryset().order_by('-showtime')
+        qs = cast(QuerySet[Show], super().get_queryset()).order_by('-showtime')
 
         if self.exclude_current:
             qs = qs.exclude(pk=self.model.current().pk)
@@ -253,7 +256,7 @@ class MarkdownView(TemplateView):
         return context
 
 
-class TwitterUserDetailMixin(LetMemoizeGetObject):
+class TwitterUserDetailMixin(LetMemoizeGetObject[TwitterUser]):
     model = TwitterUser
 
     @memoize
