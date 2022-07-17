@@ -24,7 +24,6 @@ class Migration(migrations.Migration):
                 ('message', models.TextField(blank=True)),
                 ('voting_allowed', models.BooleanField(default=True)),
             ],
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Track',
@@ -42,7 +41,6 @@ class Migration(migrations.Migration):
                 ('inudesu', models.BooleanField()),
                 ('background_art', models.ImageField(blank=True, upload_to=nkdsu.apps.vote.models.art_path)),
             ],
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
         migrations.CreateModel(
             name='TwitterUser',
@@ -55,7 +53,6 @@ class Migration(migrations.Migration):
                 ('is_abuser', models.BooleanField(default=False)),
                 ('updated', models.DateTimeField()),
             ],
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Vote',
@@ -70,7 +67,6 @@ class Migration(migrations.Migration):
                 ('tracks', models.ManyToManyField(db_index=True, to='vote.Track')),
                 ('twitter_user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='vote.TwitterUser')),
             ],
-            bases=(nkdsu.apps.vote.models.SetShowBasedOnDateMixin, nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Request',
@@ -86,7 +82,6 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['-created'],
             },
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Play',
@@ -97,7 +92,6 @@ class Migration(migrations.Migration):
                 ('show', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vote.Show')),
                 ('track', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vote.Track')),
             ],
-            bases=(nkdsu.apps.vote.models.SetShowBasedOnDateMixin, nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Note',
@@ -108,7 +102,6 @@ class Migration(migrations.Migration):
                 ('show', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='vote.Show')),
                 ('track', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='vote.Track')),
             ],
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
         migrations.CreateModel(
             name='UserBadge',
@@ -120,7 +113,6 @@ class Migration(migrations.Migration):
             options={
                 'unique_together': {('badge', 'user')},
             },
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Shortlist',
@@ -134,7 +126,6 @@ class Migration(migrations.Migration):
                 'ordering': ['-show__showtime', 'index'],
                 'unique_together': {('show', 'index'), ('show', 'track')},
             },
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Discard',
@@ -146,7 +137,6 @@ class Migration(migrations.Migration):
             options={
                 'unique_together': {('show', 'track')},
             },
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Block',
@@ -159,6 +149,5 @@ class Migration(migrations.Migration):
             options={
                 'unique_together': {('show', 'track')},
             },
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
     ]
