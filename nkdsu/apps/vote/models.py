@@ -103,7 +103,7 @@ class Show(CleanOnSaveMixin, models.Model):
         existing_show = cls.objects.filter(end__gt=time).order_by('showtime').first()
 
         if existing_show is not None:
-            return existing_show
+            return existing_show  # type: ignore # workaround for django-stubs issue 1022, whose fix is unreleased
         elif not create:
             return None
         else:
