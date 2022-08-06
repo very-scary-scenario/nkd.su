@@ -148,6 +148,11 @@ PART_EXAMPLES: List[Tuple[str, List[Tuple[bool, str]]]] = [
         (True, 'Hifumi,inc.'),
         (False, ')'),
     ]),
+    ('Morinaka Kazaki meets ▽▲TRiNITY▲▽', [
+        (True, 'Morinaka Kazaki'),
+        (False, ' meets '),
+        (True, '▽▲TRiNITY▲▽'),
+    ]),
 ]
 
 GROUP_EXAMPLES = [

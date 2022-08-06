@@ -58,6 +58,7 @@ class ArtistLexer(Lexer):
         r'[Ss]tarring|'
         r'and|'
         r'with|'
+        r'meets|'
         r'adding|'
         r'a\.k\.a|'
         r'x|'
