@@ -7,23 +7,23 @@ radio show currently broadcast on [The Cat].
 [The Cat]: https://thisisthecat.com
 [Neko Desu]: https://nekodesu.radio
 
-### How do I vote?
+### How do I make a request?
 
 If there are any tracks on the front page you would like to request, click on
-the ‘+’ next to the current votes and send the generated tweet. If nothing on
-the front page strikes your fancy, feel free to use the search box to find
+the ‘+’ next to the current requests and send the generated tweet. If nothing
+on the front page strikes your fancy, feel free to use the search box to find
 something more your style. Once you've found something, click the + button. If
 you can't find what you're looking for, fill out the [request an addition]
 form.
 
-You can personalise your vote with a message that will appear when people hover
-over your user icon. All text that is not either a valid track URL or the
+You can personalise your request with a message that will appear when people
+hover over your user icon. All text that is not either a valid track URL or the
 [@nkdsu] mention at the start of the tweet will be displayed.
 
 If you have javascript enabled, you can select tracks so that you can request
 several at once by clicking anywhere in a track box that is not a link.
 
-None of your Twitter followers will see your vote in their timelines unless
+None of your Twitter followers will see your request in their timelines unless
 they're also following [@nkdsu].
 
 [request an addition]: https://nkd.su/request
