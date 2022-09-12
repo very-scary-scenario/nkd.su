@@ -7,7 +7,7 @@
     <h1 class="message">{{ title }}</h1>
 
     <p>
-      You can submit suggestions for new songs for the Neko Desu library here. Thank you for the suggestion! We'll do our best to add it if it's eligible and the elves can find it.
+      You can submit suggestions for new songs for the Neko Desu library here. We'll do our best to add it if it's eligible and the elves can find it.
     </p>
 
     {{ words|safe }}
@@ -15,7 +15,7 @@
 
   <h2 class="message">Submit your request</h2>
 
-  <p class="aside">Please include as much information about the track you want added as possible. We'll add the song as soon as we can, but the process takes time and obscure songs take longer!</p>
+  <p class="aside">Please include as much information about the song you want added as possible. We'll add it to the library as soon as we can, but the process takes time and obscure songs take longer! All requests are saved, so please refrain from requesting the same song more than once. Thank you!</p>
 
   <form method="post" enctype="multipart/form-data" action=".">
     {% csrf_token %}
