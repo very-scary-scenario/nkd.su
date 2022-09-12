@@ -6,7 +6,7 @@ Neko Desu is an **anime music radio show**. If the song you're requesting does n
 	- Opening theme (used as the opening credits are shown)
 	- Ending theme (used as the ending credits are shown)
 	- Insert song (used within an episode with lyrics clearly audible, not to be confused with incidental background music)
-	- Character song (released as a song performed and attributed to a character from an anime, but direct to retail and typically not used within the anime itself)
+	- Character song (released as a song performed by and attributed to a character from an anime, but direct to retail and typically not used within the anime itself)
 
 2. Opening and ending themes can occasionally be instrumental, and these will be eligible. Otherwise, only songs with lyrics are eligible.
 
