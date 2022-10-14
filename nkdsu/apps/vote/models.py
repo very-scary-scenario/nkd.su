@@ -1751,6 +1751,16 @@ BADGES: List[Badge] = [
         datetime.datetime(2021, 10, 9, tzinfo=get_default_timezone()),
         datetime.datetime(2021, 11, 27, tzinfo=get_default_timezone()),
     ),
+    Badge(
+        'charity-2022',
+        u'{user.name} donated to the Very Scary Scenario charity streams '
+        u'in 2022.',
+        'donated to the 2022 Very Scary Scenario charity streams',
+        'home',
+        'https://www.justgiving.com/fundraising/very-charity-scenario-2022',
+        datetime.datetime(2022, 10, 9, tzinfo=get_default_timezone()),
+        datetime.datetime(2022, 11, 27, tzinfo=get_default_timezone()),
+    ),
 ]
 
 
