@@ -1725,7 +1725,7 @@ BADGES: List[Badge] = [
         'charity-2019',
         u'{user.name} donated to the Very Scary Scenario charity streams for '
         u'Samaritans in 2019.',
-        'likes of depriving people of sleep, fan of good mental health',
+        'likes depriving people of sleep, fan of good mental health',
         'life-ring',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2019',
         datetime.datetime(2019, 10, 1, tzinfo=get_default_timezone()),
@@ -1733,8 +1733,8 @@ BADGES: List[Badge] = [
     ),
     Badge(
         'charity-2020',
-        u'{user.name} donated to the Very Scary Scenario charity streams '
-        u'in 2020.',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'Cancer Research UK in 2020.',
         'donated to the 2020 Very Scary Scenario charity streams',
         'heartbeat',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2020',
@@ -1743,8 +1743,8 @@ BADGES: List[Badge] = [
     ),
     Badge(
         'charity-2021',
-        u'{user.name} donated to the Very Scary Scenario charity streams '
-        u'in 2021.',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'Mind in 2021.',
         'donated to the 2021 Very Scary Scenario charity streams',
         'brain',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2021',
@@ -1753,8 +1753,8 @@ BADGES: List[Badge] = [
     ),
     Badge(
         'charity-2022',
-        u'{user.name} donated to the Very Scary Scenario charity streams '
-        u'in 2022.',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'akt in 2022.',
         'donated to the 2022 Very Scary Scenario charity streams',
         'home',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2022',
