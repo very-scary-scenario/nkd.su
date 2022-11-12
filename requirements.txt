@@ -9,7 +9,7 @@ django>=3.2.14,<3.3
 flake8-import-order<2
 flake8>=3.8
 musicbrainzngs==0.5
-mypy>=0.940,<1
+mypy>=0.990,<1
 ndg-httpsclient
 psycopg2
 pyasn1
