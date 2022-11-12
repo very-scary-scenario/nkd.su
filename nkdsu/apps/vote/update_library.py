@@ -234,6 +234,18 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> list[d
                 'item': str(db_track),
             })
 
+            if not db_track.composer:
+                warnings.append({
+                    'field': 'composer',
+                    'message': 'missing on a new track',
+                })
+
+            if not db_track.year:
+                warnings.append({
+                    'field': 'year',
+                    'message': 'missing on a new track',
+                })
+
         if changed or warnings:
             changes.append({
                 'type': 'locked' if db_track.metadata_locked else 'change',
