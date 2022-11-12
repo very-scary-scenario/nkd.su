@@ -368,7 +368,7 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
     model = TwitterUser
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        image: bytes | str,
+        image: bytes | str
         content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
             size='original' if request.GET.get('size') == 'original' else None)
         return HttpResponse(image, content_type=content_type)
