@@ -126,9 +126,10 @@ class Archive(mixins.BreadcrumbMixin, mixins.ArchiveList):
         return super().get_queryset().filter(end__lt=timezone.now()).prefetch_related('play_set', 'vote_set')
 
 
-class ShowDetail(mixins.ShowDetail):
+class ShowDetail(mixins.BreadcrumbMixin, mixins.ShowDetail):
     section = 'browse'
     template_name = 'show_detail.html'
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:archive'), 'past shows')]
     model = Show
     object: Show
 
@@ -484,11 +485,12 @@ class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView
         return context
 
 
-class Added(mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):
+class Added(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):
     default_to_current = True
     section = 'new tracks'
     template_name = 'added.html'
     paginate_by = 50
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:archive'), 'past shows')]
     model = Show
     object: Show
 
