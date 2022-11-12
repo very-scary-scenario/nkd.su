@@ -224,10 +224,10 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> list[d
             )
 
         if new:
-            if not inudesu:
-                db_track.hidden = True
-            else:
+            if inudesu:
                 db_track.hidden = False
+            else:
+                db_track.hidden = True
 
             changes.append({
                 'type': 'new',
