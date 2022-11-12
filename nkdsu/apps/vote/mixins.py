@@ -50,9 +50,6 @@ class TrackListWithAnimeGrouping(ContextMixin):
     def get_track_queryset(self) -> Sequence[Track] | TrackQuerySet:
         raise NotImplementedError()
 
-    def get_queryset(self) -> Sequence[Track] | TrackQuerySet:
-        return self.get_track_queryset()
-
     def grouped_tracks(self) -> OrderedDict[str, list[Track]]:
         tracks = self.get_track_queryset()
         animes = sorted(set(
@@ -74,6 +71,11 @@ class TrackListWithAnimeGrouping(ContextMixin):
         })
 
         return context
+
+
+class TrackListWithAnimeGroupingListView(TrackListWithAnimeGrouping, ListView):
+    def get_queryset(self) -> Sequence[Track] | TrackQuerySet:
+        return self.get_track_queryset()
 
 
 class ShowDetailMixin(LetMemoizeGetObject[Show]):

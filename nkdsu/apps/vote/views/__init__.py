@@ -129,6 +129,8 @@ class Archive(mixins.BreadcrumbMixin, mixins.ArchiveList):
 class ShowDetail(mixins.ShowDetail):
     section = 'browse'
     template_name = 'show_detail.html'
+    model = Show
+    object: Show
 
 
 class ListenRedirect(mixins.ShowDetail):
@@ -374,7 +376,7 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
         return HttpResponse(image, content_type=content_type)
 
 
-class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
+class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
     section = 'browse'
     breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_years'), 'years')]
     template_name = 'year.html'
@@ -389,7 +391,7 @@ class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
         }
 
 
-class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
+class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
     template_name = 'artist_detail.html'
     section = 'browse'
     breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_artists'), 'artists')]
@@ -460,7 +462,7 @@ class Anime(mixins.BreadcrumbMixin, ListView):
         return context
 
 
-class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
+class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
     section = 'browse'
     template_name = 'composer_detail.html'
     breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_composers'), 'composers')]
@@ -482,12 +484,13 @@ class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListVi
         return context
 
 
-class Added(mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):  # type: ignore # querysets can be sequences for now
+class Added(mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):
     default_to_current = True
     section = 'new tracks'
     template_name = 'added.html'
     paginate_by = 50
     model = Show
+    object: Show
 
     def get_track_queryset(self) -> TrackQuerySet:
         return self.get_object().revealed()
