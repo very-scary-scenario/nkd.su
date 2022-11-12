@@ -1,6 +1,6 @@
 import re
 from random import choice
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from django import forms
 from django.core.validators import validate_email
@@ -122,7 +122,7 @@ class RequestForm(TriviaForm):
     contact = EmailOrTwitterField(label="Email Address/Twitter name",
                                   required=True)
 
-    def clean(self) -> Optional[Dict[str, Any]]:
+    def clean(self) -> Optional[dict[str, Any]]:
         cleaned_data = super().clean()
         if cleaned_data is None:
             return None

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-from typing import Any, Dict, List
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpRequest, HttpResponse
@@ -10,6 +9,10 @@ from django.views.generic.detail import SingleObjectMixin
 from ..mixins import ShowDetailMixin, ThisShowDetailMixin, TwitterUserDetailMixin
 from ..models import Track
 from ..views import Search
+
+
+JsonEncodable = None | bool | int | float | str | dict[str, 'JsonEncodable'] | list['JsonEncodable']
+JsonDict = dict[str, JsonEncodable]
 
 
 class APIView(View):
@@ -40,7 +43,7 @@ class TrackAPI(SingleObjectMixin, APIView):
 
 
 class SearchAPI(APIView, Search):
-    def get_api_stuff(self, *a, **k) -> List[Dict[str, Any]]:
+    def get_api_stuff(self, *a, **k) -> list[JsonDict]:
         return [t.api_dict() for t in self.get_queryset()]
 
 

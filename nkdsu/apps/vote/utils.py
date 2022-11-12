@@ -5,7 +5,7 @@ import re
 import string
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Callable, Iterable, List, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
+from typing import Any, Callable, Generic, Iterable, Optional, TYPE_CHECKING, TypeVar, cast
 from urllib.parse import quote
 
 from classtools import reify as ct_reify
@@ -44,7 +44,7 @@ class BrowsableItem:
     name: str
     visible: bool = True
 
-    def group(self) -> Tuple[int, str]:
+    def group(self) -> tuple[int, str]:
         """
         Return a sort order and a user-facing name for the group to put this
         item in. By default, an initial letter.
@@ -65,7 +65,7 @@ class BrowsableItem:
 
 @dataclass
 class BrowsableYear(BrowsableItem):
-    def group(self) -> Tuple[int, str]:
+    def group(self) -> tuple[int, str]:
         decade = (int(self.name) // 10) * 10
         return (decade, f"{decade}s")
 
@@ -160,7 +160,7 @@ def tweet_len(tweet: str) -> int:
     return len(shortened)
 
 
-def split_id3_title(id3_title: str) -> Tuple[str, Optional[str]]:
+def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
     """
     Take a 'Title (role)'-style ID3 title and return (title, role)
     """
@@ -189,7 +189,7 @@ def split_id3_title(id3_title: str) -> Tuple[str, Optional[str]]:
 
 
 # http://zeth.net/post/327/
-def split_query_into_keywords(query: str) -> List[str]:
+def split_query_into_keywords(query: str) -> list[str]:
     """Split the query into keywords,
     where keywords are double quoted together,
     use as one keyword."""
@@ -211,7 +211,7 @@ def split_query_into_keywords(query: str) -> List[str]:
 T = TypeVar('T')
 
 
-class Memoize:
+class Memoize(Generic[T]):
     """
     Cache the return value of a method on the object itself.
 
@@ -230,7 +230,7 @@ class Memoize:
     Obj.add_to(1, 2) # returns 3, result is not cached
     """
 
-    def __init__(self, func):
+    def __init__(self, func: Callable[..., T]) -> None:
         self.func = func
 
     def __get__(self, obj, objtype=None):
@@ -252,11 +252,11 @@ class Memoize:
         return res
 
 
-def memoize(func: T) -> T:
-    return cast(T, Memoize(func))
+def memoize(func: Callable[..., T]) -> Callable[..., T]:
+    return Memoize(func)
 
 
-def reify(func: Callable[..., T]) -> T:
+def reify(func: Callable[[Any], T]) -> T:
     return cast(T, ct_reify(func))
 
 

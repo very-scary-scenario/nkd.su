@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 from random import sample
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple, Union, cast
+from typing import Any, Iterable, Optional, Sequence, cast
 
 from django.conf import settings
 from django.contrib import messages
@@ -38,7 +38,7 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
     section = 'home'
     template_name = 'index.html'
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         show = context['show']
 
@@ -220,7 +220,7 @@ class Roulette(ListView):
     def get_base_queryset(self):
         return self.model.objects.public()
 
-    def get_tracks(self) -> Tuple[Iterable[Track], int]:
+    def get_tracks(self) -> tuple[Iterable[Track], int]:
         qs = self.get_base_queryset()
 
         if self.kwargs.get('mode') == 'pro':
@@ -259,7 +259,7 @@ class Roulette(ListView):
 
         return (qs.order_by('?')[:5], qs.count())
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         mode = self.kwargs['mode']
         decade_str = self.kwargs.get('decade', str(self.default_decade))
@@ -320,7 +320,7 @@ class Search(ListView):
     def get_queryset(self) -> QuerySet[Track]:
         return self._queryset
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['query'] = self.request.GET.get('q', '')
         return context
@@ -345,7 +345,7 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
     paginate_by = 100
     model = TwitterUser
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         votes = cast(TwitterUser, self.get_object()).votes_with_liberal_preselection()
@@ -368,7 +368,7 @@ class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
     model = TwitterUser
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        image: Union[bytes, str]
+        image: bytes | str,
         content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
             size='original' if request.GET.get('size') == 'original' else None)
         return HttpResponse(image, content_type=content_type)
@@ -410,10 +410,10 @@ class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView
             )
         )
 
-    def artist_suggestions(self) -> Set[str]:
+    def artist_suggestions(self) -> set[str]:
         return Track.suggest_artists(self.kwargs['artist'])
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         self.tracks = context['tracks']
         context.update({
@@ -432,7 +432,7 @@ class Anime(mixins.BreadcrumbMixin, ListView):
     template_name = 'anime_detail.html'
     context_object_name = 'tracks'
 
-    def get_queryset(self) -> List[Track]:
+    def get_queryset(self) -> list[Track]:
         tracks = self.model.objects.by_anime(
             self.kwargs['anime'], show_secret_tracks=(
                 self.request.user.is_authenticated and
@@ -448,7 +448,7 @@ class Anime(mixins.BreadcrumbMixin, ListView):
                 key=lambda t: t.role_detail_for_anime(self.kwargs['anime'])
             )
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context.update({
             'anime': self.kwargs['anime'],
@@ -473,7 +473,7 @@ class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListVi
 
         return qs.by_composer(self.kwargs['composer'])
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context.update({
             'composer': self.kwargs['composer'],
@@ -498,7 +498,7 @@ class Stats(TemplateView):
     template_name = 'stats.html'
     cache_key = 'stats:context'
 
-    def streaks(self) -> List[TwitterUser]:
+    def streaks(self) -> list[TwitterUser]:
         last_votable_show = Show.current().prev()
         while (
             last_votable_show is not None and
@@ -514,7 +514,7 @@ class Stats(TemplateView):
             reverse=True
         )
 
-    def batting_averages(self) -> List[TwitterUser]:
+    def batting_averages(self) -> list[TwitterUser]:
         users = []
         minimum_weight = 4
 
@@ -529,7 +529,7 @@ class Stats(TemplateView):
             minimum_weight=minimum_weight
         ) or 0, reverse=True)
 
-    def popular_tracks(self) -> List[Tuple[Track, int]]:
+    def popular_tracks(self) -> list[tuple[Track, int]]:
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
         tracks = []
 
@@ -538,7 +538,7 @@ class Stats(TemplateView):
 
         return sorted(tracks, key=lambda t: t[1], reverse=True)
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context.update({
             'streaks': self.streaks,
@@ -575,12 +575,12 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
     def get_track(self) -> Track:
         return get_object_or_404(Track, pk=self.kwargs['pk'])
 
-    def get_context_data(self, *args, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, *args, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(*args, **kwargs)
         context['track'] = self.get_track()
         return context
 
-    def get_form_kwargs(self) -> Dict[str, Any]:
+    def get_form_kwargs(self) -> dict[str, Any]:
         kwargs = super().get_form_kwargs()
         kwargs['track'] = self.get_track()
         return kwargs
@@ -612,7 +612,7 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
 
         return super().form_valid(form)
 
-    def get_breadcrumbs(self) -> List[Tuple[Optional[str], str]]:
+    def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
         track = self.get_track()
 
         return [
@@ -627,7 +627,7 @@ class RequestAddition(mixins.MarkdownView, FormView):
     filename = 'ELIGIBILITY.md'
     title = 'Request an addition to the library'
 
-    def get_initial(self) -> Dict[str, Any]:
+    def get_initial(self) -> dict[str, Any]:
         return {
             **super().get_initial(),
             **{k: v for (k, v) in self.request.GET.items()},

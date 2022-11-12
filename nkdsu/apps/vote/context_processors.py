@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 from django.http import HttpRequest
 from django.urls import reverse
@@ -51,7 +51,7 @@ def get_dark_mode(request: HttpRequest):
     return request.session.get('dark_mode')
 
 
-def nkdsu_context_processor(request: HttpRequest) -> Dict[str, Any]:
+def nkdsu_context_processor(request: HttpRequest) -> dict[str, Any]:
     """
     Add common stuff to context.
     """

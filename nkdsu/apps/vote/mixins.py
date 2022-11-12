@@ -7,7 +7,7 @@ from abc import abstractmethod
 from collections import OrderedDict
 from copy import copy
 from os import path
-from typing import Any, Dict, Generic, Iterable, List, Optional, Sequence, Tuple, Type, TypeVar, cast
+from typing import Any, Generic, Iterable, Optional, Sequence, TypeVar, cast
 
 from django.conf import settings
 from django.db.models import Model, QuerySet
@@ -28,7 +28,7 @@ M = TypeVar("M", bound=Model)
 
 
 class CurrentShowMixin(ContextMixin):
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['show'] = Show.current()
         return context
@@ -53,20 +53,20 @@ class TrackListWithAnimeGrouping(ContextMixin):
     def get_queryset(self) -> Sequence[Track] | TrackQuerySet:
         return self.get_track_queryset()
 
-    def grouped_tracks(self) -> OrderedDict[str, List[Track]]:
+    def grouped_tracks(self) -> OrderedDict[str, list[Track]]:
         tracks = self.get_track_queryset()
         animes = sorted(set(
             rd.anime or "not from an anime"
             for t in tracks for rd in t.role_details
         ))
-        grouped_tracks: OrderedDict[str, List[Track]] = OrderedDict()
+        grouped_tracks: OrderedDict[str, list[Track]] = OrderedDict()
 
         for anime in animes:
             grouped_tracks[anime] = [t for t in tracks if t.has_anime(anime)]
 
         return grouped_tracks
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context.update({
             'grouped_tracks': self.grouped_tracks,
@@ -159,7 +159,7 @@ class ShowDetailMixin(LetMemoizeGetObject[Show]):
             url = reverse(name, kwargs=new_kwargs)
             return redirect(url)
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)  # type: ignore
 
         context['show'] = self.get_object()
@@ -185,10 +185,11 @@ class ThisShowDetailMixin(ShowDetailMixin):
 
 class ShowDetail(ShowDetailMixin, DetailView[Show]):
     model = Show
+    object: Show
 
 
 class ArchiveList(ListView):
-    model: Optional[Type[Model]] = Show
+    model: Optional[type[Model]] = Show
     exclude_current = True
 
     def year(self) -> int:
@@ -202,7 +203,7 @@ class ArchiveList(ListView):
 
         return year
 
-    def get_years(self) -> List[int]:
+    def get_years(self) -> list[int]:
         try:
             return list(
                 self.get_queryset().order_by('showtime__year').distinct(
@@ -224,7 +225,7 @@ class ArchiveList(ListView):
 
         return qs
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         return {
             **super().get_context_data(**kwargs),
             'years': self.get_years(),
@@ -240,7 +241,7 @@ class MarkdownView(TemplateView):
     filename: str
     title: str
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         words = markdown(codecs.open(
@@ -285,10 +286,10 @@ class TwitterUserDetailMixin(LetMemoizeGetObject[TwitterUser]):
 
 
 class BreadcrumbMixin:
-    breadcrumbs: List[Tuple[Optional[str], str]] = []
+    breadcrumbs: list[tuple[Optional[str], str]] = []
 
     @abstractmethod
-    def get_breadcrumbs(self) -> List[Tuple[Optional[str], str]]:
+    def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
         return self.breadcrumbs
 
     def get_context_data(self, **k):
@@ -319,7 +320,7 @@ class BrowseCategory(BreadcrumbMixin, TemplateView):
                 item.visible = False
             yield item
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         return {
             **super().get_context_data(**kwargs),
             'category_name': self.category_name,

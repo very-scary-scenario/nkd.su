@@ -6,7 +6,7 @@ import re
 from dataclasses import asdict, dataclass
 from io import BytesIO
 from string import ascii_letters
-from typing import Any, Dict, Iterable, List, Literal, Optional, Set, Tuple, Union, cast
+from typing import Any, Iterable, Literal, Optional, cast
 from urllib.parse import urlparse
 
 from Levenshtein import ratio
@@ -50,7 +50,7 @@ class CleanOnSaveMixin:
 
 
 class SetShowBasedOnDateMixin:
-    show: models.ForeignKey[Union[Show, models.expressions.Combinable], Show]
+    show: models.ForeignKey[Show | models.expressions.Combinable, Show]
 
     def save(self, *args, **kwargs):
         self.show = Show.at(self.date)
@@ -103,7 +103,7 @@ class Show(CleanOnSaveMixin, models.Model):
         existing_show = cls.objects.filter(end__gt=time).order_by('showtime').first()
 
         if existing_show is not None:
-            return existing_show  # type: ignore # workaround for django-stubs issue 1022, whose fix is unreleased
+            return existing_show
         elif not create:
             return None
         else:
@@ -199,7 +199,7 @@ class Show(CleanOnSaveMixin, models.Model):
     def has_ended(self) -> bool:
         return timezone.now() > self.end
 
-    def _date_kwargs(self, attr: str = 'date') -> Dict[str, datetime.datetime]:
+    def _date_kwargs(self, attr: str = 'date') -> dict[str, datetime.datetime]:
         """
         The kwargs you would hand to a queryset to find objects applicable to
         this show. Should not be used unless you're doing something that
@@ -223,22 +223,22 @@ class Show(CleanOnSaveMixin, models.Model):
         return self.play_set.order_by('date').select_related('track')
 
     @memoize
-    def playlist(self) -> List[Track]:
+    def playlist(self) -> list[Track]:
         return [p.track for p in self.plays()]
 
     @memoize
-    def shortlisted(self) -> List[Track]:
+    def shortlisted(self) -> list[Track]:
         return list(filter(lambda t: t not in self.playlist(),
                            (p.track for p in self.shortlist_set.all())))
 
     @memoize
-    def discarded(self) -> List[Track]:
+    def discarded(self) -> list[Track]:
         return list(filter(lambda t: t not in self.playlist(),
                            (p.track for p in self.discard_set.all())))
 
     @memoize
     @pk_cached(20)
-    def tracks_sorted_by_votes(self) -> List[Track]:
+    def tracks_sorted_by_votes(self) -> list[Track]:
         """
         Return a list of tracks that have been voted for this week, in order of
         when they were last voted for, starting from the most recent.
@@ -276,7 +276,7 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     @pk_cached(60)
-    def cloudcasts(self) -> List[Any]:
+    def cloudcasts(self) -> list[Any]:
         return mixcloud.cloudcasts_for(self.showtime)
 
     def get_absolute_url(self) -> str:
@@ -306,7 +306,7 @@ class Show(CleanOnSaveMixin, models.Model):
         else:
             return prev.end
 
-    def api_dict(self, verbose: bool = False) -> Dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {
             'playlist': [p.api_dict() for p in self.plays()],
             'added': [t.api_dict() for t in self.revealed()],
@@ -359,8 +359,8 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
     @memoize
     def get_avatar(
-        self, size: Optional[Union[Literal['original'], Literal['normal']]] = None, from_cache: bool = True
-    ) -> Tuple[str, bytes]:
+        self, size: Optional[Literal['original', 'normal']] = None, from_cache: bool = True
+    ) -> tuple[str, bytes]:
         ck = f'twav:{size}:{self.pk}'
 
         if from_cache:
@@ -416,7 +416,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         return self.votes().filter(show=show)
 
     @memoize
-    def tracks_voted_for_for(self, show: Show) -> List[Track]:
+    def tracks_voted_for_for(self, show: Show) -> list[Track]:
         tracks = []
         track_pk_set = set()
 
@@ -432,7 +432,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         self, cutoff: Optional[datetime.datetime] = None, minimum_weight: float = 1,
     ) -> Optional[float]:
 
-        def ba(pk, current_show_pk, cutoff: Optional[datetime.datetime]) -> Tuple[float, float]:
+        def ba(pk, current_show_pk, cutoff: Optional[datetime.datetime]) -> tuple[float, float]:
             score: float = 0
             weight: float = 0
 
@@ -510,7 +510,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
         self.save()
 
-    def api_dict(self, verbose: bool = False) -> Dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {
             'user_name': self.name,
             'user_screen_name': self.screen_name,
@@ -635,13 +635,13 @@ class Role:
     def __gt__(self, other) -> bool:
         return self.sortkey() > other.sortkey()
 
-    def numbers_in_role(self) -> Tuple[int, ...]:
+    def numbers_in_role(self) -> tuple[int, ...]:
         # basically intended to ensure 'op10' is sorted after 'op9', but also
         # will work perfectly for cases where there's stuff like 'season 3
         # ep10-13'
         return tuple((int(n) for n in re.findall(r'\d+', self.full_role)))
 
-    def sortkey(self) -> Tuple[float, str, Tuple[int, ...], str]:
+    def sortkey(self) -> tuple[float, str, tuple[int, ...], str]:
         return (
             self.sortkey_group,
             self.kind,
@@ -661,7 +661,7 @@ class Role:
             _name_is_related(self.anime, anime)
         )
 
-    def related_anime(self) -> List[str]:
+    def related_anime(self) -> list[str]:
         return [a for a in Track.all_anime_titles()
                 if a != self.anime and self.anime_is_related(a)]
 
@@ -712,25 +712,25 @@ class Track(CleanOnSaveMixin, models.Model):
                                   'date'.format(track=self))
 
     @classmethod
-    def all_anime_titles(cls) -> Set[str]:
+    def all_anime_titles(cls) -> set[str]:
         return set(
             (rd.anime for t in cls.objects.public() for rd in t.role_details if rd.anime is not None)
         )
 
     @classmethod
-    def all_artists(cls) -> Set[str]:
+    def all_artists(cls) -> set[str]:
         return set(
             a for t in cls.objects.public() for a in t.artist_names()
         )
 
     @classmethod
-    def all_composers(cls) -> Set[str]:
+    def all_composers(cls) -> set[str]:
         return set(
             c for t in cls.objects.public() for c in t.composer_names()
         )
 
     @classmethod
-    def all_years(cls) -> List[int]:
+    def all_years(cls) -> list[int]:
         tracks = cls.objects.public().filter(year__isnull=False)
 
         if (
@@ -748,7 +748,7 @@ class Track(CleanOnSaveMixin, models.Model):
             })
 
     @classmethod
-    def complete_decade_range(cls) -> List[Tuple[int, bool]]:
+    def complete_decade_range(cls) -> list[tuple[int, bool]]:
         present_years = cls.all_years()
         if not present_years:
             return []
@@ -761,11 +761,11 @@ class Track(CleanOnSaveMixin, models.Model):
         ]
 
     @classmethod
-    def all_decades(cls) -> List[int]:
+    def all_decades(cls) -> list[int]:
         return sorted({(year // 10) * 10 for year in cls.all_years()})
 
     @classmethod
-    def suggest_artists(cls, string: str) -> Set[str]:
+    def suggest_artists(cls, string: str) -> set[str]:
         artist_names = set()
         for track in Track.objects.public().filter(
             id3_artist__icontains=string
@@ -776,7 +776,7 @@ class Track(CleanOnSaveMixin, models.Model):
         return artist_names
 
     @classmethod
-    def all_roles(cls, qs: Optional[models.QuerySet[Track]] = None) -> Set[str]:
+    def all_roles(cls, qs: Optional[models.QuerySet[Track]] = None) -> set[str]:
         if qs is None:
             qs = cls.objects.all()
 
@@ -787,7 +787,7 @@ class Track(CleanOnSaveMixin, models.Model):
         ))
 
     @classmethod
-    def all_non_inudesu_roles(cls) -> Set[str]:
+    def all_non_inudesu_roles(cls) -> set[str]:
         return cls.all_roles(cls.objects.filter(inudesu=False))
 
     @memoize
@@ -849,11 +849,11 @@ class Track(CleanOnSaveMixin, models.Model):
         return self.split_id3_title()[1]
 
     @reify
-    def roles(self) -> List[str]:
+    def roles(self) -> list[str]:
         return self.role.split('|') if self.role else []
 
     @reify
-    def role_details(self) -> List[Role]:
+    def role_details(self) -> list[Role]:
         return [Role(role) for role in self.roles]
 
     def role_detail_for_anime(self, anime: str) -> Role:
@@ -895,7 +895,7 @@ class Track(CleanOnSaveMixin, models.Model):
             if chunk.is_artist
         )
 
-    def split_id3_title(self) -> Tuple[str, Optional[str]]:
+    def split_id3_title(self) -> tuple[str, Optional[str]]:
         return split_id3_title(self.id3_title)
 
     def eligible(self) -> bool:
@@ -1052,7 +1052,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return vote_tweet_intent_url([self])
 
-    def get_lastfm_track(self) -> Dict[str, Any]:
+    def get_lastfm_track(self) -> dict[str, Any]:
         return lastfm(
             method='track.getInfo',
             track=self.title,
@@ -1061,7 +1061,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @memoize
     @pk_cached(3600)
-    def musicbrainz_release(self) -> Optional[Dict[str, Any]]:
+    def musicbrainz_release(self) -> Optional[dict[str, Any]]:
         releases = musicbrainzngs.search_releases(
             tracks=self.title,
             release=self.album,
@@ -1078,14 +1078,14 @@ class Track(CleanOnSaveMixin, models.Model):
         else:
             return None
 
-    def _get_lastfm_album_from_album_tag(self) -> Optional[Dict[str, Any]]:
+    def _get_lastfm_album_from_album_tag(self) -> Optional[dict[str, Any]]:
         return lastfm(
             method='album.getInfo',
             artist=self.artist,
             album=self.album,
         ).get('album')
 
-    def _get_lastfm_album_from_musicbrainz_release(self) -> Optional[Dict[str, Any]]:
+    def _get_lastfm_album_from_musicbrainz_release(self) -> Optional[dict[str, Any]]:
         release = self.musicbrainz_release()
 
         if release is not None:
@@ -1097,13 +1097,13 @@ class Track(CleanOnSaveMixin, models.Model):
         else:
             return None
 
-    def _get_lastfm_album_from_track_tag(self) -> Optional[Dict[str, Any]]:
+    def _get_lastfm_album_from_track_tag(self) -> Optional[dict[str, Any]]:
         track = self.get_lastfm_track()
 
         if track is not None:
             return track.get('album')
 
-    def get_lastfm_album(self) -> Optional[Dict[str, Any]]:
+    def get_lastfm_album(self) -> Optional[dict[str, Any]]:
         album = self._get_lastfm_album_from_album_tag()
 
         if album is not None:
@@ -1111,7 +1111,7 @@ class Track(CleanOnSaveMixin, models.Model):
         else:
             return self._get_lastfm_album_from_track_tag()
 
-    def get_lastfm_artist(self) -> Optional[Dict[str, Any]]:
+    def get_lastfm_artist(self) -> Optional[dict[str, Any]]:
         return lastfm(method='artist.getInfo', artist=self.artist
                       ).get('artist')
 
@@ -1173,7 +1173,7 @@ class Track(CleanOnSaveMixin, models.Model):
         self.background_art.save(image_url.split('/')[-1] + suffix,
                                  File(temp_file))
 
-    def api_dict(self, verbose: bool = False) -> Dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         show_revealed = self.show_revealed()
 
         the_track = {
@@ -1464,9 +1464,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         return float(self.tracks.all().count())
 
-    def api_dict(self, verbose: bool = False) -> Dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         tracks = self.tracks.all()
-        the_vote: Dict[str, Any] = {
+        the_vote: dict[str, Any] = {
             'comment': self.content() if self.content() != '' else None,
             'time': self.date,
             'track_ids': [t.id for t in tracks],
@@ -1544,7 +1544,7 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
     tweet.alters_data = True  # type: ignore
 
-    def api_dict(self, verbose: bool = False) -> Dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {
             'time': self.date,
             'track': self.track.api_dict(),
@@ -1669,7 +1669,7 @@ class Badge:
     start: Optional[datetime.datetime]
     finish: Optional[datetime.datetime]
 
-    def info(self, user: TwitterUser) -> Dict[str, Any]:
+    def info(self, user: TwitterUser) -> dict[str, Any]:
         return {
             'slug': self.slug,
             'description': self.description_fmt.format(user=user),
@@ -1681,7 +1681,7 @@ class Badge:
         }
 
 
-BADGES: List[Badge] = [
+BADGES: list[Badge] = [
     Badge(
         'tblc',
         u'{user.name} bought Take Back Love City for the RSPCA.',
@@ -1772,7 +1772,7 @@ class UserBadge(CleanOnSaveMixin, models.Model):
     user = models.ForeignKey(TwitterUser, on_delete=models.CASCADE)
 
     @reify
-    def badge_info(self) -> Dict[str, Any]:
+    def badge_info(self) -> dict[str, Any]:
         badge, = (b for b in BADGES if b.slug == self.badge)
         return badge.info(self.user)
 

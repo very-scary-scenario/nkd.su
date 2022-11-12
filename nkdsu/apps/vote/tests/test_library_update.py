@@ -1,6 +1,6 @@
 import plistlib
 from collections import namedtuple
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Iterable, Optional
 
 from django.test import TestCase
 
@@ -160,7 +160,7 @@ class LibraryUpdateTest(TestCase):
     def library_plus_one_track(
         self, name: str, artist: str, composer: str, year: str, time: str,
         added: str, hex_id: str, album: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         return plistlib.loads(
             self.get_library_xml(
                 DEFAULT_TRACKS + [TrackMeta(
@@ -177,7 +177,7 @@ class LibraryUpdateTest(TestCase):
             )
         )
 
-    def library_change_one_track(self, hex_id: str, new_meta: Dict[str, str]) -> Dict[str, Any]:
+    def library_change_one_track(self, hex_id: str, new_meta: dict[str, str]) -> dict[str, Any]:
         tracks = DEFAULT_TRACKS[:]
         for track_id, track in enumerate(tracks):
             if track.hex_id == hex_id:

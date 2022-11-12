@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterable, List, Optional, Tuple
+from typing import Iterable, Optional
 
 from django.conf import settings
 from django.urls import reverse
@@ -32,7 +32,7 @@ class ArtistChunk:
 
 @dataclass(frozen=True)
 class ParsedArtist:
-    chunks: List[ArtistChunk]
+    chunks: list[ArtistChunk]
     should_collapse: bool
 
     def __iter__(self) -> Iterable[ArtistChunk]:
@@ -190,7 +190,7 @@ def chunk_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChun
 
     artist_parts = ('ARTIST_COMPONENT', 'SPACE')
 
-    fragment: Optional[Tuple[bool, str]] = None
+    fragment: Optional[tuple[bool, str]] = None
 
     for ti, token in enumerate(tokens):
         if token.type == 'SPECIAL_CASE':

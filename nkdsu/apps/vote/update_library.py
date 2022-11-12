@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from typing import Any, Dict, Iterable, List, Literal, Optional, Tuple, TypedDict
+from typing import Any, Iterable, Literal, Optional, TypedDict
 
 from Levenshtein import ratio
 from django.utils.timezone import get_default_timezone, make_aware
@@ -26,7 +26,7 @@ def check_closeness_against_list(name, canonical_names: Iterable[str], reverse: 
     best_closeness, best_match = 0.7, None
 
     if name:
-        names_to_check: Tuple[str, ...]
+        names_to_check: tuple[str, ...]
 
         if name in canonical_names:
             return None
@@ -62,8 +62,8 @@ class MetadataWarning(TypedDict):
 
 def check_artist_consistency(
     track_artists: Iterable[str], all_artists: Iterable[str], field: UpdateFieldName,
-) -> List[MetadataWarning]:
-    warnings: List[MetadataWarning] = []
+) -> list[MetadataWarning]:
+    warnings: list[MetadataWarning] = []
 
     for artist in track_artists:
         match = check_closeness_against_list(artist, all_artists, reverse=True)
@@ -84,12 +84,12 @@ def metadata_consistency_checks(
     all_anime_titles: Iterable[str],
     all_artists: Iterable[str],
     all_composers: Iterable[str],
-) -> List[MetadataWarning]:
+) -> list[MetadataWarning]:
     """
     Take a proposed update to the library, and check it for various types of things that might be wrong with it.
     """
 
-    warnings: List[MetadataWarning] = []
+    warnings: list[MetadataWarning] = []
     track_animes = [rd.anime for rd in db_track.role_details]
     track_roles = [rd.full_role for rd in db_track.role_details]
 
@@ -142,8 +142,8 @@ def metadata_consistency_checks(
     return warnings
 
 
-def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[Dict[str, Any]]:
-    changes: List[Dict[str, Any]] = []
+def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> list[dict[str, Any]]:
+    changes: list[dict[str, Any]] = []
     alltracks = Track.objects.filter(inudesu=inudesu)
     all_anime_titles = Track.all_anime_titles()
     all_artists = Track.all_artists()
@@ -152,7 +152,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
     for tid in tree['Tracks']:
         changed = False
         new = False
-        warnings: List[MetadataWarning] = []
+        warnings: list[MetadataWarning] = []
         field_alterations = []
 
         t = tree['Tracks'][tid]
@@ -169,7 +169,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
             db_track = Track()
 
         else:
-            db_dict: Dict[UpdateFieldName, Any] = {
+            db_dict: dict[UpdateFieldName, Any] = {
                 'title': db_track.id3_title,
                 'artist': db_track.id3_artist,
                 'album': db_track.id3_album,
@@ -178,7 +178,7 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> List[D
                 'year': db_track.year,
                 'added': db_track.added,
             }
-            track_dict: Dict[UpdateFieldName, Any] = {
+            track_dict: dict[UpdateFieldName, Any] = {
                 'title': t['Name'],
                 'artist': t['Artist'],
                 'album': t['Album'],

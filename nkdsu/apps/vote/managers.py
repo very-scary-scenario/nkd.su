@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.db import models
@@ -28,7 +28,7 @@ class TrackQuerySet(models.QuerySet["Track"]):
     def public(self) -> TrackQuerySet:
         return self.filter(hidden=False, inudesu=False)
 
-    def by_artist(self, artist: str, show_secret_tracks: bool = False) -> List[Track]:
+    def by_artist(self, artist: str, show_secret_tracks: bool = False) -> list[Track]:
         """
         Filters with Python, so does not return a queryset and is not lazy.
         """
@@ -37,12 +37,12 @@ class TrackQuerySet(models.QuerySet["Track"]):
         qs = base_qs.filter(id3_artist__contains=artist).order_by('id3_title')
         return [t for t in qs if artist in t.artist_names()]
 
-    def by_composer(self, composer: str, show_secret_tracks: bool = False) -> List[Track]:
+    def by_composer(self, composer: str, show_secret_tracks: bool = False) -> list[Track]:
         base_qs = self._everything(show_secret_tracks)
         qs = base_qs.filter(composer__contains=composer).order_by('id3_title')
         return [t for t in qs if composer in t.composer_names()]
 
-    def by_anime(self, anime: str, show_secret_tracks: bool = False) -> List[Track]:
+    def by_anime(self, anime: str, show_secret_tracks: bool = False) -> list[Track]:
         """
         Behaves similarly to by_artist.
         """

@@ -1,6 +1,6 @@
 import os
 import plistlib
-from typing import Any, Dict, List
+from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -369,7 +369,7 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
 
     template_name = 'library_update.html'
 
-    def update_library(self, dry_run: bool) -> List[Dict[str, Any]]:
+    def update_library(self, dry_run: bool) -> list[dict[str, Any]]:
         library_update = self.request.session['library_update']
         return update_library(
             plistlib.loads(library_update['library_xml'].encode()),

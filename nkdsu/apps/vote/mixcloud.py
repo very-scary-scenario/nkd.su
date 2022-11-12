@@ -1,6 +1,6 @@
 import logging
 from json import JSONDecodeError
-from typing import Any, List
+from typing import Any
 
 from django.conf import settings
 from django.core.cache import cache
@@ -53,7 +53,7 @@ def _get_cloudcasts():
         yield from data
 
 
-def cloudcasts_for(date) -> List[Any]:
+def cloudcasts_for(date) -> list[Any]:
     hunting_for = date.strftime('%d/%m/%Y')
     cloudcasts = []
 

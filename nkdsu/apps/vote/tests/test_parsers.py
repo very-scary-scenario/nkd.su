@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Optional
 
 from django.test import TestCase
 
@@ -6,7 +6,7 @@ from ..models import Role
 from ..parsers import parse_artist
 
 
-PART_EXAMPLES: List[Tuple[str, List[Tuple[bool, str]]]] = [
+PART_EXAMPLES: list[tuple[str, list[tuple[bool, str]]]] = [
     ('Oranges and Lemons', [
         (True, 'Oranges and Lemons'),
     ]),
@@ -182,7 +182,7 @@ class ArtistParserTests(TestCase):
                 self.assertFalse(parsed.should_collapse, msg=string)
 
 
-ROLE_EXAMPLES: Dict[str, Tuple[Optional[str], Optional[str], str, str, str]] = {
+ROLE_EXAMPLES: dict[str, tuple[Optional[str], Optional[str], str, str, str]] = {
     '': (None, None, '', '', ''),
     'unmatchable': ('unmatchable', None, '', '', ''),
     'Mobile Suit Gundam SEED ED3': ('Mobile Suit Gundam SEED', None, 'ED', '3', 'ED3'),
