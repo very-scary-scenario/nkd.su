@@ -1,8 +1,8 @@
 import plistlib
-from collections import namedtuple
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable, NamedTuple, Optional
 
 from django.test import TestCase
+from django.utils.timezone import make_naive, now
 
 from ..models import Track
 from ..update_library import metadata_consistency_checks, update_library
@@ -41,10 +41,20 @@ PLIST_TEMPLATE = '''<?xml version="1.0" encoding="UTF-8"?>
 </plist>
 '''
 
-TrackMeta = namedtuple(
-    'TrackMeta', ('key', 'name', 'artist', 'album', 'composer', 'year', 'time', 'added', 'hex_id')
-)
 
+class TrackMeta(NamedTuple):
+    key: str
+    name: str
+    artist: str
+    album: str
+    composer: str
+    year: str
+    time: str
+    added: str
+    hex_id: str
+
+
+#: The tracks as they appear in the ``vote.json`` fixtures.
 DEFAULT_TRACKS = [
     TrackMeta(
         "1",
@@ -154,7 +164,7 @@ class LibraryUpdateTest(TestCase):
 
     def get_library_xml(self, tracks: Iterable[TrackMeta]) -> bytes:
         return PLIST_TEMPLATE.format(
-            tracks=[self.get_track_xml(track) for track in tracks]
+            tracks='\n'.join(self.get_track_xml(track) for track in tracks)
         ).encode()
 
     def library_plus_one_track(
@@ -164,10 +174,10 @@ class LibraryUpdateTest(TestCase):
         return plistlib.loads(
             self.get_library_xml(
                 DEFAULT_TRACKS + [TrackMeta(
-                    len(DEFAULT_TRACKS) + 1,
+                    str(len(DEFAULT_TRACKS) + 1),
                     name,
                     artist,
-                    album,
+                    album if album is not None else '',
                     composer,
                     year,
                     time,
@@ -411,6 +421,34 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
                 )
 
         self.assertEqual(warning_count, 1)
+
+    def test_only_new_tracks_get_warnings_about_missing_composers_and_years(self) -> None:
+        Track.objects.all().delete()
+
+        added = now().replace(microsecond=0)
+        existing_track = Track.objects.create(
+            composer="gwita",
+            year=2010,
+
+            id="0000000000000000",
+            id3_title="helo (hi OP1)",
+            id3_artist="gwiita",
+            msec=21000,
+            added=added,
+            hidden=True,
+            inudesu=False,
+        )
+        et = Track.objects.get(pk=existing_track.pk)
+
+        xml = self.get_library_xml([
+            TrackMeta("100", et.id3_title, et.id3_artist, et.id3_album, et.composer, str(et.year or 0),
+                      str(et.msec), make_naive(et.added).isoformat(timespec='seconds') + 'Z', et.id),
+            TrackMeta("102", "new track (show OP)", "new artist", "new album", "", "0", "12000", "2010-09-02T02:00:00Z",
+                      "ABCDEF0123456789"),
+        ])
+        tree = plistlib.loads(xml)
+        results = update_library(tree, dry_run=True)
+        raise RuntimeError(results)
 
 
 class LibraryUpdateWetRunTest(LibraryUpdateTest):
