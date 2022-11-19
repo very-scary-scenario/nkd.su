@@ -112,19 +112,22 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
     def get_deets(self):
         return self.deets
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-
+    def get_cancel_url(self):
         referer = self.request.META.get('HTTP_REFERER')
         if referer:
-            next_path = referer
+            cancel_url = referer
         else:
-            next_path = reverse('vote:index')
+            cancel_url = reverse('vote:index')
+
+        return cancel_url
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
 
         context.update({
             'deets': self.get_deets(),
             'action': self.__doc__.strip('\n .'),
-            'next': next_path,
+            'cancel_url': self.get_cancel_url(),
         })
         return context
 
