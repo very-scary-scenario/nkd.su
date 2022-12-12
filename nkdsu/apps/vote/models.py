@@ -9,6 +9,7 @@ from io import BytesIO
 from string import ascii_letters
 from typing import Any, Iterable, Literal, Optional, cast
 from urllib.parse import urlparse
+from uuid import uuid4
 
 from Levenshtein import ratio
 from PIL import Image, ImageFilter
@@ -536,6 +537,21 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             tracks__shortlist__show=Show.current(),
             show=Show.current(),
         ).exists()
+
+
+def avatar_upload_path(instance: Profile, filename: str) -> str:
+    return f"avatars/{instance.user.username}/{uuid4()}"
+
+
+class Profile(CleanOnSaveMixin, models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    twitter_user = models.OneToOneField(
+        TwitterUser, blank=True, null=True, on_delete=models.SET_NULL, related_name='profile')
+    avatar = models.ImageField(upload_to=avatar_upload_path)  # XXX validate that this is a reasonably-sized square
+    display_name = models.CharField(max_length=100)
+
+    def __str__(self) -> str:
+        return f'{self.display_name} ({self.user.username})'
 
 
 def art_path(i: Track, f: str) -> str:
