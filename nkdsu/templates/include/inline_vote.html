@@ -2,7 +2,7 @@
 <li class="vote
   {% if vote.content %}content{% endif %}
   {% if vote.birthday %}birthday{% endif %}
-  {% if not vote.is_manual and vote.twitter_user.is_abuser %}abuser{% endif %}
+  {% if vote.is_twitter and vote.twitter_user.is_abuser %}abuser{% endif %}
   {% if user.is_staff %}
     {% if vote.twitter_user.is_new %}new-user{% endif %}
     {% if vote.twitter_user.is_placated %}placated{% endif %}
@@ -12,7 +12,7 @@
   {% endif %}
   "
   >
-  <a class="vote-link" {% if not vote.is_manual %}href="{{ vote.twitter_user.get_absolute_url }}"{% endif %}>
+  <a class="vote-link" {% if vote.is_twitter %}href="{{ vote.twitter_user.get_absolute_url }}"{% endif %}>
     {% if vote.hat %}
       <i class="hat fa fa-{{ vote.hat.badge_info.icon }}"></i>
     {% endif %}
@@ -25,9 +25,11 @@
       {% if vote.is_manual %}
         <p class="meta full_name">{{ vote.name }}</p>
         <p class="meta kind">via {{ vote.kind }}</p>
-      {% else %}
+      {% elif vote.is_twitter %}
         <p class="meta full_name">{{ vote.twitter_user.name }}</p>
         <p class="meta screen_name">@{{ vote.twitter_user.screen_name }}</p>
+      {% elif vote.is_local %}
+        <p class="meta screen_name">{{ vote.user.username }}</p>
       {% endif %}
 
       <p class="meta when">{{ vote.date|when }}</p>

@@ -1,7 +1,7 @@
 {% load vote_tags %}
 <li class="standalone-vote
   {% if vote.content %}content{% endif %}
-  {% if not vote.is_manual and vote.twitter_user.is_abuser %}abuser{% endif %}"
+  {% if vote.is_twitter and vote.twitter_user.is_abuser %}abuser{% endif %}"
   >
 
   <ul class="tracks">

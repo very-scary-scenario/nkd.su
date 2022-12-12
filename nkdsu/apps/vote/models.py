@@ -4,6 +4,7 @@ import datetime
 import json
 import re
 from dataclasses import asdict, dataclass
+from enum import Enum, auto
 from io import BytesIO
 from string import ascii_letters
 from typing import Any, Iterable, Literal, Optional, cast
@@ -33,7 +34,7 @@ import tweepy
 from .managers import NoteQuerySet, TrackQuerySet
 from .parsers import ParsedArtist, parse_artist
 from .utils import (
-    READING_USERNAME, indefinitely, lastfm, length_str, memoize,
+    READING_USERNAME, assert_never, indefinitely, lastfm, length_str, memoize,
     musicbrainzngs, pk_cached, posting_tw_api, reading_tw_api, reify,
     split_id3_title, vote_tweet_intent_url,
 )
@@ -1223,6 +1224,17 @@ MANUAL_VOTE_KINDS = (
 )
 
 
+class VoteKind(Enum):
+    #: A request made using the website's built-in requesting machinery
+    local = auto()
+
+    #: A request derived from a tweet
+    twitter = auto()
+
+    #: A request manually created by an admin to reflect, for example, an email
+    manual = auto()
+
+
 class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     # universal
     tracks = models.ManyToManyField(Track, db_index=True)
@@ -1230,15 +1242,16 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     show = models.ForeignKey(Show, related_name='vote_set', on_delete=models.CASCADE)
     text = models.TextField(blank=True)
 
+    # local only
+    user = models.ForeignKey(User, blank=True, null=True, db_index=True, on_delete=models.SET_NULL)
+
     # twitter only
-    twitter_user = models.ForeignKey(TwitterUser, blank=True, null=True,
-                                     db_index=True, on_delete=models.SET_NULL)
+    twitter_user = models.ForeignKey(TwitterUser, blank=True, null=True, db_index=True, on_delete=models.SET_NULL)
     tweet_id = models.BigIntegerField(blank=True, null=True)
 
     # manual only
     name = models.CharField(max_length=40, blank=True)
-    kind = models.CharField(max_length=10, choices=MANUAL_VOTE_KINDS,
-                            blank=True)
+    kind = models.CharField(max_length=10, choices=MANUAL_VOTE_KINDS, blank=True)
 
     @classmethod
     def handle_tweet(cls, tweet) -> Optional[Vote]:
@@ -1332,20 +1345,33 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             return None
 
     def clean(self) -> None:
-        if self.is_manual:
-            if self.tweet_id or self.twitter_user_id:
-                raise ValidationError(
-                    'Twitter attributes present on manual vote')
-            if not (self.name and self.kind):
-                raise ValidationError(
-                    'Attributes missing from manual vote')
-        else:
-            if self.name or self.kind:
-                raise ValidationError(
-                    'Manual attributes present on Twitter vote')
-            if not (self.tweet_id and self.twitter_user_id):
-                raise ValidationError(
-                    'Twitter attributes missing from Twitter vote')
+        match self.vote_kind:
+            case VoteKind.twitter:
+                if self.tweet_id or self.twitter_user_id:
+                    raise ValidationError('Twitter attributes present on manual vote')
+                if self.user:
+                    raise ValidationError('Local attributes present on manual vote')
+                if not (self.name and self.kind):
+                    raise ValidationError('Attributes missing from manual vote')
+                return
+            case VoteKind.manual:
+                if self.name or self.kind:
+                    raise ValidationError('Manual attributes present on Twitter vote')
+                if self.user:
+                    raise ValidationError('Local attributes present on Twitter vote')
+                if not (self.tweet_id and self.twitter_user_id):
+                    raise ValidationError('Twitter attributes missing from Twitter vote')
+                return
+            case VoteKind.local:
+                if self.name or self.kind:
+                    raise ValidationError('Manual attributes present on local vote')
+                if self.tweet_id or self.twitter_user_id:
+                    raise ValidationError('Twitter attributes present on local vote')
+                if not self.user:
+                    raise ValidationError('No user specified for local vote')
+                return
+
+        assert_never(self.vote_kind)
 
     def either_name(self) -> str:
         if self.name:
@@ -1353,9 +1379,26 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         assert self.twitter_user is not None
         return '@{0}'.format(self.twitter_user.screen_name)
 
-    @reify
+    @property
+    def vote_kind(self) -> VoteKind:
+        if self.tweet_id:
+            return VoteKind.twitter
+        elif self.kind:
+            return VoteKind.manual
+        else:
+            return VoteKind.local
+
+    @property
+    def is_twitter(self) -> bool:
+        return self.vote_kind == VoteKind.twitter
+
+    @property
     def is_manual(self) -> bool:
-        return not bool(self.tweet_id)
+        return self.vote_kind == VoteKind.manual
+
+    @property
+    def is_local(self) -> bool:
+        return self.vote_kind == VoteKind.local
 
     def get_image_url(self) -> str:
         if self.twitter_user:
@@ -1380,7 +1423,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         content = self.text
 
-        if not self.is_manual:
+        if self.vote_kind == VoteKind.twitter:
             while (
                 content.lower()
                 .startswith('@{}'.format(READING_USERNAME).lower())

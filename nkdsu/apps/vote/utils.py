@@ -5,7 +5,7 @@ import re
 import string
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Callable, Generic, Iterable, Optional, TYPE_CHECKING, TypeVar, cast
+from typing import Any, Callable, Generic, NoReturn, Iterable, Optional, TYPE_CHECKING, TypeVar, cast
 from urllib.parse import quote
 
 from classtools import reify as ct_reify
@@ -283,6 +283,10 @@ def lastfm(**kwargs):
 
     resp = requests.get('http://ws.audioscrobbler.com/2.0/', params=params)
     return resp.json()
+
+
+def assert_never(value: NoReturn) -> NoReturn:
+    assert False, f'this code should not have been reached; got {value!r}'
 
 
 musicbrainzngs.set_useragent('nkd.su', '0', 'http://nkd.su/')
