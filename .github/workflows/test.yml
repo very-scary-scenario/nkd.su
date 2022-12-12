@@ -1,5 +1,12 @@
 on: [push]
 jobs:
+  lint-black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: npm run-script lint-black
+
   flake8:
     runs-on: ubuntu-latest
     steps:
