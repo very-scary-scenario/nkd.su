@@ -756,8 +756,8 @@ class Track(CleanOnSaveMixin, models.Model):
 
         if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
             return list(
-                year
-                for year in tracks.order_by(  # type: ignore # we filtered out the null years
+                year  # type: ignore  # we filtered out the null years
+                for year in tracks.order_by(
                     'year'
                 )
                 .distinct('year')

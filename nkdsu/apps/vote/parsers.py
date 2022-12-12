@@ -39,13 +39,13 @@ class ParsedArtist:
 
 class ArtistLexer(Lexer):
     tokens = {
-        SPECIAL_CASE,
-        ARTIST_COMPONENT,
-        SPACE,
-        COMMA,
-        VIA,
-        LPAREN,
-        RPAREN,
+        SPECIAL_CASE,  # type: ignore  # noqa
+        ARTIST_COMPONENT,  # type: ignore  # noqa
+        SPACE,  # type: ignore  # noqa
+        COMMA,  # type: ignore  # noqa
+        VIA,  # type: ignore  # noqa
+        LPAREN,  # type: ignore  # noqa
+        RPAREN,  # type: ignore  # noqa
         CV,  # type: ignore  # noqa
     }
 
