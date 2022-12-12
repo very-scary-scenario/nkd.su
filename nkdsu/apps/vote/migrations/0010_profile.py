@@ -23,6 +23,5 @@ class Migration(migrations.Migration):
                 ('twitter_user', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='profile', to='vote.twitteruser')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='profile', to=settings.AUTH_USER_MODEL)),
             ],
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
     ]
