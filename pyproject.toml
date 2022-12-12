@@ -1,3 +1,7 @@
+[tool.black]
+skip-string-normalization = true
+color = true
+
 [tool.mypy]
 files =  "."
 ignore_missing_imports = true
