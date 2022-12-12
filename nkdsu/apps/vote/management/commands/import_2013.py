@@ -40,8 +40,7 @@ class Command(BaseCommand):
         Create the weeks between the first show on record and today.
         """
 
-        point = timezone.datetime(2012, 8, 23,
-                                  tzinfo=timezone.get_current_timezone())
+        point = timezone.datetime(2012, 8, 23, tzinfo=timezone.get_current_timezone())
         last = timezone.now()
 
         while point <= last:
@@ -54,8 +53,9 @@ class Command(BaseCommand):
 
     def import_scheduleoverride(self, instance):
         fields = instance['fields']
-        overridden = timezone.make_aware(date_parser.parse(
-            fields['overridden_showdate']), timezone.utc)
+        overridden = timezone.make_aware(
+            date_parser.parse(fields['overridden_showdate']), timezone.utc
+        )
 
         relevant_show = Show.at(overridden)
         relevant_show.showtime = date_parser.parse(fields['start'])
@@ -72,7 +72,6 @@ class Command(BaseCommand):
             id3_album=fields['id3_album'],
             msec=fields['msec'],
             added=date_parser.parse(fields['added']),
-
             hidden=fields['hidden'],
             inudesu=fields['inudesu'],
         )
@@ -100,9 +99,7 @@ class Command(BaseCommand):
 
         user_qs = TwitterUser.objects.filter(user_id=fields['user_id'])
 
-        user_meta = {
-            k: fields[k] for k in ['screen_name', 'user_image', 'name']
-        }
+        user_meta = {k: fields[k] for k in ['screen_name', 'user_image', 'name']}
 
         if user_qs.exists():
             user = user_qs.get()
@@ -113,9 +110,7 @@ class Command(BaseCommand):
                 user.save()
         else:
             user = TwitterUser(
-                user_id=fields['user_id'],
-                updated=this_vote_date,
-                **user_meta
+                user_id=fields['user_id'], updated=this_vote_date, **user_meta
             )
             user.save()
 
@@ -132,7 +127,7 @@ class Command(BaseCommand):
                 date=this_vote_date,
                 text=fields['text'],
                 twitter_user=user,
-                tweet_id=instance['pk']
+                tweet_id=instance['pk'],
             )
 
             vote.save()

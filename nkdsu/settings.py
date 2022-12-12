@@ -102,7 +102,7 @@ TEMPLATES = [
     },
 ]
 
-ADMINS = ('colons', 'nkdsu@colons.co'),
+ADMINS = (('colons', 'nkdsu@colons.co'),)
 
 MANAGERS = ADMINS
 
@@ -135,9 +135,7 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_DIR, 'static'),
-)
+STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -154,7 +152,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'nkdsu.middleware.SocialAuthBetaMiddleware'
+    'nkdsu.middleware.SocialAuthBetaMiddleware',
 ]
 
 ROOT_URLCONF = 'nkdsu.urls'
@@ -171,27 +169,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.postgres',
-
     'django_extensions',
     'pipeline',
     'social_django',
-
     'nkdsu.apps.vote',
 ]
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
+    'filters': {'require_debug_false': {'()': 'django.utils.log.RequireDebugFalse'}},
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+            'class': 'django.utils.log.AdminEmailHandler',
         }
     },
     'loggers': {
@@ -200,7 +192,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-    }
+    },
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -225,7 +217,6 @@ PIPELINE = {
     'COMPILERS': ['pipeline.compilers.less.LessCompiler'],
     'LESS_BINARY': '/usr/bin/env npx lessc',
     'DISABLE_WRAPPER': True,
-
     'STYLESHEETS': {
         'main': {
             'source_filenames': [
@@ -240,9 +231,7 @@ PIPELINE = {
                 'js/libs/jquery.js',
                 'js/libs/jquery.cookie.js',
                 'js/libs/Sortable.js',
-
                 'js/csrf.js',
-
                 'js/collapse-toggle.js',
                 'js/select.js',
                 'js/messages.js',

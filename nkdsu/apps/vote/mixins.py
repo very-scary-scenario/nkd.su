@@ -52,10 +52,11 @@ class TrackListWithAnimeGrouping(ContextMixin):
 
     def grouped_tracks(self) -> OrderedDict[str, list[Track]]:
         tracks = self.get_track_queryset()
-        animes = sorted(set(
-            rd.anime or "not from an anime"
-            for t in tracks for rd in t.role_details
-        ))
+        animes = sorted(
+            set(
+                rd.anime or "not from an anime" for t in tracks for rd in t.role_details
+            )
+        )
         grouped_tracks: OrderedDict[str, list[Track]] = OrderedDict()
 
         for anime in animes:
@@ -65,10 +66,12 @@ class TrackListWithAnimeGrouping(ContextMixin):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update({
-            'grouped_tracks': self.grouped_tracks,
-            'tracks': self.get_track_queryset(),
-        })
+        context.update(
+            {
+                'grouped_tracks': self.grouped_tracks,
+                'tracks': self.get_track_queryset(),
+            }
+        )
 
         return context
 
@@ -128,35 +131,35 @@ class ShowDetailMixin(LetMemoizeGetObject[Show]):
             self.date = None
         else:
             try:
-                naive_date = datetime.datetime.strptime(kwargs['date'],
-                                                        date_fmt)
+                naive_date = datetime.datetime.strptime(kwargs['date'], date_fmt)
             except ValueError:
                 try:
-                    naive_date = datetime.datetime.strptime(kwargs['date'],
-                                                            '%d-%m-%Y')
+                    naive_date = datetime.datetime.strptime(kwargs['date'], '%d-%m-%Y')
                 except ValueError:
                     raise Http404
                 else:
                     fell_back = True
 
-            self.date = timezone.make_aware(naive_date,
-                                            timezone.get_current_timezone())
+            self.date = timezone.make_aware(naive_date, timezone.get_current_timezone())
 
         self.object = self.get_object()
         assert isinstance(self.object, Show)
 
         if (
-            not fell_back and
-            self.date is not None and
-            self.object.showtime.date() == self.date.date()
+            not fell_back
+            and self.date is not None
+            and self.object.showtime.date() == self.date.date()
         ):
             return super().get(request, *args, **kwargs)  # type: ignore
         else:
-            assert request.resolver_match is not None and request.resolver_match.url_name is not None
+            assert (
+                request.resolver_match is not None
+                and request.resolver_match.url_name is not None
+            )
             new_kwargs = copy(kwargs)
-            name = (self.view_name or
-                    ':'.join([request.resolver_match.namespace,
-                              request.resolver_match.url_name]))
+            name = self.view_name or ':'.join(
+                [request.resolver_match.namespace, request.resolver_match.url_name]
+            )
             new_kwargs['date'] = self.object.showtime.date().strftime(date_fmt)
             url = reverse(name, kwargs=new_kwargs)
             return redirect(url)
@@ -196,8 +199,8 @@ class ArchiveList(ListView):
 
     def year(self) -> int:
         year = int(
-            self.kwargs.get('year') or
-            self.get_queryset().latest('showtime').showtime.year
+            self.kwargs.get('year')
+            or self.get_queryset().latest('showtime').showtime.year
         )
 
         if year not in self.get_years():
@@ -208,13 +211,20 @@ class ArchiveList(ListView):
     def get_years(self) -> list[int]:
         try:
             return list(
-                self.get_queryset().order_by('showtime__year').distinct(
-                    'showtime__year').values_list('showtime__year', flat=True)
+                self.get_queryset()
+                .order_by('showtime__year')
+                .distinct('showtime__year')
+                .values_list('showtime__year', flat=True)
             )
         except NotSupportedError:
             # we're probably running on sqlite
-            return sorted(set(self.get_queryset().order_by('showtime__year')
-                              .values_list('showtime__year', flat=True)))
+            return sorted(
+                set(
+                    self.get_queryset()
+                    .order_by('showtime__year')
+                    .values_list('showtime__year', flat=True)
+                )
+            )
 
     def get_queryset(self) -> QuerySet[Show]:
         assert self.model is not None
@@ -232,9 +242,7 @@ class ArchiveList(ListView):
             **super().get_context_data(**kwargs),
             'years': self.get_years(),
             'year': self.year(),
-            'object_list': self.get_queryset().filter(
-                showtime__year=self.year()
-            ),
+            'object_list': self.get_queryset().filter(showtime__year=self.year()),
         }
 
 
@@ -246,15 +254,18 @@ class MarkdownView(TemplateView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
-        words = markdown(codecs.open(
-            path.join(settings.PROJECT_ROOT, self.filename),
-            encoding='utf-8'
-        ).read())
+        words = markdown(
+            codecs.open(
+                path.join(settings.PROJECT_ROOT, self.filename), encoding='utf-8'
+            ).read()
+        )
 
-        context.update({
-            'title': self.title,
-            'words': words,
-        })
+        context.update(
+            {
+                'title': self.title,
+                'words': words,
+            }
+        )
 
         return context
 
@@ -268,11 +279,13 @@ class TwitterUserDetailMixin(LetMemoizeGetObject[TwitterUser]):
 
         if user_id:
             return get_object_or_404(
-                self.model, user_id=self.kwargs['user_id'],
+                self.model,
+                user_id=self.kwargs['user_id'],
             )
 
         users = self.model.objects.filter(
-            screen_name__iexact=self.kwargs['screen_name'])
+            screen_name__iexact=self.kwargs['screen_name']
+        )
 
         if not users.exists():
             raise Http404
@@ -313,7 +326,9 @@ class BrowseCategory(BreadcrumbMixin, TemplateView):
     def get_categories(self) -> Iterable[BrowsableItem]:
         raise NotImplementedError()
 
-    def filter_categories(self, items: Iterable[BrowsableItem]) -> Iterable[BrowsableItem]:
+    def filter_categories(
+        self, items: Iterable[BrowsableItem]
+    ) -> Iterable[BrowsableItem]:
         query = self.request.GET.get('q', '')
         if not query:
             yield from items
@@ -331,6 +346,6 @@ class BrowseCategory(BreadcrumbMixin, TemplateView):
             'query': self.request.GET.get('q', ''),
             self.context_category_name: sorted(
                 self.filter_categories(self.get_categories()),
-                key=lambda i: (i.group(), i.name.lower())
+                key=lambda i: (i.group(), i.name.lower()),
             ),
         }

@@ -28,10 +28,14 @@ def _get_cloudcasts():
             page = hit
         else:
             try:
-                resp = requests.get(url, params={
-                    'limit': MIXCLOUD_PAGE_LIMIT,
-                    'offset': page_index * MIXCLOUD_PAGE_LIMIT,
-                }, timeout=TIMEOUT)
+                resp = requests.get(
+                    url,
+                    params={
+                        'limit': MIXCLOUD_PAGE_LIMIT,
+                        'offset': page_index * MIXCLOUD_PAGE_LIMIT,
+                    },
+                    timeout=TIMEOUT,
+                )
             except requests.RequestException as e:
                 # mission failed; we'll get 'em next time
                 logger.exception(e)
@@ -43,7 +47,7 @@ def _get_cloudcasts():
                 logger.exception(resp.text)
                 return []
 
-            cache.set(ck, page, 60*20)
+            cache.set(ck, page, 60 * 20)
 
         data = page.get('data', [])
 

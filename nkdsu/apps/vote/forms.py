@@ -14,11 +14,12 @@ from ..vote import trivia
 _disable_autocorrect = {
     "autocomplete": "off",
     "autocorrect": "off",
-    "spellcheck": "false"
+    "spellcheck": "false",
 }
 
-_proper_noun_textinput = forms.TextInput(attrs=dict(_disable_autocorrect,
-                                                    autocapitalize="words"))
+_proper_noun_textinput = forms.TextInput(
+    attrs=dict(_disable_autocorrect, autocapitalize="words")
+)
 
 
 def email_or_twitter(address: str) -> None:
@@ -29,13 +30,12 @@ def email_or_twitter(address: str) -> None:
             reading_tw_api.get_user(screen_name=address.lstrip('@'))
         except tweepy.TweepError:
             raise forms.ValidationError(
-                'Enter a valid email address or twitter username')
+                'Enter a valid email address or twitter username'
+            )
 
 
 class EmailOrTwitterField(forms.EmailField):
-    widget = forms.TextInput(
-        attrs=dict(_disable_autocorrect, autocapitalize="off")
-    )
+    widget = forms.TextInput(attrs=dict(_disable_autocorrect, autocapitalize="off"))
     default_error_messages = {
         'invalid': u'Enter a valid email address or Twitter username',
     }
@@ -57,9 +57,7 @@ class TriviaForm(forms.Form):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.order_fields([
-            k for k in self.fields.keys() if k != 'trivia'
-        ] + ['trivia'])
+        self.order_fields([k for k in self.fields.keys() if k != 'trivia'] + ['trivia'])
         self.fields['trivia_question'].initial = self.new_question()
 
     def new_question(self) -> str:
@@ -73,7 +71,9 @@ class TriviaForm(forms.Form):
         if 'trivia' in self.cleaned_data:
             human = re.match(
                 trivia.questions[self.cleaned_data['trivia_question']] + '$',
-                self.cleaned_data['trivia'], re.I)
+                self.cleaned_data['trivia'],
+                re.I,
+            )
 
         request = Request()
         request.successful = bool(human)
@@ -98,10 +98,10 @@ class TriviaForm(forms.Form):
 
 
 class BadMetadataForm(TriviaForm):
-    details = forms.CharField(widget=forms.Textarea,
-                              label="What needs fixing?", required=False)
-    contact = EmailOrTwitterField(label="Email/Twitter (not required)",
-                                  required=False)
+    details = forms.CharField(
+        widget=forms.Textarea, label="What needs fixing?", required=False
+    )
+    contact = EmailOrTwitterField(label="Email/Twitter (not required)", required=False)
 
     def __init__(self, *args, **kwargs) -> None:
         self.track = kwargs.pop('track')
@@ -111,16 +111,16 @@ class BadMetadataForm(TriviaForm):
 class RequestForm(TriviaForm):
     title = forms.CharField(widget=_proper_noun_textinput, required=False)
     artist = forms.CharField(widget=_proper_noun_textinput, required=False)
-    show = forms.CharField(label="Source Anime", required=False,
-                           widget=_proper_noun_textinput)
-    role = forms.CharField(label="Role (OP/ED/Insert/Character/etc.)",
-                           required=False)
+    show = forms.CharField(
+        label="Source Anime", required=False, widget=_proper_noun_textinput
+    )
+    role = forms.CharField(label="Role (OP/ED/Insert/Character/etc.)", required=False)
     details = forms.CharField(
         widget=forms.Textarea(attrs=_disable_autocorrect),
-        label="Additional Details", required=False,
+        label="Additional Details",
+        required=False,
     )
-    contact = EmailOrTwitterField(label="Email Address/Twitter name",
-                                  required=True)
+    contact = EmailOrTwitterField(label="Email Address/Twitter name", required=True)
 
     def clean(self) -> Optional[dict[str, Any]]:
         cleaned_data = super().clean()
@@ -129,12 +129,16 @@ class RequestForm(TriviaForm):
 
         compulsory = Request.METADATA_KEYS
 
-        filled = [cleaned_data[f] for f in cleaned_data
-                  if f not in compulsory and cleaned_data[f]]
+        filled = [
+            cleaned_data[f]
+            for f in cleaned_data
+            if f not in compulsory and cleaned_data[f]
+        ]
 
         if len(filled) < 2:
             raise forms.ValidationError(
-                "I'm sure you can give us more information than that.")
+                "I'm sure you can give us more information than that."
+            )
 
         return cleaned_data
 
@@ -160,8 +164,10 @@ class NoteForm(forms.ModelForm):
 
 
 class DarkModeForm(forms.Form):
-    mode = forms.ChoiceField(choices=[
-        ('light', 'light'),
-        ('dark', 'dark'),
-        ('system', 'system'),
-    ])
+    mode = forms.ChoiceField(
+        choices=[
+            ('light', 'light'),
+            ('dark', 'dark'),
+            ('system', 'system'),
+        ]
+    )

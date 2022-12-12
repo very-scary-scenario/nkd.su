@@ -9,8 +9,7 @@ from ..models import Play, Show, Track
 
 
 def mkutc(*args, **kwargs) -> datetime.datetime:
-    return timezone.make_aware(datetime.datetime(*args, **kwargs),
-                               timezone.utc)
+    return timezone.make_aware(datetime.datetime(*args, **kwargs), timezone.utc)
 
 
 class ShowTest(TestCase):
@@ -26,27 +25,23 @@ class ShowTest(TestCase):
     def test_make_show(self, wipe: bool = True) -> None:
         # this may seem overly thorough, but it has already found bugs that
         # would otherwise have been missed:
-        for hours in range(366*24, 0, -1):
+        for hours in range(366 * 24, 0, -1):
             if wipe:
                 Show.objects.all().delete()
 
-            starter = (
-                timezone.now()
-                .astimezone(timezone.get_current_timezone()) -
-                datetime.timedelta(hours=hours)
-            )
+            starter = timezone.now().astimezone(
+                timezone.get_current_timezone()
+            ) - datetime.timedelta(hours=hours)
 
             show = Show.at(starter)
-            showtime = show.showtime.astimezone(
-                timezone.get_current_timezone())
+            showtime = show.showtime.astimezone(timezone.get_current_timezone())
             self.assertEqual(showtime.hour, 21)
             self.assertEqual(showtime.minute, 0)
             self.assertEqual(showtime.second, 0)
             self.assertEqual(showtime.microsecond, 0)
             self.assertEqual(showtime.weekday(), 5)
 
-            self.assertEqual(show.end - show.showtime,
-                             datetime.timedelta(hours=2))
+            self.assertEqual(show.end - show.showtime, datetime.timedelta(hours=2))
 
             self.assertGreater(show.end, starter)
 
@@ -74,8 +69,7 @@ class ShowTest(TestCase):
             self.assertEqual(ours.end.date(), datetime.date(3010, 1, 6))
 
     def test_cannot_make_overlapping_shows(self) -> None:
-        Show(showtime=mkutc(2010, 1, 1),
-             end=mkutc(2011, 1, 1)).save()
+        Show(showtime=mkutc(2010, 1, 1), end=mkutc(2011, 1, 1)).save()
 
         for showtime, end, should_raise in [
             (mkutc(2009, 1, 1), mkutc(2010, 6, 1), True),
@@ -87,6 +81,7 @@ class ShowTest(TestCase):
             # before they begin
             (mkutc(2010, 1, 1), mkutc(2009, 1, 1), True),
         ]:
+
             def func() -> None:
                 show = Show(showtime=showtime, end=end)
                 show.save()

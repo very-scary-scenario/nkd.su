@@ -11,7 +11,14 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, View
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+    View,
+)
 from django.views.generic.base import TemplateResponseMixin
 
 from .js import JSApiMixin
@@ -72,12 +79,15 @@ class AdminActionMixin(AdminMixin):
     def get_ajax_success_message(self):
         self.object = self.get_object()
         context = self.get_context_data()
-        context.update({
-            'track': self.object,
-            'cache_invalidator': os.urandom(16),
-        })
+        context.update(
+            {
+                'track': self.object,
+                'cache_invalidator': os.urandom(16),
+            }
+        )
         return TemplateResponse(
-            self.request, 'include/track.html',
+            self.request,
+            'include/track.html',
             context,
         )
 
@@ -124,11 +134,13 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        context.update({
-            'deets': self.get_deets(),
-            'action': self.__doc__.strip('\n .'),
-            'cancel_url': self.get_cancel_url(),
-        })
+        context.update(
+            {
+                'deets': self.get_deets(),
+                'action': self.__doc__.strip('\n .'),
+                'cancel_url': self.get_cancel_url(),
+            }
+        )
         return context
 
     def get(self, request, *args, **kwargs):
@@ -157,9 +169,7 @@ class SelectionAdminAction(AdminAction, View):
         resp = super().do_thing_and_redirect()
 
         count = self.get_queryset().count()
-        tracks = (
-            u'{} track' if count == 1 else u'{} tracks'
-        ).format(count)
+        tracks = (u'{} track' if count == 1 else u'{} tracks').format(count)
         messages.success(self.request, self.fmt.format(tracks))
 
         self.request.session['selection'] = []
@@ -185,8 +195,7 @@ class Hide(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().hide()
-        messages.success(self.request,
-                         u"'{}' hidden".format(self.get_object().title))
+        messages.success(self.request, u"'{}' hidden".format(self.get_object().title))
 
 
 class Unhide(AdminAction, DetailView):
@@ -194,8 +203,7 @@ class Unhide(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().unhide()
-        messages.success(self.request,
-                         u"'{}' unhidden".format(self.get_object().title))
+        messages.success(self.request, u"'{}' unhidden".format(self.get_object().title))
 
 
 class LockMetadata(AdminAction, DetailView):
@@ -205,8 +213,9 @@ class LockMetadata(AdminAction, DetailView):
         self.get_object().lock_metadata()
         messages.success(
             self.request,
-            "'{}' will no longer have its metadata updated in library updates"
-            .format(self.get_object().title)
+            "'{}' will no longer have its metadata updated in library updates".format(
+                self.get_object().title
+            ),
         )
 
 
@@ -217,8 +226,7 @@ class UnlockMetadata(AdminAction, DetailView):
         self.get_object().unlock_metadata()
         messages.success(
             self.request,
-            "Library updates will affect '{}' again"
-            .format(self.get_object().title)
+            "Library updates will affect '{}' again".format(self.get_object().title),
         )
 
 
@@ -257,8 +265,7 @@ class MakeBlock(TrackSpecificAdminMixin, CreateView):
         except ValidationError as e:
             return self.handle_validation_error(e)
 
-        messages.success(self.request,
-                         u"'{}' blocked".format(self.get_object().title))
+        messages.success(self.request, u"'{}' blocked".format(self.get_object().title))
 
         return redirect(reverse('vote:index'))
 
@@ -267,10 +274,10 @@ class Unblock(AdminAction, DetailView):
     model = Track
 
     def do_thing(self):
-        block = get_object_or_404(Block, track=self.get_object(),
-                                  show=Show.current())
-        messages.success(self.request,
-                         u"'{}' unblocked".format(self.get_object().title))
+        block = get_object_or_404(Block, track=self.get_object(), show=Show.current())
+        messages.success(
+            self.request, u"'{}' unblocked".format(self.get_object().title)
+        )
         block.delete()
 
 
@@ -287,8 +294,7 @@ class MakeBlockWithReason(AdminAction, DetailView):
             track=self.get_object(),
             show=Show.current(),
         ).save()
-        messages.success(self.request,
-                         u"'{}' blocked".format(self.get_object().title))
+        messages.success(self.request, u"'{}' blocked".format(self.get_object().title))
 
 
 class MakeShortlist(AdminAction, DetailView):
@@ -300,8 +306,9 @@ class MakeShortlist(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().shortlist()
-        messages.success(self.request,
-                         u"'{}' shortlisted".format(self.get_object().title))
+        messages.success(
+            self.request, u"'{}' shortlisted".format(self.get_object().title)
+        )
 
 
 class MakeDiscard(AdminAction, DetailView):
@@ -313,8 +320,9 @@ class MakeDiscard(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().discard()
-        messages.success(self.request,
-                         u"'{}' discarded".format(self.get_object().title))
+        messages.success(
+            self.request, u"'{}' discarded".format(self.get_object().title)
+        )
 
 
 class OrderShortlist(AdminMixin, JSApiMixin, View):
@@ -324,8 +332,7 @@ class OrderShortlist(AdminMixin, JSApiMixin, View):
         shortlisted = current.shortlisted()
         pks = post.getlist('shortlist[]')
 
-        min_placeholder_index = max([s.index for s in
-                                     indescriminate_shortlist]) + 1
+        min_placeholder_index = max([s.index for s in indescriminate_shortlist]) + 1
 
         if set(pks) != set([t.pk for t in shortlisted]):
             return HttpResponse('reload')
@@ -347,8 +354,7 @@ class ResetShortlistAndDiscard(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().reset_shortlist_discard()
-        messages.success(self.request,
-                         u"'{}' reset".format(self.get_object().title))
+        messages.success(self.request, u"'{}' reset".format(self.get_object().title))
 
 
 class LibraryUploadView(AdminMixin, FormView):
@@ -358,8 +364,7 @@ class LibraryUploadView(AdminMixin, FormView):
     def form_valid(self, form):
         self.request.session['library_update'] = {
             'inudesu': form.cleaned_data['inudesu'],
-            'library_xml':
-            form.cleaned_data['library_xml'].read().decode('utf-8'),
+            'library_xml': form.cleaned_data['library_xml'].read().decode('utf-8'),
         }
 
         return redirect(reverse('vote:admin:confirm_upload'))
@@ -531,8 +536,10 @@ class FillRequest(AnyLoggedInUserMixin, FormView):
 
     def form_valid(self, form):
         request = get_object_or_404(
-            Request, pk=self.kwargs['pk'],
-            successful=True, filled__isnull=True,
+            Request,
+            pk=self.kwargs['pk'],
+            successful=True,
+            filled__isnull=True,
         )
 
         request.filled = timezone.now()
@@ -550,8 +557,10 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
     def form_valid(self, form):
         if 'unclaim' in self.request.POST:
             request = get_object_or_404(
-                Request, pk=self.kwargs['pk'],
-                filled__isnull=True, claimant=self.request.user,
+                Request,
+                pk=self.kwargs['pk'],
+                filled__isnull=True,
+                claimant=self.request.user,
             )
 
             request.claimant = None
@@ -560,8 +569,11 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
 
         elif 'claim' in self.request.POST:
             request = get_object_or_404(
-                Request, pk=self.kwargs['pk'],
-                successful=True, filled__isnull=True, claimant=None,
+                Request,
+                pk=self.kwargs['pk'],
+                successful=True,
+                filled__isnull=True,
+                claimant=None,
             )
 
             request.claimant = self.request.user
@@ -583,10 +595,15 @@ class CheckMetadata(AnyLoggedInUserMixin, FormView):
             composer=form.cleaned_data['composer'],
             year=form.cleaned_data['year'],
         )
-        context.update({
-            'track': track,
-            'warnings': metadata_consistency_checks(
-                track, Track.all_anime_titles(), Track.all_artists(), Track.all_composers(),
-            ),
-        })
+        context.update(
+            {
+                'track': track,
+                'warnings': metadata_consistency_checks(
+                    track,
+                    Track.all_anime_titles(),
+                    Track.all_artists(),
+                    Track.all_composers(),
+                ),
+            }
+        )
         return self.render_to_response(context)

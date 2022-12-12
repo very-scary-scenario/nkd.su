@@ -9,8 +9,9 @@ from ...utils import _read_tw_auth
 class Command(BaseCommand):
     def handle(self, *args, **options):
         t = tweepy.API(_read_tw_auth, parser=JSONParser())
-        mentions = t.mentions_timeline(count=200, include_entities=True,
-                                       tweet_mode='extended')
+        mentions = t.mentions_timeline(
+            count=200, include_entities=True, tweet_mode='extended'
+        )
 
         for tweet in mentions:
             if ('full_text' not in tweet) and (len(tweet['text']) == 140):

@@ -5,7 +5,16 @@ import re
 import string
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Callable, Generic, Iterable, Optional, TYPE_CHECKING, TypeVar, cast
+from typing import (
+    Any,
+    Callable,
+    Generic,
+    Iterable,
+    Optional,
+    TYPE_CHECKING,
+    TypeVar,
+    cast,
+)
 from urllib.parse import quote
 
 from classtools import reify as ct_reify
@@ -22,20 +31,22 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-_read_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
-                                    settings.CONSUMER_SECRET)
-_read_tw_auth.set_access_token(settings.READING_ACCESS_TOKEN,
-                               settings.READING_ACCESS_TOKEN_SECRET)
+_read_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
+_read_tw_auth.set_access_token(
+    settings.READING_ACCESS_TOKEN, settings.READING_ACCESS_TOKEN_SECRET
+)
 reading_tw_api = tweepy.API(_read_tw_auth)
 
-_post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
-                                    settings.CONSUMER_SECRET)
-_post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
-                               settings.POSTING_ACCESS_TOKEN_SECRET)
+_post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
+_post_tw_auth.set_access_token(
+    settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET
+)
 posting_tw_api = tweepy.API(_post_tw_auth)
 
 
-indefinitely: int = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
+indefinitely: int = (
+    (60 * 60 * 24 * 7) + (60 * 60) + 60
+)  # one week, one hour and one minute
 
 
 @dataclass
@@ -79,7 +90,9 @@ def _get_short_url_length() -> int:
         length = reading_tw_api.configuration()['short_url_length_https']
     except tweepy.error.TweepError as e:
         logger.critical(
-            "could not read twitter configuration to determine short URL length:\n{}".format(e)
+            "could not read twitter configuration to determine short URL length:\n{}".format(
+                e
+            )
         )
         length = 22
 
@@ -96,9 +109,7 @@ def _get_reading_username() -> str:
     try:
         username = reading_tw_api.auth.get_username()
     except tweepy.error.TweepError as e:
-        logger.critical(
-            "could not read reading account's username:\n{}".format(e)
-        )
+        logger.critical("could not read reading account's username:\n{}".format(e))
         return 'nkdsu'
     else:
         cache.set(cache_key, username)
@@ -115,7 +126,7 @@ def length_str(msec: float) -> str:
     the length of a track.
     """
 
-    seconds = (msec or 0)/1000
+    seconds = (msec or 0) / 1000
     remainder_seconds = seconds % 60
     minutes = (seconds - remainder_seconds) / 60
 
@@ -128,9 +139,8 @@ def length_str(msec: float) -> str:
 
 
 def tweet_url(tweet: str) -> str:
-    return (
-        'https://twitter.com/intent/tweet?in_reply_to={reply_id}&text={text}'
-        .format(reply_id='744237593164980224', text=quote(tweet))
+    return 'https://twitter.com/intent/tweet?in_reply_to={reply_id}&text={text}'.format(
+        reply_id='744237593164980224', text=quote(tweet)
     )
 
 
@@ -167,7 +177,7 @@ def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
     role = None
 
     bracket_depth = 0
-    for i in range(1, len(id3_title)+1):
+    for i in range(1, len(id3_title) + 1):
         char = id3_title[-i]
         if char == ')':
             bracket_depth += 1
@@ -176,7 +186,7 @@ def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
 
         if bracket_depth == 0:
             if i != 1:
-                role = id3_title[len(id3_title)-i:]
+                role = id3_title[len(id3_title) - i :]
             break
 
     if role:
@@ -200,7 +210,7 @@ def split_query_into_keywords(query: str) -> list[str]:
         second_quote = query.find('"', first_quote + 1)
         if second_quote == -1:
             break
-        quoted_keywords = query[first_quote:second_quote + 1]
+        quoted_keywords = query[first_quote : second_quote + 1]
         keywords.append(quoted_keywords.strip('"'))
         query = query.replace(quoted_keywords, ' ')
     # Split the rest by spaces
@@ -275,9 +285,11 @@ def pk_cached(seconds: int) -> Callable[[T], T]:
 
 
 def lastfm(**kwargs):
-    params = {'api_key': settings.LASTFM_API_KEY,
-              'api_secret': settings.LASTFM_API_SECRET,
-              'format': 'json'}
+    params = {
+        'api_key': settings.LASTFM_API_KEY,
+        'api_secret': settings.LASTFM_API_SECRET,
+        'format': 'json',
+    }
 
     params.update(kwargs)
 

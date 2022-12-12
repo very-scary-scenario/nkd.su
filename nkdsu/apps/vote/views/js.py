@@ -24,7 +24,8 @@ class SelectionView(JSApiMixin, TemplateView):
 
     def get_queryset(self):
         return self.model.objects.filter(
-            pk__in=self.request.session.get('selection', set()))
+            pk__in=self.request.session.get('selection', set())
+        )
 
     def post(self, request, *args, **kwargs):
         self.request = request
@@ -53,9 +54,7 @@ class Select(SelectionView):
         selection = set(self.request.session.get('selection', []))
 
         for new_pk in new_pks:
-            if (
-                self.request.user.is_authenticated
-            ):
+            if self.request.user.is_authenticated:
                 base_qs = Track.objects.all()
             else:
                 base_qs = Track.objects.public()
@@ -64,8 +63,7 @@ class Select(SelectionView):
             if qs.exists():
                 track = qs[0]
                 if (
-                    self.request.user.is_authenticated and
-                    self.request.user.is_staff
+                    self.request.user.is_authenticated and self.request.user.is_staff
                 ) or track.eligible():
                     selection.add(new_pk)
 

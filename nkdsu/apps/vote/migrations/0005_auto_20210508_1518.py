@@ -23,6 +23,17 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='vote',
             name='kind',
-            field=models.CharField(blank=True, choices=[('email', 'email'), ('discord', 'discord'), ('text', 'text'), ('tweet', 'tweet'), ('person', 'in person'), ('phone', 'on the phone')], max_length=10),
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ('email', 'email'),
+                    ('discord', 'discord'),
+                    ('text', 'text'),
+                    ('tweet', 'tweet'),
+                    ('person', 'in person'),
+                    ('phone', 'on the phone'),
+                ],
+                max_length=10,
+            ),
         ),
     ]

@@ -16,9 +16,9 @@ def get_sections(request):
         most_recent_track = None
 
     if (
-        hasattr(request, 'resolver_match') and
-        hasattr(request.resolver_match, 'func') and
-        request.resolver_match.func.__closure__
+        hasattr(request, 'resolver_match')
+        and hasattr(request.resolver_match, 'func')
+        and request.resolver_match.func.__closure__
     ):
         for cell in request.resolver_match.func.__closure__:
             thing = cell.cell_contents
@@ -26,21 +26,24 @@ def get_sections(request):
                 active_section = thing.section
                 break
 
-    return [{
-        'name': name,
-        'url': url,
-        'active': name == active_section
-    } for name, url in [
-        ('home', reverse('vote:index')),
-        ('browse', reverse('vote:browse')),
-        ('new tracks',
-         most_recent_track.show_revealed().get_revealed_url()
-         if most_recent_track else None),
-        ('roulette', reverse('vote:roulette')),
-        ('stats', reverse('vote:stats')),
-        ('donate', 'https://www.patreon.com/NekoDesu'),
-        ('etc', 'https://nekodesu.radio/'),
-    ] if url]
+    return [
+        {'name': name, 'url': url, 'active': name == active_section}
+        for name, url in [
+            ('home', reverse('vote:index')),
+            ('browse', reverse('vote:browse')),
+            (
+                'new tracks',
+                most_recent_track.show_revealed().get_revealed_url()
+                if most_recent_track
+                else None,
+            ),
+            ('roulette', reverse('vote:roulette')),
+            ('stats', reverse('vote:stats')),
+            ('donate', 'https://www.patreon.com/NekoDesu'),
+            ('etc', 'https://nekodesu.radio/'),
+        ]
+        if url
+    ]
 
 
 def get_parent(request: HttpRequest) -> str:

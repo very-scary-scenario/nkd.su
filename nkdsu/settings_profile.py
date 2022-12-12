@@ -7,11 +7,9 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-
     'pipeline',
     'south',
     'debug_toolbar',
-
     'nkdsu.apps.vote',
 ]
 

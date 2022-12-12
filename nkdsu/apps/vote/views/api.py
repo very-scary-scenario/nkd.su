@@ -11,7 +11,9 @@ from ..models import Track
 from ..views import Search
 
 
-JsonEncodable = None | bool | int | float | str | dict[str, 'JsonEncodable'] | list['JsonEncodable']
+JsonEncodable = (
+    None | bool | int | float | str | dict[str, 'JsonEncodable'] | list['JsonEncodable']
+)
 JsonDict = dict[str, JsonEncodable]
 
 
@@ -21,9 +23,7 @@ class APIView(View):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         resp = HttpResponse(
-            json.dumps(self.get_api_stuff(),
-                       cls=DjangoJSONEncoder,
-                       indent=2),
+            json.dumps(self.get_api_stuff(), cls=DjangoJSONEncoder, indent=2),
             content_type='application/json',
         )
         resp['Access-Control-Allow-Origin'] = '*'

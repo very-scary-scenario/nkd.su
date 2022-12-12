@@ -5,8 +5,11 @@ from instant_coverage import InstantCoverageMixin, optional
 
 
 class EverythingTest(
-    optional.ExternalLinks, optional.ValidHTML5, optional.ValidJSON,
-    InstantCoverageMixin, TestCase
+    optional.ExternalLinks,
+    optional.ValidHTML5,
+    optional.ValidJSON,
+    InstantCoverageMixin,
+    TestCase,
 ):
     fixtures = ['vote.json']
 
@@ -33,19 +36,16 @@ class EverythingTest(
         '/vote-admin/trivia/',
         '/vote-admin/check-metadata/',
         '/vote-admin/play/0007C3F2760E0541/',
-
         '/js/deselect/',
         '/js/select/',
         '/js/selection/',
         '/js/clear_selection/',
-
         '/api/',
         '/api/week/',
         '/api/week/2014-02-05/',
         '/api/track/0007C3F2760E0541/',
         '/api/search/?q=Canpeki',
         '/api/user/EuricaeriS/',
-
         '/',
         '/browse/',
         '/anime/',
@@ -84,11 +84,9 @@ class EverythingTest(
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
         '/folks/what/',
-
         '/login/',
         '/cpw/',
         '/cpw-done/',
-
         # it's important that logout be last since we have a sublcass of this
         # test that logs in at the start, and we want it to stay logged in
         '/logout/',
@@ -102,13 +100,11 @@ class EverythingTest(
         '/vote-admin/hide-selection/',
         '/vote-admin/unhide-selection/',
         '/vote-admin/reset-shortlist-discard-selection/',
-
         # only accepts POST
         '/vote-admin/shortlist-order/',
         '/vote-admin/requests/fill/1/',
         '/vote-admin/requests/claim/1/',
         '/set-dark-mode/',
-
         # would require me to put twitter credentials in the public settings
         # file
         '/twitter-avatar/46162630/',
