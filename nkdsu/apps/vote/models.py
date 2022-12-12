@@ -7,7 +7,7 @@ from dataclasses import asdict, dataclass
 from enum import Enum, auto
 from io import BytesIO
 from string import ascii_letters
-from typing import Any, Iterable, Literal, Optional, cast
+from typing import Any, Iterable, Literal, Optional, Self, cast
 from urllib.parse import urlparse
 
 from Levenshtein import ratio
@@ -176,7 +176,7 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     @pk_cached(indefinitely)
-    def next(self, create: bool = False) -> Optional[Show]:
+    def next(self, create: bool = False) -> Optional[Self]:
         """
         Return the next Show.
         """
@@ -185,7 +185,7 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     @pk_cached(indefinitely)
-    def prev(self) -> Optional[Show]:
+    def prev(self) -> Optional[Self]:
         """
         Return the previous Show.
         """
