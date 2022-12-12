@@ -5,7 +5,7 @@ import re
 import string
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Callable, Generic, NoReturn, Iterable, Optional, TYPE_CHECKING, TypeVar, cast
+from typing import Any, Callable, Generic, Iterable, NoReturn, Optional, TYPE_CHECKING, TypeVar, cast
 from urllib.parse import quote
 
 from classtools import reify as ct_reify
