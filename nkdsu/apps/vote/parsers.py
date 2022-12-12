@@ -17,17 +17,15 @@ class ArtistChunk:
     def url(self) -> Optional[str]:
         return (
             reverse('vote:artist', kwargs={'artist': self.text})
-            if self.is_artist else None
+            if self.is_artist
+            else None
         )
 
     @property
     def worth_linking_to(self) -> bool:
         from .models import Track
 
-        return bool(
-            self.is_artist and
-            Track.objects.by_artist(self.text)
-        )
+        return bool(self.is_artist and Track.objects.by_artist(self.text))
 
 
 @dataclass(frozen=True)
@@ -41,15 +39,17 @@ class ParsedArtist:
 
 class ArtistLexer(Lexer):
     tokens = {
-        SPECIAL_CASE, ARTIST_COMPONENT, SPACE, COMMA, VIA, LPAREN, RPAREN, CV,  # type: ignore  # noqa
+        SPECIAL_CASE,
+        ARTIST_COMPONENT,
+        SPACE,
+        COMMA,
+        VIA,
+        LPAREN,
+        RPAREN,
+        CV,  # type: ignore  # noqa
     }
 
-    SPECIAL_CASE = (
-        r'^('
-        r'FLOWxGRANRODEO|'
-        r'SawanoHiroyuki\[nZk\]:.*'
-        r')$'
-    )
+    SPECIAL_CASE = r'^(' r'FLOWxGRANRODEO|' r'SawanoHiroyuki\[nZk\]:.*' r')$'
     VIA = (
         r'\s+('
         r'from|'
@@ -197,21 +197,19 @@ def chunk_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChun
             yield from handle_special_case(token)
             continue
 
-        is_part_of_artist_name = (
-            (token.type in artist_parts) and
-            (
-                (token.type != 'SPACE') or
+        is_part_of_artist_name = (token.type in artist_parts) and (
+            (token.type != 'SPACE')
+            or (
+                # if this is a space, then:
                 (
-                    # if this is a space, then:
-                    (
-                        # be false if the next token isn't an artist component
-                        (ti+1 < len(tokens)) and
-                        (tokens[ti+1].type == 'ARTIST_COMPONENT')
-                    ) and (
-                        # or if the previous one wasn't, either
-                        (ti > 0) and
-                        (tokens[ti-1].type == 'ARTIST_COMPONENT')
-                    )
+                    # be false if the next token isn't an artist component
+                    (ti + 1 < len(tokens))
+                    and (tokens[ti + 1].type == 'ARTIST_COMPONENT')
+                )
+                and (
+                    # or if the previous one wasn't, either
+                    (ti > 0)
+                    and (tokens[ti - 1].type == 'ARTIST_COMPONENT')
                 )
             )
         )
@@ -235,6 +233,8 @@ def parse_artist(string: str, fail_silently: bool = True) -> ParsedArtist:
 
     chunks = list(chunk_artist(string, fail_silently=fail_silently))
     naive_is_group = check_for_group(string, chunks[0].text)
-    return ParsedArtist(chunks=chunks, should_collapse=naive_is_group and len([
-        chunk for chunk in chunks if chunk.is_artist
-    ]) > 2)
+    return ParsedArtist(
+        chunks=chunks,
+        should_collapse=naive_is_group
+        and len([chunk for chunk in chunks if chunk.is_artist]) > 2,
+    )

@@ -42,7 +42,8 @@ PLIST_TEMPLATE = '''<?xml version="1.0" encoding="UTF-8"?>
 '''
 
 TrackMeta = namedtuple(
-    'TrackMeta', ('key', 'name', 'artist', 'album', 'composer', 'year', 'time', 'added', 'hex_id')
+    'TrackMeta',
+    ('key', 'name', 'artist', 'album', 'composer', 'year', 'time', 'added', 'hex_id'),
 )
 
 DEFAULT_TRACKS = [
@@ -55,7 +56,7 @@ DEFAULT_TRACKS = [
         "2014",
         "225044",
         "2012-12-15T18:51:21Z",
-        "0007C3F2760E0541"
+        "0007C3F2760E0541",
     ),
     TrackMeta(
         "2",
@@ -66,7 +67,7 @@ DEFAULT_TRACKS = [
         "2013",
         "216894",
         "2010-12-03T17:24:49Z",
-        "001D8E8B3A5DDDB9"
+        "001D8E8B3A5DDDB9",
     ),
     TrackMeta(
         "3",
@@ -77,7 +78,7 @@ DEFAULT_TRACKS = [
         "2014",
         "238393",
         "2011-05-25T13:24:48Z",
-        "0028E1FE6D1141B7"
+        "0028E1FE6D1141B7",
     ),
     TrackMeta(
         "4",
@@ -88,7 +89,7 @@ DEFAULT_TRACKS = [
         "1973",
         "232907",
         "2013-01-26T12:39:37Z",
-        "00340A1B035648A9"
+        "00340A1B035648A9",
     ),
     TrackMeta(
         "5",
@@ -99,7 +100,7 @@ DEFAULT_TRACKS = [
         "1972",
         "305893",
         "2011-03-19T19:12:21Z",
-        "00555AF6AC71CB70"
+        "00555AF6AC71CB70",
     ),
     TrackMeta(
         "6",
@@ -110,7 +111,7 @@ DEFAULT_TRACKS = [
         "1971",
         "293146",
         "2010-12-05T12:55:06Z",
-        "00590FF313BD5557"
+        "00590FF313BD5557",
     ),
     TrackMeta(
         "7",
@@ -121,7 +122,7 @@ DEFAULT_TRACKS = [
         "1971",
         "211905",
         "2012-11-16T00:05:05Z",
-        "00D12BB6D5ED72A7"
+        "00D12BB6D5ED72A7",
     ),
     TrackMeta(
         "8",
@@ -132,8 +133,8 @@ DEFAULT_TRACKS = [
         "1983",
         "195604",
         "2020-12-19T17:59:17Z",
-        "89EE2CEBC58E2CAE"
-    )
+        "89EE2CEBC58E2CAE",
+    ),
 ]
 
 
@@ -144,9 +145,7 @@ class LibraryUpdateTest(TestCase):
         album_xml_template = "<key>Album</key><string>{album}</string>"
         track_dict = track._asdict()
         if track.album:
-            track_dict['album_xml'] = album_xml_template.format(
-                album=track.album
-            )
+            track_dict['album_xml'] = album_xml_template.format(album=track.album)
         else:
             track_dict['album_xml'] = ""
 
@@ -158,32 +157,50 @@ class LibraryUpdateTest(TestCase):
         ).encode()
 
     def library_plus_one_track(
-        self, name: str, artist: str, composer: str, year: str, time: str,
-        added: str, hex_id: str, album: Optional[str] = None,
+        self,
+        name: str,
+        artist: str,
+        composer: str,
+        year: str,
+        time: str,
+        added: str,
+        hex_id: str,
+        album: Optional[str] = None,
     ) -> dict[str, Any]:
         return plistlib.loads(
             self.get_library_xml(
-                DEFAULT_TRACKS + [TrackMeta(
-                    len(DEFAULT_TRACKS) + 1,
-                    name,
-                    artist,
-                    album,
-                    composer,
-                    year,
-                    time,
-                    added,
-                    hex_id,
-                )]
+                DEFAULT_TRACKS
+                + [
+                    TrackMeta(
+                        len(DEFAULT_TRACKS) + 1,
+                        name,
+                        artist,
+                        album,
+                        composer,
+                        year,
+                        time,
+                        added,
+                        hex_id,
+                    )
+                ]
             )
         )
 
-    def library_change_one_track(self, hex_id: str, new_meta: dict[str, str]) -> dict[str, Any]:
+    def library_change_one_track(
+        self, hex_id: str, new_meta: dict[str, str]
+    ) -> dict[str, Any]:
         tracks = DEFAULT_TRACKS[:]
         for track_id, track in enumerate(tracks):
             if track.hex_id == hex_id:
                 track_dict = track._asdict()
                 for field in (
-                    'name', 'artist', 'album', 'composer', 'time', 'added', 'year'
+                    'name',
+                    'artist',
+                    'album',
+                    'composer',
+                    'time',
+                    'added',
+                    'year',
                 ):
                     if field in new_meta:
                         track_dict[field] = new_meta[field]
@@ -200,7 +217,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "2021",
             "254000",
             "2010-09-02T02:00:00Z",
-            "ADDD70C2D748ECC7"
+            "ADDD70C2D748ECC7",
         )
         results = update_library(tree, dry_run=True)
         self.assertEqual(len(results), 1, results)
@@ -210,7 +227,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
         self.assertEqual(
             result['item'],
             u"\u2018Koi Hana\u2019 (Kaichou wa Maid-sama! Character Song) "
-            "- Hanazawa Kana and Kobayashi Yuu"
+            "- Hanazawa Kana and Kobayashi Yuu",
         )
 
     def test_new_track_non_matching_artist_and_anime(self) -> None:
@@ -221,7 +238,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "2021",
             "357000",
             "2010-11-11T02:00:00Z",
-            "0D096C693DA38F51"
+            "0D096C693DA38F51",
         )
         results = update_library(tree, dry_run=True)
         self.assertEqual(len(results), 1, results)
@@ -231,7 +248,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
         self.assertEqual(
             result['item'],
             u"\u2018Universal Bunny\u2019 (Macross Frontier Movies Insert "
-            "Song) - Sheryl Nome starring May'n"
+            "Song) - Sheryl Nome starring May'n",
         )
 
     def test_new_track_almost_matching_artist(self) -> None:
@@ -242,7 +259,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "2021",
             "261000",
             "2010-06-28T02:00:00Z",
-            "765682E348A46C30"
+            "765682E348A46C30",
         )
         results = update_library(tree, dry_run=True)
         self.assertGreater(len(results), 1, results)
@@ -252,8 +269,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             if warnings:
                 self.assertEqual(len(warnings), 1)
                 warning_count += 1
-                self.assertIn("LiSA Singing",
-                              warnings[0].get('message', ""))
+                self.assertIn("LiSA Singing", warnings[0].get('message', ""))
 
         self.assertEqual(warning_count, 1)
 
@@ -265,7 +281,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "2021",
             "254000",
             "2010-09-02T02:00:00Z",
-            "ADDD70C2D748ECC7"
+            "ADDD70C2D748ECC7",
         )
         results = update_library(tree, dry_run=True)
         self.assertGreater(len(results), 1, results)
@@ -287,7 +303,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "2021",
             "254000",
             "2010-09-02T02:00:00Z",
-            "ADDD70C2D748ECC7"
+            "ADDD70C2D748ECC7",
         )
         results = update_library(tree, dry_run=True)
         self.assertGreater(len(results), 1, results)
@@ -309,7 +325,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "2021",
             "250000",
             "2011-03-07T02:00:00Z",
-            "F2FDCB0308431FB4"
+            "F2FDCB0308431FB4",
         )
         results = update_library(tree, dry_run=True)
         self.assertEqual(len(results), 1, results)
@@ -319,7 +335,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
         self.assertEqual(
             result['item'],
             u"\u2018All 4 You\u2019 (The World God Only Knows Insert Song "
-            "EP5) - Kanon Nakagawa (Touyama Nao)"
+            "EP5) - Kanon Nakagawa (Touyama Nao)",
         )
 
     def test_new_track_almost_matching_anime(self) -> None:
@@ -330,7 +346,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "2021",
             "250000",
             "2011-03-07T02:00:00Z",
-            "F2FDCB0308431FB4"
+            "F2FDCB0308431FB4",
         )
         results = update_library(tree, dry_run=True)
         self.assertGreater(len(results), 1, results)
@@ -340,8 +356,9 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             if warnings:
                 self.assertEqual(len(warnings), 1)
                 warning_count += 1
-                self.assertIn("The World God Only Knows",
-                              warnings[0].get('message', ""))
+                self.assertIn(
+                    "The World God Only Knows", warnings[0].get('message', "")
+                )
 
         self.assertEqual(warning_count, 1)
 
@@ -353,7 +370,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
             "2021",
             "260000",
             "2013-01-26T02:00:00Z",
-            "4ACC4F068C0E4C16"
+            "4ACC4F068C0E4C16",
         )
         results = update_library(tree, dry_run=True)
         self.assertGreater(len(results), 1, results)
@@ -378,9 +395,7 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
         self.assertEqual(warning_count, 1)
 
     def test_removing_track(self) -> None:
-        tree = plistlib.loads(
-            self.get_library_xml(DEFAULT_TRACKS[:-1])
-        )
+        tree = plistlib.loads(self.get_library_xml(DEFAULT_TRACKS[:-1]))
         results = update_library(tree, dry_run=True)
 
         self.assertEqual(len(results), 1, results)
@@ -422,7 +437,7 @@ class LibraryUpdateWetRunTest(LibraryUpdateTest):
             "2021",
             "254000",
             "2010-09-02T02:00:00Z",
-            "ADDD70C2D748ECC7"
+            "ADDD70C2D748ECC7",
         )
         update_library(tree, dry_run=False)
         try:
@@ -438,9 +453,7 @@ class LibraryUpdateWetRunTest(LibraryUpdateTest):
     def test_change_locked_track(self) -> None:
         hex_id = "00555AF6AC71CB70"
         Track.objects.filter(id=hex_id).update(metadata_locked=True)
-        tree = self.library_change_one_track(
-            hex_id, {'artist': "Death in Reno"}
-        )
+        tree = self.library_change_one_track(hex_id, {'artist': "Death in Reno"})
         update_library(tree, dry_run=False)
         db_track = Track.objects.get(id=hex_id)
         self.assertEqual(db_track.artist, 'Death in Vegas')
@@ -449,7 +462,9 @@ class LibraryUpdateWetRunTest(LibraryUpdateTest):
 class MetadataConsistencyCheckTest(TestCase):
     def test_anime_and_role_required_if_inudesu_false(self) -> None:
         self.assertEqual(
-            metadata_consistency_checks(Track(id3_title='Complete role (Some kind of anime)'), [], [], []),
+            metadata_consistency_checks(
+                Track(id3_title='Complete role (Some kind of anime)'), [], [], []
+            ),
             [],
         )
 
@@ -462,86 +477,122 @@ class MetadataConsistencyCheckTest(TestCase):
         )
 
         self.assertEqual(
-            metadata_consistency_checks(Track(id3_title='no role, but who cares', inudesu=True), [], [], []),
+            metadata_consistency_checks(
+                Track(id3_title='no role, but who cares', inudesu=True), [], [], []
+            ),
             [],
         )
 
     def test_slight_artist_mismatch(self) -> None:
         self.assertEqual(
-            metadata_consistency_checks(Track(
-                id3_title='title (role)',
-                id3_artist='an artist of some kind',
-            ), [], [
-                'an artist of some kind',
-            ], []),
+            metadata_consistency_checks(
+                Track(
+                    id3_title='title (role)',
+                    id3_artist='an artist of some kind',
+                ),
+                [],
+                [
+                    'an artist of some kind',
+                ],
+                [],
+            ),
             [],
         )
 
         self.assertEqual(
-            metadata_consistency_checks(Track(
-                id3_title='title (role)',
-                id3_artist='an artist of some knid',
-            ), [], [
-                'an artist of some kind',
-            ], []),
-            [{
-                'field': 'artist',
-                'message': (
-                    '"an artist of some knid" was not found in the database, but it looks similar to '
-                    '"an artist of some kind"'
+            metadata_consistency_checks(
+                Track(
+                    id3_title='title (role)',
+                    id3_artist='an artist of some knid',
                 ),
-            }],
+                [],
+                [
+                    'an artist of some kind',
+                ],
+                [],
+            ),
+            [
+                {
+                    'field': 'artist',
+                    'message': (
+                        '"an artist of some knid" was not found in the database, but it looks similar to '
+                        '"an artist of some kind"'
+                    ),
+                }
+            ],
         )
 
         self.assertEqual(
-            metadata_consistency_checks(Track(
-                id3_title='title (role)',
-                id3_artist='a completely different artist',
-            ), [], [
-                'an artist of some kind',
-            ], []),
+            metadata_consistency_checks(
+                Track(
+                    id3_title='title (role)',
+                    id3_artist='a completely different artist',
+                ),
+                [],
+                [
+                    'an artist of some kind',
+                ],
+                [],
+            ),
             [],
         )
 
         # the artist name but with the words reversed is a special case that we also handle:
         self.assertEqual(
-            metadata_consistency_checks(Track(
-                id3_title='title (role)',
-                id3_artist='kind some of artist an',
-            ), [], [
-                'an artist of some kind',
-            ], []),
-            [{
-                'field': 'artist',
-                'message': (
-                    '"kind some of artist an" was not found in the database, but it looks similar to '
-                    '"an artist of some kind"'
+            metadata_consistency_checks(
+                Track(
+                    id3_title='title (role)',
+                    id3_artist='kind some of artist an',
                 ),
-            }],
+                [],
+                [
+                    'an artist of some kind',
+                ],
+                [],
+            ),
+            [
+                {
+                    'field': 'artist',
+                    'message': (
+                        '"kind some of artist an" was not found in the database, but it looks similar to '
+                        '"an artist of some kind"'
+                    ),
+                }
+            ],
         )
 
     def test_multiple_artists(self) -> None:
         self.assertEqual(
-            metadata_consistency_checks(Track(
-                id3_title='title (role)',
-                id3_artist='one artist, a character (CV: a VA)',
-            ), [], [
-                'one artist',
-                'a character',
-                'a VA',
-            ], []),
+            metadata_consistency_checks(
+                Track(
+                    id3_title='title (role)',
+                    id3_artist='one artist, a character (CV: a VA)',
+                ),
+                [],
+                [
+                    'one artist',
+                    'a character',
+                    'a VA',
+                ],
+                [],
+            ),
             [],
         )
 
         self.assertEqual(
-            metadata_consistency_checks(Track(
-                id3_title='title (role)',
-                id3_artist='one artist, a character (CV: a VAN)',
-            ), [], [
-                'one artist',
-                'a character',
-                'a VA',
-            ], []),
+            metadata_consistency_checks(
+                Track(
+                    id3_title='title (role)',
+                    id3_artist='one artist, a character (CV: a VAN)',
+                ),
+                [],
+                [
+                    'one artist',
+                    'a character',
+                    'a VA',
+                ],
+                [],
+            ),
             [
                 {
                     'field': 'artist',
@@ -552,10 +603,15 @@ class MetadataConsistencyCheckTest(TestCase):
 
     def test_lexer_error(self) -> None:
         self.assertEqual(
-            metadata_consistency_checks(Track(
-                id3_title='title (role)',
-                id3_artist='(()',
-            ), [], ['(('], []),
+            metadata_consistency_checks(
+                Track(
+                    id3_title='title (role)',
+                    id3_artist='(()',
+                ),
+                [],
+                ['(('],
+                [],
+            ),
             [
                 # it should both complain about the syntax...
                 {
@@ -571,11 +627,12 @@ class MetadataConsistencyCheckTest(TestCase):
         )
 
         self.assertEqual(
-            metadata_consistency_checks(Track(
-                id3_title='title (role)',
-                id3_artist='artist',
-                composer='(()'
-            ), [], [], ['((']),
+            metadata_consistency_checks(
+                Track(id3_title='title (role)', id3_artist='artist', composer='(()'),
+                [],
+                [],
+                ['(('],
+            ),
             [
                 # it should both complain about the syntax...
                 {

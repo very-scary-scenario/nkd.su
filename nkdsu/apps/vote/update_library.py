@@ -22,7 +22,9 @@ UpdateFieldName = Literal[
 ]
 
 
-def check_closeness_against_list(name, canonical_names: Iterable[str], reverse: bool = False) -> Optional[str]:
+def check_closeness_against_list(
+    name, canonical_names: Iterable[str], reverse: bool = False
+) -> Optional[str]:
     best_closeness, best_match = 0.7, None
 
     if name:
@@ -42,8 +44,7 @@ def check_closeness_against_list(name, canonical_names: Iterable[str], reverse: 
 
         for canonical_name in canonical_names:
             for check_name in names_to_check:
-                closeness = ratio(str(check_name.lower()),
-                                  str(canonical_name.lower()))
+                closeness = ratio(str(check_name.lower()), str(canonical_name.lower()))
                 if closeness > best_closeness:
                     best_closeness = closeness
                     best_match = canonical_name
@@ -61,20 +62,24 @@ class MetadataWarning(TypedDict):
 
 
 def check_artist_consistency(
-    track_artists: Iterable[str], all_artists: Iterable[str], field: UpdateFieldName,
+    track_artists: Iterable[str],
+    all_artists: Iterable[str],
+    field: UpdateFieldName,
 ) -> list[MetadataWarning]:
     warnings: list[MetadataWarning] = []
 
     for artist in track_artists:
         match = check_closeness_against_list(artist, all_artists, reverse=True)
         if match:
-            warnings.append({
-                'field': field,
-                'message': (
-                    u'"{track_artist}" was not found in the database, but it '
-                    u'looks similar to "{canonical_artist}"'
-                ).format(track_artist=artist, canonical_artist=match)
-            })
+            warnings.append(
+                {
+                    'field': field,
+                    'message': (
+                        u'"{track_artist}" was not found in the database, but it '
+                        u'looks similar to "{canonical_artist}"'
+                    ).format(track_artist=artist, canonical_artist=match),
+                }
+            )
 
     return warnings
 
@@ -94,46 +99,46 @@ def metadata_consistency_checks(
     track_roles = [rd.full_role for rd in db_track.role_details]
 
     if not track_animes and not db_track.inudesu:
-        warnings.append({
-            'field': 'anime',
-            'message': 'field is missing'
-        })
+        warnings.append({'field': 'anime', 'message': 'field is missing'})
 
     if not track_roles and not db_track.inudesu:
-        warnings.append({
-            'field': 'role',
-            'message': 'field is missing'
-        })
+        warnings.append({'field': 'role', 'message': 'field is missing'})
 
     for track_anime in track_animes:
         match = check_closeness_against_list(track_anime, all_anime_titles)
         if match:
-            warnings.append({
-                'field': 'anime',
-                'message': (
-                    u'"{track_anime}" was not found in the database, but it '
-                    u'looks similar to "{canonical_anime}"'
-                ).format(track_anime=track_anime, canonical_anime=match)
-            })
+            warnings.append(
+                {
+                    'field': 'anime',
+                    'message': (
+                        u'"{track_anime}" was not found in the database, but it '
+                        u'looks similar to "{canonical_anime}"'
+                    ).format(track_anime=track_anime, canonical_anime=match),
+                }
+            )
 
     artists: Iterable[str]
     try:
         artists = list(db_track.artist_names(fail_silently=False))
     except LexError as e:
-        warnings.append({
-            'field': 'artist',
-            'message': str(e),
-        })
+        warnings.append(
+            {
+                'field': 'artist',
+                'message': str(e),
+            }
+        )
         artists = db_track.artist_names()
 
     composers: Iterable[str]
     try:
         composers = list(db_track.composer_names(fail_silently=False))
     except LexError as e:
-        warnings.append({
-            'field': 'composer',
-            'message': str(e),
-        })
+        warnings.append(
+            {
+                'field': 'composer',
+                'message': str(e),
+            }
+        )
         composers = db_track.composer_names()
 
     warnings.extend(check_artist_consistency(artists, all_artists, 'artist'))
@@ -142,7 +147,9 @@ def metadata_consistency_checks(
     return warnings
 
 
-def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> list[dict[str, Any]]:
+def update_library(
+    tree, dry_run: bool = False, inudesu: bool = False
+) -> list[dict[str, Any]]:
     changes: list[dict[str, Any]] = []
     alltracks = Track.objects.filter(inudesu=inudesu)
     all_anime_titles = Track.all_anime_titles()
@@ -191,21 +198,24 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> list[d
             if db_dict != track_dict:
                 # we need to update an existing track
                 changed = True
-                field_alterations = [{
-                    'field': k,
-                    'from': db_dict[k],
-                    'to': track_dict[k],
-                } for k in db_dict.keys() if db_dict[k] != track_dict[k]]
+                field_alterations = [
+                    {
+                        'field': k,
+                        'from': db_dict[k],
+                        'to': track_dict[k],
+                    }
+                    for k in db_dict.keys()
+                    if db_dict[k] != track_dict[k]
+                ]
 
             for field, value in track_dict.items():
-                if (
-                    isinstance(value, str) and
-                    (value.strip() != value)
-                ):
-                    warnings.append({
-                        'field': field,
-                        'message': 'leading or trailing whitespace',
-                    })
+                if isinstance(value, str) and (value.strip() != value):
+                    warnings.append(
+                        {
+                            'field': field,
+                            'message': 'leading or trailing whitespace',
+                        }
+                    )
 
         if (new or changed) and not db_track.metadata_locked:
             db_track.id = t['Persistent ID']
@@ -219,7 +229,10 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> list[d
             db_track.inudesu = inudesu
             warnings.extend(
                 metadata_consistency_checks(
-                    db_track, all_anime_titles, all_artists, all_composers,
+                    db_track,
+                    all_anime_titles,
+                    all_artists,
+                    all_composers,
                 )
             )
 
@@ -229,42 +242,45 @@ def update_library(tree, dry_run: bool = False, inudesu: bool = False) -> list[d
             else:
                 db_track.hidden = False
 
-            changes.append({
-                'type': 'new',
-                'item': str(db_track),
-            })
+            changes.append(
+                {
+                    'type': 'new',
+                    'item': str(db_track),
+                }
+            )
 
         if changed or warnings:
-            changes.append({
-                'type': 'locked' if db_track.metadata_locked else 'change',
-                'item': str(db_track),
-                'changes': field_alterations,
-                'warnings': warnings,
-            })
+            changes.append(
+                {
+                    'type': 'locked' if db_track.metadata_locked else 'change',
+                    'item': str(db_track),
+                    'changes': field_alterations,
+                    'warnings': warnings,
+                }
+            )
 
-        if (
-            (not dry_run) and
-            (new or changed) and
-            (not db_track.metadata_locked)
-        ):
+        if (not dry_run) and (new or changed) and (not db_track.metadata_locked):
             db_track.save()
 
         tracks_kept.append(db_track)
 
-    for track in [tr for tr in alltracks
-                  if tr not in tracks_kept and not tr.hidden]:
+    for track in [tr for tr in alltracks if tr not in tracks_kept and not tr.hidden]:
         if not track.metadata_locked:
-            changes.append({
-                'type': 'hide',
-                'item': str(track),
-            })
+            changes.append(
+                {
+                    'type': 'hide',
+                    'item': str(track),
+                }
+            )
             if not dry_run:
                 track.hidden = True
                 track.save()
         else:
-            changes.append({
-                'type': 'locked',
-                'item': str(track),
-            })
+            changes.append(
+                {
+                    'type': 'locked',
+                    'item': str(track),
+                }
+            )
 
     return changes

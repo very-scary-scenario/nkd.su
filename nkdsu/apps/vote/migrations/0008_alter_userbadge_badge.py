@@ -13,6 +13,39 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='userbadge',
             name='badge',
-            field=models.CharField(choices=[('tblc', '{user.name} bought Take Back Love City for the RSPCA.'), ('charity-2016', '{user.name} donated to the Very Scary Scenario charity streams for Special Effect in 2016.'), ('charity-2017', '{user.name} donated to the Very Scary Scenario charity streams and Neko Desu All-Nighter for Cancer Research UK in 2017.'), ('charity-2018', '{user.name} donated to the Very Scary Scenario charity streams for Cancer Research UK in 2018.'), ('charity-2019', '{user.name} donated to the Very Scary Scenario charity streams for Samaritans in 2019.'), ('charity-2020', '{user.name} donated to the Very Scary Scenario charity streams for Cancer Research UK in 2020.'), ('charity-2021', '{user.name} donated to the Very Scary Scenario charity streams for Mind in 2021.'), ('charity-2022', '{user.name} donated to the Very Scary Scenario charity streams for akt in 2022.')], max_length=12),
+            field=models.CharField(
+                choices=[
+                    ('tblc', '{user.name} bought Take Back Love City for the RSPCA.'),
+                    (
+                        'charity-2016',
+                        '{user.name} donated to the Very Scary Scenario charity streams for Special Effect in 2016.',
+                    ),
+                    (
+                        'charity-2017',
+                        '{user.name} donated to the Very Scary Scenario charity streams and Neko Desu All-Nighter for Cancer Research UK in 2017.',
+                    ),
+                    (
+                        'charity-2018',
+                        '{user.name} donated to the Very Scary Scenario charity streams for Cancer Research UK in 2018.',
+                    ),
+                    (
+                        'charity-2019',
+                        '{user.name} donated to the Very Scary Scenario charity streams for Samaritans in 2019.',
+                    ),
+                    (
+                        'charity-2020',
+                        '{user.name} donated to the Very Scary Scenario charity streams for Cancer Research UK in 2020.',
+                    ),
+                    (
+                        'charity-2021',
+                        '{user.name} donated to the Very Scary Scenario charity streams for Mind in 2021.',
+                    ),
+                    (
+                        'charity-2022',
+                        '{user.name} donated to the Very Scary Scenario charity streams for akt in 2022.',
+                    ),
+                ],
+                max_length=12,
+            ),
         ),
     ]

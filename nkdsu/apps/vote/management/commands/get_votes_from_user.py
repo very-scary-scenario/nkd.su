@@ -12,7 +12,12 @@ class Command(BaseCommand):
 
     def handle(self, screen_name, *args, **options):
         t = tweepy.API(_read_tw_auth, parser=JSONParser())
-        tweets = t.user_timeline(count=200, include_entities=True, tweet_mode='extended', screen_name=screen_name)
+        tweets = t.user_timeline(
+            count=200,
+            include_entities=True,
+            tweet_mode='extended',
+            screen_name=screen_name,
+        )
 
         for tweet in tweets:
             if ('full_text' not in tweet) and (len(tweet['text']) == 140):

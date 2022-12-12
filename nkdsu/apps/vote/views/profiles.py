@@ -14,7 +14,9 @@ class ProfileView(DetailView):
     model = User
     context_object_name = 'object'
 
-    def get_object(self, queryset: Optional[QuerySet[AbstractBaseUser]] = None) -> AbstractBaseUser:
+    def get_object(
+        self, queryset: Optional[QuerySet[AbstractBaseUser]] = None
+    ) -> AbstractBaseUser:
         if queryset is None:
             queryset = self.get_queryset()
 
