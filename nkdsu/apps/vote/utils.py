@@ -10,13 +10,15 @@ from urllib.parse import quote
 
 from classtools import reify as ct_reify
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 import musicbrainzngs
 import requests
 import tweepy
 
 if TYPE_CHECKING:
-    from .models import Track
+    from .models import Profile, Track
 
 
 logger = logging.getLogger(__name__)
@@ -287,6 +289,14 @@ def lastfm(**kwargs):
 
 def assert_never(value: NoReturn) -> NoReturn:
     assert False, f'this code should not have been reached; got {value!r}'
+
+
+def get_profile_for(user: User) -> Profile:
+    try:
+        return user.profile
+    except ObjectDoesNotExist:
+        from .models import Profile
+        return Profile.objects.create(user=user)
 
 
 musicbrainzngs.set_useragent('nkd.su', '0', 'http://nkd.su/')

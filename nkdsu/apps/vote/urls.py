@@ -99,7 +99,8 @@ api_patterns = ([
 ], 'api')
 
 profile_patterns = ([
-    path('<str:username>/', profiles.ProfileView.as_view(), name='profile')
+    path('u/<str:username>/', profiles.ProfileView.as_view(), name='profile'),
+    path('profile/', profiles.UpdateProfileView.as_view(), name='edit-profile'),
 ], 'profiles')
 
 

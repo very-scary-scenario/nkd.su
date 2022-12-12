@@ -547,7 +547,7 @@ class Profile(CleanOnSaveMixin, models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     twitter_user = models.OneToOneField(
         TwitterUser, blank=True, null=True, on_delete=models.SET_NULL, related_name='profile')
-    avatar = models.ImageField(upload_to=avatar_upload_path)  # XXX validate that this is a reasonably-sized square
+    avatar = models.ImageField(upload_to=avatar_upload_path, blank=True)  # XXX this must be a reasonably-sized square
     display_name = models.CharField(max_length=100, blank=True)
 
     def __str__(self) -> str:
