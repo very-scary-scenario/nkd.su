@@ -137,10 +137,10 @@ class EverythingTest(
 
 
 class LoggedInEverythingTest(EverythingTest):
-    covered_urls = EverythingTest.covered_urls + [
+    covered_urls = [
         # some views require you to be logged in
         '/folks/profile/'
-    ]
+    ] + EverythingTest.covered_urls
 
     def setUp(self) -> None:
         super().setUp()
