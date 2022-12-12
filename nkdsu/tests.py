@@ -83,7 +83,6 @@ class EverythingTest(
         '/added/',
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
-        '/folks/profile/',
         '/folks/u/what/',
         '/login/',
         '/cpw/',
@@ -95,6 +94,7 @@ class EverythingTest(
 
     uncovered_urls = [
         # some urls that require stuff to be in the session
+        '/folks/profile/',
         '/vote-admin/upload/confirm/',
         '/vote-admin/shortlist-selection/',
         '/vote-admin/discard-selection/',
@@ -137,6 +137,11 @@ class EverythingTest(
 
 
 class LoggedInEverythingTest(EverythingTest):
+    covered_urls = EverythingTest.covered_urls + [
+        # some views require you to be logged in
+        '/folks/profile/'
+    ]
+
     def setUp(self) -> None:
         super().setUp()
         self.assertTrue(self.client.login(username='what', password='what'))
