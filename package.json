@@ -2,7 +2,7 @@
   "name": "nkd.su",
   "version": "0.0.0",
   "scripts": {
-    "lint-black": "black --check .",
+    "lint-black": "black --check --diff .",
     "lint-flake8": "flake8 .",
     "lint-js": "eslint nkdsu/static/js",
     "lint-mypy": "mypy --pretty --show-error-context",
