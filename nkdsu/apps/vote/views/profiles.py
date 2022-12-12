@@ -29,7 +29,8 @@ class ProfileView(DetailView):
 
 class UpdateProfileView(UpdateView):
     model = Profile
-    fields = ['avatar', 'display_name']
+    fields = ['display_name', 'avatar']
+    template_name = 'edit_profile.html'
 
     def get_object(self, queryset: Optional[QuerySet[Profile]] = None) -> Profile:
         if not self.request.user.is_authenticated:

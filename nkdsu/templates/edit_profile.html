@@ -1,0 +1,14 @@
+{% extends parent %}
+
+{% block title %}Edit profile{% endblock %}
+{% block content %}
+
+<h2 class="aligned">Edit your profile</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="save"></input>
+</form>
+
+{% endblock %}
