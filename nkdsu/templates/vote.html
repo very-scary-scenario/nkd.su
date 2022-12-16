@@ -1,6 +1,6 @@
 {% extends parent %}
 
-{% block title %}Request something{% endblock %}
+{% block title %}request something{% endblock %}
 
 {% block content %}
   <h2>Make a request for {% include "include/show_date.html" with show=current_show %}</h2>
@@ -8,6 +8,6 @@
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="submit">
+    <input type="submit" value="make request">
   </form>
 {% endblock %}
