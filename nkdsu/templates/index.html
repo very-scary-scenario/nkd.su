@@ -41,7 +41,7 @@
       {% if current_show.broadcasting %}
         <h2>current requests for tonight's show</h2>
       {% elif current_show %}
-        <h2>current requests for {{ current_show.showtime|date:"F"|lower }}&nbsp;{{ current_show.showtime|date:"jS" }}</h2>
+        <h2>current requests for {% include "include/show_date.html" with show=current_show %}</h2>
       {% endif %}
       <ul class="tracks">
         {% include "include/tracklist.html" %}

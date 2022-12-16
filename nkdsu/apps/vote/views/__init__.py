@@ -6,6 +6,7 @@ from typing import Any, Iterable, Optional, Sequence, cast
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
 from django.db.models import Count, DurationField, F, QuerySet
@@ -16,10 +17,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_duration
-from django.views.generic import DetailView, FormView, ListView, TemplateView
+from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView
 import tweepy
 
-from ..forms import BadMetadataForm, DarkModeForm, RequestForm
+from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import Show, Track, TrackQuerySet, TwitterUser
 from ..utils import BrowsableItem, BrowsableYear, reify
 from ...vote import mixins
@@ -697,6 +698,11 @@ class RequestAddition(mixins.MarkdownView, FormView):
         )
 
         return super().form_valid(form)
+
+
+class VoteView(LoginRequiredMixin, CreateView):
+    form_class = VoteForm
+    template_name = 'vote.html'
 
 
 class SetDarkModeView(FormView):
