@@ -1278,7 +1278,11 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     tracks = models.ManyToManyField(Track, db_index=True)
     date = models.DateTimeField(db_index=True)
     show = models.ForeignKey(Show, related_name='vote_set', on_delete=models.CASCADE)
-    text = models.TextField(blank=True)
+    text = models.TextField(
+        blank=True,
+        max_length=280,
+        help_text='A comment to be shown alongside your request',
+    )
 
     # local only
     user = models.ForeignKey(
