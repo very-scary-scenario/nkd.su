@@ -17,7 +17,13 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_duration
-from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+)
 import tweepy
 
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm

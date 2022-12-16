@@ -194,7 +194,9 @@ urlpatterns = [
     url(r'^info/privacy/$', views.Privacy.as_view(), name='privacy'),
     url(r'^info/tos/$', views.TermsOfService.as_view(), name='tos'),
     url(r'^info/api/$', views.APIDocs.as_view(), name='api_docs'),
-    url(r'^request-addition/$', views.RequestAddition.as_view(), name='request_addition'),
+    url(
+        r'^request-addition/$', views.RequestAddition.as_view(), name='request_addition'
+    ),
     url(r'^request/$', views.VoteView.as_view(), name='vote'),
     url(r'^set-dark-mode/$', views.SetDarkModeView.as_view(), name='set-dark-mode'),
     # tracks
