@@ -1,11 +1,12 @@
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.contrib.auth.views import LogoutView, PasswordChangeView
 from django.urls import include, path, re_path as url
 from django.views.generic.base import RedirectView
 from django.views.static import serve
 
 from nkdsu.apps.vote import urls as vote_urls
+from nkdsu.views import LoginView
 
 admin.autodiscover()
 

@@ -30,6 +30,7 @@ from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import Show, Track, TrackQuerySet, TwitterUser
 from ..utils import BrowsableItem, BrowsableYear, reify
 from ...vote import mixins
+from ....mixins import MarkdownView
 
 
 post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
@@ -599,22 +600,22 @@ class Stats(TemplateView):
         return context
 
 
-class Info(mixins.MarkdownView):
+class Info(MarkdownView):
     title = 'what?'
     filename = 'README.md'
 
 
-class APIDocs(mixins.MarkdownView):
+class APIDocs(MarkdownView):
     title = 'api'
     filename = 'API.md'
 
 
-class Privacy(mixins.MarkdownView):
+class Privacy(MarkdownView):
     title = 'privacy'
     filename = 'PRIVACY.md'
 
 
-class TermsOfService(mixins.MarkdownView):
+class TermsOfService(MarkdownView):
     title = 'tos'
     filename = 'TOS.md'
 
@@ -671,7 +672,7 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         ]
 
 
-class RequestAddition(mixins.MarkdownView, FormView):
+class RequestAddition(MarkdownView, FormView):
     form_class = RequestForm
     template_name = 'request.html'
     success_url = reverse_lazy('vote:index')
