@@ -95,6 +95,7 @@ class EverythingTest(
     uncovered_urls = [
         # some urls that require stuff to be in the session
         '/folks/profile/',
+        '/request/',
         '/vote-admin/upload/confirm/',
         '/vote-admin/shortlist-selection/',
         '/vote-admin/discard-selection/',
@@ -140,6 +141,7 @@ class LoggedInEverythingTest(EverythingTest):
     covered_urls = [
         # some views require you to be logged in
         '/folks/profile/'
+        '/request/?t=0007C3F2760E0541',
     ] + EverythingTest.covered_urls
 
     def setUp(self) -> None:
