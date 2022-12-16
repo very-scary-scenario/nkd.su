@@ -16,13 +16,14 @@ from typing import (
     TypeVar,
     cast,
 )
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 from classtools import reify as ct_reify
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse
 import musicbrainzngs
 import requests
 import tweepy
@@ -160,8 +161,10 @@ def vote_tweet(tracks: Iterable[Track]) -> str:
 
 
 def vote_tweet_intent_url(tracks: Iterable[Track]) -> str:
-    tweet = vote_tweet(tracks)
-    return tweet_url(tweet)
+    # XXX rename this function, since it's no longer making a tweet URL
+    base = reverse('vote:vote')
+    query = {'t': ','.join(t.id for t in tracks)}
+    return f'{base}?{urlencode(query)}'
 
 
 def tweet_len(tweet: str) -> int:

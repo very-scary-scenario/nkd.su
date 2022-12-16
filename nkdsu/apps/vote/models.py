@@ -1093,7 +1093,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def get_vote_url(self) -> str:
         """
-        Return the Twitter intent url for voting for this track alone.
+        Return the url for voting for this track alone.
         """
 
         return vote_tweet_intent_url([self])
