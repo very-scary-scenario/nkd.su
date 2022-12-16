@@ -710,6 +710,17 @@ class VoteView(LoginRequiredMixin, CreateView):
     form_class = VoteForm
     template_name = 'vote.html'
 
+    def get_initial_tracks(self) -> list[Track]:
+        track_pks = self.request.GET.get('t')
+
+        if track_pks is None:
+            return []
+
+        return [get_object_or_404(Track, pk=pk) for pk in track_pks.split(',')]
+
+    def get_initial(self) -> dict[str, Any]:
+        return {'tracks': self.get_initial_tracks()}
+
 
 class SetDarkModeView(FormView):
     http_method_names = ['post']

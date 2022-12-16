@@ -156,7 +156,7 @@ class VoteForm(forms.ModelForm):
         model = Vote
         fields = ['tracks', 'text']
         widgets = {
-            'tracks': forms.HiddenInput(),
+            'tracks': forms.HiddenInput(),  # XXX this does not work; validation errors are always thrown
         }
 
     def clean_tracks(self) -> None:
