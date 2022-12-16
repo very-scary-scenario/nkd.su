@@ -7,7 +7,7 @@ from django.core.validators import validate_email
 from django.utils.safestring import mark_safe
 import tweepy
 
-from .models import Note, Request
+from .models import Note, Request, Vote
 from .utils import reading_tw_api
 from ..vote import trivia
 
@@ -109,6 +109,10 @@ class BadMetadataForm(TriviaForm):
 
 
 class RequestForm(TriviaForm):
+    """
+    A form for requesting that a track be added to the library.
+    """
+
     title = forms.CharField(widget=_proper_noun_textinput, required=False)
     artist = forms.CharField(widget=_proper_noun_textinput, required=False)
     show = forms.CharField(
@@ -141,6 +145,22 @@ class RequestForm(TriviaForm):
             )
 
         return cleaned_data
+
+
+class VoteForm(forms.ModelForm):
+    """
+    A form for creating a :class:`.models.Vote`.
+    """
+
+    class Meta:
+        model = Vote
+        fields = ['tracks', 'text']
+        widgets = {
+            'tracks': forms.HiddenInput(),
+        }
+
+    def clean_tracks(self) -> None:
+        raise NotImplementedError()
 
 
 class CheckMetadataForm(forms.Form):
