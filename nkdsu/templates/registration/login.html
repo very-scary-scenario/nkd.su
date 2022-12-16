@@ -5,9 +5,11 @@
 {% block content %}
   <h2 class=message>log in</h2>
 
-  <div class="markdown">
-    {{ words|safe }}
-  </div>
+  {% if is_vote %}
+    <div class="markdown">
+      {{ words|safe }}
+    </div>
+  {% endif %}
 
   {% if form.errors %}
     <p class="aside problems">wrong username/password, sorry</p>
