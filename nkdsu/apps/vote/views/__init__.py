@@ -710,7 +710,12 @@ class VoteView(LoginRequiredMixin, CreateView):
     form_class = VoteForm
     template_name = 'vote.html'
 
-    def get_initial_tracks(self) -> list[Track]:
+    def get_tracks(self) -> list[Track]:
+        # XXX do some validation here. duplicates, ineligible tracks, and
+        # things this user has already requested should be excluded. maybe it
+        # should also be a queryset? that would make filtering implicit, rather
+        # than throwing an error at the user, but maybe that's fine.
+
         track_pks = self.request.GET.get('t')
 
         if track_pks is None:
@@ -718,8 +723,11 @@ class VoteView(LoginRequiredMixin, CreateView):
 
         return [get_object_or_404(Track, pk=pk) for pk in track_pks.split(',')]
 
-    def get_initial(self) -> dict[str, Any]:
-        return {'tracks': self.get_initial_tracks()}
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        return {
+            **super().get_context_data(**kwargs),
+            'tracks': self.get_tracks(),
+        }
 
 
 class SetDarkModeView(FormView):

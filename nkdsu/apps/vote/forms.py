@@ -154,14 +154,10 @@ class VoteForm(forms.ModelForm):
 
     class Meta:
         model = Vote
-        fields = ['tracks', 'text']
+        fields = ['text']
         widgets = {
-            'tracks': forms.HiddenInput(),  # XXX this does not work; validation errors are always thrown
-            'text': forms.TextInput(),  # XXX this does not work; validation errors are always thrown
+            'text': forms.TextInput(),
         }
-
-    def clean_tracks(self) -> None:
-        raise NotImplementedError()
 
 
 class CheckMetadataForm(forms.Form):
