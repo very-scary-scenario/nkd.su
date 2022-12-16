@@ -3,17 +3,16 @@
 {% block title %}log in{% endblock %}
 
 {% block content %}
-<h2 class=message>log in</h2>
+  <h2 class=message>log in</h2>
 
-{% if form.errors %}
-<p class="aside problems">wrong username/password, sorry</p>
-{% endif %}
+  {% if form.errors %}
+    <p class="aside problems">wrong username/password, sorry</p>
+  {% endif %}
 
-<form class="login" method="post" action="{% url "login" %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="login">
-  <input type="hidden" name="next" value="{{ next }}" />
-</form>
-
+  <form class="login" method="post" action="{% url "login" %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="login">
+    <input type="hidden" name="next" value="{{ next }}" />
+  </form>
 {% endblock %}
