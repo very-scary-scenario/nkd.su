@@ -645,33 +645,29 @@ p.new_tracks {
   margin-left: 37.5%;
 }
 
-/* login form */
-form.login tr {
-  clear: both;
-}
-
+/* forms */
 form {
   text-align: center;
   margin: .5em 0;
-}
 
-form p {
-  text-align: left;
-  margin: .5em 0;
-}
+  p {
+    text-align: left;
+    margin: .5em 0;
 
-form p input {
-  text-align: left;
-}
+    input, textarea {
+      text-align: left;
+    }
+  }
 
-form p textarea {
-  text-align: left;
-}
+  ul.errorlist li {
+    list-style: none;
+    font-size: .9em;
+    color: @light;
+  }
 
-form ul.errorlist li {
-  list-style: none;
-  font-size: .9em;
-  color: @light;
+  &.login tr {
+    clear: both;
+  }
 }
 
 /* common to library updates and parsing checker */
