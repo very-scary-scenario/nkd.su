@@ -14,11 +14,5 @@ Either way, there are some things you should know:
   Twitter user who has requested things in the past.
 - The [privacy policy] is still worth reading.
 
-----
-
-For now, you can still request music in the old way by replying to [@nkdsu] on
-Twitter, but you'll have to write the tweets yourself. We plan to suspend this
-ability in the not-too-distant future.
-
 [@nkdsu]: https://twitter.com/nkdsu/status/744237593164980224
 [privacy policy]: https://nkd.su/info/privacy/

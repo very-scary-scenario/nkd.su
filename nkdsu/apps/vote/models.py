@@ -47,7 +47,7 @@ from .utils import (
     reading_tw_api,
     reify,
     split_id3_title,
-    vote_tweet_intent_url,
+    vote_url,
 )
 from ..vote import mixcloud
 
@@ -1096,7 +1096,7 @@ class Track(CleanOnSaveMixin, models.Model):
         Return the url for voting for this track alone.
         """
 
-        return vote_tweet_intent_url([self])
+        return vote_url([self])
 
     def get_lastfm_track(self) -> dict[str, Any]:
         return lastfm(

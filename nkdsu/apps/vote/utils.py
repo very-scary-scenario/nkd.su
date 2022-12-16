@@ -142,14 +142,16 @@ def length_str(msec: float) -> str:
         return '%i:%02d' % (minutes, remainder_seconds)
 
 
+def vote_url(tracks: Iterable[Track]) -> str:
+    base = reverse('vote:vote')
+    query = {'t': ','.join(t.id for t in tracks)}
+    return f'{base}?{urlencode(query)}'
+
+
 def tweet_url(tweet: str) -> str:
     return 'https://twitter.com/intent/tweet?in_reply_to={reply_id}&text={text}'.format(
         reply_id='744237593164980224', text=quote(tweet)
     )
-
-
-def vote_url(tracks: Iterable[Track]) -> str:
-    return tweet_url(vote_tweet(tracks))
 
 
 def vote_tweet(tracks: Iterable[Track]) -> str:
@@ -161,10 +163,8 @@ def vote_tweet(tracks: Iterable[Track]) -> str:
 
 
 def vote_tweet_intent_url(tracks: Iterable[Track]) -> str:
-    # XXX rename this function, since it's no longer making a tweet URL
-    base = reverse('vote:vote')
-    query = {'t': ','.join(t.id for t in tracks)}
-    return f'{base}?{urlencode(query)}'
+    tweet = vote_tweet(tracks)
+    return tweet_url(tweet)
 
 
 def tweet_len(tweet: str) -> int:
