@@ -16,10 +16,6 @@
     </div>
   {% endif %}
 
-  {% if form.errors %}
-    <p class="aside problems">wrong username/password, sorry</p>
-  {% endif %}
-
   <form class="login" method="post" action="{% url "login" %}">
     {% csrf_token %}
     {{ form.as_p }}
