@@ -34,6 +34,8 @@ class SelectionView(JSApiMixin, TemplateView):
 
         selection = self.get_queryset()
         context['selection'] = selection
+
+        # XXX only surface this if MAX_REQUEST_TRACKS, a setting that has yet to be added, is not exceeded
         context['vote_url'] = vote_url(selection)
 
         return self.render_to_response(context)
