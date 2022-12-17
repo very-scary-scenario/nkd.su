@@ -1,11 +1,10 @@
 from typing import Optional
 
-from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
 from ..models import Track
-from ..utils import tweet_len, tweet_url, vote_tweet
+from ..utils import vote_url
 
 
 class JSApiMixin(object):
@@ -35,10 +34,7 @@ class SelectionView(JSApiMixin, TemplateView):
 
         selection = self.get_queryset()
         context['selection'] = selection
-
-        tweet = vote_tweet(selection)
-        if tweet_len(tweet) <= settings.TWEET_LENGTH:
-            context['vote_url'] = tweet_url(tweet)
+        context['vote_url'] = vote_url(selection)
 
         return self.render_to_response(context)
 
