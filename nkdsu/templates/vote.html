@@ -5,6 +5,14 @@
 {% block content %}
   <h2>Make a request for {% include "include/show_date.html" with show=current_show %}</h2>
 
+  <div class="vote-preview">
+    <ul class="tracks">
+      {% for track in tracks %}
+        {% include "include/nanotrack.html" with tiny=True %}
+      {% endfor %}
+    </ul>
+  </div>
+
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
