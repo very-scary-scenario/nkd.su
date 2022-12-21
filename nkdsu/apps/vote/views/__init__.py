@@ -7,6 +7,7 @@ from typing import Any, Iterable, Optional, Sequence, cast
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
 from django.db.models import Count, DurationField, F, QuerySet
@@ -27,7 +28,7 @@ from django.views.generic import (
 import tweepy
 
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
-from ..models import Show, Track, TrackQuerySet, TwitterUser
+from ..models import Show, Track, TrackQuerySet, TwitterUser, Vote
 from ..utils import BrowsableItem, BrowsableYear, reify
 from ...vote import mixins
 from ....mixins import MarkdownView
@@ -710,6 +711,7 @@ class RequestAddition(MarkdownView, FormView):
 class VoteView(LoginRequiredMixin, CreateView):
     form_class = VoteForm
     template_name = 'vote.html'
+    success_url = reverse_lazy('vote:index')
 
     def get_tracks(self) -> list[Track]:
         # XXX do some validation here. duplicates, ineligible tracks, and
@@ -723,6 +725,19 @@ class VoteView(LoginRequiredMixin, CreateView):
             return []
 
         return [get_object_or_404(Track, pk=pk) for pk in track_pks.split(',')]
+
+    def get_form_kwargs(self) -> dict[str, Any]:
+        assert not isinstance(self.request.user, AnonymousUser)
+        instance = Vote(user=self.request.user, date=timezone.now())
+        return {
+            **super().get_form_kwargs(),
+            'instance': instance,
+        }
+
+    def form_valid(self, form: VoteForm) -> HttpResponse:
+        resp = super().form_valid(form)
+        form.instance.tracks.set(self.get_tracks())
+        return resp
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         return {
