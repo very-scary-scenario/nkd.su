@@ -34,7 +34,9 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'edit_profile.html'
 
     def get_success_url(self) -> str:
-        return reverse('vote:profiles:profile', kwargs={'username': self.request.user.username})
+        return reverse(
+            'vote:profiles:profile', kwargs={'username': self.request.user.username}
+        )
 
     def get_object(self, queryset: Optional[QuerySet[Profile]] = None) -> Profile:
         if not self.request.user.is_authenticated:
