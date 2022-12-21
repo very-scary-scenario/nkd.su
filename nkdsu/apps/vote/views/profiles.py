@@ -5,6 +5,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.views.generic import DetailView, UpdateView
 
 from ..models import Profile
@@ -31,6 +32,9 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = Profile
     fields = ['display_name', 'avatar']
     template_name = 'edit_profile.html'
+
+    def get_success_url(self) -> str:
+        return reverse('vote:profiles:profile', kwargs={'username': self.request.user.username})
 
     def get_object(self, queryset: Optional[QuerySet[Profile]] = None) -> Profile:
         if not self.request.user.is_authenticated:
