@@ -3,6 +3,10 @@
 {% block title %}{{ object.username }}{% endblock %}
 
 {% block content %}
+  {% if object.profile.avatar %}
+    <img src="{{ object.profile.avatar.url }}"></img>
+  {% endif %}
+
   <h1>{{ object.username }}</h1>
 
   {% if object.social_auth.all %}
