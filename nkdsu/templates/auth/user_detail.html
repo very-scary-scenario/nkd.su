@@ -19,4 +19,8 @@
   {% elif object == request.user %}
     <p><a href="{% url "social:begin" backend="twitter" %}">link twitter account</a></p>
   {% endif %}
+
+  {% if object == request.user %}
+    <p><a href="{% url "vote:profiles:edit-profile" %}">edit your profile</a></p>
+  {% endif %}
 {% endblock %}
