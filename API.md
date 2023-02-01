@@ -14,7 +14,7 @@ Includes:
 - `playlist`: a list of tracks played and the times at which they were played
 - `added`: a list of all the tracks added to the library this week
 - `start`: the date and time at which this week started
-- `finish`: the date and time at which this week ended 
+- `finish`: the date and time at which this week ended
 - `showtime`: the date and time at which this week's show began
 - `broadcasting`: if this show is on the air at the time of the request
 - `message_markdown` and `message_html`: the message shown on the front page
