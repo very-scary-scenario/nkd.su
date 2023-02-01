@@ -12,6 +12,7 @@ flake8>=3.8
 musicbrainzngs==0.5
 mypy>=0.990,<1
 ndg-httpsclient
+pre-commit>=3.0.2
 psycopg2
 pyasn1
 pytest>=7.1<8
