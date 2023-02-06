@@ -135,6 +135,9 @@ class EverythingTest(
         # linode has robot protection that makes automated testing of links to their site impossible, so:
         del urls['https://www.linode.com/legal-privacy/']
 
+        # the cat's website is broken at the moment
+        del urls['https://thisisthecat.com']
+
         return super().ensure_all_urls_resolve(urls)
 
 
