@@ -5,7 +5,6 @@ import nkdsu.apps.vote.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('vote', '0011_alter_profile_display_name'),
     ]

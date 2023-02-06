@@ -8,7 +8,6 @@ from ...utils import _read_tw_auth
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-
         t = tweepy.API(_read_tw_auth, parser=JSONParser())
 
         for vote in Vote.objects.exclude(tweet_id__isnull=True).order_by('-date'):
