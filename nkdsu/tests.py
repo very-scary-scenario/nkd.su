@@ -58,6 +58,7 @@ class EverythingTest(
         '/info/privacy/',
         '/info/tos/',
         '/request/',
+        '/request-addition/',
         '/roulette/',
         '/roulette/hipster/',
         '/roulette/indiscriminate/',
@@ -140,7 +141,7 @@ class EverythingTest(
 class LoggedInEverythingTest(EverythingTest):
     covered_urls = [
         # some views require you to be logged in
-        '/folks/profile/'
+        '/folks/profile/',
         '/request/?t=0007C3F2760E0541',
     ] + EverythingTest.covered_urls
 
