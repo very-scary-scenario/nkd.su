@@ -573,6 +573,9 @@ def avatar_upload_path(instance: Profile, filename: str) -> str:
     return f"avatars/{instance.user.username}/{uuid4()}.png"
 
 
+AVATAR_SIZE = 500
+
+
 class Profile(CleanOnSaveMixin, models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     twitter_user = models.OneToOneField(
@@ -588,8 +591,8 @@ class Profile(CleanOnSaveMixin, models.Model):
         crop=['middle', 'center'],
         force_format='PNG',
         keep_meta=False,
-        size=[1024, 1024],
-        help_text='Will be resized to 1024x1024 and converted to png, so provide that if you can.',
+        size=[AVATAR_SIZE, AVATAR_SIZE],
+        help_text=f'Will be resized to {AVATAR_SIZE}x{AVATAR_SIZE} and converted to png, so provide that if you can.',
         # it'd be nice to optipng these as they're uploaded, but we can always do it later or in a cron job
     )
     display_name = models.CharField(max_length=100, blank=True)
