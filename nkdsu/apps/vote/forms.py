@@ -3,7 +3,6 @@ from random import choice
 from typing import Any, Optional
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import validate_email
 from django.utils.safestring import mark_safe
 import tweepy
@@ -189,8 +188,3 @@ class DarkModeForm(forms.Form):
             ('system', 'system'),
         ]
     )
-
-
-class RegistrationForm(UserCreationForm):
-    def clean_username(self):
-        raise NotImplementedError()

@@ -129,7 +129,6 @@ profile_patterns = (
     [
         path('u/<str:username>/', profiles.ProfileView.as_view(), name='profile'),
         path('profile/', profiles.UpdateProfileView.as_view(), name='edit-profile'),
-        path('register/', profiles.RegisterView.as_view(), name='register'),
     ],
     'profiles',
 )

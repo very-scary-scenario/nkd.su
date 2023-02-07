@@ -12,18 +12,25 @@
   <form class="login" method="post" action="{% url "login" %}">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="login" class="button">
     <input type="hidden" name="next" value="{{ next }}" />
+
+    <p class="submit">
+      <input type="submit" value="login" class="button">
+    </p>
   </form>
 
   <h2>or register:</h2>
 
   <div id="login-methods">
     <section>
-      <h3>existing Twitter-based users</h3>
+      <h3>existing twitter-based users</h3>
       <form>
-        <p>you can (and should) add a password to your account and then drop the twitter authentication</p>
-        <a class="button" href="{% url "social:begin" backend="twitter" %}">log in with twitter&hellip;</a>
+        <p>please, once you've done this, add a password to your account and then remove twitter authentication from your nkd.su account</p>
+        <p>you can do this from your settings page</p>
+
+        <p class="submit">
+          <a class="button" href="{% url "social:begin" backend="twitter" %}">log in with twitter&hellip;</a>
+        </p>
       </form>
     </section>
 
@@ -31,10 +38,12 @@
       <h3>new nkd.su visitors</h3>
       <p>create a fresh nkd.su account with a username and password</p>
 
-      <form class="login" method="post" action="{% url "vote:profiles:register" %}">
+      <form class="login" method="post" action="{% url "register" %}">
         {% csrf_token %}
         {{ registration_form.as_p }}
-        <input type="submit" value="login" class="button">
+        <p class="submit">
+          <input type="submit" value="login" class="button">
+        </p>
       </form>
     </section>
 

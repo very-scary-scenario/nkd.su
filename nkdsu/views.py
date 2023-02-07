@@ -1,13 +1,17 @@
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import get_user_model, views as auth_views
 from django.shortcuts import get_object_or_404
+from django.views.generic import CreateView
 
-from .apps.vote.forms import RegistrationForm
 from .apps.vote.models import Track
 from .apps.vote.utils import vote_tweet_intent_url
+from .forms import RegistrationForm
 from .mixins import MarkdownView
+
+
+User = get_user_model()
 
 
 class LoginView(MarkdownView, auth_views.LoginView):
@@ -40,3 +44,9 @@ class LoginView(MarkdownView, auth_views.LoginView):
             'twitter_vote_url': twitter_vote_url,
             'registration_form': RegistrationForm(),
         }
+
+
+class RegisterView(CreateView):
+    template_name = 'auth/register.html'
+    model = User
+    form_class = RegistrationForm

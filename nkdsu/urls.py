@@ -6,7 +6,7 @@ from django.views.generic.base import RedirectView
 from django.views.static import serve
 
 from nkdsu.apps.vote import urls as vote_urls
-from nkdsu.views import LoginView
+from nkdsu.views import LoginView, RegisterView
 
 admin.autodiscover()
 
@@ -15,6 +15,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('s/', include('social_django.urls', namespace='social')),
     # registration
+    url(r'^register/', RegisterView.as_view(), name='register'),
     url(r'^logout/', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
     url(r'^login/', LoginView.as_view(), name='login'),
     url(r'^cpw/', PasswordChangeView.as_view(), name='password_change'),

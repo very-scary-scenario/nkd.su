@@ -1,0 +1,21 @@
+{% extends parent %}
+
+{% block title %}register{% endblock %}
+
+{% block content %}
+  <h2>register:</h2>
+
+  <form class="login" method="post" action="{% url "register" %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <p class="submit">
+      <input type="submit" value="register" class="button">
+    </p>
+  </form>
+
+  <p>
+    if you're an existing twitter requester, you probably want to
+    <a href="{% url "social:begin" backend="twitter" %}">log in with twitter</a>
+  </p>
+{% endblock %}
