@@ -28,6 +28,7 @@ from django.templatetags.static import static
 from django.urls import Resolver404, resolve, reverse
 from django.utils import timezone
 from django.utils.timezone import get_default_timezone
+from django_resized import ResizedImageField
 from markdown import markdown
 import requests
 import tweepy
@@ -569,7 +570,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
 
 def avatar_upload_path(instance: Profile, filename: str) -> str:
-    return f"avatars/{instance.user.username}/{uuid4()}"
+    return f"avatars/{instance.user.username}/{uuid4()}.png"
 
 
 class Profile(CleanOnSaveMixin, models.Model):
@@ -581,9 +582,16 @@ class Profile(CleanOnSaveMixin, models.Model):
         on_delete=models.SET_NULL,
         related_name='profile',
     )
-    avatar = models.ImageField(
-        upload_to=avatar_upload_path, blank=True
-    )  # XXX this must be a reasonably-sized square
+    avatar = ResizedImageField(
+        upload_to=avatar_upload_path,
+        blank=True,
+        crop=['middle', 'center'],
+        force_format='PNG',
+        keep_meta=False,
+        size=[1024, 1024],
+        help_text='Will be resized to 1024x1024 and converted to png, so provide that if you can.',
+        # it'd be nice to optipng these as they're uploaded, but we can always do it later or in a cron job
+    )
     display_name = models.CharField(max_length=100, blank=True)
 
     def get_absolute_url(self) -> str:
@@ -593,7 +601,9 @@ class Profile(CleanOnSaveMixin, models.Model):
         if self.avatar:
             return self.avatar.url
         elif self.twitter_user:
-            return self.twitter_user.get_avatar_url()  # XXX this might be fragile if twitter is dying
+            return (
+                self.twitter_user.get_avatar_url()
+            )  # XXX this might be fragile if twitter is dying
         else:
             return static('i/noise.png')
 
