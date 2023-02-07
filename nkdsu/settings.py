@@ -106,6 +106,7 @@ ADMINS = (('colons', 'nkdsu@colons.co'),)
 
 MANAGERS = ADMINS
 
+ATOMIC_REQUESTS = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
