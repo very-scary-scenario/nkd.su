@@ -21,7 +21,6 @@ from urllib.parse import quote, urlencode
 from classtools import reify as ct_reify
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 import musicbrainzngs
@@ -85,43 +84,8 @@ class BrowsableYear(BrowsableItem):
         return (decade, f"{decade}s")
 
 
-def _get_short_url_length() -> int:
-    cache_key = 'tw-short-url-length'
-    length = cache.get(cache_key)
-    if length is not None:
-        return length
-    try:
-        length = reading_tw_api.configuration()['short_url_length_https']
-    except tweepy.error.TweepError as e:
-        logger.critical(
-            "could not read twitter configuration to determine short URL length:\n{}".format(
-                e
-            )
-        )
-        length = 22
-
-    cache.set(cache_key, length)
-    return length
-
-
-def _get_reading_username() -> str:
-    cache_key = 'tw-reading-username:{}'.format(settings.READING_ACCESS_TOKEN)
-    username = cache.get(cache_key)
-    if username is not None:
-        return username
-
-    try:
-        username = reading_tw_api.auth.get_username()
-    except tweepy.error.TweepError as e:
-        logger.critical("could not read reading account's username:\n{}".format(e))
-        return 'nkdsu'
-    else:
-        cache.set(cache_key, username)
-        return username
-
-
-SHORT_URL_LENGTH: int = _get_short_url_length()
-READING_USERNAME: str = _get_reading_username()
+SHORT_URL_LENGTH: int = 20
+READING_USERNAME: str = 'nkdsu'
 
 
 def length_str(msec: float) -> str:
