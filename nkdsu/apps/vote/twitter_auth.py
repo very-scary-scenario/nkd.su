@@ -30,4 +30,19 @@ class NkdsuStrategy(DjangoStrategy):
     """
 
     def get_pipeline(self, backend=None):
-        return DEFAULT_AUTH_PIPELINE
+        return (
+            ('nkdsu.apps.vote.twitter_auth.validate_twitteruser',)
+            + DEFAULT_AUTH_PIPELINE
+            + ('nkdsu.apps.vote.twitter_auth.link_twitteruser',)
+        )
+
+
+def validate_twitteruser():
+    # XXX end this attempt here if the currently-logged-in user is already
+    # associated with a `TwitterUser` instance, or the account we've been
+    # handed is associated with a different `TwitterUser` instance.
+    raise NotImplementedError()
+
+
+def link_twitteruser():
+    raise NotImplementedError()
