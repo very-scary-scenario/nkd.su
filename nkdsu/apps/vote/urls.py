@@ -127,7 +127,7 @@ api_patterns = (
 
 profile_patterns = (
     [
-        path('u/<str:username>/', profiles.ProfileView.as_view(), name='profile'),
+        path('@<str:username>/', profiles.ProfileView.as_view(), name='profile'),
         path('profile/', profiles.UpdateProfileView.as_view(), name='edit-profile'),
     ],
     'profiles',
@@ -138,7 +138,7 @@ urlpatterns = [
     url(r'^vote-admin/', include(admin_patterns)),
     url(r'^js/', include(js_patterns)),
     url(r'^api/', include(api_patterns)),
-    url(r'^folks/', include(profile_patterns)),
+    url(r'^', include(profile_patterns)),
     url(r'^$', views.IndexView.as_view(), name='index'),
     url(r'^browse/$', views.Browse.as_view(), name='browse'),
     url(r'^anime/$', views.BrowseAnime.as_view(), name='browse_anime'),

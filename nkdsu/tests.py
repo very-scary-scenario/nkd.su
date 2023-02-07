@@ -84,7 +84,7 @@ class EverythingTest(
         '/added/',
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
-        '/folks/u/what/',
+        '/@what/',
         '/login/',
         '/register/',
         '/cpw/',
@@ -96,7 +96,7 @@ class EverythingTest(
 
     uncovered_urls = [
         # some urls that require stuff to be in the session
-        '/folks/profile/',
+        '/profile/',
         '/request/',
         '/vote-admin/upload/confirm/',
         '/vote-admin/shortlist-selection/',
@@ -145,7 +145,7 @@ class EverythingTest(
 class LoggedInEverythingTest(EverythingTest):
     covered_urls = [
         # some views require you to be logged in
-        '/folks/profile/',
+        '/profile/',
         '/request/?t=0007C3F2760E0541',
     ] + EverythingTest.covered_urls
 
