@@ -14,37 +14,39 @@
   <h1>{{ object.username }}</h1>
 
   {% if object == request.user %}
-    {% if object.profile.twitter_user %}
-      <p>
-        your account has adopted historical requests from twitter user @{{ object.profile.twitter_user.screen_name }}
-      </p>
-    {% endif %}
-
-    {% if object.social_auth.all %}
-      {% for social_auth in object.social_auth.all %}
+    <div class="self-infobox">
+      {% if object.profile.twitter_user %}
         <p>
-          your account currently allows authentication via a
-          <code>{{ social_auth.provider }}</code> user named
-          <strong>{{ social_auth.extra_data.access_token.screen_name }}</strong>
+          your account has adopted historical requests and statistics from twitter user @{{ object.profile.twitter_user.screen_name }}
         </p>
-        {% if social_auth.provider == "twitter" %}
-          <p>
-            {# XXX make sure this password change link works for users that have never set a password #}
-            we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_change" %}">make sure you know your nkd.su password</a> and then <a href="{% url "social:disconnect" backend="twitter" %}">disconnect your account from twitter</a>
-          </p>
-          <p>
-            disconnecting your account like this will not remove your adopted requests from @{{ object.profile.twitter_user.screen_name }}
-          </p>
-        {% endif %}
-      {% endfor %}
-    {% else %}
-      {% if not object.profile.twitter_user %}
-        <p><a href="{% url "social:begin" backend="twitter" %}">link twitter account</a></p>
       {% endif %}
-    {% endif %}
-  {% endif %}
 
-  {% if object == request.user %}
-    <p><a href="{% url "vote:profiles:edit-profile" %}">edit your profile</a></p>
+      {% if object.social_auth.all %}
+        <section>
+          {% for social_auth in object.social_auth.all %}
+            <p>
+              your account currently allows authentication via a
+              <code>{{ social_auth.provider }}</code> user named
+              <strong>{{ social_auth.extra_data.access_token.screen_name }}</strong>
+            </p>
+            {% if social_auth.provider == "twitter" %}
+              <p>
+                {# XXX make sure this password change link works for users that have never set a password #}
+                we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_change" %}">make sure you know your nkd.su password</a> and then <a href="{% url "social:disconnect" backend="twitter" %}">disconnect your account from twitter</a>
+              </p>
+              <p>
+                disconnecting your account like this will not remove your adopted requests from @{{ object.profile.twitter_user.screen_name }}
+              </p>
+            {% endif %}
+          {% endfor %}
+        </section>
+      {% else %}
+        {% if not object.profile.twitter_user %}
+          <p>you can <a href="{% url "social:begin" backend="twitter" %}">link a twitter account</a> to adopt all of its historic requests and statistics. if you want to disconnect your acount immediately after, you can do that here too</p>
+        {% endif %}
+      {% endif %}
+
+      <p><a class="button" href="{% url "vote:profiles:edit-profile" %}">edit your profile</a></p>
+    </div>
   {% endif %}
 {% endblock %}
