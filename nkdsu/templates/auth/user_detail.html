@@ -13,15 +13,27 @@
 
   <h1>{{ object.username }}</h1>
 
-  {% if object.social_auth.all %}
-    <p>
+  {% if object == request.user %}
+    {% if object.profile.twitter_user %}
+      <p>
+        your account is associated with historical requests from Twitter user @{{ object.profile.twitter_user.screen_name }}
+      </p>
+    {% endif %}
+
+    {% if object.social_auth.all %}
       {% for social_auth in object.social_auth.all %}
-        <strong>{{ social_auth.provider }}:</strong>
-        {{ social_auth.extra_data.access_token.screen_name }}
+        <p>
+          your account currently allows authentication via a
+          <code>{{ social_auth.provider }}</code> user named
+          <strong>{{ social_auth.extra_data.access_token.screen_name }}</strong>
+          {# XXX provide a method to unlink this, if a password is set. mention that they will not disassociate old requests. mention that this is strongly recommended #}
+        </p>
       {% endfor %}
-    </p>
-  {% elif object == request.user %}
-    <p><a href="{% url "social:begin" backend="twitter" %}">link twitter account</a></p>
+    {% else %}
+      {% if object.profile.twitter_user %}
+        <p><a href="{% url "social:begin" backend="twitter" %}">link twitter account</a></p>
+      {% endif %}
+    {% endif %}
   {% endif %}
 
   {% if object == request.user %}
