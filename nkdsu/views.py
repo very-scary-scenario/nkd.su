@@ -57,5 +57,7 @@ class RegisterView(CreateView):
 
     def form_valid(self, form: RegistrationForm) -> HttpResponse:
         resp = super().form_valid(form)
-        messages.success(self.request, 'Registration complete! Log in to edit your profile.')
+        messages.success(
+            self.request, 'Registration complete! Log in to edit your profile.'
+        )
         return resp
