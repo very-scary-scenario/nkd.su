@@ -18,9 +18,9 @@ html {
 }
 
 body {
-  font-family: "Bitter", "Calibri", sans-serif;
-  background-color: @bg;
+  .nkdsu-font();
   .noise();
+  background-color: @bg;
   color: @fg;
   text-shadow: @basic-shadow 0 .1em 0;
   height: 100%;
@@ -673,6 +673,25 @@ form {
 
   &.login tr {
     clear: both;
+  }
+}
+
+main.login {
+  max-width: 1.5 * @max-width !important;
+
+  #login-methods {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+
+    > section {
+      padding: 0 1em;
+      max-width: 30rem;
+
+      p {
+        margin-bottom: .5em;
+      }
+    }
   }
 }
 

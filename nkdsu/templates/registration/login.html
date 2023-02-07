@@ -2,24 +2,51 @@
 
 {% block title %}{{ title }}{% endblock %}
 
+{% block main_classes %}
+  login
+{% endblock %}
+
 {% block content %}
-  <h2 class=message>log in</h2>
-
-  {% if is_vote %}
-    <div class="markdown">
-      {{ words|safe }}
-
-      <hr/>
-
-      <p>For now, you can still request these tracks <a href="{{ twitter_vote_url }}">in the old way</a>, but we plan to suspend this ability in the not-too-distant future.</p>
-
-    </div>
-  {% endif %}
+  <h2>log in:</h2>
 
   <form class="login" method="post" action="{% url "login" %}">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="login">
+    <input type="submit" value="login" class="button">
     <input type="hidden" name="next" value="{{ next }}" />
   </form>
+
+  <h2>or register:</h2>
+
+  <div id="login-methods">
+    <section>
+      <h3>existing Twitter-based users</h3>
+      <form>
+        <p>you can (and should) add a password to your account and then drop the twitter authentication</p>
+        <a class="button" href="{% url "social:begin" backend="twitter" %}">log in with twitter&hellip;</a>
+      </form>
+    </section>
+
+    <section>
+      <h3>new nkd.su visitors</h3>
+      <p>create a fresh nkd.su account with a username and password</p>
+
+      <form class="login" method="post" action="{% url "vote:profiles:register" %}">
+        {% csrf_token %}
+        {{ registration_form.as_p }}
+        <input type="submit" value="login" class="button">
+      </form>
+    </section>
+
+    <section>
+    </section>
+  </div>
+
+  {% if is_vote %}
+    <h2>log in? what?</h2>
+    <div class="markdown">
+      {{ words|safe }}
+    </div>
+  {% endif %}
+
 {% endblock %}

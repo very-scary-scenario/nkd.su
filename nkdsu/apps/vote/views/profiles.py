@@ -6,8 +6,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import CreateView, DetailView, UpdateView
 
+from ..forms import RegistrationForm
 from ..models import Profile
 from ..utils import get_profile_for
 
@@ -42,3 +43,8 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         if not self.request.user.is_authenticated:
             raise RuntimeError('LoginRequiredMixin should have prevented this')
         return get_profile_for(self.request.user)
+
+
+class RegisterView(CreateView):
+    model = User
+    form_class = RegistrationForm

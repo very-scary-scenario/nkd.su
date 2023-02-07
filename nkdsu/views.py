@@ -4,6 +4,7 @@ from urllib.parse import parse_qs, urlparse
 from django.contrib.auth import views as auth_views
 from django.shortcuts import get_object_or_404
 
+from .apps.vote.forms import RegistrationForm
 from .apps.vote.models import Track
 from .apps.vote.utils import vote_tweet_intent_url
 from .mixins import MarkdownView
@@ -37,4 +38,5 @@ class LoginView(MarkdownView, auth_views.LoginView):
             **context,
             'is_vote': bool(tracks),  # this is naive, but we don't use ?t= for a lot
             'twitter_vote_url': twitter_vote_url,
+            'registration_form': RegistrationForm(),
         }
