@@ -30,7 +30,7 @@
         </p>
       {% endfor %}
     {% else %}
-      {% if object.profile.twitter_user %}
+      {% if not object.profile.twitter_user %}
         <p><a href="{% url "social:begin" backend="twitter" %}">link twitter account</a></p>
       {% endif %}
     {% endif %}
