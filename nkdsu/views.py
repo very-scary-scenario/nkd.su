@@ -1,8 +1,11 @@
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
+from django.contrib import messages
 from django.contrib.auth import get_user_model, views as auth_views
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from .apps.vote.models import Track
@@ -50,3 +53,9 @@ class RegisterView(CreateView):
     template_name = 'auth/register.html'
     model = User
     form_class = RegistrationForm
+    success_url = reverse_lazy('vote:profiles:edit-profile')
+
+    def form_valid(self, form: RegistrationForm) -> HttpResponse:
+        resp = super().form_valid(form)
+        messages.success(self.request, 'Registration complete! Log in to edit your profile.')
+        return resp
