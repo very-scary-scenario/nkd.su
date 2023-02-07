@@ -46,7 +46,10 @@
         </section>
       {% else %}
         {% if not object.profile.twitter_user %}
-          <p>you can <a href="{% url "social:begin" backend="twitter" %}">link a twitter account</a> to adopt all of its historic requests and statistics. if you want to disconnect your acount immediately after, you can do that here too</p>
+          <section>
+            <p>you can <a href="{% url "social:begin" backend="twitter" %}">link a twitter account</a> to adopt all of its historic requests and statistics. if you want to disconnect your acount immediately after, you can do that here too</p>
+            <p>note: this <strong>will not work</strong> for twitter accounts that have never requested anything on nkd.su</p>
+          </section>
         {% endif %}
       {% endif %}
 

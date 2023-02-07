@@ -723,6 +723,9 @@ main.profile {
     section {
       border: .3em solid fade(@light, 30%);
       border-width: .3em 0;
+
+      &:first-child { border-top-width: 0; > p:first-child { margin-top: 0; } }
+      &:last-child { border-bottom-width: 0; > p:last-child { margin-bottom: 0; } }
     }
   }
 }
