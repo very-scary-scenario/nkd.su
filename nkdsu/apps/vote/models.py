@@ -1447,6 +1447,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         return self.vote_kind == VoteKind.local
 
     def get_image_url(self) -> str:
+        if self.user and self.user.profile.avatar:
+            return self.user.profile.avatar.url
         if self.twitter_user:
             return self.twitter_user.get_avatar_url()
         else:
