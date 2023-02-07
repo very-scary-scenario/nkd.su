@@ -86,6 +86,7 @@ class EverythingTest(
         '/user/EuricaeriS/',
         '/folks/u/what/',
         '/login/',
+        '/register/',
         '/cpw/',
         '/cpw-done/',
         # it's important that logout be last since we have a sublcass of this
