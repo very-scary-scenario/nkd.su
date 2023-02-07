@@ -586,6 +586,14 @@ class Profile(CleanOnSaveMixin, models.Model):
     )  # XXX this must be a reasonably-sized square
     display_name = models.CharField(max_length=100, blank=True)
 
+    def get_avatar_url(self) -> str:
+        if self.avatar:
+            return self.avatar.url
+        elif self.twitter_user:
+            return self.twitter_user.get_avatar_url()  # XXX this might be fragile if twitter is dying
+        else:
+            return static('i/noise.png')
+
     def __str__(self) -> str:
         return f'{self.display_name} ({self.user.username})'
 
@@ -1447,12 +1455,14 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         return self.vote_kind == VoteKind.local
 
     def get_image_url(self) -> str:
-        if self.user and self.user.profile.avatar:
-            return self.user.profile.avatar.url
-        if self.twitter_user:
+        if self.user and self.user.profile:
+            return self.user.profile.get_avatar_url()
+        elif self.twitter_user:
             return self.twitter_user.get_avatar_url()
-        else:
+        elif self.vote_kind == VoteKind.manual:
             return static('i/vote-kinds/{0}.png'.format(self.kind))
+        else:
+            return static('i/noise.png')
 
     def __str__(self) -> str:
         tracks = u', '.join([t.title for t in self.tracks.all()])
