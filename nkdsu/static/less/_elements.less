@@ -53,7 +53,16 @@ html body main .button {
   background-color: @hl;
 
   &:hover {
-    background-color: @bg;
-    color: @fg;
+    background-color: @fg;
+    color: @bg;
   }
 }
+
+.dark({
+  main .button {
+    &:hover {
+      background-color: @inv_fg;
+      color: @inv_bg;
+    }
+  }
+});
