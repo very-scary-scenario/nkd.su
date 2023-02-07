@@ -12,7 +12,14 @@
   {% endif %}
   "
   >
-  <a class="vote-link" {% if vote.is_twitter %}href="{{ vote.twitter_user.get_absolute_url }}"{% endif %}>
+  <a
+    class="vote-link"
+    {% if vote.is_twitter %}
+      href="{{ vote.twitter_user.get_absolute_url }}"
+    {% elif vote.is_local %}
+      href="{{ vote.user.profile.get_absolute_url }}"
+    {% endif %}
+  >
     {% if vote.hat %}
       <i class="hat fa fa-{{ vote.hat.badge_info.icon }}"></i>
     {% endif %}

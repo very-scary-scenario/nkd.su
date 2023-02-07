@@ -586,6 +586,9 @@ class Profile(CleanOnSaveMixin, models.Model):
     )  # XXX this must be a reasonably-sized square
     display_name = models.CharField(max_length=100, blank=True)
 
+    def get_absolute_url(self) -> str:
+        return reverse("vote:profiles:profile", kwargs={'username': self.user.username})
+
     def get_avatar_url(self) -> str:
         if self.avatar:
             return self.avatar.url
