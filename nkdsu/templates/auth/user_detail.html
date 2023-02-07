@@ -30,10 +30,14 @@
               <strong>{{ social_auth.extra_data.access_token.screen_name }}</strong>
             </p>
             {% if social_auth.provider == "twitter" %}
-              <p>
+              <form method="post" action="{% url "social:disconnect" backend="twitter" %}">
+                {% csrf_token %}
+
                 {# XXX make sure this password change link works for users that have never set a password #}
-                we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_change" %}">make sure you know your nkd.su password</a> and then <a href="{% url "social:disconnect" backend="twitter" %}">disconnect your account from twitter</a>
-              </p>
+                <p>
+                  we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_change" %}">make sure you know your nkd.su password</a> and then <button class="link">disconnect your account from twitter</button>
+                </p>
+              </form>
               <p>
                 disconnecting your account like this will not remove your adopted requests from @{{ object.profile.twitter_user.screen_name }}
               </p>

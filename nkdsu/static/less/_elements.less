@@ -33,7 +33,14 @@ button.link {
   margin: none;
   font-family: inherit;
   font-size: inherit;
+  text-shadow: @basic-shadow 0 .1em 0;
 }
+
+.dark({
+  button.link {
+    text-shadow: fadeout(black, 50%) 0 .1em 0;
+  }
+});
 
 // this rule is specific to override vaguer rules about <a> and <input>
 html body main .button {
