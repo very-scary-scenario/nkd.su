@@ -16,7 +16,7 @@
   {% if object == request.user %}
     {% if object.profile.twitter_user %}
       <p>
-        your account is associated with historical requests from Twitter user @{{ object.profile.twitter_user.screen_name }}
+        your account has adopted historical requests from twitter user @{{ object.profile.twitter_user.screen_name }}
       </p>
     {% endif %}
 
@@ -26,8 +26,16 @@
           your account currently allows authentication via a
           <code>{{ social_auth.provider }}</code> user named
           <strong>{{ social_auth.extra_data.access_token.screen_name }}</strong>
-          {# XXX provide a method to unlink this, if a password is set. mention that they will not disassociate old requests. mention that this is strongly recommended #}
         </p>
+        {% if social_auth.provider == "twitter" %}
+          <p>
+            {# XXX make sure this password change link works for users that have never set a password #}
+            we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_change" %}">make sure you know your nkd.su password</a> and then <a href="{% url "social:disconnect" backend="twitter" %}">disconnect your account from twitter</a>
+          </p>
+          <p>
+            disconnecting your account like this will not remove your adopted requests from @{{ object.profile.twitter_user.screen_name }}
+          </p>
+        {% endif %}
       {% endfor %}
     {% else %}
       {% if not object.profile.twitter_user %}
