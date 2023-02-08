@@ -1716,8 +1716,7 @@ class Discard(CleanOnSaveMixin, models.Model):
 
 class Request(CleanOnSaveMixin, models.Model):
     """
-    A request for a database addition. Stored for the benefit of enjoying
-    hilarious spam.
+    A request for a database addition.
     """
 
     METADATA_KEYS = ['trivia', 'trivia_question', 'contact']

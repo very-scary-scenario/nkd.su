@@ -75,13 +75,6 @@ class TriviaForm(forms.Form):
                 re.I,
             )
 
-        request = Request()
-        request.successful = bool(human)
-        if self.track:
-            request.track_id = self.track.pk
-        request.serialise(self.cleaned_data)
-        request.save()
-
         if not human:
             hint = (
                 "That's not right, sorry. There are hints <a href='https://"
