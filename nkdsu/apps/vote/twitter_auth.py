@@ -100,6 +100,7 @@ class NkdsuStrategy(DjangoStrategy):
     def get_pipeline(self, backend=None):
         return (
             DEFAULT_AUTH_PIPELINE
+            # XXX both of these need to be uncommented:
             # + ('nkdsu.apps.vote.twitter_auth.link_twitteruser',)
             # + ('nkdsu.apps.vote.twitter_auth.steal_avatar',)
         )
