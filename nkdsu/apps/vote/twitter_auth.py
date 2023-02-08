@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import HttpRequest
 from social_core.backends.twitter import TwitterOAuth
 from social_core.pipeline import DEFAULT_AUTH_PIPELINE
+from social_django.models import UserSocialAuth
 from social_django.strategy import DjangoStrategy
 
 from .models import TwitterUser
@@ -31,9 +32,14 @@ class NkdsuTwitterAuth(TwitterOAuth):
         allowed = super().auth_allowed(response, details)
 
         try:
-            existing_twitteruser = TwitterUser.objects.get(user_id=response['id'])
+            existing_twitteruser = TwitterUser.objects.get(user_id=int(response['id']))
         except TwitterUser.DoesNotExist:
             existing_twitteruser = None
+
+        try:
+            existing_usa = UserSocialAuth.objects.get(uid=str(response['id']))
+        except UserSocialAuth.DoesNotExist:
+            existing_usa = None
 
         request: HttpRequest = self.strategy.request
 
@@ -50,9 +56,8 @@ class NkdsuTwitterAuth(TwitterOAuth):
             # logging in as that person altogether. they might not have any
             # other auth method yet.
             (hasattr(existing_twitteruser, 'profile'))
-            and False
-            # XXX i don't know how to query this second part yet. it might not
-            # be possible at this part of the pipeline
+            and (existing_usa is not None)
+            and (existing_twitteruser.profile.user != existing_usa.user)
         ):
             raise DoNotAuthThroughTwitterPlease(
                 'this twitter user is already associated with an account other than yours',
