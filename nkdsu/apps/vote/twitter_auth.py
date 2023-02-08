@@ -45,8 +45,8 @@ class NkdsuTwitterAuth(TwitterOAuth):
 
         if existing_twitteruser is None:
             raise DoNotAuthThroughTwitterPlease(
-                'the account you logged in with has no history of requesting things on nkd.su; '
-                'you should make a fresh account instead'
+                'the twitter account you logged in with has no history of requesting things on nkd.su; '
+                'you should make a account with a username and password instead'
             )
 
         if hasattr(existing_twitteruser, 'profile'):
