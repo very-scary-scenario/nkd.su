@@ -52,7 +52,9 @@ class NkdsuTwitterAuth(TwitterOAuth):
             # logging in as that person altogether. they might not have any
             # other auth method yet.
             (existing_twitteruser.profile is not None)
-            and False  # XXX i don't know how to query this second part yet
+            and False
+            # XXX i don't know how to query this second part yet. it might not
+            # be possible at this part of the pipeline
         ):
             messages.warning(
                 request,
