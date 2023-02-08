@@ -2,6 +2,7 @@ from typing import TypedDict
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.http import HttpRequest
 from social_core.backends.twitter import TwitterOAuth
 from social_core.pipeline import DEFAULT_AUTH_PIPELINE
 from social_django.strategy import DjangoStrategy
@@ -32,26 +33,45 @@ class NkdsuTwitterAuth(TwitterOAuth):
         except TwitterUser.DoesNotExist:
             existing_twitteruser = None
 
+        request: HttpRequest = self.strategy.request
+
         if existing_twitteruser is None:
             messages.warning(
-                self.strategy.request,
+                request,
                 'the account you logged in with has no history of requesting things on nkd.su; '
                 'you should make a fresh account instead',
             )
             return False
 
-        current_user = self.strategy.request.user
+        current_user = request.user
 
-        if (current_user is not None) and (
-            current_user.profile.twitter_user is not None
+        if (
+            # block auth attempts when trying to establish a new social-auth
+            # link with an account that has a TwitterUser associated with
+            # someone else already. make sure, though, that we don't just block
+            # logging in as that person altogether. they might not have any
+            # other auth method yet.
+            (existing_twitteruser.profile is not None)
+            and False  # XXX i don't know how to query this second part yet
         ):
             messages.warning(
-                self.strategy.request,
+                request,
+                'this twitter user is already associated with an account other than yours',
+            )
+            return False
+
+        if (
+            # block auth attempts if this user is already signed in and already
+            # has an associated twitter account. there's no reason to repeat
+            # this process.
+            (current_user is not None)
+            and (current_user.profile.twitter_user is not None)
+        ):
+            messages.warning(
+                request,
                 f'you are already logged in, and your account is already associated with '
                 f'{current_user.profile.twitter_user.screen_name}',
             )
-            # this user is already associated with a TwitterUser instance.
-            # going through this is only necessary when logged out or adopting a twitter account.
             return False
 
         return allowed
