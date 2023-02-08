@@ -56,8 +56,19 @@ class NkdsuTwitterAuth(TwitterOAuth):
             # logging in as that person altogether. they might not have any
             # other auth method yet.
             (hasattr(existing_twitteruser, 'profile'))
-            and (existing_usa is not None)
-            and (existing_twitteruser.profile.user != existing_usa.user)
+            and (
+                (
+                    # this account is currently associated with a different user
+                    (existing_usa is not None)
+                    and (existing_twitteruser.profile.user != existing_usa.user)
+                )
+                or (
+                    # this twitter account has been adopted and disconnected. this
+                    # is the ideal end state for this nkd.su account, let's not do
+                    # anything else
+                    (existing_usa is None)
+                )
+            )
         ):
             raise DoNotAuthThroughTwitterPlease(
                 'this twitter user is already associated with an account other than yours',
