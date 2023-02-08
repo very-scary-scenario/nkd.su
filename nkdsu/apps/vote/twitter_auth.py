@@ -46,33 +46,23 @@ class NkdsuTwitterAuth(TwitterOAuth):
         if existing_twitteruser is None:
             raise DoNotAuthThroughTwitterPlease(
                 'the account you logged in with has no history of requesting things on nkd.su; '
-                'you should make a fresh account instead',
+                'you should make a fresh account instead'
             )
 
-        if (
-            # block auth attempts when trying to establish a new social-auth
-            # link with an account that has a TwitterUser associated with
-            # someone else already. make sure, though, that we don't just block
-            # logging in as that person altogether. they might not have any
-            # other auth method yet.
-            (hasattr(existing_twitteruser, 'profile'))
-            and (
-                (
-                    # this account is currently associated with a different user
-                    (existing_usa is not None)
-                    and (existing_twitteruser.profile.user != existing_usa.user)
+        if hasattr(existing_twitteruser, 'profile'):
+            if (
+                # this account is currently associated with a different user
+                (existing_usa is not None)
+                and (existing_twitteruser.profile.user != existing_usa.user)
+            ):
+                raise DoNotAuthThroughTwitterPlease(
+                    'this twitter account is currently associated with an nkd.su account other than yours'
                 )
-                or (
-                    # this twitter account has been adopted and disconnected. this
-                    # is the ideal end state for this nkd.su account, let's not do
-                    # anything else
-                    (existing_usa is None)
+
+            if existing_usa is None:
+                raise DoNotAuthThroughTwitterPlease(
+                    'this twitter account has previously been adopted by another nkd.su user'
                 )
-            )
-        ):
-            raise DoNotAuthThroughTwitterPlease(
-                'this twitter user is already associated with an account other than yours',
-            )
 
         if (
             # block auth attempts if this user is already signed in and already
@@ -82,8 +72,9 @@ class NkdsuTwitterAuth(TwitterOAuth):
             and (request.user.profile.twitter_user is not None)
         ):
             raise DoNotAuthThroughTwitterPlease(
-                f'you are already logged in, and your account is already associated with '
-                f'{request.user.profile.twitter_user.screen_name}',
+                'you are already logged in, and your account is already associated with '
+                f'{request.user.profile.twitter_user.screen_name}. '
+                'you should not associate it with another',
             )
 
         return allowed
