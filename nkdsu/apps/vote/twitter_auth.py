@@ -1,13 +1,19 @@
 from typing import TypedDict
 
 from django.conf import settings
-from django.contrib import messages
 from django.http import HttpRequest
 from social_core.backends.twitter import TwitterOAuth
 from social_core.pipeline import DEFAULT_AUTH_PIPELINE
 from social_django.strategy import DjangoStrategy
 
 from .models import TwitterUser
+
+
+class DoNotAuthThroughTwitterPlease(BaseException):
+    msg: str
+
+    def __init__(self, msg: str) -> None:
+        self.msg = msg
 
 
 class UserDetailsDict(TypedDict):
@@ -24,10 +30,6 @@ class NkdsuTwitterAuth(TwitterOAuth):
     def auth_allowed(self, response: dict, details: UserDetailsDict) -> bool:
         allowed = super().auth_allowed(response, details)
 
-        # XXX social_core.pipeline.social_auth.auth_allowed throws an AuthError when these fail, which leads to a 500.
-        # we should instead probably catch these and throw something else instead. i don't want to be getting emails,
-        # and i want people to see these error messages. middleware, perhaps?
-
         try:
             existing_twitteruser = TwitterUser.objects.get(user_id=response['id'])
         except TwitterUser.DoesNotExist:
@@ -36,14 +38,10 @@ class NkdsuTwitterAuth(TwitterOAuth):
         request: HttpRequest = self.strategy.request
 
         if existing_twitteruser is None:
-            messages.warning(
-                request,
+            raise DoNotAuthThroughTwitterPlease(
                 'the account you logged in with has no history of requesting things on nkd.su; '
                 'you should make a fresh account instead',
             )
-            return False
-
-        current_user = request.user
 
         if (
             # block auth attempts when trying to establish a new social-auth
@@ -51,30 +49,26 @@ class NkdsuTwitterAuth(TwitterOAuth):
             # someone else already. make sure, though, that we don't just block
             # logging in as that person altogether. they might not have any
             # other auth method yet.
-            (existing_twitteruser.profile is not None)
+            (hasattr(existing_twitteruser, 'profile'))
             and False
             # XXX i don't know how to query this second part yet. it might not
             # be possible at this part of the pipeline
         ):
-            messages.warning(
-                request,
+            raise DoNotAuthThroughTwitterPlease(
                 'this twitter user is already associated with an account other than yours',
             )
-            return False
 
         if (
             # block auth attempts if this user is already signed in and already
             # has an associated twitter account. there's no reason to repeat
             # this process.
-            (current_user.is_authenticated)
-            and (current_user.profile.twitter_user is not None)
+            (request.user.is_authenticated)
+            and (request.user.profile.twitter_user is not None)
         ):
-            messages.warning(
-                request,
+            raise DoNotAuthThroughTwitterPlease(
                 f'you are already logged in, and your account is already associated with '
-                f'{current_user.profile.twitter_user.screen_name}',
+                f'{request.user.profile.twitter_user.screen_name}',
             )
-            return False
 
         return allowed
 
