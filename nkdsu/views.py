@@ -3,10 +3,11 @@ from urllib.parse import parse_qs, urlparse
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model, views as auth_views
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, FormView
 
 from .apps.vote.models import Track
 from .apps.vote.utils import vote_tweet_intent_url
@@ -15,6 +16,12 @@ from .mixins import MarkdownView
 
 
 User = get_user_model()
+
+
+class AnyLoggedInUserMixin:
+    @classmethod
+    def as_view(cls, **kw):
+        return login_required(super().as_view(**kw))
 
 
 class LoginView(MarkdownView, auth_views.LoginView):
@@ -61,3 +68,7 @@ class RegisterView(CreateView):
             self.request, 'Registration complete! Log in to edit your profile.'
         )
         return resp
+
+
+class SetPasswordView(AnyLoggedInUserMixin, FormView):
+    pass  # XXX

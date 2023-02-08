@@ -3,7 +3,7 @@ import plistlib
 from typing import Any
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import ValidationError
 from django.forms import Form
 from django.http import HttpResponse
@@ -21,6 +21,7 @@ from django.views.generic import (
 )
 from django.views.generic.base import TemplateResponseMixin
 
+from nkdsu.views import AnyLoggedInUserMixin
 from .js import JSApiMixin
 from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
 from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
@@ -44,12 +45,6 @@ class AdminMixin:
         return user_passes_test(
             lambda u: u.is_authenticated and u.is_staff,
         )(super().as_view(**kw))
-
-
-class AnyLoggedInUserMixin:
-    @classmethod
-    def as_view(cls, **kw):
-        return login_required(super().as_view(**kw))
 
 
 class TrackSpecificAdminMixin(AdminMixin):

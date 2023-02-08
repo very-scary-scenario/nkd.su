@@ -7,7 +7,7 @@ from django.views.static import serve
 import social_django.urls
 
 from nkdsu.apps.vote import urls as vote_urls
-from nkdsu.views import LoginView, RegisterView
+from nkdsu.views import LoginView, RegisterView, SetPasswordView
 
 admin.autodiscover()
 
@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^logout/', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
     url(r'^login/', LoginView.as_view(), name='login'),
     url(r'^cpw/', PasswordChangeView.as_view(), name='password_change'),
+    url(r'^spw/', SetPasswordView.as_view(), name='password_set'),
     url(r'^cpw-done/', RedirectView.as_view(url='/'), name='password_change_done'),
 ]
 
