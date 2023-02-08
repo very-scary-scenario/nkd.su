@@ -3,7 +3,8 @@ from urllib.parse import parse_qs, urlparse
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model, views as auth_views
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import SetPasswordForm
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -70,5 +71,24 @@ class RegisterView(CreateView):
         return resp
 
 
-class SetPasswordView(AnyLoggedInUserMixin, FormView):
-    pass  # XXX
+class SetPasswordView(FormView):
+    template_name = 'auth/set_password.html'
+    form_class = SetPasswordForm
+    success_url = reverse_lazy('login')
+
+    def get_form_kwargs(self) -> dict[str, Any]:
+        return {**super().get_form_kwargs(), 'user': self.request.user}
+
+    @classmethod
+    def as_view(cls, **kw):
+        return user_passes_test(
+            lambda u: u.is_authenticated and not u.has_usable_password(),
+        )(super().as_view(**kw))
+
+    def form_valid(self, form: SetPasswordForm) -> HttpResponse:
+        form.save()
+        messages.success(
+            self.request,
+            f'you have set a password. please log in with it. your username is {form.user.get_username()}',
+        )
+        return super().form_valid(form)
