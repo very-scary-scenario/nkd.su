@@ -2,7 +2,7 @@ from typing import TypedDict
 
 from django.conf import settings
 from django.contrib import messages
-from django.core.http import HttpRequest
+from django.http import HttpRequest
 from social_core.backends.twitter import TwitterOAuth
 from social_core.pipeline import DEFAULT_AUTH_PIPELINE
 from social_django.strategy import DjangoStrategy
@@ -66,7 +66,7 @@ class NkdsuTwitterAuth(TwitterOAuth):
             # block auth attempts if this user is already signed in and already
             # has an associated twitter account. there's no reason to repeat
             # this process.
-            (current_user is not None)
+            (current_user.is_authenticated)
             and (current_user.profile.twitter_user is not None)
         ):
             messages.warning(
