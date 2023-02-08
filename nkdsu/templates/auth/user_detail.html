@@ -38,9 +38,11 @@
                   we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_change" %}">make sure you know your nkd.su password</a> and then <button class="link">disconnect your account from twitter</button>
                 </p>
               </form>
-              <p>
-                disconnecting your account like this will not remove your adopted requests from @{{ object.profile.twitter_user.screen_name }}
-              </p>
+              {% if object.profile.twitter_user %}
+                <p>
+                  disconnecting your account like this will not remove your adopted requests from @{{ object.profile.twitter_user.screen_name }}
+                </p>
+              {% endif %}
             {% endif %}
           {% endfor %}
         </section>
