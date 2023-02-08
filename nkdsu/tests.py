@@ -113,6 +113,8 @@ class EverythingTest(
         # file
         '/twitter-avatar/46162630/',
         '/twitter-avatar/46162630/?size=original',
+        # can only be accessed if you are logged in with an unusable password
+        '/spw/',
     ]
 
     uncovered_includes = [
