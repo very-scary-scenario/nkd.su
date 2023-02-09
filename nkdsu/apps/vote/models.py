@@ -380,7 +380,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         return reverse('vote:admin:toggle_abuser', kwargs={'user_id': self.user_id})
 
     def get_avatar_url(self) -> str:
-        return reverse('vote:twitter-avatar', kwargs={'user_id': self.user_id})
+        return static('i/vote-kinds/tweet.png')
 
     @memoize
     def get_avatar(
