@@ -24,7 +24,7 @@ from django.views.generic.base import TemplateResponseMixin
 from nkdsu.views import AnyLoggedInUserMixin
 from .js import JSApiMixin
 from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
-from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
+from ..models import Block, Note, Profile, Request, Show, Track, TwitterUser, Vote
 from ..templatetags.vote_tags import is_elf
 from ..update_library import metadata_consistency_checks, update_library
 
@@ -399,17 +399,26 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
 
 
 class ToggleAbuser(AdminAction, DetailView):
-    model = TwitterUser
-
-    def get_object(self):
-        return self.model.objects.get(user_id=self.kwargs['user_id'])
-
-    def do_thing(self):
+    def do_thing(self) -> None:
         user = self.get_object()
         user.is_abuser = not user.is_abuser
         fmt = u"{} condemned" if user.is_abuser else u"{} redeemed"
         messages.success(self.request, fmt.format(self.get_object()))
         user.save()
+
+
+class ToggleTwitterAbuser(ToggleAbuser):
+    model = TwitterUser
+
+    def get_object(self):
+        return self.model.objects.get(user_id=self.kwargs['user_id'])
+
+
+class ToggleLocalAbuser(ToggleAbuser):
+    model = Profile
+
+    def get_object(self):
+        return self.model.objects.get(pk=self.kwargs['user_id'])
 
 
 class HiddenTracks(AdminMixin, ListView):

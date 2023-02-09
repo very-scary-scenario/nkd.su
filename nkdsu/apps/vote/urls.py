@@ -85,9 +85,14 @@ admin_patterns = (
             name='reset_shortlist_discard_selection',
         ),
         url(
-            r'^abuse/(?P<user_id>.+)/$',
-            admin.ToggleAbuser.as_view(),
-            name='toggle_abuser',
+            r'^tw-abuse/(?P<user_id>.+)/$',
+            admin.ToggleTwitterAbuser.as_view(),
+            name='toggle_twitter_abuser',
+        ),
+        url(
+            r'^local-abuse/(?P<user_id>.+)/$',
+            admin.ToggleLocalAbuser.as_view(),
+            name='toggle_local_abuser',
         ),
         url(r'^make-note/(?P<pk>.+)/$', admin.MakeNote.as_view(), name='make_note'),
         url(
