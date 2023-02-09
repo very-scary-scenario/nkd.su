@@ -1,3 +1,5 @@
+{% load vote_tags %}
+
 <div id="footer">
   <a id="stamp" target="_blank" href="https://vscary.co"><img alt="the very scary scenario logo" src="https://vscary.co/logo-grey.svg"></a>
 
@@ -28,9 +30,11 @@
 
   <p class="credit">
     {% if user.is_authenticated %}
-      <span><a href="{% url "vote:browse_roles" %}">all roles</a></span>
-      <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
-      <span><a href="{% url "vote:admin:check_metadata" %}">check metadata</a></span>
+      {% if user|is_elf %}
+        <span><a href="{% url "vote:browse_roles" %}">all roles</a></span>
+        <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
+        <span><a href="{% url "vote:admin:check_metadata" %}">check metadata</a></span>
+      {% endif %}
 
       {% if user.has_usable_password %}
         <span><a href="{% url "password_change" %}">change password</a></span>

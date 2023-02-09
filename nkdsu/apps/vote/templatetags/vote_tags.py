@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import Iterable, Optional
 
+from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from django.template import Library
 from django.utils import timezone
@@ -10,7 +11,7 @@ from django.utils.safestring import SafeText, mark_safe
 from markdown import markdown as md
 
 from ..models import Show, Track
-from ..utils import length_str
+from ..utils import ELFS, length_str
 
 register = Library()
 
@@ -66,3 +67,8 @@ def total_length(tracks: Iterable[Track]):
 @register.filter
 def markdown(text: str) -> SafeText:
     return mark_safe(md(text))
+
+
+@register.filter
+def is_elf(user: User) -> bool:
+    return user.is_staff or user.groups.filter(pk=ELFS.pk).exists()

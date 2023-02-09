@@ -25,10 +25,21 @@ from nkdsu.views import AnyLoggedInUserMixin
 from .js import JSApiMixin
 from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
 from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
+from ..templatetags.vote_tags import is_elf
 from ..update_library import metadata_consistency_checks, update_library
 
 
-class AdminMixin:
+class ElfMixin(AnyLoggedInUserMixin):
+    """
+    A mixin for views that only elfs (or staff) can see.
+    """
+
+    @classmethod
+    def as_view(cls, **kw):
+        return user_passes_test(is_elf)(super().as_view(**kw))
+
+
+class AdminMixin(AnyLoggedInUserMixin):
     """
     A mixin we should apply to all admin views.
     """
@@ -42,9 +53,7 @@ class AdminMixin:
 
     @classmethod
     def as_view(cls, **kw):
-        return user_passes_test(
-            lambda u: u.is_authenticated and u.is_staff,
-        )(super().as_view(**kw))
+        return user_passes_test(lambda u: u.is_staff)(super().as_view(**kw))
 
 
 class TrackSpecificAdminMixin(AdminMixin):
@@ -517,7 +526,7 @@ class RemoveNote(DestructiveAdminAction, DetailView):
         messages.success(self.request, 'note removed')
 
 
-class RequestList(AnyLoggedInUserMixin, ListView):
+class RequestList(ElfMixin, ListView):
     template_name = 'requests.html'
     model = Request
 
@@ -525,7 +534,7 @@ class RequestList(AnyLoggedInUserMixin, ListView):
         return super().get_queryset().filter(successful=True, filled=None)
 
 
-class FillRequest(AnyLoggedInUserMixin, FormView):
+class FillRequest(ElfMixin, FormView):
     allowed_methods = ['post']
     form_class = Form
 
@@ -545,7 +554,7 @@ class FillRequest(AnyLoggedInUserMixin, FormView):
         return redirect(reverse('vote:admin:requests'))
 
 
-class ClaimRequest(AnyLoggedInUserMixin, FormView):
+class ClaimRequest(ElfMixin, FormView):
     allowed_methods = ['post']
     form_class = Form
 
@@ -578,7 +587,7 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
         return redirect(reverse('vote:admin:requests'))
 
 
-class CheckMetadata(AnyLoggedInUserMixin, FormView):
+class CheckMetadata(ElfMixin, FormView):
     form_class = CheckMetadataForm
     template_name = 'check_metadata.html'
 
