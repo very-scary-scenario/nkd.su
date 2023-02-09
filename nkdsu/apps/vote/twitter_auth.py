@@ -140,10 +140,14 @@ def adopt_twitter_metadata(
     if (not details['default_profile_image']) and (not profile.avatar):
         try:
             url = details['profile_image_url_https']
-            avatar = ContentFile(requests.get(re.sub(r'_normal(?=\.[^.]+$)', '', url)).content)
+            avatar = ContentFile(
+                requests.get(re.sub(r'_normal(?=\.[^.]+$)', '', url)).content
+            )
             profile.avatar.save(name=avatar_upload_path(profile, ''), content=avatar)
         except requests.RequestException as e:
-            messages.error(request, f'sorry, we were unable to retrieve your twitter avatar: {e!r}')
+            messages.error(
+                request, f'sorry, we were unable to retrieve your twitter avatar: {e!r}'
+            )
 
     if not profile.display_name:
         profile.display_name = details['fullname']
