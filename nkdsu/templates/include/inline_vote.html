@@ -36,7 +36,12 @@
         <p class="meta full_name">{{ vote.twitter_user.name }}</p>
         <p class="meta screen_name">@{{ vote.twitter_user.screen_name }}</p>
       {% elif vote.is_local %}
-        <p class="meta screen_name">{{ vote.user.username }}</p>
+        {% if vote.user.profile.display_name %}
+          <p class="meta full_name">{{ vote.user.profile.display_name }}</p>
+          <p class="meta screen_name">@{{ vote.user.username }}</p>
+        {% else %}
+          <p class="meta full_name">@{{ vote.user.username }}</p>
+        {% endif %}
       {% endif %}
 
       <p class="meta when">{{ vote.date|when }}</p>

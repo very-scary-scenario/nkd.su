@@ -11,7 +11,12 @@
     <img class="avatar" src="{{ object.profile.get_avatar_url }}"></img>
   {% endif %}
 
-  <h1>{{ object.username }}</h1>
+  {% if object.profile.display_name %}
+    <h2>{{ object.profile.display_name }}</h2>
+    <p class="subheading">@{{ object.username }}</p>
+  {% else %}
+    <h2>@{{ object.username }}</h2>
+  {% endif %}
 
   {% if object == request.user %}
     <div class="self-infobox">
