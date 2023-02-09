@@ -77,9 +77,7 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
             score: float = 0
             weight: float = 0
 
-            for vote in self.votes().filter(date__gt=cutoff).prefetch_related(
-                'tracks'
-            ):
+            for vote in self.votes().filter(date__gt=cutoff).prefetch_related('tracks'):
                 success = vote.success()
                 if success is not None:
                     score += success * vote.weight()

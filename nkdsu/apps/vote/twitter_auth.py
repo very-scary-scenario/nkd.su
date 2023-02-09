@@ -115,9 +115,10 @@ class NkdsuStrategy(DjangoStrategy):
         )
 
 
-def link_twitteruser(uid: int, user: User, *args, **kwargs) -> None:
+def link_twitteruser(uid: int, user: User, is_new: bool, *args, **kwargs) -> None:
     # this has been previously guaranteed to exist in our auth_allowed implementation
     twitter_user = TwitterUser.objects.get(user_id=str(uid))
+    profile = user.profile
 
     # and also, we should check this just to be sure:
     if hasattr(twitter_user, 'profile') and (twitter_user.profile.user != user):
@@ -126,8 +127,11 @@ def link_twitteruser(uid: int, user: User, *args, **kwargs) -> None:
             f'that user was already adopted by {twitter_user.profile.user!r}'
         )
 
+    if is_new:
+        profile.is_abuser = twitter_user.is_abuser
+        profile.is_patron = twitter_user.is_patron
+
     if user.profile.twitter_user is None:
-        profile = user.profile
         profile.twitter_user = twitter_user
         profile.save()
 

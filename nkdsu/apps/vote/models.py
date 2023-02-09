@@ -515,6 +515,9 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
     )
     display_name = models.CharField(max_length=100, blank=True)
 
+    is_patron = models.BooleanField(default=False)
+    is_abuser = models.BooleanField(default=False)
+
     def __str__(self) -> str:
         return f'{self.display_name} ({self.user.username})'
 
@@ -537,20 +540,16 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
 
         return Vote.objects.filter(q)
 
-    @property
-    def is_abuser(self) -> bool:
-        return self.twitter_user is not None and self.twitter_user.is_abuser  # XXX make this apply to non-twitter users
-
-    @property
+    @property  # type: ignore[override]
     def name(self) -> str:
         return self.display_name or f'@{self.user.username}'
 
+    @name.setter
+    def name(self, name: str) -> None:
+        self.display_name = name
+
     def get_toggle_abuser_url(self) -> str:
         return '/'  # XXX
-
-    @property
-    def is_patron(self) -> bool:
-        return False  # XXX
 
     @property
     @memoize
