@@ -81,7 +81,8 @@ class NkdsuTwitterAuth(TwitterOAuth):
 
             if existing_usa is None:
                 raise DoNotAuthThroughTwitterPlease(
-                    'this twitter account has already been adopted'
+                    'this twitter account has already been adopted and disconnected. '
+                    'please log in with your username and password'
                 )
 
         return allowed
