@@ -56,21 +56,6 @@ class NkdsuTwitterAuth(TwitterOAuth):
                 'you should make a account with a username and password instead'
             )
 
-        if hasattr(existing_twitteruser, 'profile'):
-            if (
-                # this account is currently associated with a different user
-                (existing_usa is not None)
-                and (existing_twitteruser.profile.user != existing_usa.user)
-            ):
-                raise DoNotAuthThroughTwitterPlease(
-                    'this twitter account is currently associated with an nkd.su account other than yours'
-                )
-
-            if existing_usa is None:
-                raise DoNotAuthThroughTwitterPlease(
-                    'this twitter account has previously been adopted by another nkd.su user'
-                )
-
         if (
             # block auth attempts if this user is already signed in and already
             # has an associated twitter account. there's no reason to repeat
@@ -83,6 +68,21 @@ class NkdsuTwitterAuth(TwitterOAuth):
                 f'{request.user.profile.twitter_user.screen_name}. '
                 'you should not associate it again',
             )
+
+        if hasattr(existing_twitteruser, 'profile'):
+            if (
+                # this account is currently associated with a different user
+                (existing_usa is not None)
+                and (existing_twitteruser.profile.user != existing_usa.user)
+            ):
+                raise DoNotAuthThroughTwitterPlease(
+                    'this twitter account is currently associated with an nkd.su account other than yours'
+                )
+
+            if existing_usa is None:
+                raise DoNotAuthThroughTwitterPlease(
+                    'this twitter account has already been adopted'
+                )
 
         return allowed
 
