@@ -20,7 +20,7 @@ from urllib.parse import quote, urlencode
 
 from classtools import reify as ct_reify
 from django.conf import settings
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 import musicbrainzngs
@@ -50,14 +50,6 @@ posting_tw_api = tweepy.API(_post_tw_auth)
 indefinitely: int = (
     (60 * 60 * 24 * 7) + (60 * 60) + 60
 )  # one week, one hour and one minute
-
-
-def _prepare_elfs() -> Group:
-    elfs, _ = Group.objects.get_or_create(name="Elfs")
-    return elfs
-
-
-ELFS: Group = _prepare_elfs()
 
 
 @dataclass
