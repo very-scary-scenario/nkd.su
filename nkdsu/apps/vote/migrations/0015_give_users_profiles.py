@@ -5,7 +5,9 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 
 
-def give_users_profiles(apps: StateApps, schema_editor: BaseDatabaseSchemaEditor) -> None:
+def give_users_profiles(
+    apps: StateApps, schema_editor: BaseDatabaseSchemaEditor
+) -> None:
     User = apps.get_model('auth', 'User')
     Profile = apps.get_model('vote', 'Profile')
 

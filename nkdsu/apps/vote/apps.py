@@ -23,7 +23,6 @@ class VoteConfig(AppConfig):
             update_fields: Optional[Sequence[str]],
             **kwargs,
         ) -> None:
-
             if created and (not raw) and isinstance(instance, User):
                 Profile.objects.create(user=instance)
 
