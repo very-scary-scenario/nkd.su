@@ -705,28 +705,28 @@ main.profile {
     width: 10em;
     height: 10em;
   }
+}
 
-  .self-infobox {
-    padding: 1em 0;
-    background-color: fade(@light, 20%);
-    border-radius: .5em;
+.self-infobox {
+  padding: 1em 0;
+  background-color: fade(@light, 20%);
+  border-radius: .5em;
 
-    p {
-      margin: .5em 1em;
-    }
+  p {
+    margin: .5em 1em;
+  }
 
-    > p {
-      &:first-child { margin-top: 0 }
-      &:last-child { margin-bottom: 0 }
-    }
+  > p {
+    &:first-child { margin-top: 0 }
+    &:last-child { margin-bottom: 0 }
+  }
 
-    section {
-      border: .3em solid fade(@light, 30%);
-      border-width: .3em 0;
+  section {
+    border: .3em solid fade(@light, 30%);
+    border-width: .3em 0;
 
-      &:first-child { border-top-width: 0; > p:first-child { margin-top: 0; } }
-      &:last-child { border-bottom-width: 0; > p:last-child { margin-bottom: 0; } }
-    }
+    &:first-child { border-top-width: 0; > p:first-child { margin-top: 0; } }
+    &:last-child { border-bottom-width: 0; > p:last-child { margin-bottom: 0; } }
   }
 }
 

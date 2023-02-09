@@ -5,6 +5,8 @@
 
 <h2 class="aligned">Edit your profile</h2>
 
+{% include "include/user_infobox.html" with user=request.user hide_edit_button=True %}
+
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form.as_p }}

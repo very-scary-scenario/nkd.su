@@ -1,0 +1,49 @@
+<div class="self-infobox">
+  {% if user.profile.twitter_user %}
+    <p>
+      your account has adopted historical requests and statistics from twitter user @{{ user.profile.twitter_user.screen_name }}
+    </p>
+  {% endif %}
+
+  {% if user.social_auth.all %}
+    <section>
+      {% for social_auth in user.social_auth.all %}
+        <p>
+          your account currently allows authentication via a
+          <code>{{ social_auth.provider }}</code> user named
+          <strong>{{ social_auth.extra_data.access_token.screen_name }}</strong>
+        </p>
+        {% if social_auth.provider == "twitter" %}
+          <form method="post" action="{% url "social:disconnect" backend="twitter" %}">
+            {% csrf_token %}
+
+            {# XXX make sure this password change link works for users that have never set a password #}
+            <p>
+              {% if user.has_usable_password %}
+                we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_change" %}">make sure you know your nkd.su password</a> and then <button class="link">disconnect your account from twitter</button>
+              {% else %}
+                we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_set" %}">set a password for your account</a> so that you can disconnect it from twitter
+              {% endif %}
+            </p>
+          </form>
+          {% if user.profile.twitter_user %}
+            <p>
+              disconnecting your account like this will not remove your adopted requests from @{{ user.profile.twitter_user.screen_name }}
+            </p>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </section>
+  {% else %}
+    {% if not user.profile.twitter_user %}
+      <section>
+        <p>you can <a href="{% url "social:begin" backend="twitter" %}">link a twitter account</a> to adopt all of its historic requests and statistics. if you want to disconnect your acount immediately after, you can do that here too</p>
+        <p>note: this <strong>will not work</strong> for twitter accounts that have never requested anything on nkd.su</p>
+      </section>
+    {% endif %}
+  {% endif %}
+
+  {% if not hide_edit_button %}
+    <p><a class="button" href="{% url "vote:profiles:edit-profile" %}">edit your profile</a></p>
+  {% endif %}
+</div>
