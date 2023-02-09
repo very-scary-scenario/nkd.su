@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import Iterable, Optional
 
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from django.template import Library
 from django.utils import timezone
@@ -14,14 +14,6 @@ from ..models import Show, Track
 from ..utils import length_str
 
 register = Library()
-
-
-def _prepare_elfs() -> Group:
-    elfs, _ = Group.objects.get_or_create(name="Elfs")
-    return elfs
-
-
-ELFS: Group = _prepare_elfs()
 
 
 @register.filter
@@ -79,4 +71,6 @@ def markdown(text: str) -> SafeText:
 
 @register.filter
 def is_elf(user: User) -> bool:
+    from ..elfs import ELFS
+
     return user.is_staff or user.groups.filter(pk=ELFS.pk).exists()

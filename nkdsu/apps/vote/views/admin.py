@@ -4,7 +4,6 @@ from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.forms import Form
 from django.http import HttpResponse
@@ -26,6 +25,7 @@ from nkdsu.views import AnyLoggedInUserMixin
 from .js import JSApiMixin
 from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
 from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
+from ..templatetags.vote_tags import is_elf
 from ..update_library import metadata_consistency_checks, update_library
 
 
@@ -36,13 +36,7 @@ class ElfMixin(AnyLoggedInUserMixin):
 
     @classmethod
     def as_view(cls, **kw):
-        # to prevent database access before migrations might have been run, delay the import further:
-        def _is_elf(user: User) -> bool:
-            from ..templatetags.vote_tags import is_elf
-
-            return is_elf(user)
-
-        return user_passes_test(_is_elf)(super().as_view(**kw))
+        return user_passes_test(is_elf)(super().as_view(**kw))
 
 
 class AdminMixin(AnyLoggedInUserMixin):
