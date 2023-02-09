@@ -61,6 +61,7 @@ This can include:
 - a [hashed][django-password-storage] password
 - a screen name and a display name
 - an avatar
+- an email address
 
 [django-password-storage]: https://docs.djangoproject.com/en/3.2/topics/auth/passwords/#how-django-stores-passwords "how Django stores passwords"
 
@@ -71,7 +72,9 @@ These will be used to:
 
 You can change your names or avatar at any time. Please contact an admin if you
 would like to have this information modified or deleted in a way that the
-website doesn't give you controls for.
+website doesn't give you controls for. Early in the migration away from
+Twitter, less of this will be user-modifiable than we would like, but we'll be
+working to sort that quickly.
 
 ### sessions
 
