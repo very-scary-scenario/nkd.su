@@ -54,7 +54,6 @@ admin_patterns = (
         ),
         url(r'^inudesu/$', admin.InuDesuTracks.as_view(), name='inudesu'),
         url(r'^artless/$', admin.ArtlessTracks.as_view(), name='artless'),
-        url(r'^trivia/$', admin.BadTrivia.as_view(), name='bad_trivia'),
         url(
             r'^shortlist/(?P<pk>.+)/$', admin.MakeShortlist.as_view(), name='shortlist'
         ),

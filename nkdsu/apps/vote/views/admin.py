@@ -450,15 +450,6 @@ class ArtlessTracks(AdminMixin, ListView):
         return self.model.objects.filter(background_art='')
 
 
-class BadTrivia(AdminMixin, ListView):
-    model = Request
-    template_name = 'trivia.html'
-    context_object_name = 'requests'
-
-    def get_queryset(self):
-        return self.model.objects.all().order_by('-created')
-
-
 class ShortlistSelection(SelectionAdminAction):
     fmt = u'{} shortlisted'
 
