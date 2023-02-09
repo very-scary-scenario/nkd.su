@@ -381,7 +381,9 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
         return reverse('vote:user', kwargs={'screen_name': self.screen_name})
 
     def get_toggle_abuser_url(self) -> str:
-        return reverse('vote:admin:toggle_twitter_abuser', kwargs={'user_id': self.user_id})
+        return reverse(
+            'vote:admin:toggle_twitter_abuser', kwargs={'user_id': self.user_id}
+        )
 
     def get_avatar_url(self, try_profile: bool = True) -> str:
         if try_profile and hasattr(self, 'profile'):
