@@ -8,12 +8,10 @@ from enum import Enum, auto
 from io import BytesIO
 from string import ascii_letters
 from typing import Any, Iterable, Literal, Optional, cast
-from urllib.parse import urlparse
 from uuid import uuid4
 
 from Levenshtein import ratio
 from PIL import Image, ImageFilter
-from dateutil import parser as date_parser
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.staticfiles import finders
@@ -25,7 +23,7 @@ from django.db import models
 from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.templatetags.static import static
-from django.urls import Resolver404, resolve, reverse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.timezone import get_default_timezone
 from django_resized import ResizedImageField
@@ -1271,93 +1269,6 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     # manual only
     name = models.CharField(max_length=40, blank=True)
     kind = models.CharField(max_length=10, choices=MANUAL_VOTE_KINDS, blank=True)
-
-    @classmethod
-    def handle_tweet(cls, tweet) -> Optional[Vote]:
-        """
-        Take a tweet json object and create, save and return the vote it has
-        come to represent (or None if it's not a valid vote).
-        """
-
-        text = tweet.get('full_text', None) or tweet.get('text', None)
-
-        if text is None:
-            if 'delete' in tweet:
-                Vote.objects.filter(tweet_id=tweet['delete']['status']['id']).delete()
-            return None
-
-        if cls.objects.filter(tweet_id=tweet['id']).exists():
-            return None  # we already have this tweet
-
-        created_at = date_parser.parse(tweet['created_at'])
-
-        def mention_is_first_and_for_us(mention):
-            return (
-                mention['indices'][0] == 0
-                and mention['screen_name'] == READING_USERNAME
-            )
-
-        if not any(
-            [mention_is_first_and_for_us(m) for m in tweet['entities']['user_mentions']]
-        ):
-            return None
-
-        show = Show.at(created_at)
-
-        user_qs = TwitterUser.objects.filter(user_id=tweet['user']['id'])
-        try:
-            twitter_user = user_qs.get()
-        except TwitterUser.DoesNotExist:
-            twitter_user = TwitterUser(user_id=tweet['user']['id'])
-
-        twitter_user.screen_name = tweet['user']['screen_name']
-        twitter_user.name = tweet['user']['name']
-        twitter_user.updated = created_at
-        twitter_user.save()
-
-        tracks = []
-        for url in (tweet.get('extended_entities') or tweet.get('entities', {})).get(
-            'urls', ()
-        ):
-            parsed = urlparse(url['expanded_url'])
-
-            try:
-                match = resolve(parsed.path)
-            except Resolver404:
-                continue
-
-            if match.namespace == 'vote' and match.url_name == 'track':
-                track_qs = Track.objects.public().filter(pk=match.kwargs['pk'])
-
-                try:
-                    track = track_qs.get()
-                except Track.DoesNotExist:
-                    continue
-
-                if (
-                    track.pk
-                    not in (t.pk for t in twitter_user.tracks_voted_for_for(show))
-                    and track.eligible()
-                ):
-                    tracks.append(track)
-
-        if tracks:
-            vote = cls(
-                tweet_id=tweet['id'],
-                twitter_user=twitter_user,
-                date=created_at,
-                text=text,
-            )
-
-            vote.save()
-
-            for track in tracks:
-                vote.tracks.add(track)
-
-            vote.save()
-            return vote
-        else:
-            return None
 
     def clean(self) -> None:
         match self.vote_kind:
