@@ -51,7 +51,7 @@ To be safe, keep the URLs before any text and use the `url` value provided in
 track objects.
 
 If there is something else you want added or changed, or if you find something
-that's broken, [file a bug][new_issue] or just [yell at me][pester] on Twitter.
+that's broken, [file a bug][new_issue].
 
 [new_issue]: https://github.com/very-scary-scenario/nkd.su/issues/new
 [api_root]: https://nkd.su/api/
