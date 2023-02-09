@@ -26,6 +26,19 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
     is_abuser: bool | BooleanField
     is_patron: bool | BooleanField
 
+    def _twitter_user_and_profile(self) -> tuple[Optional[TwitterUser], Optional[Profile]]:
+        ...
+
+    @property
+    def voter_id(self) -> tuple[Optional[int], Optional[int]]:
+        """
+        A unique identifier that will be the same for TwitterUser and Profile
+        instances that represent the same accounts.
+        """
+
+        twu, pr = self._twitter_user_and_profile()
+        return (None if twu is None else twu.pk, None if pr is None else pr.pk)
+
     @property
     def badges(self) -> QuerySet[UserBadge]:
         ...

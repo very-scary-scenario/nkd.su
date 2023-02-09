@@ -552,7 +552,7 @@ class Stats(TemplateView):
     template_name = 'stats.html'
     cache_key = 'stats:context'
 
-    def streaks(self) -> list[TwitterUser]:
+    def streaks(self) -> list[Voter]:
         last_votable_show = Show.current().prev()
         while last_votable_show is not None and not last_votable_show.voting_allowed:
             last_votable_show = last_votable_show.prev()
@@ -565,7 +565,7 @@ class Stats(TemplateView):
             reverse=True,
         )
 
-    def batting_averages(self) -> list[TwitterUser]:
+    def batting_averages(self) -> list[Voter]:
         users = []
         minimum_weight = 4
 

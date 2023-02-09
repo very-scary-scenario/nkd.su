@@ -368,6 +368,9 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
     def __repr__(self) -> str:
         return self.screen_name
 
+    def _twitter_user_and_profile(self) -> tuple[Optional[TwitterUser], Optional[Profile]]:
+        return (self, getattr(self, 'profile'))
+
     def twitter_url(self) -> str:
         return 'https://twitter.com/%s' % self.screen_name
 
@@ -455,6 +458,9 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
 
     def __str__(self) -> str:
         return f'{self.display_name} ({self.user.username})'
+
+    def _twitter_user_and_profile(self) -> tuple[Optional[TwitterUser], Optional[Profile]]:
+        return (self.twitter_user, self)
 
     def get_absolute_url(self) -> str:
         return reverse("vote:profiles:profile", kwargs={'username': self.user.username})
