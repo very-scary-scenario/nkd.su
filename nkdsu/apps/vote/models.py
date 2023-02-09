@@ -428,6 +428,8 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
     @memoize
     def votes(self) -> models.QuerySet[Vote]:
+        if self.profile:
+            return self.profile.votes()
         return self.vote_set.order_by('-date').prefetch_related('tracks')
 
     @memoize
@@ -597,6 +599,9 @@ class Profile(CleanOnSaveMixin, models.Model):
     )
     display_name = models.CharField(max_length=100, blank=True)
 
+    def __str__(self) -> str:
+        return f'{self.display_name} ({self.user.username})'
+
     def get_absolute_url(self) -> str:
         return reverse("vote:profiles:profile", kwargs={'username': self.user.username})
 
@@ -610,8 +615,13 @@ class Profile(CleanOnSaveMixin, models.Model):
         else:
             return static('i/noise.png')
 
-    def __str__(self) -> str:
-        return f'{self.display_name} ({self.user.username})'
+    @memoize
+    def votes(self) -> models.QuerySet[Vote]:
+        q = Q(user=self.user)
+        if self.twitter_user:
+            q = q | Q(twitter_user=self.twitter_user)
+
+        return Vote.objects.filter(q).order_by('-date').prefetch_related('tracks')
 
 
 def art_path(i: Track, f: str) -> str:
