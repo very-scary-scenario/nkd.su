@@ -6,8 +6,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import UpdateView
 
+from . import VoterDetail
 from ..models import Profile
 from ..utils import get_profile_for
 
@@ -15,7 +16,7 @@ from ..utils import get_profile_for
 User = get_user_model()
 
 
-class ProfileView(DetailView):
+class ProfileView(VoterDetail):
     model = User
     context_object_name = 'object'
 
@@ -26,6 +27,11 @@ class ProfileView(DetailView):
             queryset = self.get_queryset()
 
         return get_object_or_404(queryset, username=self.kwargs['username'])
+
+    def get_voter(self) -> Profile:
+        user = self.get_object()
+        assert isinstance(user, User)
+        return user.profile
 
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):

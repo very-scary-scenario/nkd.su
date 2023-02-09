@@ -10,6 +10,9 @@
       {% include "include/user_infobox.html" with user=request.user %}
     {% endif %}
 
-    {{ object.profile.votes }}
+    {% include "include/voter_votes.html" %}
   </div>
+
+{% include "include/paginator.html" %}
+
 {% endblock %}

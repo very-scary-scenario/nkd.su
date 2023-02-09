@@ -1,5 +1,4 @@
 {% extends parent %}
-{% load vote_tags cache %}
 
 {% block title %}{{ voter.name }}{% endblock %}
 
@@ -8,22 +7,7 @@
 <div class="user {% if voter.is_abuser %}abuser{% endif %}">
   {% include "include/voter_meta.html" %}
 
-  <h2>requests</h2>
-  <div class="user-votes">
-    {% cache 300 twitter_user_detail:votes voter.user_id page_obj.number %}
-      {% regroup votes by show as votes_by_show %}
-      {% for group in votes_by_show %}
-        <h3><a href="{{ group.grouper.get_absolute_url }}">{{ group.grouper.showtime|date:"F jS Y" }}</a></h3>
-        {% spaceless %}
-          <ul>
-            {% for vote in group.list %}
-              {% include "include/vote.html" with show=group.grouper %}
-            {% endfor %}
-          </ul>
-        {% endspaceless %}
-      {% endfor %}
-    {% endcache %}
-  </div>
+  {% include "include/voter_votes.html" %}
 </div>
 
 {% include "include/paginator.html" %}

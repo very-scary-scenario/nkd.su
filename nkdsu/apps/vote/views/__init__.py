@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+from abc import abstractmethod
 from random import sample
 from typing import Any, Iterable, Optional, Sequence, cast
 
@@ -10,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
-from django.db.models import Count, DurationField, F, QuerySet
+from django.db.models import Count, DurationField, F, Model, QuerySet
 from django.db.models.functions import Cast, Now
 from django.forms import BaseForm
 from django.http import Http404, HttpRequest, HttpResponse
@@ -30,6 +31,7 @@ import tweepy
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import Show, Track, TrackQuerySet, TwitterUser, Vote
 from ..utils import BrowsableItem, BrowsableYear, reify
+from ..voter import Voter
 from ...vote import mixins
 from ....mixins import MarkdownView
 
@@ -364,16 +366,17 @@ class TrackDetail(DetailView):
             return super().get(request, *args, **kwargs)
 
 
-class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
-    template_name = 'twitter_user_detail.html'
-    context_object_name = 'voter'
+class VoterDetail(DetailView):
     paginate_by = 100
-    model = TwitterUser
+
+    @abstractmethod
+    def get_voter(self) -> Voter:
+        ...
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
-        votes = cast(TwitterUser, self.get_object()).votes_with_liberal_preselection()
+        votes = cast(Voter, self.get_voter()).votes_with_liberal_preselection()
         paginator = Paginator(votes, self.paginate_by)
 
         try:
@@ -389,6 +392,15 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
         )
 
         return context
+
+
+class TwitterUserDetail(mixins.TwitterUserDetailMixin, VoterDetail):
+    template_name = 'twitter_user_detail.html'
+    context_object_name = 'voter'
+    model = TwitterUser
+
+    def get_voter(self) -> TwitterUser:
+        return self.get_object()
 
 
 class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
