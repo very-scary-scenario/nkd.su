@@ -399,6 +399,13 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, VoterDetail):
     context_object_name = 'voter'
     model = TwitterUser
 
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        twu = self.get_object()
+        if hasattr(twu, 'profile'):
+            return redirect(twu.profile.get_absolute_url())
+        else:
+            return super().get(request, *args, **kwargs)
+
     def get_voter(self) -> TwitterUser:
         return self.get_object()
 
