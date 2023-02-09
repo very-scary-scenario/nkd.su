@@ -430,7 +430,7 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
 
     @memoize
     def votes(self) -> models.QuerySet[Vote]:
-        if self.profile:
+        if hasattr(self, 'profile'):
             return self.profile.votes()
         return self.vote_set.order_by('-date').prefetch_related('tracks')
 
