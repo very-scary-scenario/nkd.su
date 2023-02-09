@@ -379,7 +379,9 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     def get_toggle_abuser_url(self) -> str:
         return reverse('vote:admin:toggle_abuser', kwargs={'user_id': self.user_id})
 
-    def get_avatar_url(self) -> str:
+    def get_avatar_url(self, try_profile: bool = True) -> str:
+        if try_profile and hasattr(self, 'profile'):
+            return self.profile.get_avatar_url()
         return static('i/vote-kinds/tweet.png')
 
     @memoize
@@ -609,9 +611,7 @@ class Profile(CleanOnSaveMixin, models.Model):
         if self.avatar:
             return self.avatar.url
         elif self.twitter_user:
-            return (
-                self.twitter_user.get_avatar_url()
-            )  # XXX this might be fragile if twitter is dying
+            return self.twitter_user.get_avatar_url(try_profile=False)
         else:
             return static('i/noise.png')
 
