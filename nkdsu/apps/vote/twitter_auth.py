@@ -1,6 +1,7 @@
 from typing import TypedDict
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.http import HttpRequest
 from social_core.backends.twitter import TwitterOAuth
 from social_core.pipeline import DEFAULT_AUTH_PIPELINE
@@ -101,19 +102,38 @@ class NkdsuStrategy(DjangoStrategy):
     def get_pipeline(self, backend=None):
         return (
             DEFAULT_AUTH_PIPELINE
-            # XXX both of these need to be uncommented:
-            # + ('nkdsu.apps.vote.twitter_auth.link_twitteruser',)
-            # + ('nkdsu.apps.vote.twitter_auth.steal_avatar',)
+            + ('nkdsu.apps.vote.twitter_auth.link_twitteruser',)
+            # + ('nkdsu.apps.vote.twitter_auth.adopt_twitter_metadata',)  # XXX uncomment
         )
 
 
-def link_twitteruser():
-    raise NotImplementedError()
+def link_twitteruser(uid: int, user: User, *args, **kwargs) -> None:
+    # this has been previously guaranteed to exist in our auth_allowed implementation
+    twitter_user = TwitterUser.objects.get(user_id=str(uid))
+
+    # and also, we should check this just to be sure:
+    if hasattr(twitter_user, 'profile') and (twitter_user.profile.user != user):
+        raise AssertionError(
+            f'auth_allowed() messed up, because {user!r} should not have been able to log in as {twitter_user!r}; '
+            f'that user was already adopted by {twitter_user.profile.user!r}'
+        )
+
+    if user.profile.twitter_user is None:
+        profile = user.profile
+        profile.twitter_user = twitter_user
+        profile.save()
 
 
-def steal_avatar(response):
+def adopt_twitter_metadata(
+    response: dict, user: User, details: UserDetailsDict, *args, **kwargs
+) -> None:
     profile_has_no_avatar = True  # XXX check this
+    profile_has_no_display_name = True  # XXX check this
 
     if (not response['default_profile_image']) and profile_has_no_avatar:
         pass
-        # XXX steal response['profile_image_url_https'] and load it into our profile avatar field
+        # XXX if not already set, load response['profile_image_url_https'] into our profile avatar field
+
+    if profile_has_no_display_name:
+        pass
+        # XXX if not already set, load response['display_name'] into our display_name field
