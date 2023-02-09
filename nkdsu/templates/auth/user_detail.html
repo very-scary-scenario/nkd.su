@@ -7,9 +7,7 @@
 {% endblock %}
 
 {% block content %}
-  {% if object.profile.avatar %}
-    <img class="avatar" src="{{ object.profile.get_avatar_url }}"></img>
-  {% endif %}
+  <img class="avatar" src="{{ object.profile.get_avatar_url }}"></img>
 
   {% if object.profile.display_name %}
     <h2>{{ object.profile.display_name }}</h2>

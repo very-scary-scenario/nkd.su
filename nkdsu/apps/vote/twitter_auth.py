@@ -1,14 +1,18 @@
+import re
 from typing import TypedDict
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
 from django.http import HttpRequest
+import requests
 from social_core.backends.twitter import TwitterOAuth
 from social_core.pipeline import DEFAULT_AUTH_PIPELINE
 from social_django.models import UserSocialAuth
 from social_django.strategy import DjangoStrategy
 
-from .models import TwitterUser
+from .models import TwitterUser, avatar_upload_path
 
 
 class DoNotAuthThroughTwitterPlease(BaseException):
@@ -21,6 +25,8 @@ class DoNotAuthThroughTwitterPlease(BaseException):
 class UserDetailsDict(TypedDict):
     username: str
     fullname: str
+    default_profile_image: bool
+    profile_image_url_https: str
 
 
 class NkdsuTwitterAuth(TwitterOAuth):
@@ -89,6 +95,8 @@ class NkdsuTwitterAuth(TwitterOAuth):
         return {
             'username': response['screen_name'],
             'fullname': response['name'],
+            'default_profile_image': response['default_profile_image'],
+            'profile_image_url_https': response['profile_image_url_https'],
         }
 
 
@@ -103,7 +111,7 @@ class NkdsuStrategy(DjangoStrategy):
         return (
             DEFAULT_AUTH_PIPELINE
             + ('nkdsu.apps.vote.twitter_auth.link_twitteruser',)
-            # + ('nkdsu.apps.vote.twitter_auth.adopt_twitter_metadata',)  # XXX uncomment
+            + ('nkdsu.apps.vote.twitter_auth.adopt_twitter_metadata',)
         )
 
 
@@ -125,15 +133,18 @@ def link_twitteruser(uid: int, user: User, *args, **kwargs) -> None:
 
 
 def adopt_twitter_metadata(
-    response: dict, user: User, details: UserDetailsDict, *args, **kwargs
+    request: HttpRequest, user: User, details: UserDetailsDict, *args, **kwargs
 ) -> None:
-    profile_has_no_avatar = True  # XXX check this
-    profile_has_no_display_name = True  # XXX check this
+    profile = user.profile
 
-    if (not response['default_profile_image']) and profile_has_no_avatar:
-        pass
-        # XXX if not already set, load response['profile_image_url_https'] into our profile avatar field
+    if (not details['default_profile_image']) and (not profile.avatar):
+        try:
+            avatar = ContentFile(requests.get(details['profile_image_url_https']).content)
+            profile.avatar.save(name=avatar_upload_path(profile, ''), content=avatar)
+        except requests.RequestException as e:
+            messages.error(request, f'sorry, we were unable to retrieve your twitter avatar: {e!r}')
 
-    if profile_has_no_display_name:
-        pass
-        # XXX if not already set, load response['display_name'] into our display_name field
+    if not profile.display_name:
+        profile.display_name = details['fullname']
+
+    profile.save()
