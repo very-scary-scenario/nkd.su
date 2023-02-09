@@ -52,9 +52,9 @@
     <p class="patron">{{ voter.name }} supports Neko Desu on <a href="https://www.patreon.com/NekoDesu">Patreon</a>!</p>
   {% endif %}
 
-  {% if voter.userbadge_set.all %}
+  {% if voter.badges %}
     <ul class="badges">
-      {% for badge in voter.userbadge_set.all %}
+      {% for badge in voter.badges %}
         <li>
           <i class="fa fa-{{ badge.badge_info.icon }}"></i>
 

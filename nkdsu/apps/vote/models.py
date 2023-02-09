@@ -50,6 +50,7 @@ from .utils import (
     split_id3_title,
     vote_url,
 )
+from .voter import Voter
 from ..vote import mixcloud
 
 
@@ -350,7 +351,7 @@ class Show(CleanOnSaveMixin, models.Model):
         ordering = ['-showtime']
 
 
-class TwitterUser(CleanOnSaveMixin, models.Model):
+class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
     class Meta:
         ordering = ['screen_name']
 
@@ -431,104 +432,10 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         return rv
 
     @memoize
-    def votes(self) -> models.QuerySet[Vote]:
+    def unordered_votes(self) -> models.QuerySet[Vote]:
         if hasattr(self, 'profile'):
             return self.profile.votes()
-        return self.vote_set.order_by('-date').prefetch_related('tracks')
-
-    @memoize
-    def votes_with_liberal_preselection(self) -> models.QuerySet[Vote]:
-        return self.votes().prefetch_related(
-            'show',
-            'show__play_set',
-            'show__play_set__track',  # doesn't actually appear to work :<
-        )
-
-    @memoize
-    def votes_for(self, show: Show) -> models.QuerySet[Vote]:
-        return self.votes().filter(show=show)
-
-    @memoize
-    def tracks_voted_for_for(self, show: Show) -> list[Track]:
-        tracks = []
-        track_pk_set = set()
-
-        for vote in self.votes_for(show):
-            for track in vote.tracks.all():
-                if track.pk not in track_pk_set:
-                    track_pk_set.add(track.pk)
-                    tracks.append(track)
-
-        return tracks
-
-    def _batting_average(
-        self,
-        cutoff: Optional[datetime.datetime] = None,
-        minimum_weight: float = 1,
-    ) -> Optional[float]:
-        def ba(
-            pk, current_show_pk, cutoff: Optional[datetime.datetime]
-        ) -> tuple[float, float]:
-            score: float = 0
-            weight: float = 0
-
-            for vote in self.vote_set.filter(date__gt=cutoff).prefetch_related(
-                'tracks'
-            ):
-                success = vote.success()
-                if success is not None:
-                    score += success * vote.weight()
-                    weight += vote.weight()
-
-            return (score, weight)
-
-        score, weight = ba(self.pk, Show.current().pk, cutoff)
-
-        if weight >= minimum_weight:
-            return score / weight
-        else:
-            # there were no worthwhile votes
-            return None
-
-        return score
-
-    @memoize
-    def batting_average(self, minimum_weight: float = 1) -> Optional[float]:
-        """
-        Return a user's batting average for the past six months.
-        """
-
-        return self._batting_average(
-            cutoff=Show.at(timezone.now() - datetime.timedelta(days=31 * 6)).end,
-            minimum_weight=minimum_weight,
-        )
-
-    def _streak(self, ls=[]) -> int:
-        show = Show.current().prev()
-        streak = 0
-
-        while True:
-            if show is None:
-                return streak
-            elif not show.voting_allowed:
-                show = show.prev()
-            elif show.votes().filter(twitter_user=self).exists():
-                streak += 1
-                show = show.prev()
-            else:
-                break
-
-        return streak
-
-    @memoize
-    def streak(self) -> int:
-        def streak(pk, current_show):
-            return self._streak()
-
-        return streak(self.pk, Show.current())
-
-    def all_time_batting_average(self, minimum_weight: float = 1) -> Optional[float]:
-        return self._batting_average(minimum_weight=minimum_weight)
+        return self.vote_set.all()
 
     @memoize
     @pk_cached(60 * 60 * 1)
@@ -574,6 +481,11 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             show=Show.current(),
         ).exists()
 
+    @property
+    @memoize
+    def badges(self) -> models.QuerySet[UserBadge]:
+        return self.userbadge_set.all()
+
 
 def avatar_upload_path(instance: Profile, filename: str) -> str:
     return f"avatars/{instance.user.username}/{uuid4()}.png"
@@ -582,7 +494,7 @@ def avatar_upload_path(instance: Profile, filename: str) -> str:
 AVATAR_SIZE = 500
 
 
-class Profile(CleanOnSaveMixin, models.Model):
+class Profile(Voter, CleanOnSaveMixin, models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     twitter_user = models.OneToOneField(
         TwitterUser,
@@ -618,12 +530,12 @@ class Profile(CleanOnSaveMixin, models.Model):
             return static('i/noise.png')
 
     @memoize
-    def votes(self) -> models.QuerySet[Vote]:
+    def unordered_votes(self) -> models.QuerySet[Vote]:
         q = Q(user=self.user)
         if self.twitter_user:
             q = q | Q(twitter_user=self.twitter_user)
 
-        return Vote.objects.filter(q).order_by('-date').prefetch_related('tracks')
+        return Vote.objects.filter(q)
 
     @property
     def is_abuser(self) -> bool:
@@ -632,6 +544,21 @@ class Profile(CleanOnSaveMixin, models.Model):
     @property
     def name(self) -> str:
         return self.display_name or f'@{self.user.username}'
+
+    def get_toggle_abuser_url(self) -> str:
+        return '/'  # XXX
+
+    @property
+    def is_patron(self) -> bool:
+        return False  # XXX
+
+    @property
+    @memoize
+    def badges(self) -> models.QuerySet[UserBadge]:
+        if self.twitter_user:
+            return self.twitter_user.userbadge_set.all()
+        else:
+            return UserBadge.objects.none()  # XXX
 
 
 def art_path(i: Track, f: str) -> str:
@@ -1379,9 +1306,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         try:
             twitter_user = user_qs.get()
         except TwitterUser.DoesNotExist:
-            twitter_user = TwitterUser(
-                user_id=tweet['user']['id'],
-            )
+            twitter_user = TwitterUser(user_id=tweet['user']['id'])
 
         twitter_user.screen_name = tweet['user']['screen_name']
         twitter_user.name = tweet['user']['name']
