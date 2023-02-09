@@ -75,7 +75,7 @@ class NkdsuTwitterAuth(TwitterOAuth):
             raise DoNotAuthThroughTwitterPlease(
                 'you are already logged in, and your account is already associated with '
                 f'{request.user.profile.twitter_user.screen_name}. '
-                'you should not associate it with another',
+                'you should not associate it again',
             )
 
         return allowed
