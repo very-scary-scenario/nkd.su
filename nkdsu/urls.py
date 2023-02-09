@@ -19,8 +19,8 @@ urlpatterns = [
     url(r'^register/', RegisterView.as_view(), name='register'),
     url(r'^logout/', LogoutView.as_view(), {'next_page': '/'}, name='logout'),
     url(r'^login/', LoginView.as_view(), name='login'),
-    url(r'^cpw/', PasswordChangeView.as_view(), name='password_change'),
     url(r'^spw/', SetPasswordView.as_view(), name='password_set'),
+    url(r'^cpw/', PasswordChangeView.as_view(), name='password_change'),
     url(r'^cpw-done/', RedirectView.as_view(url='/'), name='password_change_done'),
 ]
 
