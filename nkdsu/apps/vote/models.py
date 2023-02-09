@@ -354,6 +354,8 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     class Meta:
         ordering = ['screen_name']
 
+    is_twitteruser = True
+
     # Twitter stuff
     screen_name = models.CharField(max_length=100)
     user_id = models.BigIntegerField(unique=True)
@@ -622,6 +624,14 @@ class Profile(CleanOnSaveMixin, models.Model):
             q = q | Q(twitter_user=self.twitter_user)
 
         return Vote.objects.filter(q).order_by('-date').prefetch_related('tracks')
+
+    @property
+    def is_abuser(self) -> bool:
+        return self.twitter_user is not None and self.twitter_user.is_abuser  # XXX make this apply to non-twitter users
+
+    @property
+    def name(self) -> str:
+        return self.display_name or f'@{self.user.username}'
 
 
 def art_path(i: Track, f: str) -> str:

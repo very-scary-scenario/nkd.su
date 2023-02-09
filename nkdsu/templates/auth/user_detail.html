@@ -2,23 +2,14 @@
 
 {% block title %}{{ object.username }}{% endblock %}
 
-{% block main_classes %}
-  profile
-{% endblock %}
-
 {% block content %}
-  <img class="avatar" src="{{ object.profile.get_avatar_url }}"></img>
+  <div class="user {% if object.profile.is_abuser %}abuser{% endif %}">
+    {% include "include/voter_meta.html" with voter=object.profile %}
 
-  {% if object.profile.display_name %}
-    <h2>{{ object.profile.display_name }}</h2>
-    <p class="subheading">@{{ object.username }}</p>
-  {% else %}
-    <h2>@{{ object.username }}</h2>
-  {% endif %}
+    {% if object == request.user %}
+      {% include "include/user_infobox.html" with user=request.user %}
+    {% endif %}
 
-  {% if object == request.user %}
-    {% include "include/user_infobox.html" with user=request.user %}
-  {% endif %}
-
-  {{ object.profile.votes }}
+    {{ object.profile.votes }}
+  </div>
 {% endblock %}
