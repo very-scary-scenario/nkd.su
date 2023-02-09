@@ -26,7 +26,6 @@ from django.views.generic import (
     ListView,
     TemplateView,
 )
-import tweepy
 
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import Show, Track, TrackQuerySet, TwitterUser, Vote
@@ -35,12 +34,6 @@ from ..voter import Voter
 from ...vote import mixins
 from ....mixins import MarkdownView
 
-
-post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-post_tw_auth.set_access_token(
-    settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET
-)
-tw_api = tweepy.API(post_tw_auth)
 
 PRO_ROULETTE = 'pro-roulette-{}'
 
@@ -408,17 +401,6 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, VoterDetail):
 
     def get_voter(self) -> TwitterUser:
         return self.get_object()
-
-
-class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
-    model = TwitterUser
-
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        image: bytes | str
-        content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
-            size='original' if request.GET.get('size') == 'original' else None
-        )
-        return HttpResponse(image, content_type=content_type)
 
 
 class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):

@@ -5,10 +5,8 @@ from typing import Any, Optional
 from django import forms
 from django.core.validators import validate_email
 from django.utils.safestring import mark_safe
-import tweepy
 
 from .models import Note, Request, Vote
-from .utils import reading_tw_api
 from ..vote import trivia
 
 _disable_autocorrect = {
@@ -26,12 +24,7 @@ def email_or_twitter(address: str) -> None:
     try:
         validate_email(address)
     except forms.ValidationError:
-        try:
-            reading_tw_api.get_user(screen_name=address.lstrip('@'))
-        except tweepy.TweepError:
-            raise forms.ValidationError(
-                'Enter a valid email address or twitter username'
-            )
+        raise NotImplementedError('we need to require that these be done by account-holders')  # XXX
 
 
 class EmailOrTwitterField(forms.EmailField):

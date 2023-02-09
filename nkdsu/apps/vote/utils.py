@@ -25,26 +25,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 import musicbrainzngs
 import requests
-import tweepy
 
 if TYPE_CHECKING:
     from .models import Profile, Track
 
 
 logger = logging.getLogger(__name__)
-
-
-_read_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-_read_tw_auth.set_access_token(
-    settings.READING_ACCESS_TOKEN, settings.READING_ACCESS_TOKEN_SECRET
-)
-reading_tw_api = tweepy.API(_read_tw_auth)
-
-_post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-_post_tw_auth.set_access_token(
-    settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET
-)
-posting_tw_api = tweepy.API(_post_tw_auth)
 
 
 indefinitely: int = (

@@ -7,14 +7,13 @@ from dataclasses import asdict, dataclass
 from enum import Enum, auto
 from io import BytesIO
 from string import ascii_letters
-from typing import Any, Iterable, Literal, Optional, cast
+from typing import Any, Iterable, Optional, cast
 from uuid import uuid4
 
 from Levenshtein import ratio
 from PIL import Image, ImageFilter
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.staticfiles import finders
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files import File
@@ -29,7 +28,6 @@ from django.utils.timezone import get_default_timezone
 from django_resized import ResizedImageField
 from markdown import markdown
 import requests
-import tweepy
 
 from .managers import NoteQuerySet, TrackQuerySet
 from .parsers import ParsedArtist, parse_artist
@@ -42,8 +40,6 @@ from .utils import (
     memoize,
     musicbrainzngs,
     pk_cached,
-    posting_tw_api,
-    reading_tw_api,
     reify,
     split_id3_title,
     vote_url,
@@ -389,72 +385,10 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
         return static('i/vote-kinds/tweet.png')
 
     @memoize
-    def get_avatar(
-        self,
-        size: Optional[Literal['original', 'normal']] = None,
-        from_cache: bool = True,
-    ) -> tuple[str, bytes]:
-        ck = f'twav:{size}:{self.pk}'
-
-        if from_cache:
-            hit = cache.get(ck)
-            if hit:
-                return hit
-
-        try:
-            url = self.get_twitter_user().profile_image_url_https
-        except tweepy.TweepError as e:
-            if (e.api_code == 63) or (e.api_code == 50):
-                # 63: user is suspended; 50: no such user
-                found = finders.find('i/suspended.png')
-                if found is None or isinstance(found, list):
-                    raise RuntimeError(f'could not find the placeholder image: {found}')
-                rv = ('image/png', open(found, 'rb').read())
-            else:
-                raise
-        else:
-            if size is not None:
-                # `size` here can, I think, also be stuff like '400x400' or whatever,
-                # but i'm not sure exactly what the limits are and we're not using any
-                # of them anyway, so here's what we support:
-                if size != 'original':
-                    url_size = '_{}'.format(size)
-                else:
-                    url_size = ''
-                url = re.sub(r'_normal(?=\.[^.]+$)', url_size, url)
-
-            resp = requests.get(url)
-            rv = (resp.headers['content-type'], resp.content)
-
-        # update_twitter_avatars will call this every day with
-        # from_cache=False, and might sometimes fail, so:
-        cache.set(ck, rv, int(60 * 60 * 24 * 2.1))
-
-        return rv
-
-    @memoize
     def unordered_votes(self) -> models.QuerySet[Vote]:
         if hasattr(self, 'profile'):
             return self.profile.votes()
         return self.vote_set.all()
-
-    @memoize
-    @pk_cached(60 * 60 * 1)
-    def get_twitter_user(self) -> tweepy.User:
-        return reading_tw_api.get_user(user_id=self.user_id)
-
-    def update_from_api(self) -> None:
-        """
-        Update this user's database object based on the Twitter API.
-        """
-
-        api_user = self.get_twitter_user()
-
-        self.name = api_user.name
-        self.screen_name = api_user.screen_name
-        self.updated = timezone.now()
-
-        self.save()
 
     def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {
@@ -984,7 +918,7 @@ class Track(CleanOnSaveMixin, models.Model):
         play.save()
 
         if tweet:
-            play.tweet()
+            raise NotImplementedError('we need to just surface tweet text to be copied in')  # XXX
 
         return play
 
@@ -1500,20 +1434,6 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             status = status[: settings.TWEET_LENGTH - 2].strip() + '…'
 
         return status
-
-    def tweet(self) -> None:
-        """
-        Send out a tweet for this play, set self.tweet_id and save.
-        """
-
-        if self.tweet_id is not None:
-            raise TypeError('This play has already been tweeted')
-
-        tweet = posting_tw_api.update_status(self.get_tweet_text())
-        self.tweet_id = tweet.id
-        self.save()
-
-    tweet.alters_data = True  # type: ignore
 
     def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {

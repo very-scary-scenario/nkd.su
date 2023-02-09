@@ -185,11 +185,6 @@ urlpatterns = [
         views.TwitterUserDetail.as_view(),
         name='user',
     ),
-    url(
-        r'^twitter-avatar/(?P<user_id>\d+)/$',
-        views.TwitterAvatarView.as_view(),
-        name='twitter-avatar',
-    ),
     url(r'^artist/(?P<artist>.*)/$', views.Artist.as_view(), name='artist'),
     url(r'^anime/(?P<anime>.*)/$', views.Anime.as_view(), name='anime'),
     url(r'^composer/(?P<composer>.*)/$', views.Composer.as_view(), name='composer'),
