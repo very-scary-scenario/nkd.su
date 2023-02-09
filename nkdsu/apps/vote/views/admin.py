@@ -4,6 +4,7 @@ from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.forms import Form
 from django.http import HttpResponse
@@ -35,8 +36,13 @@ class ElfMixin(AnyLoggedInUserMixin):
 
     @classmethod
     def as_view(cls, **kw):
-        from ..templatetags.vote_tags import is_elf
-        return user_passes_test(is_elf)(super().as_view(**kw))
+        # to prevent database access before migrations might have been run, delay the import further:
+        def _is_elf(user: User) -> bool:
+            from ..templatetags.vote_tags import is_elf
+
+            return is_elf(user)
+
+        return user_passes_test(_is_elf)(super().as_view(**kw))
 
 
 class AdminMixin(AnyLoggedInUserMixin):
