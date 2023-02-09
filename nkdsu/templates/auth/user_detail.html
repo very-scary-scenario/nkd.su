@@ -64,7 +64,7 @@
 
       <p><a class="button" href="{% url "vote:profiles:edit-profile" %}">edit your profile</a></p>
     </div>
-
-    {{ object.profile.votes }}
   {% endif %}
+
+  {{ object.profile.votes }}
 {% endblock %}

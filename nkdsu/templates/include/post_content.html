@@ -43,7 +43,7 @@
       {% endif %}
 
       <span>
-        <a href="{% url "vote:profiles:profile" username=user.username %}">profile</a>
+        <a href="{% url "vote:profiles:profile" username=user.username %}">@{{ user.username }}</a>
         (<a href="{% url "vote:profiles:edit-profile" %}">edit</a>)
       </span>
 
