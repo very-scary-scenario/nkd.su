@@ -20,6 +20,7 @@ class UserBadgeAdmin(admin.ModelAdmin):
 class VoteAdmin(admin.ModelAdmin):
     list_display = ('twitter_user', 'date')
     list_filter = ('kind', 'twitter_user')
+    filter_horizontal = ('tracks',)
 
 
 class TrackAdmin(admin.ModelAdmin):
