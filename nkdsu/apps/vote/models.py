@@ -275,6 +275,7 @@ class Show(CleanOnSaveMixin, models.Model):
         votes = (
             Vote.objects.filter(show=self)
             .filter(Q(twitter_user__is_abuser=False) | Q(twitter_user__isnull=True))
+            .filter(Q(user__profile__is_abuser=False) | Q(user__isnull=True))
             .prefetch_related('tracks')
             .order_by('-date')
         )
