@@ -1,8 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth.views import LogoutView, PasswordChangeView
+from django.contrib.auth.views import LogoutView, PasswordChangeDoneView, PasswordChangeView
 from django.urls import include, path, re_path as url
-from django.views.generic.base import RedirectView
 from django.views.static import serve
 import social_django.urls
 
@@ -21,7 +20,7 @@ urlpatterns = [
     url(r'^login/', LoginView.as_view(), name='login'),
     url(r'^spw/', SetPasswordView.as_view(), name='password_set'),
     url(r'^cpw/', PasswordChangeView.as_view(), name='password_change'),
-    url(r'^cpw-done/', RedirectView.as_view(url='/'), name='password_change_done'),
+    url(r'^cpw-done/', PasswordChangeDoneView.as_view(), name='password_change_done'),
 ]
 
 if settings.DEBUG:
