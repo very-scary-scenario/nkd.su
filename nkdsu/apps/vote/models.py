@@ -1257,12 +1257,6 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         assert_never(self.vote_kind)
 
-    def either_name(self) -> str:
-        if self.name:
-            return self.name
-        assert self.twitter_user is not None
-        return '@{0}'.format(self.twitter_user.screen_name)
-
     @property
     def vote_kind(self) -> VoteKind:
         if self.tweet_id:
