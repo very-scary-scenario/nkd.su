@@ -8,6 +8,7 @@ from enum import Enum, auto
 from io import BytesIO
 from string import ascii_letters
 from typing import Any, Iterable, Optional, cast
+from urllib.parse import quote
 from uuid import uuid4
 
 from Levenshtein import ratio
@@ -915,24 +916,33 @@ class Track(CleanOnSaveMixin, models.Model):
     def public_notes(self) -> models.QuerySet[Note]:
         return self.notes().filter(public=True)
 
-    def play(self, tweet: bool = True) -> Play:
+    def play_tweet_content(self) -> str:
+        # here we add a zwsp after every . to prevent twitter from turning
+        # things into links
+        delinked_name = str(self).replace('.', '.\u200b')
+
+        status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
+
+        if len(status) > settings.TWEET_LENGTH:
+            # twitter counts ellipses as two characters for some reason, so we get rid of two:
+            status = status[: settings.TWEET_LENGTH - 2].strip() + '…'
+
+        return status
+
+    def play_tweet_intent_url(self) -> str:
+        return 'https://twitter.com/intent/tweet?text={text}'.format(
+            text=quote(self.play_tweet_content())
+        )
+
+    def play(self) -> Play:
         """
         Mark this track as played.
         """
 
-        play = Play(
+        return Play.objects.create(
             track=self,
             date=timezone.now(),
         )
-
-        play.save()
-
-        if tweet:
-            raise NotImplementedError(
-                'we need to just surface tweet text to be copied in'
-            )  # XXX
-
-        return play
 
     play.alters_data = True  # type: ignore
 
@@ -1433,19 +1443,6 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             self.track.hidden = False
             self.track.revealed = timezone.now()
             self.track.save()
-
-    def get_tweet_text(self) -> str:
-        # here we add a zwsp after every . to prevent twitter from turning
-        # things into links
-        delinked_name = str(self.track).replace('.', '.\u200b')
-
-        status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
-
-        if len(status) > settings.TWEET_LENGTH:
-            # twitter counts ellipses as two characters for some reason, so we get rid of two:
-            status = status[: settings.TWEET_LENGTH - 2].strip() + '…'
-
-        return status
 
     def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {

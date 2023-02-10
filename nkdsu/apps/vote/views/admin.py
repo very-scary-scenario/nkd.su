@@ -1,6 +1,6 @@
 import os
 import plistlib
-from typing import Any
+from typing import Any, Optional
 
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
@@ -121,9 +121,9 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
     """
 
     template_name = 'confirm.html'
-    deets = None
+    deets: Optional[str] = None
 
-    def get_deets(self):
+    def get_deets(self) -> Optional[str]:
         return self.deets
 
     def get_cancel_url(self):
@@ -187,11 +187,20 @@ class Play(DestructiveAdminAction, DetailView):
 
     model = Track
 
-    def get_deets(self):
+    def get_deets(self) -> str:
         return str(self.get_object())
 
-    def do_thing(self):
+    def do_thing(self) -> None:
         self.get_object().play()
+
+    def get_redirect_url(self) -> str:
+        return reverse(
+            'vote:admin:post_about_play', kwargs={'pk': self.get_object().pk}
+        )
+
+
+class PostAboutPlay(TrackSpecificAdminMixin, TemplateView):
+    template_name = 'post_about_play.html'
 
 
 class Hide(AdminAction, DetailView):

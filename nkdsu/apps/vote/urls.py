@@ -28,6 +28,11 @@ admin_patterns = (
         url(r'^check-metadata/$', admin.CheckMetadata.as_view(), name='check_metadata'),
         url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
         url(
+            r'^post-about-play/(?P<pk>.+)/$',
+            admin.PostAboutPlay.as_view(),
+            name='post_about_play',
+        ),
+        url(
             r'^add-manual-vote/(?P<pk>.+)/$',
             admin.ManualVote.as_view(),
             name='manual_vote',
