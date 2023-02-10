@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 from abc import abstractmethod
+from itertools import chain
 from random import sample
 from typing import Any, Iterable, Optional, Sequence, cast
 
@@ -11,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
-from django.db.models import Count, DurationField, F, QuerySet
+from django.db.models import Count, DurationField, F, Q, QuerySet
 from django.db.models.functions import Cast, Now
 from django.forms import BaseForm
 from django.http import Http404, HttpRequest, HttpResponse
@@ -29,7 +30,7 @@ from django.views.generic import (
 
 from nkdsu.mixins import AnyLoggedInUserMixin, MarkdownView
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
-from ..models import Request, Show, Track, TrackQuerySet, TwitterUser, Vote
+from ..models import Profile, Request, Show, Track, TrackQuerySet, TwitterUser, Vote
 from ..templatetags.vote_tags import eligible_for
 from ..utils import BrowsableItem, BrowsableYear, reify
 from ..voter import Voter
@@ -553,15 +554,30 @@ class Stats(TemplateView):
     template_name = 'stats.html'
     cache_key = 'stats:context'
 
+    def unique_voters(
+        self, profiles: QuerySet[Profile], twitter_users: QuerySet[TwitterUser]
+    ) -> list[Voter]:
+        seen_ids: set[tuple[Optional[int], Optional[int]]] = set()
+        voters: list[Voter] = []
+
+        for voter in chain(profiles, twitter_users):
+            vid = voter.voter_id
+            if vid not in seen_ids:
+                voters.append(voter)
+                seen_ids.add(voter.voter_id)
+
+        return voters
+
     def streaks(self) -> list[Voter]:
         last_votable_show = Show.current().prev()
         while last_votable_show is not None and not last_votable_show.voting_allowed:
             last_votable_show = last_votable_show.prev()
 
         return sorted(
-            TwitterUser.objects.filter(
-                vote__show=last_votable_show,
-            ).distinct(),
+            self.unique_voters(
+                Profile.objects.filter(user__vote__show=last_votable_show),
+                TwitterUser.objects.filter(vote__show=last_votable_show),
+            ),
             key=lambda u: u.streak(),
             reverse=True,
         )
@@ -572,7 +588,10 @@ class Stats(TemplateView):
 
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=7 * 5)).end
 
-        for user in set(TwitterUser.objects.filter(vote__date__gt=cutoff)):
+        for user in self.unique_voters(
+            Profile.objects.filter(user__vote__date__gt=cutoff),
+            TwitterUser.objects.filter(vote__date__gt=cutoff),
+        ):
             if user.batting_average(minimum_weight=minimum_weight):
                 users.append(user)
 
