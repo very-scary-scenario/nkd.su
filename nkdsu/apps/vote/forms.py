@@ -19,6 +19,17 @@ _proper_noun_textinput = forms.TextInput(
 )
 
 
+class ClearableFileInput(forms.widgets.ClearableFileInput):
+    """
+    The stock clearable file widget generates HTML that cannot be easily laid
+    out in a reasonable way with CSS. In particular, the way the 'clear'
+    checkbox is not put in any kind of elements makes intentional layout
+    basically impossible. Here, we aim to fix that.
+    """
+
+    template_name = 'widgets/clearable_file_input.html'
+
+
 class SearchForm(forms.Form):
     q = forms.CharField()
 

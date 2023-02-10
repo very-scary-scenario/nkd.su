@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.views.generic import UpdateView
 
 from . import VoterDetail
+from ..forms import ClearableFileInput
 from ..models import Profile
 from ..utils import get_profile_for
 
@@ -38,6 +39,11 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = Profile
     fields = ['display_name', 'avatar']
     template_name = 'edit_profile.html'
+
+    def get_form(self):
+        form = super().get_form()
+        form.fields['avatar'].widget = ClearableFileInput()
+        return form
 
     def get_success_url(self) -> str:
         return reverse(
