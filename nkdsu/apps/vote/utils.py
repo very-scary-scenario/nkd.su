@@ -20,9 +20,11 @@ from urllib.parse import urlencode
 from classtools import reify as ct_reify
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 import musicbrainzngs
+from mypy_extensions import KwArg, VarArg
 import requests
 
 if TYPE_CHECKING:
@@ -195,6 +197,29 @@ def memoize(func: Callable[..., T]) -> Callable[..., T]:
 
 def reify(func: Callable[[Any], T]) -> T:
     return cast(T, ct_reify(func))
+
+
+C = TypeVar('C', bound=Callable[[VarArg(Any), KwArg(Any)], Any])
+
+
+def cached(seconds: int, cache_key: str) -> Callable[[C], C]:
+    def wrapper(func: C) -> C:
+        def wrapped(*a, **k) -> Any:
+            def do_thing(func, *a, **k) -> Any:
+                hit = cache.get(cache_key)
+
+                if hit is not None:
+                    return hit
+
+                rv = func(*a, **k)
+                cache.set(cache_key, rv, seconds)
+                return rv
+
+            return do_thing(func, *a, **k)
+
+        return cast(C, wrapped)
+
+    return wrapper
 
 
 def pk_cached(seconds: int) -> Callable[[T], T]:

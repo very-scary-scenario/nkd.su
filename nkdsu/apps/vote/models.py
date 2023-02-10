@@ -35,6 +35,7 @@ from .parsers import ParsedArtist, parse_artist
 from .utils import (
     READING_USERNAME,
     assert_never,
+    cached,
     indefinitely,
     lastfm,
     length_str,
@@ -100,6 +101,7 @@ class Show(CleanOnSaveMixin, models.Model):
             )
 
     @classmethod
+    @cached(2, 'vote:models:Show:current')
     def current(cls) -> Show:
         """
         Get (or create, if necessary) the show that will next end.
