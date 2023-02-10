@@ -124,6 +124,8 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
         )
 
     def _streak(self, ls=[]) -> int:
+        from .models import Show
+
         show = Show.current().prev()
         streak = 0
 
@@ -142,6 +144,8 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
 
     @memoize
     def streak(self) -> int:
+        from .models import Show
+
         def streak(pk, current_show):
             return self._streak()
 
