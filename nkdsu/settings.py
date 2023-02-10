@@ -54,6 +54,9 @@ REQUEST_CURATOR = 'peter@nekodesu.radio'
 
 TWEET_LENGTH = 280
 
+#: The maximum number of tracks that can be associated with a single Vote object
+MAX_REQUEST_TRACKS = 6
+
 OPTIONS = {'timeout': 20}
 
 CONSUMER_KEY = ''  # secret

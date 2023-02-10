@@ -1,5 +1,6 @@
 from typing import Optional
 
+from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
@@ -35,8 +36,8 @@ class SelectionView(JSApiMixin, TemplateView):
         selection = self.get_queryset()
         context['selection'] = selection
 
-        # XXX only surface this if MAX_REQUEST_TRACKS, a setting that has yet to be added, is not exceeded
-        context['vote_url'] = vote_url(selection)
+        if len(selection) <= settings.MAX_REQUEST_TRACKS:
+            context['vote_url'] = vote_url(selection)
 
         return self.render_to_response(context)
 

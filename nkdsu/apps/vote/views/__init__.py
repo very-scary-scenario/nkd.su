@@ -717,20 +717,30 @@ class VoteView(LoginRequiredMixin, CreateView):
     template_name = 'vote.html'
     success_url = reverse_lazy('vote:index')
 
+    def get_track_pks(self) -> list[str]:
+        track_pks_raw = self.request.GET.get('t')
+
+        if track_pks_raw is None:
+            return []
+
+        track_pks = track_pks_raw.split(',')
+
+        if len(track_pks) > settings.MAX_REQUEST_TRACKS:
+            raise Http404('too many tracks')
+
+        return track_pks
+
     def get_tracks(self) -> list[Track]:
         # XXX do some validation here. duplicates, ineligible tracks, and
         # things this user has already requested should be excluded. maybe it
         # should also be a queryset? that would make filtering implicit, rather
         # than throwing an error at the user, but maybe that's fine.
 
-        track_pks = self.request.GET.get('t')
-
-        if track_pks is None:
-            return []
-
-        return [get_object_or_404(Track, pk=pk) for pk in track_pks.split(',')]
+        return [get_object_or_404(Track, pk=pk) for pk in self.get_track_pks()]
 
     def get_form_kwargs(self) -> dict[str, Any]:
+        self.get_track_pks()  # to make sure we throw a 404 before doing anything with too many tracks
+
         assert not isinstance(self.request.user, AnonymousUser)
         instance = Vote(user=self.request.user, date=timezone.now())
         return {
@@ -744,9 +754,10 @@ class VoteView(LoginRequiredMixin, CreateView):
         return resp
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
+        tracks = self.get_tracks()
         return {
             **super().get_context_data(**kwargs),
-            'tracks': self.get_tracks(),
+            'tracks': tracks,
         }
 
 
