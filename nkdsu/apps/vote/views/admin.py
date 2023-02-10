@@ -23,6 +23,7 @@ from django.views.generic.base import TemplateResponseMixin
 
 from nkdsu.mixins import AnyLoggedInUserMixin
 from .js import JSApiMixin
+from ..elfs import is_elf
 from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
 from ..models import Block, Note, Profile, Request, Show, Track, TwitterUser, Vote
 from ..update_library import metadata_consistency_checks, update_library
@@ -35,8 +36,6 @@ class ElfMixin(AnyLoggedInUserMixin):
 
     @classmethod
     def as_view(cls, **kw):
-        from ..elfs import is_elf
-
         return user_passes_test(is_elf)(super().as_view(**kw))
 
 
