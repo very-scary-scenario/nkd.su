@@ -4,7 +4,7 @@
 radio show currently broadcast on [The Cat].
 
 [nkd.su]: https://nkd.su
-[The Cat]: https://thisisthecat.com
+[The Cat]: https://thecat1079.co.uk
 [Neko Desu]: https://nekodesu.radio
 
 ### How do I make a request?
