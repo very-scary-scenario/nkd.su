@@ -14,7 +14,8 @@ class EverythingTest(
     fixtures = ['vote.json']
 
     covered_urls = [
-        '/vote-admin/abuse/46162630/',
+        '/vote-admin/tw-abuse/46162630/',
+        '/vote-admin/local-abuse/45/',
         '/vote-admin/block/0007C3F2760E0541/',
         '/vote-admin/block/0007C3F2760E0541/reason?reason=announced',
         '/vote-admin/unblock/0007C3F2760E0541/',
@@ -26,6 +27,7 @@ class EverythingTest(
         '/vote-admin/discard/0007C3F2760E0541/',
         '/vote-admin/reset/0007C3F2760E0541/',
         '/vote-admin/make-note/0007C3F2760E0541/',
+        '/vote-admin/post-about-play/0007C3F2760E0541/',
         '/vote-admin/remove-note/2/',
         '/vote-admin/hidden/',
         '/vote-admin/inudesu/',
@@ -33,7 +35,6 @@ class EverythingTest(
         '/vote-admin/add-manual-vote/0007C3F2760E0541/',
         '/vote-admin/upload/',
         '/vote-admin/requests/',
-        '/vote-admin/trivia/',
         '/vote-admin/check-metadata/',
         '/vote-admin/play/0007C3F2760E0541/',
         '/js/deselect/',
@@ -109,10 +110,6 @@ class EverythingTest(
         '/vote-admin/requests/fill/1/',
         '/vote-admin/requests/claim/1/',
         '/set-dark-mode/',
-        # would require me to put twitter credentials in the public settings
-        # file
-        '/twitter-avatar/46162630/',
-        '/twitter-avatar/46162630/?size=original',
         # can only be accessed if you are logged in with an unusable password
         '/spw/',
     ]
