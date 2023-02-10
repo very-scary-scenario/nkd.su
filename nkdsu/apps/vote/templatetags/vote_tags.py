@@ -79,10 +79,10 @@ def is_elf(user: User) -> bool:
 @register.filter
 def eligible_for(track: Track, user: User | AnonymousUser) -> bool:
     return (
-        user.is_authenticated
-    ) and (
-        track.pk
-        not in (
-            t.pk for t in user.profile.tracks_voted_for_for(Show.current())
+        (user.is_authenticated)
+        and (
+            track.pk
+            not in (t.pk for t in user.profile.tracks_voted_for_for(Show.current()))
         )
-    ) and track.eligible()
+        and track.eligible()
+    )
