@@ -8,7 +8,7 @@
     {% else %}
       ineligible
     {% endif %}
-    {% if user.is_staff or track|eligible_for:request.user %}
+    {% if user.is_staff or track|eligible_for:user %}
       selectable
     {% else %}
       unselectable
@@ -96,7 +96,7 @@
         {% for vote in track|votes_for:vote_show|slice:"1:" %}
           {% include "include/inline_vote.html" %}
         {% endfor %}
-        {% if not user.is_authenticated and track.eligible or not user.is_staff and track|eligible_for:request.user %}
+        {% if not user.is_authenticated and track.eligible or not user.is_staff and track|eligible_for:user %}
           <li class="plusone"><a title="request this track" href="{{ track.get_vote_url }}">
             +
           </a></li>
