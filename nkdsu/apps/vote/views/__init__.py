@@ -751,6 +751,7 @@ class VoteView(LoginRequiredMixin, CreateView):
     def form_valid(self, form: VoteForm) -> HttpResponse:
         resp = super().form_valid(form)
         form.instance.tracks.set(self.get_tracks())
+        self.request.session['selection'] = []
         return resp
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
