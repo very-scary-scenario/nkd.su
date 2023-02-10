@@ -130,6 +130,7 @@ class EverythingTest(
         )
         user.set_password('what')
         user.save()
+        assert hasattr(user, 'profile')
 
     def ensure_all_urls_resolve(self, urls):
         # linode has robot protection that makes automated testing of links to their site impossible, so:
