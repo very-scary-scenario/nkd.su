@@ -5,7 +5,7 @@ from typing import Any, Optional
 from django import forms
 from django.utils.safestring import mark_safe
 
-from .models import Note, Request, Track, Vote
+from .models import Note, Track, Vote
 from ..vote import trivia
 
 _disable_autocorrect = {

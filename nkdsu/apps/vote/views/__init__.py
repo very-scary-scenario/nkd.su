@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
-from django.db.models import Count, DurationField, F, Q, QuerySet
+from django.db.models import Count, DurationField, F, QuerySet
 from django.db.models.functions import Cast, Now
 from django.forms import BaseForm
 from django.http import Http404, HttpRequest, HttpResponse
