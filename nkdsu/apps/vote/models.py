@@ -1506,22 +1506,45 @@ class Discard(CleanOnSaveMixin, models.Model):
 
 class Request(CleanOnSaveMixin, models.Model):
     """
-    A request for a database addition.
+    A request for a database addition or modification.
     """
 
+    #: keys of `blob` that no longer get set, but which may exist on historic Requests
     METADATA_KEYS = ['trivia', 'trivia_question', 'contact']
 
     created = models.DateTimeField(auto_now_add=True)
-    successful = models.BooleanField()
     blob = models.TextField()
+    submitted_by = models.ForeignKey(
+        User,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='submitted_requests',
+        help_text='the person who submitted this request',
+    )
     filled = models.DateTimeField(blank=True, null=True)
     filled_by = models.ForeignKey(
-        User, blank=True, null=True, on_delete=models.SET_NULL
+        User,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text='the elf who fulfilled this request',
     )
     claimant = models.ForeignKey(
-        User, blank=True, null=True, related_name='claims', on_delete=models.SET_NULL
+        User,
+        blank=True,
+        null=True,
+        related_name='claims',
+        on_delete=models.SET_NULL,
+        help_text='the elf who is taking care of this request',
     )
-    track = models.ForeignKey(Track, blank=True, null=True, on_delete=models.SET_NULL)
+    track = models.ForeignKey(
+        Track,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text='the track that this request is about, if this is a request for a correction',
+    )
 
     def serialise(self, struct):
         self.blob = json.dumps(struct)

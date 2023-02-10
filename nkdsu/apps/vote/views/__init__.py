@@ -29,7 +29,7 @@ from django.views.generic import (
 
 from nkdsu.mixins import AnyLoggedInUserMixin, MarkdownView
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
-from ..models import Show, Track, TrackQuerySet, TwitterUser, Vote
+from ..models import Request, Show, Track, TrackQuerySet, TwitterUser, Vote
 from ..utils import BrowsableItem, BrowsableYear, reify
 from ..voter import Voter
 from ...vote import mixins
@@ -688,10 +688,13 @@ class RequestAddition(AnyLoggedInUserMixin, MarkdownView, FormView):
         }
 
     def form_valid(self, form: BaseForm) -> HttpResponse:
+        assert self.request.user.is_authenticated  # guaranteed by AnyLoggedInUserMixin
+        request = Request(submitted_by=self.request.user)
+        request.serialise(form.cleaned_data)
+        request.save()
+
         f = form.cleaned_data
-
         fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
-
         send_mail(
             '[nkd.su] %s' % f['title'],
             '\n\n'.join(fields),

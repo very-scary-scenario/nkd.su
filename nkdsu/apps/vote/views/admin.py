@@ -531,7 +531,7 @@ class RequestList(ElfMixin, ListView):
     model = Request
 
     def get_queryset(self):
-        return super().get_queryset().filter(successful=True, filled=None)
+        return super().get_queryset().filter(filled=None)
 
 
 class FillRequest(ElfMixin, FormView):
@@ -542,7 +542,6 @@ class FillRequest(ElfMixin, FormView):
         request = get_object_or_404(
             Request,
             pk=self.kwargs['pk'],
-            successful=True,
             filled__isnull=True,
         )
 
@@ -575,7 +574,6 @@ class ClaimRequest(ElfMixin, FormView):
             request = get_object_or_404(
                 Request,
                 pk=self.kwargs['pk'],
-                successful=True,
                 filled__isnull=True,
                 claimant=None,
             )
