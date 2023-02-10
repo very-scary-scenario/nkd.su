@@ -731,12 +731,27 @@ class VoteView(LoginRequiredMixin, CreateView):
         return track_pks
 
     def get_tracks(self) -> list[Track]:
-        # XXX do some validation here. duplicates, ineligible tracks, and
-        # things this user has already requested should be excluded. maybe it
-        # should also be a queryset? that would make filtering implicit, rather
-        # than throwing an error at the user, but maybe that's fine.
+        def track_should_be_allowed_for_this_user(track: Track) -> bool:
+            assert self.request.user.is_authenticated
+            return (
+                track.pk
+                not in (
+                    t.pk
+                    for t in self.request.user.profile.tracks_voted_for_for(
+                        Show.current()
+                    )
+                )
+            ) and track.eligible()
 
-        return [get_object_or_404(Track, pk=pk) for pk in self.get_track_pks()]
+        return list(
+            filter(
+                track_should_be_allowed_for_this_user,
+                (
+                    get_object_or_404(Track.objects.public(), pk=pk)
+                    for pk in self.get_track_pks()
+                ),
+            )
+        )
 
     def get_form_kwargs(self) -> dict[str, Any]:
         self.get_track_pks()  # to make sure we throw a 404 before doing anything with too many tracks
