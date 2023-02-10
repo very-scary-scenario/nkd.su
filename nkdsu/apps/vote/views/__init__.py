@@ -622,7 +622,7 @@ class TermsOfService(MarkdownView):
     filename = 'TOS.md'
 
 
-class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
+class ReportBadMetadata(AnyLoggedInUserMixin, mixins.BreadcrumbMixin, FormView):
     form_class = BadMetadataForm
     template_name = 'report.html'
 
