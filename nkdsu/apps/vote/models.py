@@ -503,7 +503,7 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         if self.twitter_user:
             return self.twitter_user.userbadge_set.all()
         else:
-            return UserBadge.objects.none()  # XXX
+            return UserBadge.objects.none()  # to be properly handled in issue #245
 
 
 def art_path(i: Track, f: str) -> str:
