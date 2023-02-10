@@ -1,6 +1,10 @@
 from django.conf import settings
 from django.contrib import admin
-from django.contrib.auth.views import LogoutView, PasswordChangeDoneView, PasswordChangeView
+from django.contrib.auth.views import (
+    LogoutView,
+    PasswordChangeDoneView,
+    PasswordChangeView,
+)
 from django.urls import include, path, re_path as url
 from django.views.static import serve
 import social_django.urls

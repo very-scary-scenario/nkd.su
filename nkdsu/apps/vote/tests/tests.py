@@ -103,27 +103,6 @@ class TrackTest(TestCase):
     def test_can_delete_tracks(self) -> None:
         Track.objects.all()[0].delete()
 
-
-class PlayTest(TestCase):
-    fixtures = ['vote.json']
-
-    def setUp(self) -> None:
-        Play.objects.all().delete()
-
-    def test_plays_for_already_played_tracks_can_not_be_added(self) -> None:
-        track_1, track_2 = Track.objects.all()[:2]
-        track_1.play(tweet=False)
-        track_2.play(tweet=False)
-
-        self.assertEqual(Play.objects.all().count(), 2)
-        self.assertRaises(ValidationError, lambda: track_2.play(tweet=False))
-        self.assertEqual(Play.objects.all().count(), 2)
-
-    def test_plays_can_be_edited_after_the_fact(self) -> None:
-        play = Track.objects.all()[0].play(tweet=False)
-        play.date = mkutc(2009, 1, 1)
-        play.save()
-
     def test_play_truncates_tweet_properly(self) -> None:
         track = Track.objects.create(
             id="longname",
@@ -138,10 +117,27 @@ class PlayTest(TestCase):
             added=timezone.now(),
             revealed=timezone.now(),
         )
-        tweet_text = Play.objects.create(
-            date=timezone.now(),
-            show=Show.at(timezone.now()),
-            track=track,
-        ).get_tweet_text()
+        tweet_text = track.play_tweet_content()
         self.assertRegex(tweet_text, r'^.{278}…$')
         self.assertEqual(len(tweet_text), 279)
+
+
+class PlayTest(TestCase):
+    fixtures = ['vote.json']
+
+    def setUp(self) -> None:
+        Play.objects.all().delete()
+
+    def test_plays_for_already_played_tracks_can_not_be_added(self) -> None:
+        track_1, track_2 = Track.objects.all()[:2]
+        track_1.play()
+        track_2.play()
+
+        self.assertEqual(Play.objects.all().count(), 2)
+        self.assertRaises(ValidationError, lambda: track_2.play())
+        self.assertEqual(Play.objects.all().count(), 2)
+
+    def test_plays_can_be_edited_after_the_fact(self) -> None:
+        play = Track.objects.all()[0].play()
+        play.date = mkutc(2009, 1, 1)
+        play.save()
