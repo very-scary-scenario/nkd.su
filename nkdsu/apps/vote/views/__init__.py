@@ -663,13 +663,17 @@ class ReportBadMetadata(AnyLoggedInUserMixin, mixins.BreadcrumbMixin, FormView):
         return self.get_track().get_absolute_url()
 
     def form_valid(self, form: BaseForm) -> HttpResponse:
-        f = form.cleaned_data
-
         track = Track.objects.get(pk=self.kwargs['pk'])
 
+        assert self.request.user.is_authenticated  # guaranteed by AnyLoggedInUserMixin
+
+        request = Request(submitted_by=self.request.user, track=track)
+        request.serialise(form.cleaned_data)
+        request.save()
+
+        f = form.cleaned_data
         fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
         fields.append(track.get_public_url())
-
         send_mail(
             '[nkd.su report] %s' % track.get_absolute_url(),
             '\n\n'.join(fields),
