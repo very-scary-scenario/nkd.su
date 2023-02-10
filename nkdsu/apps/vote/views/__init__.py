@@ -27,7 +27,7 @@ from django.views.generic import (
     TemplateView,
 )
 
-from nkdsu.mixins import MarkdownView
+from nkdsu.mixins import AnyLoggedInUserMixin, MarkdownView
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import Show, Track, TrackQuerySet, TwitterUser, Vote
 from ..utils import BrowsableItem, BrowsableYear, reify
@@ -674,7 +674,7 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         ]
 
 
-class RequestAddition(MarkdownView, FormView):
+class RequestAddition(AnyLoggedInUserMixin, MarkdownView, FormView):
     form_class = RequestForm
     template_name = 'request.html'
     success_url = reverse_lazy('vote:index')
