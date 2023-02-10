@@ -30,6 +30,7 @@ from django.views.generic import (
 from nkdsu.mixins import AnyLoggedInUserMixin, MarkdownView
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import Request, Show, Track, TrackQuerySet, TwitterUser, Vote
+from ..templatetags.vote_tags import eligible_for
 from ..utils import BrowsableItem, BrowsableYear, reify
 from ..voter import Voter
 from ...vote import mixins
@@ -731,16 +732,8 @@ class VoteView(LoginRequiredMixin, CreateView):
         return track_pks
 
     def get_tracks(self) -> list[Track]:
-        show = Show.current()
-
         def track_should_be_allowed_for_this_user(track: Track) -> bool:
-            assert self.request.user.is_authenticated
-            return (
-                track.pk
-                not in (
-                    t.pk for t in self.request.user.profile.tracks_voted_for_for(show)
-                )
-            ) and track.eligible()
+            return eligible_for(track, self.request.user)
 
         return list(
             filter(

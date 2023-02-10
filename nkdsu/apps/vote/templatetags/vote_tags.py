@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import Iterable, Optional
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AnonymousUser, User
 from django.db.models import QuerySet
 from django.template import Library
 from django.utils import timezone
@@ -74,3 +74,15 @@ def is_elf(user: User) -> bool:
     from ..elfs import ELFS
 
     return user.is_staff or user.groups.filter(pk=ELFS.pk).exists()
+
+
+@register.filter
+def eligible_for(track: Track, user: User | AnonymousUser) -> bool:
+    return (
+        user.is_authenticated
+    ) and (
+        track.pk
+        not in (
+            t.pk for t in user.profile.tracks_voted_for_for(Show.current())
+        )
+    ) and track.eligible()

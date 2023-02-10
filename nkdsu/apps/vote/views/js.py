@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.views.generic import TemplateView
 
 from ..models import Track
+from ..templatetags.vote_tags import eligible_for
 from ..utils import vote_url
 
 
@@ -63,7 +64,7 @@ class Select(SelectionView):
                 track = qs[0]
                 if (
                     self.request.user.is_authenticated and self.request.user.is_staff
-                ) or track.eligible():
+                ) or eligible_for(track, self.request.user):
                     selection.add(new_pk)
 
         self.request.session['selection'] = sorted(selection)

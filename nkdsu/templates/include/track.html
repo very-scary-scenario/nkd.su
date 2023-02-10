@@ -8,7 +8,7 @@
     {% else %}
       ineligible
     {% endif %}
-    {% if user.is_staff or track.eligible %}
+    {% if user.is_staff or track|eligible_for:request.user %}
       selectable
     {% else %}
       unselectable
