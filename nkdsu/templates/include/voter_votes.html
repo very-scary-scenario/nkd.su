@@ -2,7 +2,7 @@
 
 <h2>requests</h2>
 <div class="user-votes">
-  {% cache 300 voter.votes.first.pk voter:votes voter.user_id page_obj.number %}
+  {% cache 300 voter:votes voter.votes.first.pk voter.user_id page_obj.number %}
     {% regroup votes by show as votes_by_show %}
     {% for group in votes_by_show %}
       <h3><a href="{{ group.grouper.get_absolute_url }}">{{ group.grouper.showtime|date:"F jS Y" }}</a></h3>
