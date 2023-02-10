@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.test import TestCase
 
 from instant_coverage import InstantCoverageMixin, optional
 
-from .apps.vote.elfs import _get_elfs, is_elf
+from .apps.vote.elfs import ELFS_NAME, is_elf
 
 
 User = get_user_model()
@@ -154,7 +155,8 @@ class ElfEverythingTest(EverythingTest):
         super().setUp()
         us = User.objects.get(username='what')
         self.assertFalse(is_elf(us))
-        us.groups.add(_get_elfs())
+        elfs, _ = Group.objects.get_or_create(name=ELFS_NAME)
+        us.groups.add(elfs)
         us.save()
         self.assertTrue(is_elf(us))
         self.assertTrue(self.client.login(username='what', password='what'))
