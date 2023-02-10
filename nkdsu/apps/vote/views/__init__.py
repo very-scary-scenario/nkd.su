@@ -27,12 +27,12 @@ from django.views.generic import (
     TemplateView,
 )
 
+from nkdsu.mixins import MarkdownView
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import Show, Track, TrackQuerySet, TwitterUser, Vote
 from ..utils import BrowsableItem, BrowsableYear, reify
 from ..voter import Voter
 from ...vote import mixins
-from ....mixins import MarkdownView
 
 
 PRO_ROULETTE = 'pro-roulette-{}'

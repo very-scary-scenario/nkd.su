@@ -3,7 +3,7 @@ from urllib.parse import parse_qs, urlparse
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model, views as auth_views
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -17,12 +17,6 @@ from .mixins import MarkdownView
 
 
 User = get_user_model()
-
-
-class AnyLoggedInUserMixin:
-    @classmethod
-    def as_view(cls, **kw):
-        return login_required(super().as_view(**kw))
 
 
 class LoginView(MarkdownView, auth_views.LoginView):

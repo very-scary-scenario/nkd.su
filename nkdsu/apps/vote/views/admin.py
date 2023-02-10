@@ -21,7 +21,7 @@ from django.views.generic import (
 )
 from django.views.generic.base import TemplateResponseMixin
 
-from nkdsu.views import AnyLoggedInUserMixin
+from nkdsu.mixins import AnyLoggedInUserMixin
 from .js import JSApiMixin
 from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
 from ..models import Block, Note, Profile, Request, Show, Track, TwitterUser, Vote
