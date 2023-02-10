@@ -10,7 +10,7 @@
       {% include "include/user_infobox.html" with user=request.user %}
     {% endif %}
 
-    {% include "include/voter_votes.html" %}
+    {% include "include/voter_votes.html" with voter=object.profile %}
   </div>
 
 {% include "include/paginator.html" %}
