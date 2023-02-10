@@ -391,5 +391,19 @@
     "public": true,
     "show": 79
   }
+},
+{
+  "pk": 43,
+  "model": "auth.user",
+  "fields": {
+    "username": "someone"
+  }
+},
+{
+  "pk": 45,
+  "model": "vote.profile",
+  "fields": {
+    "user": 43
+  }
 }
 ]
