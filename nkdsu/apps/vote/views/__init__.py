@@ -731,15 +731,14 @@ class VoteView(LoginRequiredMixin, CreateView):
         return track_pks
 
     def get_tracks(self) -> list[Track]:
+        show = Show.current()
+
         def track_should_be_allowed_for_this_user(track: Track) -> bool:
             assert self.request.user.is_authenticated
             return (
                 track.pk
                 not in (
-                    t.pk
-                    for t in self.request.user.profile.tracks_voted_for_for(
-                        Show.current()
-                    )
+                    t.pk for t in self.request.user.profile.tracks_voted_for_for(show)
                 )
             ) and track.eligible()
 
