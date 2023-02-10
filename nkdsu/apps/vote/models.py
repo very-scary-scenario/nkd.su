@@ -368,7 +368,9 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
     def __repr__(self) -> str:
         return self.screen_name
 
-    def _twitter_user_and_profile(self) -> tuple[Optional[TwitterUser], Optional[Profile]]:
+    def _twitter_user_and_profile(
+        self,
+    ) -> tuple[Optional[TwitterUser], Optional[Profile]]:
         return (self, getattr(self, 'profile', None))
 
     def twitter_url(self) -> str:
@@ -459,7 +461,9 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
     def __str__(self) -> str:
         return f'{self.display_name} ({self.user.username})'
 
-    def _twitter_user_and_profile(self) -> tuple[Optional[TwitterUser], Optional[Profile]]:
+    def _twitter_user_and_profile(
+        self,
+    ) -> tuple[Optional[TwitterUser], Optional[Profile]]:
         return (self.twitter_user, self)
 
     def get_absolute_url(self) -> str:
@@ -924,7 +928,9 @@ class Track(CleanOnSaveMixin, models.Model):
         play.save()
 
         if tweet:
-            raise NotImplementedError('we need to just surface tweet text to be copied in')  # XXX
+            raise NotImplementedError(
+                'we need to just surface tweet text to be copied in'
+            )  # XXX
 
         return play
 

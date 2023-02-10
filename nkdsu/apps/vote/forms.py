@@ -24,7 +24,9 @@ def email_or_twitter(address: str) -> None:
     try:
         validate_email(address)
     except forms.ValidationError:
-        raise NotImplementedError('we need to require that these be done by account-holders')  # XXX
+        raise NotImplementedError(
+            'we need to require that these be done by account-holders'
+        )  # XXX
 
 
 class EmailOrTwitterField(forms.EmailField):

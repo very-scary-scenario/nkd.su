@@ -26,7 +26,9 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
     is_abuser: bool | BooleanField
     is_patron: bool | BooleanField
 
-    def _twitter_user_and_profile(self) -> tuple[Optional[TwitterUser], Optional[Profile]]:
+    def _twitter_user_and_profile(
+        self,
+    ) -> tuple[Optional[TwitterUser], Optional[Profile]]:
         ...
 
     @property
