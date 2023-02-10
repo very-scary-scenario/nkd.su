@@ -18,9 +18,9 @@ html {
 }
 
 body {
-  font-family: "Bitter", "Calibri", sans-serif;
-  background-color: @bg;
+  .nkdsu-font();
   .noise();
+  background-color: @bg;
   color: @fg;
   text-shadow: @basic-shadow 0 .1em 0;
   height: 100%;
@@ -193,6 +193,8 @@ body {
       padding-bottom: 13em;
 
       .markdown {
+        padding-bottom: 1em;
+
         h1 {
           text-align: center;
         }
@@ -268,14 +270,14 @@ body {
       }
 
       div.user {
-        .avatar img {
+        img.avatar {
           width: 6em;
           height: 6em;
           margin-top: .5em;
           border-radius: .4em;
         }
 
-        &.abuser .avatar img {
+        &.abuser img.avatar {
           .transform(rotate(180deg));
         }
 
@@ -643,35 +645,86 @@ p.new_tracks {
   margin-left: 37.5%;
 }
 
-/* login form */
-form.login tr {
-  clear: both;
-}
-
+/* forms */
 form {
   text-align: center;
   margin: .5em 0;
+
+  p {
+    text-align: left;
+    margin: .5em 0;
+    clear: both;
+
+    &.submit {
+      text-align: center;
+    }
+
+    input, textarea {
+      text-align: left;
+    }
+
+    .helptext {
+      font-size: .9em;
+      margin-top: .25em;
+      display: block;
+    }
+
+    .clear-file {
+      display: block;
+    }
+  }
+
+  ul.errorlist li {
+    list-style: none;
+    font-size: .9em;
+    color: @light;
+  }
+
+  &.login tr {
+    clear: both;
+  }
 }
 
-form p {
-  text-align: left;
-  margin: .5em 0;
+main.login {
+  max-width: 1.5 * @max-width !important;
+
+  #login-methods {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+
+    > section {
+      padding: 0 1em;
+      max-width: 30rem;
+
+      p {
+        margin-bottom: .5em;
+      }
+    }
+  }
 }
 
-form p input {
-  text-align: left;
-}
+.self-infobox {
+  padding: 1em 0;
+  background-color: fade(@light, 20%);
+  border-radius: .5em;
 
-form p textarea {
-  text-align: left;
-}
+  p {
+    margin: .5em 1em;
+  }
 
-form ul.errorlist li {
-  list-style: none;
-  font-size: .7em;
-  color: @light;
-  position: relative;
-  top: .6em;
+  > p {
+    &:first-child { margin-top: 0 }
+    &:last-child { margin-bottom: 0 }
+  }
+
+  section {
+    border: .3em solid fade(@light, 30%);
+    border-width: .3em 0;
+
+    &:first-child { border-top-width: 0; > p:first-child { margin-top: 0; } }
+    &:last-child { border-bottom-width: 0; > p:last-child { margin-bottom: 0; } }
+  }
 }
 
 /* common to library updates and parsing checker */
@@ -852,12 +905,21 @@ dl.metadata-check {
 }
 
 @media (min-width:551px) {
-  form p label {
-    clear: both;
-    float: left;
-    width: 42%;
-    text-align: right;
-    padding-right: .5em;
+  form {
+    p {
+      > label {
+        clear: both;
+        float: left;
+        width: 42%;
+        text-align: right;
+        padding-right: .5em;
+      }
+    }
+
+    .helptext, .clear-file, .replacement-file-input {
+      margin-left: 42%;
+      padding-left: .5em;
+    }
   }
 
   /* hover effects are desktop only */

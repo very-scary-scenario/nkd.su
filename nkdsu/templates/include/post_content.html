@@ -1,3 +1,5 @@
+{% load vote_tags %}
+
 <div id="footer">
   <a id="stamp" target="_blank" href="https://vscary.co"><img alt="the very scary scenario logo" src="https://vscary.co/logo-grey.svg"></a>
 
@@ -15,7 +17,6 @@
       <span><a href="{% url "vote:admin:inudesu" %}">inu desu</a></span>
       <span><a href="{% url "vote:admin:artless" %}">artless</a></span>
       <span><a href="{% url "vote:admin:upload_library" %}">update library</a></span>
-      <span><a href="{% url "vote:admin:bad_trivia" %}">bad trivia</a></span>
     {% else %}
       <span><a href="{% url "vote:info" %}">help</a></span>
       <span><a href="{% url "vote:privacy" %}">privacy</a></span>
@@ -28,10 +29,23 @@
 
   <p class="credit">
     {% if user.is_authenticated %}
-      <span><a href="{% url "vote:browse_roles" %}">all roles</a></span>
-      <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
-      <span><a href="{% url "vote:admin:check_metadata" %}">check metadata</a></span>
-      <span><a href="{% url "password_change" %}">change password</a></span>
+      {% if user|is_elf %}
+        <span><a href="{% url "vote:browse_roles" %}">all roles</a></span>
+        <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
+        <span><a href="{% url "vote:admin:check_metadata" %}">check metadata</a></span>
+      {% endif %}
+
+      {% if user.has_usable_password %}
+        <span><a href="{% url "password_change" %}">change password</a></span>
+      {% else %}
+        <span><a href="{% url "password_set" %}">set password</a></span>
+      {% endif %}
+
+      <span>
+        <a href="{% url "vote:profiles:profile" username=user.username %}">@{{ user.username }}</a>
+        (<a href="{% url "vote:profiles:edit-profile" %}">edit</a>)
+      </span>
+
       <span><a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a></span>
     {% else %}
       <span><a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a></span>

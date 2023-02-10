@@ -1,7 +1,7 @@
 {% load vote_tags %}
 <li class="standalone-vote
   {% if vote.content %}content{% endif %}
-  {% if not vote.is_manual and vote.twitter_user.is_abuser %}abuser{% endif %}"
+  {% if vote.is_twitter and vote.twitter_user.is_abuser %}abuser{% endif %}"
   >
 
   <ul class="tracks">
@@ -12,7 +12,13 @@
 
 
   <p class="text">
-    <span class="meta when"><a href="{{ vote.twitter_url }}">{{ vote.date|when }}</a></span>
+    <span class="meta when">
+      {% if vote.is_twitter %}
+        <a href="{{ vote.twitter_url }}">{{ vote.date|when }}</a>
+      {% else %}
+        {{ vote.date|when }}
+      {% endif %}
+    </span>
     {{ vote.content|safe }}
   </p>
 </li>

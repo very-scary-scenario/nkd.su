@@ -3,16 +3,16 @@
 {% block title %}{{ object.username }}{% endblock %}
 
 {% block content %}
-  <h1>{{ object.username }}</h1>
+  <div class="user {% if object.profile.is_abuser %}abuser{% endif %}">
+    {% include "include/voter_meta.html" with voter=object.profile %}
 
-  {% if object.social_auth.all %}
-    <p>
-      {% for social_auth in object.social_auth.all %}
-        <strong>{{ social_auth.provider }}:</strong>
-        {{ social_auth.extra_data.access_token.screen_name }}
-      {% endfor %}
-    </p>
-  {% elif object == request.user %}
-    <p><a href="{% url "social:begin" backend="twitter" %}">link twitter account</a></p>
-  {% endif %}
+    {% if object == request.user %}
+      {% include "include/user_infobox.html" with user=request.user %}
+    {% endif %}
+
+    {% include "include/voter_votes.html" with voter=object.profile %}
+  </div>
+
+{% include "include/paginator.html" %}
+
 {% endblock %}

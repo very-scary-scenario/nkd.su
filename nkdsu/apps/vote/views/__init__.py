@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import datetime
+from abc import abstractmethod
+from itertools import chain
 from random import sample
 from typing import Any, Iterable, Optional, Sequence, cast
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
 from django.db.models import Count, DurationField, F, QuerySet
@@ -16,20 +20,22 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_duration
-from django.views.generic import DetailView, FormView, ListView, TemplateView
-import tweepy
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+)
 
-from ..forms import BadMetadataForm, DarkModeForm, RequestForm
-from ..models import Show, Track, TrackQuerySet, TwitterUser
+from nkdsu.mixins import AnyLoggedInUserMixin, MarkdownView
+from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
+from ..models import Profile, Request, Show, Track, TrackQuerySet, TwitterUser, Vote
+from ..templatetags.vote_tags import eligible_for
 from ..utils import BrowsableItem, BrowsableYear, reify
+from ..voter import Voter
 from ...vote import mixins
 
-
-post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-post_tw_auth.set_access_token(
-    settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET
-)
-tw_api = tweepy.API(post_tw_auth)
 
 PRO_ROULETTE = 'pro-roulette-{}'
 
@@ -355,16 +361,17 @@ class TrackDetail(DetailView):
             return super().get(request, *args, **kwargs)
 
 
-class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
-    template_name = 'twitter_user_detail.html'
-    context_object_name = 'voter'
+class VoterDetail(DetailView):
     paginate_by = 100
-    model = TwitterUser
+
+    @abstractmethod
+    def get_voter(self) -> Voter:
+        ...
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
-        votes = cast(TwitterUser, self.get_object()).votes_with_liberal_preselection()
+        votes = cast(Voter, self.get_voter()).votes_with_liberal_preselection()
         paginator = Paginator(votes, self.paginate_by)
 
         try:
@@ -382,15 +389,20 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
         return context
 
 
-class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
+class TwitterUserDetail(mixins.TwitterUserDetailMixin, VoterDetail):
+    template_name = 'twitter_user_detail.html'
+    context_object_name = 'voter'
     model = TwitterUser
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        image: bytes | str
-        content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
-            size='original' if request.GET.get('size') == 'original' else None
-        )
-        return HttpResponse(image, content_type=content_type)
+        twu = self.get_object()
+        if hasattr(twu, 'profile'):
+            return redirect(twu.profile.get_absolute_url())
+        else:
+            return super().get(request, *args, **kwargs)
+
+    def get_voter(self) -> TwitterUser:
+        return self.get_object()
 
 
 class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
@@ -542,26 +554,44 @@ class Stats(TemplateView):
     template_name = 'stats.html'
     cache_key = 'stats:context'
 
-    def streaks(self) -> list[TwitterUser]:
+    def unique_voters(
+        self, profiles: QuerySet[Profile], twitter_users: QuerySet[TwitterUser]
+    ) -> list[Voter]:
+        seen_ids: set[tuple[Optional[int], Optional[int]]] = set()
+        voters: list[Voter] = []
+
+        for voter in chain(profiles, twitter_users):
+            vid = voter.voter_id
+            if vid not in seen_ids:
+                voters.append(voter)
+                seen_ids.add(voter.voter_id)
+
+        return voters
+
+    def streaks(self) -> list[Voter]:
         last_votable_show = Show.current().prev()
         while last_votable_show is not None and not last_votable_show.voting_allowed:
             last_votable_show = last_votable_show.prev()
 
         return sorted(
-            TwitterUser.objects.filter(
-                vote__show=last_votable_show,
-            ).distinct(),
+            self.unique_voters(
+                Profile.objects.filter(user__vote__show=last_votable_show),
+                TwitterUser.objects.filter(vote__show=last_votable_show),
+            ),
             key=lambda u: u.streak(),
             reverse=True,
         )
 
-    def batting_averages(self) -> list[TwitterUser]:
+    def batting_averages(self) -> list[Voter]:
         users = []
         minimum_weight = 4
 
         cutoff = Show.at(timezone.now() - datetime.timedelta(days=7 * 5)).end
 
-        for user in set(TwitterUser.objects.filter(vote__date__gt=cutoff)):
+        for user in self.unique_voters(
+            Profile.objects.filter(user__vote__date__gt=cutoff),
+            TwitterUser.objects.filter(vote__date__gt=cutoff),
+        ):
             if user.batting_average(minimum_weight=minimum_weight):
                 users.append(user)
 
@@ -592,27 +622,27 @@ class Stats(TemplateView):
         return context
 
 
-class Info(mixins.MarkdownView):
+class Info(MarkdownView):
     title = 'what?'
     filename = 'README.md'
 
 
-class APIDocs(mixins.MarkdownView):
+class APIDocs(MarkdownView):
     title = 'api'
     filename = 'API.md'
 
 
-class Privacy(mixins.MarkdownView):
+class Privacy(MarkdownView):
     title = 'privacy'
     filename = 'PRIVACY.md'
 
 
-class TermsOfService(mixins.MarkdownView):
+class TermsOfService(MarkdownView):
     title = 'tos'
     filename = 'TOS.md'
 
 
-class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
+class ReportBadMetadata(AnyLoggedInUserMixin, mixins.BreadcrumbMixin, FormView):
     form_class = BadMetadataForm
     template_name = 'report.html'
 
@@ -633,13 +663,17 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         return self.get_track().get_absolute_url()
 
     def form_valid(self, form: BaseForm) -> HttpResponse:
-        f = form.cleaned_data
-
         track = Track.objects.get(pk=self.kwargs['pk'])
 
+        assert self.request.user.is_authenticated  # guaranteed by AnyLoggedInUserMixin
+
+        request = Request(submitted_by=self.request.user, track=track)
+        request.serialise(form.cleaned_data)
+        request.save()
+
+        f = form.cleaned_data
         fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
         fields.append(track.get_public_url())
-
         send_mail(
             '[nkd.su report] %s' % track.get_absolute_url(),
             '\n\n'.join(fields),
@@ -664,7 +698,7 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         ]
 
 
-class RequestAddition(mixins.MarkdownView, FormView):
+class RequestAddition(AnyLoggedInUserMixin, MarkdownView, FormView):
     form_class = RequestForm
     template_name = 'request.html'
     success_url = reverse_lazy('vote:index')
@@ -678,10 +712,13 @@ class RequestAddition(mixins.MarkdownView, FormView):
         }
 
     def form_valid(self, form: BaseForm) -> HttpResponse:
+        assert self.request.user.is_authenticated  # guaranteed by AnyLoggedInUserMixin
+        request = Request(submitted_by=self.request.user)
+        request.serialise(form.cleaned_data)
+        request.save()
+
         f = form.cleaned_data
-
         fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
-
         send_mail(
             '[nkd.su] %s' % f['title'],
             '\n\n'.join(fields),
@@ -697,6 +734,62 @@ class RequestAddition(mixins.MarkdownView, FormView):
         )
 
         return super().form_valid(form)
+
+
+class VoteView(LoginRequiredMixin, CreateView):
+    form_class = VoteForm
+    template_name = 'vote.html'
+    success_url = reverse_lazy('vote:index')
+
+    def get_track_pks(self) -> list[str]:
+        track_pks_raw = self.request.GET.get('t')
+
+        if track_pks_raw is None:
+            return []
+
+        track_pks = track_pks_raw.split(',')
+
+        if len(track_pks) > settings.MAX_REQUEST_TRACKS:
+            raise Http404('too many tracks')
+
+        return track_pks
+
+    def get_tracks(self) -> list[Track]:
+        def track_should_be_allowed_for_this_user(track: Track) -> bool:
+            return eligible_for(track, self.request.user)
+
+        return list(
+            filter(
+                track_should_be_allowed_for_this_user,
+                (
+                    get_object_or_404(Track.objects.public(), pk=pk)
+                    for pk in self.get_track_pks()
+                ),
+            )
+        )
+
+    def get_form_kwargs(self) -> dict[str, Any]:
+        self.get_track_pks()  # to make sure we throw a 404 before doing anything with too many tracks
+
+        assert not isinstance(self.request.user, AnonymousUser)
+        instance = Vote(user=self.request.user, date=timezone.now())
+        return {
+            **super().get_form_kwargs(),
+            'instance': instance,
+        }
+
+    def form_valid(self, form: VoteForm) -> HttpResponse:
+        resp = super().form_valid(form)
+        form.instance.tracks.set(self.get_tracks())
+        self.request.session['selection'] = []
+        return resp
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        tracks = self.get_tracks()
+        return {
+            **super().get_context_data(**kwargs),
+            'tracks': tracks,
+        }
 
 
 class SetDarkModeView(FormView):

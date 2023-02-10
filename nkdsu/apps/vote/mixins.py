@@ -1,15 +1,12 @@
 from __future__ import annotations
 
-import codecs
 import datetime
 import re
 from abc import abstractmethod
 from collections import OrderedDict
 from copy import copy
-from os import path
 from typing import Any, Generic, Iterable, Optional, Sequence, TypeVar, cast
 
-from django.conf import settings
 from django.db.models import Model, QuerySet
 from django.db.utils import NotSupportedError
 from django.http import Http404, HttpRequest, HttpResponse
@@ -18,7 +15,6 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.base import ContextMixin
-from markdown import markdown
 
 from .models import Show, Track, TrackQuerySet, TwitterUser
 from .utils import BrowsableItem, memoize
@@ -244,30 +240,6 @@ class ArchiveList(ListView):
             'year': self.year(),
             'object_list': self.get_queryset().filter(showtime__year=self.year()),
         }
-
-
-class MarkdownView(TemplateView):
-    template_name = 'markdown.html'
-    filename: str
-    title: str
-
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-
-        words = markdown(
-            codecs.open(
-                path.join(settings.PROJECT_ROOT, self.filename), encoding='utf-8'
-            ).read()
-        )
-
-        context.update(
-            {
-                'title': self.title,
-                'words': words,
-            }
-        )
-
-        return context
 
 
 class TwitterUserDetailMixin(LetMemoizeGetObject[TwitterUser]):

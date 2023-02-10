@@ -54,6 +54,9 @@ REQUEST_CURATOR = 'peter@nekodesu.radio'
 
 TWEET_LENGTH = 280
 
+#: The maximum number of tracks that can be associated with a single Vote object
+MAX_REQUEST_TRACKS = 6
+
 OPTIONS = {'timeout': 20}
 
 CONSUMER_KEY = ''  # secret
@@ -106,6 +109,7 @@ ADMINS = (('colons', 'nkdsu@colons.co'),)
 
 MANAGERS = ADMINS
 
+ATOMIC_REQUESTS = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -152,7 +156,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'nkdsu.middleware.SocialAuthBetaMiddleware',
+    'nkdsu.middleware.SocialAuthHandlingMiddleware',
 ]
 
 ROOT_URLCONF = 'nkdsu.urls'
@@ -198,6 +202,24 @@ LOGGING = {
 AUTHENTICATION_BACKENDS = [
     'nkdsu.apps.vote.twitter_auth.NkdsuTwitterAuth',
     'django.contrib.auth.backends.ModelBackend',
+]
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 10,
+        },
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
 LOGIN_URL = 'login'

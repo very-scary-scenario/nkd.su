@@ -1,7 +1,13 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.test import TestCase
 
 from instant_coverage import InstantCoverageMixin, optional
+
+from .apps.vote.elfs import ELFS_NAME, is_elf
+
+
+User = get_user_model()
 
 
 class EverythingTest(
@@ -14,7 +20,8 @@ class EverythingTest(
     fixtures = ['vote.json']
 
     covered_urls = [
-        '/vote-admin/abuse/46162630/',
+        '/vote-admin/tw-abuse/46162630/',
+        '/vote-admin/local-abuse/45/',
         '/vote-admin/block/0007C3F2760E0541/',
         '/vote-admin/block/0007C3F2760E0541/reason?reason=announced',
         '/vote-admin/unblock/0007C3F2760E0541/',
@@ -26,6 +33,7 @@ class EverythingTest(
         '/vote-admin/discard/0007C3F2760E0541/',
         '/vote-admin/reset/0007C3F2760E0541/',
         '/vote-admin/make-note/0007C3F2760E0541/',
+        '/vote-admin/post-about-play/0007C3F2760E0541/',
         '/vote-admin/remove-note/2/',
         '/vote-admin/hidden/',
         '/vote-admin/inudesu/',
@@ -33,7 +41,6 @@ class EverythingTest(
         '/vote-admin/add-manual-vote/0007C3F2760E0541/',
         '/vote-admin/upload/',
         '/vote-admin/requests/',
-        '/vote-admin/trivia/',
         '/vote-admin/check-metadata/',
         '/vote-admin/play/0007C3F2760E0541/',
         '/js/deselect/',
@@ -57,7 +64,10 @@ class EverythingTest(
         '/info/api/',
         '/info/privacy/',
         '/info/tos/',
+        '/profile/',
         '/request/',
+        '/request/?t=0007C3F2760E0541',
+        '/request-addition/',
         '/roulette/',
         '/roulette/hipster/',
         '/roulette/indiscriminate/',
@@ -83,8 +93,9 @@ class EverythingTest(
         '/added/',
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
-        '/folks/what/',
+        '/@what/',
         '/login/',
+        '/register/',
         '/cpw/',
         '/cpw-done/',
         # it's important that logout be last since we have a sublcass of this
@@ -94,6 +105,8 @@ class EverythingTest(
 
     uncovered_urls = [
         # some urls that require stuff to be in the session
+        '/profile/',
+        '/request/',
         '/vote-admin/upload/confirm/',
         '/vote-admin/shortlist-selection/',
         '/vote-admin/discard-selection/',
@@ -105,10 +118,8 @@ class EverythingTest(
         '/vote-admin/requests/fill/1/',
         '/vote-admin/requests/claim/1/',
         '/set-dark-mode/',
-        # would require me to put twitter credentials in the public settings
-        # file
-        '/twitter-avatar/46162630/',
-        '/twitter-avatar/46162630/?size=original',
+        # can only be accessed if you are logged in with an unusable password
+        '/spw/',
     ]
 
     uncovered_includes = [
@@ -120,10 +131,8 @@ class EverythingTest(
 
     def setUp(self) -> None:
         super().setUp()
-        user = get_user_model()(
+        user = User(
             username='what',
-            is_staff=True,
-            is_superuser=True,
         )
         user.set_password('what')
         user.save()
@@ -138,4 +147,26 @@ class EverythingTest(
 class LoggedInEverythingTest(EverythingTest):
     def setUp(self) -> None:
         super().setUp()
+        self.assertTrue(self.client.login(username='what', password='what'))
+
+
+class ElfEverythingTest(EverythingTest):
+    def setUp(self) -> None:
+        super().setUp()
+        us = User.objects.get(username='what')
+        self.assertFalse(is_elf(us))
+        elfs, _ = Group.objects.get_or_create(name=ELFS_NAME)
+        us.groups.add(elfs)
+        us.save()
+        self.assertTrue(is_elf(us))
+        self.assertTrue(self.client.login(username='what', password='what'))
+
+
+class StaffEverythingTest(EverythingTest):
+    def setUp(self) -> None:
+        super().setUp()
+        us = User.objects.get(username='what')
+        self.assertFalse(us.is_staff)
+        us.is_staff = True
+        us.save()
         self.assertTrue(self.client.login(username='what', password='what'))

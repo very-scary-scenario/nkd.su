@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import re
 import string
 from dataclasses import dataclass
 from functools import partial
@@ -10,38 +9,29 @@ from typing import (
     Callable,
     Generic,
     Iterable,
+    NoReturn,
     Optional,
     TYPE_CHECKING,
     TypeVar,
     cast,
 )
-from urllib.parse import quote
+from urllib.parse import urlencode
 
 from classtools import reify as ct_reify
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse
 import musicbrainzngs
+from mypy_extensions import KwArg, VarArg
 import requests
-import tweepy
 
 if TYPE_CHECKING:
-    from .models import Track
+    from .models import Profile, Track
 
 
 logger = logging.getLogger(__name__)
-
-
-_read_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-_read_tw_auth.set_access_token(
-    settings.READING_ACCESS_TOKEN, settings.READING_ACCESS_TOKEN_SECRET
-)
-reading_tw_api = tweepy.API(_read_tw_auth)
-
-_post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-_post_tw_auth.set_access_token(
-    settings.POSTING_ACCESS_TOKEN, settings.POSTING_ACCESS_TOKEN_SECRET
-)
-posting_tw_api = tweepy.API(_post_tw_auth)
 
 
 indefinitely: int = (
@@ -81,43 +71,8 @@ class BrowsableYear(BrowsableItem):
         return (decade, f"{decade}s")
 
 
-def _get_short_url_length() -> int:
-    cache_key = 'tw-short-url-length'
-    length = cache.get(cache_key)
-    if length is not None:
-        return length
-    try:
-        length = reading_tw_api.configuration()['short_url_length_https']
-    except tweepy.error.TweepError as e:
-        logger.critical(
-            "could not read twitter configuration to determine short URL length:\n{}".format(
-                e
-            )
-        )
-        length = 22
-
-    cache.set(cache_key, length)
-    return length
-
-
-def _get_reading_username() -> str:
-    cache_key = 'tw-reading-username:{}'.format(settings.READING_ACCESS_TOKEN)
-    username = cache.get(cache_key)
-    if username is not None:
-        return username
-
-    try:
-        username = reading_tw_api.auth.get_username()
-    except tweepy.error.TweepError as e:
-        logger.critical("could not read reading account's username:\n{}".format(e))
-        return 'nkdsu'
-    else:
-        cache.set(cache_key, username)
-        return username
-
-
-SHORT_URL_LENGTH: int = _get_short_url_length()
-READING_USERNAME: str = _get_reading_username()
+SHORT_URL_LENGTH: int = 20
+READING_USERNAME: str = 'nkdsu'
 
 
 def length_str(msec: float) -> str:
@@ -138,36 +93,10 @@ def length_str(msec: float) -> str:
         return '%i:%02d' % (minutes, remainder_seconds)
 
 
-def tweet_url(tweet: str) -> str:
-    return 'https://twitter.com/intent/tweet?in_reply_to={reply_id}&text={text}'.format(
-        reply_id='744237593164980224', text=quote(tweet)
-    )
-
-
 def vote_url(tracks: Iterable[Track]) -> str:
-    return tweet_url(vote_tweet(tracks))
-
-
-def vote_tweet(tracks: Iterable[Track]) -> str:
-    """
-    Return what a person should tweet to request `tracks`.
-    """
-
-    return ' '.join([t.get_public_url() for t in tracks])
-
-
-def vote_tweet_intent_url(tracks: Iterable[Track]) -> str:
-    tweet = vote_tweet(tracks)
-    return tweet_url(tweet)
-
-
-def tweet_len(tweet: str) -> int:
-    placeholder_url = ''
-    while len(placeholder_url) < SHORT_URL_LENGTH:
-        placeholder_url = placeholder_url + 'x'
-
-    shortened = re.sub(r'https?://[^\s]+', placeholder_url, tweet)
-    return len(shortened)
+    base = reverse('vote:vote')
+    query = {'t': ','.join(t.id for t in tracks)}
+    return f'{base}?{urlencode(query)}'
 
 
 def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
@@ -270,6 +199,29 @@ def reify(func: Callable[[Any], T]) -> T:
     return cast(T, ct_reify(func))
 
 
+C = TypeVar('C', bound=Callable[[VarArg(Any), KwArg(Any)], Any])
+
+
+def cached(seconds: int, cache_key: str) -> Callable[[C], C]:
+    def wrapper(func: C) -> C:
+        def wrapped(*a, **k) -> Any:
+            def do_thing(func, *a, **k) -> Any:
+                hit = cache.get(cache_key)
+
+                if hit is not None:
+                    return hit
+
+                rv = func(*a, **k)
+                cache.set(cache_key, rv, seconds)
+                return rv
+
+            return do_thing(func, *a, **k)
+
+        return cast(C, wrapped)
+
+    return wrapper
+
+
 def pk_cached(seconds: int) -> Callable[[T], T]:
     # does nothing (currently), but expresses a desire to cache stuff in future
     def wrapper(func: T) -> T:
@@ -295,6 +247,19 @@ def lastfm(**kwargs):
 
     resp = requests.get('http://ws.audioscrobbler.com/2.0/', params=params)
     return resp.json()
+
+
+def assert_never(value: NoReturn) -> NoReturn:
+    assert False, f'this code should not have been reached; got {value!r}'
+
+
+def get_profile_for(user: User) -> Profile:
+    try:
+        return user.profile
+    except ObjectDoesNotExist:
+        from .models import Profile
+
+        return Profile.objects.create(user=user)
 
 
 musicbrainzngs.set_useragent('nkd.su', '0', 'http://nkd.su/')

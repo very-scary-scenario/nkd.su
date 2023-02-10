@@ -28,6 +28,11 @@ admin_patterns = (
         url(r'^check-metadata/$', admin.CheckMetadata.as_view(), name='check_metadata'),
         url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
         url(
+            r'^post-about-play/(?P<pk>.+)/$',
+            admin.PostAboutPlay.as_view(),
+            name='post_about_play',
+        ),
+        url(
             r'^add-manual-vote/(?P<pk>.+)/$',
             admin.ManualVote.as_view(),
             name='manual_vote',
@@ -54,7 +59,6 @@ admin_patterns = (
         ),
         url(r'^inudesu/$', admin.InuDesuTracks.as_view(), name='inudesu'),
         url(r'^artless/$', admin.ArtlessTracks.as_view(), name='artless'),
-        url(r'^trivia/$', admin.BadTrivia.as_view(), name='bad_trivia'),
         url(
             r'^shortlist/(?P<pk>.+)/$', admin.MakeShortlist.as_view(), name='shortlist'
         ),
@@ -85,9 +89,14 @@ admin_patterns = (
             name='reset_shortlist_discard_selection',
         ),
         url(
-            r'^abuse/(?P<user_id>.+)/$',
-            admin.ToggleAbuser.as_view(),
-            name='toggle_abuser',
+            r'^tw-abuse/(?P<user_id>.+)/$',
+            admin.ToggleTwitterAbuser.as_view(),
+            name='toggle_twitter_abuser',
+        ),
+        url(
+            r'^local-abuse/(?P<user_id>.+)/$',
+            admin.ToggleLocalAbuser.as_view(),
+            name='toggle_local_abuser',
         ),
         url(r'^make-note/(?P<pk>.+)/$', admin.MakeNote.as_view(), name='make_note'),
         url(
@@ -126,7 +135,10 @@ api_patterns = (
 )
 
 profile_patterns = (
-    [path('<str:username>/', profiles.ProfileView.as_view(), name='profile')],
+    [
+        path('@<str:username>/', profiles.ProfileView.as_view(), name='profile'),
+        path('profile/', profiles.UpdateProfileView.as_view(), name='edit-profile'),
+    ],
     'profiles',
 )
 
@@ -135,7 +147,7 @@ urlpatterns = [
     url(r'^vote-admin/', include(admin_patterns)),
     url(r'^js/', include(js_patterns)),
     url(r'^api/', include(api_patterns)),
-    url(r'^folks/', include(profile_patterns)),
+    url(r'^', include(profile_patterns)),
     url(r'^$', views.IndexView.as_view(), name='index'),
     url(r'^browse/$', views.Browse.as_view(), name='browse'),
     url(r'^anime/$', views.BrowseAnime.as_view(), name='browse_anime'),
@@ -177,11 +189,6 @@ urlpatterns = [
         views.TwitterUserDetail.as_view(),
         name='user',
     ),
-    url(
-        r'^twitter-avatar/(?P<user_id>\d+)/$',
-        views.TwitterAvatarView.as_view(),
-        name='twitter-avatar',
-    ),
     url(r'^artist/(?P<artist>.*)/$', views.Artist.as_view(), name='artist'),
     url(r'^anime/(?P<anime>.*)/$', views.Anime.as_view(), name='anime'),
     url(r'^composer/(?P<composer>.*)/$', views.Composer.as_view(), name='composer'),
@@ -191,7 +198,10 @@ urlpatterns = [
     url(r'^info/privacy/$', views.Privacy.as_view(), name='privacy'),
     url(r'^info/tos/$', views.TermsOfService.as_view(), name='tos'),
     url(r'^info/api/$', views.APIDocs.as_view(), name='api_docs'),
-    url(r'^request/$', views.RequestAddition.as_view(), name='request_addition'),
+    url(
+        r'^request-addition/$', views.RequestAddition.as_view(), name='request_addition'
+    ),
+    url(r'^request/$', views.VoteView.as_view(), name='vote'),
     url(r'^set-dark-mode/$', views.SetDarkModeView.as_view(), name='set-dark-mode'),
     # tracks
     url(r'^(?P<pk>[0-9A-F]{16})/$', views.TrackDetail.as_view(), name='track'),

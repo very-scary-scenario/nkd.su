@@ -40,8 +40,8 @@ class DiscardShortlistAdmin(admin.ModelAdmin):
 
 
 class RequestAdmin(admin.ModelAdmin):
-    list_display = ('created', 'successful')
-    list_filter = ('successful',)
+    list_display = ('created', 'filled_by', 'claimant', 'submitted_by')
+    list_filter = ('filled_by', 'claimant', 'submitted_by')
 
 
 class NoteAdmin(admin.ModelAdmin):

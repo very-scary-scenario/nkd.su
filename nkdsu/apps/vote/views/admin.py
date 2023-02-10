@@ -1,9 +1,9 @@
 import os
 import plistlib
-from typing import Any
+from typing import Any, Optional
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import ValidationError
 from django.forms import Form
 from django.http import HttpResponse
@@ -21,13 +21,25 @@ from django.views.generic import (
 )
 from django.views.generic.base import TemplateResponseMixin
 
+from nkdsu.mixins import AnyLoggedInUserMixin
 from .js import JSApiMixin
+from ..elfs import is_elf
 from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
-from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
+from ..models import Block, Note, Profile, Request, Show, Track, TwitterUser, Vote
 from ..update_library import metadata_consistency_checks, update_library
 
 
-class AdminMixin:
+class ElfMixin(AnyLoggedInUserMixin):
+    """
+    A mixin for views that only elfs (or staff) can see.
+    """
+
+    @classmethod
+    def as_view(cls, **kw):
+        return user_passes_test(is_elf)(super().as_view(**kw))
+
+
+class AdminMixin(AnyLoggedInUserMixin):
     """
     A mixin we should apply to all admin views.
     """
@@ -41,15 +53,7 @@ class AdminMixin:
 
     @classmethod
     def as_view(cls, **kw):
-        return user_passes_test(
-            lambda u: u.is_authenticated and u.is_staff,
-        )(super().as_view(**kw))
-
-
-class AnyLoggedInUserMixin:
-    @classmethod
-    def as_view(cls, **kw):
-        return login_required(super().as_view(**kw))
+        return user_passes_test(lambda u: u.is_staff)(super().as_view(**kw))
 
 
 class TrackSpecificAdminMixin(AdminMixin):
@@ -75,6 +79,12 @@ class AdminActionMixin(AdminMixin):
             self.url = referer
 
         return self.url
+
+    def get_context_data(self, *args, **kwargs):
+        return {
+            **super().get_context_data(*args, **kwargs),
+            'next': self.get_redirect_url(),
+        }
 
     def get_ajax_success_message(self):
         self.object = self.get_object()
@@ -117,9 +127,9 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
     """
 
     template_name = 'confirm.html'
-    deets = None
+    deets: Optional[str] = None
 
-    def get_deets(self):
+    def get_deets(self) -> Optional[str]:
         return self.deets
 
     def get_cancel_url(self):
@@ -183,11 +193,20 @@ class Play(DestructiveAdminAction, DetailView):
 
     model = Track
 
-    def get_deets(self):
+    def get_deets(self) -> str:
         return str(self.get_object())
 
-    def do_thing(self):
+    def do_thing(self) -> None:
         self.get_object().play()
+
+    def get_redirect_url(self) -> str:
+        return reverse(
+            'vote:admin:post_about_play', kwargs={'pk': self.get_object().pk}
+        )
+
+
+class PostAboutPlay(TrackSpecificAdminMixin, TemplateView):
+    template_name = 'post_about_play.html'
 
 
 class Hide(AdminAction, DetailView):
@@ -395,17 +414,26 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
 
 
 class ToggleAbuser(AdminAction, DetailView):
-    model = TwitterUser
-
-    def get_object(self):
-        return self.model.objects.get(user_id=self.kwargs['user_id'])
-
-    def do_thing(self):
+    def do_thing(self) -> None:
         user = self.get_object()
         user.is_abuser = not user.is_abuser
         fmt = u"{} condemned" if user.is_abuser else u"{} redeemed"
         messages.success(self.request, fmt.format(self.get_object()))
         user.save()
+
+
+class ToggleTwitterAbuser(ToggleAbuser):
+    model = TwitterUser
+
+    def get_object(self):
+        return self.model.objects.get(user_id=self.kwargs['user_id'])
+
+
+class ToggleLocalAbuser(ToggleAbuser):
+    model = Profile
+
+    def get_object(self):
+        return self.model.objects.get(pk=self.kwargs['user_id'])
 
 
 class HiddenTracks(AdminMixin, ListView):
@@ -435,15 +463,6 @@ class ArtlessTracks(AdminMixin, ListView):
 
     def get_queryset(self):
         return self.model.objects.filter(background_art='')
-
-
-class BadTrivia(AdminMixin, ListView):
-    model = Request
-    template_name = 'trivia.html'
-    context_object_name = 'requests'
-
-    def get_queryset(self):
-        return self.model.objects.all().order_by('-created')
 
 
 class ShortlistSelection(SelectionAdminAction):
@@ -522,15 +541,15 @@ class RemoveNote(DestructiveAdminAction, DetailView):
         messages.success(self.request, 'note removed')
 
 
-class RequestList(AnyLoggedInUserMixin, ListView):
+class RequestList(ElfMixin, ListView):
     template_name = 'requests.html'
     model = Request
 
     def get_queryset(self):
-        return super().get_queryset().filter(successful=True, filled=None)
+        return super().get_queryset().filter(filled=None)
 
 
-class FillRequest(AnyLoggedInUserMixin, FormView):
+class FillRequest(ElfMixin, FormView):
     allowed_methods = ['post']
     form_class = Form
 
@@ -538,7 +557,6 @@ class FillRequest(AnyLoggedInUserMixin, FormView):
         request = get_object_or_404(
             Request,
             pk=self.kwargs['pk'],
-            successful=True,
             filled__isnull=True,
         )
 
@@ -550,7 +568,7 @@ class FillRequest(AnyLoggedInUserMixin, FormView):
         return redirect(reverse('vote:admin:requests'))
 
 
-class ClaimRequest(AnyLoggedInUserMixin, FormView):
+class ClaimRequest(ElfMixin, FormView):
     allowed_methods = ['post']
     form_class = Form
 
@@ -571,7 +589,6 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
             request = get_object_or_404(
                 Request,
                 pk=self.kwargs['pk'],
-                successful=True,
                 filled__isnull=True,
                 claimant=None,
             )
@@ -583,7 +600,7 @@ class ClaimRequest(AnyLoggedInUserMixin, FormView):
         return redirect(reverse('vote:admin:requests'))
 
 
-class CheckMetadata(AnyLoggedInUserMixin, FormView):
+class CheckMetadata(ElfMixin, FormView):
     form_class = CheckMetadataForm
     template_name = 'check_metadata.html'
 

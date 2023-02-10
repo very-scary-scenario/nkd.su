@@ -348,7 +348,6 @@
   "pk": 1,
   "model": "vote.request",
   "fields": {
-    "successful": true,
     "blob": "{\"trivia\": \"borderlands\", \"trivia_question\": \"We have always treaded ____\", \"details\": \"Should be \\\"THE iDOLM@STER\\\" - there is no \\\"the\\\" at the moment.\", \"contact\": \"\"}",
     "created": "2014-01-05T23:30:04.751Z"
   }
@@ -391,6 +390,20 @@
     "content": "public; just for this show",
     "public": true,
     "show": 79
+  }
+},
+{
+  "pk": 43,
+  "model": "auth.user",
+  "fields": {
+    "username": "someone"
+  }
+},
+{
+  "pk": 45,
+  "model": "vote.profile",
+  "fields": {
+    "user": 43
   }
 }
 ]

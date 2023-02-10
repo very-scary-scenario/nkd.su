@@ -1,14 +1,14 @@
 {% load vote_tags %}
 {% load cache %}
 
-{% cache 20 track track.pk vote_show.pk user.is_staff focus_artist cache_invalidator %}
+{% cache 20 track track.pk vote_show.pk user.is_staff track|eligible_for:user focus_artist cache_invalidator %}
   <li class="track
     {% if track.eligible %}
       eligible
     {% else %}
       ineligible
     {% endif %}
-    {% if user.is_staff or track.eligible %}
+    {% if user.is_staff or track|eligible_for:user %}
       selectable
     {% else %}
       unselectable
@@ -96,8 +96,8 @@
         {% for vote in track|votes_for:vote_show|slice:"1:" %}
           {% include "include/inline_vote.html" %}
         {% endfor %}
-        {% if track.eligible and not user.is_staff %}
-          <li class="plusone"><a target="_blank" title="request this track" href="{{ track.get_vote_url }}">
+        {% if not user.is_authenticated and track.eligible or not user.is_staff and track|eligible_for:user %}
+          <li class="plusone"><a title="request this track" href="{{ track.get_vote_url }}">
             +
           </a></li>
         {% endif %}

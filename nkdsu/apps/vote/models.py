@@ -4,17 +4,17 @@ import datetime
 import json
 import re
 from dataclasses import asdict, dataclass
+from enum import Enum, auto
 from io import BytesIO
 from string import ascii_letters
-from typing import Any, Iterable, Literal, Optional, cast
-from urllib.parse import urlparse
+from typing import Any, Iterable, Optional, cast
+from urllib.parse import quote
+from uuid import uuid4
 
 from Levenshtein import ratio
 from PIL import Image, ImageFilter
-from dateutil import parser as date_parser
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.staticfiles import finders
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files import File
@@ -23,29 +23,31 @@ from django.db import models
 from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.templatetags.static import static
-from django.urls import Resolver404, resolve, reverse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.timezone import get_default_timezone
+from django_resized import ResizedImageField
 from markdown import markdown
 import requests
-import tweepy
 
 from .managers import NoteQuerySet, TrackQuerySet
 from .parsers import ParsedArtist, parse_artist
+from .placeholder_avatars import placeholder_avatar_for
 from .utils import (
     READING_USERNAME,
+    assert_never,
+    cached,
     indefinitely,
     lastfm,
     length_str,
     memoize,
     musicbrainzngs,
     pk_cached,
-    posting_tw_api,
-    reading_tw_api,
     reify,
     split_id3_title,
-    vote_tweet_intent_url,
+    vote_url,
 )
+from .voter import Voter
 from ..vote import mixcloud
 
 
@@ -100,6 +102,7 @@ class Show(CleanOnSaveMixin, models.Model):
             )
 
     @classmethod
+    @cached(2, 'vote:models:Show:current')
     def current(cls) -> Show:
         """
         Get (or create, if necessary) the show that will next end.
@@ -270,6 +273,7 @@ class Show(CleanOnSaveMixin, models.Model):
         votes = (
             Vote.objects.filter(show=self)
             .filter(Q(twitter_user__is_abuser=False) | Q(twitter_user__isnull=True))
+            .filter(Q(user__profile__is_abuser=False) | Q(user__isnull=True))
             .prefetch_related('tracks')
             .order_by('-date')
         )
@@ -346,9 +350,11 @@ class Show(CleanOnSaveMixin, models.Model):
         ordering = ['-showtime']
 
 
-class TwitterUser(CleanOnSaveMixin, models.Model):
+class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
     class Meta:
         ordering = ['screen_name']
+
+    is_twitteruser = True
 
     # Twitter stuff
     screen_name = models.CharField(max_length=100)
@@ -366,6 +372,11 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     def __repr__(self) -> str:
         return self.screen_name
 
+    def _twitter_user_and_profile(
+        self,
+    ) -> tuple[Optional[TwitterUser], Optional[Profile]]:
+        return (self, getattr(self, 'profile', None))
+
     def twitter_url(self) -> str:
         return 'https://twitter.com/%s' % self.screen_name
 
@@ -373,170 +384,20 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         return reverse('vote:user', kwargs={'screen_name': self.screen_name})
 
     def get_toggle_abuser_url(self) -> str:
-        return reverse('vote:admin:toggle_abuser', kwargs={'user_id': self.user_id})
-
-    def get_avatar_url(self) -> str:
-        return static('i/vote-kinds/tweet.png')
-
-    @memoize
-    def get_avatar(
-        self,
-        size: Optional[Literal['original', 'normal']] = None,
-        from_cache: bool = True,
-    ) -> tuple[str, bytes]:
-        ck = f'twav:{size}:{self.pk}'
-
-        if from_cache:
-            hit = cache.get(ck)
-            if hit:
-                return hit
-
-        try:
-            url = self.get_twitter_user().profile_image_url_https
-        except tweepy.TweepError as e:
-            if (e.api_code == 63) or (e.api_code == 50):
-                # 63: user is suspended; 50: no such user
-                found = finders.find('i/suspended.png')
-                if found is None or isinstance(found, list):
-                    raise RuntimeError(f'could not find the placeholder image: {found}')
-                rv = ('image/png', open(found, 'rb').read())
-            else:
-                raise
-        else:
-            if size is not None:
-                # `size` here can, I think, also be stuff like '400x400' or whatever,
-                # but i'm not sure exactly what the limits are and we're not using any
-                # of them anyway, so here's what we support:
-                if size != 'original':
-                    url_size = '_{}'.format(size)
-                else:
-                    url_size = ''
-                url = re.sub(r'_normal(?=\.[^.]+$)', url_size, url)
-
-            resp = requests.get(url)
-            rv = (resp.headers['content-type'], resp.content)
-
-        # update_twitter_avatars will call this every day with
-        # from_cache=False, and might sometimes fail, so:
-        cache.set(ck, rv, int(60 * 60 * 24 * 2.1))
-
-        return rv
-
-    @memoize
-    def votes(self) -> models.QuerySet[Vote]:
-        return self.vote_set.order_by('-date').prefetch_related('tracks')
-
-    @memoize
-    def votes_with_liberal_preselection(self) -> models.QuerySet[Vote]:
-        return self.votes().prefetch_related(
-            'show',
-            'show__play_set',
-            'show__play_set__track',  # doesn't actually appear to work :<
+        return reverse(
+            'vote:admin:toggle_twitter_abuser', kwargs={'user_id': self.user_id}
         )
 
-    @memoize
-    def votes_for(self, show: Show) -> models.QuerySet[Vote]:
-        return self.votes().filter(show=show)
+    def get_avatar_url(self, try_profile: bool = True) -> str:
+        if try_profile and hasattr(self, 'profile'):
+            return self.profile.get_avatar_url()
+        return static(placeholder_avatar_for(self))
 
     @memoize
-    def tracks_voted_for_for(self, show: Show) -> list[Track]:
-        tracks = []
-        track_pk_set = set()
-
-        for vote in self.votes_for(show):
-            for track in vote.tracks.all():
-                if track.pk not in track_pk_set:
-                    track_pk_set.add(track.pk)
-                    tracks.append(track)
-
-        return tracks
-
-    def _batting_average(
-        self,
-        cutoff: Optional[datetime.datetime] = None,
-        minimum_weight: float = 1,
-    ) -> Optional[float]:
-        def ba(
-            pk, current_show_pk, cutoff: Optional[datetime.datetime]
-        ) -> tuple[float, float]:
-            score: float = 0
-            weight: float = 0
-
-            for vote in self.vote_set.filter(date__gt=cutoff).prefetch_related(
-                'tracks'
-            ):
-                success = vote.success()
-                if success is not None:
-                    score += success * vote.weight()
-                    weight += vote.weight()
-
-            return (score, weight)
-
-        score, weight = ba(self.pk, Show.current().pk, cutoff)
-
-        if weight >= minimum_weight:
-            return score / weight
-        else:
-            # there were no worthwhile votes
-            return None
-
-        return score
-
-    @memoize
-    def batting_average(self, minimum_weight: float = 1) -> Optional[float]:
-        """
-        Return a user's batting average for the past six months.
-        """
-
-        return self._batting_average(
-            cutoff=Show.at(timezone.now() - datetime.timedelta(days=31 * 6)).end,
-            minimum_weight=minimum_weight,
-        )
-
-    def _streak(self, ls=[]) -> int:
-        show = Show.current().prev()
-        streak = 0
-
-        while True:
-            if show is None:
-                return streak
-            elif not show.voting_allowed:
-                show = show.prev()
-            elif show.votes().filter(twitter_user=self).exists():
-                streak += 1
-                show = show.prev()
-            else:
-                break
-
-        return streak
-
-    @memoize
-    def streak(self) -> int:
-        def streak(pk, current_show):
-            return self._streak()
-
-        return streak(self.pk, Show.current())
-
-    def all_time_batting_average(self, minimum_weight: float = 1) -> Optional[float]:
-        return self._batting_average(minimum_weight=minimum_weight)
-
-    @memoize
-    @pk_cached(60 * 60 * 1)
-    def get_twitter_user(self) -> tweepy.User:
-        return reading_tw_api.get_user(user_id=self.user_id)
-
-    def update_from_api(self) -> None:
-        """
-        Update this user's database object based on the Twitter API.
-        """
-
-        api_user = self.get_twitter_user()
-
-        self.name = api_user.name
-        self.screen_name = api_user.screen_name
-        self.updated = timezone.now()
-
-        self.save()
+    def unordered_votes(self) -> models.QuerySet[Vote]:
+        if hasattr(self, 'profile'):
+            return self.profile.votes()
+        return self.vote_set.all()
 
     def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {
@@ -563,6 +424,89 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             tracks__shortlist__show=Show.current(),
             show=Show.current(),
         ).exists()
+
+    @property
+    @memoize
+    def badges(self) -> models.QuerySet[UserBadge]:
+        return self.userbadge_set.all()
+
+
+def avatar_upload_path(instance: Profile, filename: str) -> str:
+    return f"avatars/{instance.user.username}/{uuid4()}.png"
+
+
+AVATAR_SIZE = 500
+
+
+class Profile(Voter, CleanOnSaveMixin, models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    twitter_user = models.OneToOneField(
+        TwitterUser,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='profile',
+    )
+    avatar = ResizedImageField(
+        upload_to=avatar_upload_path,
+        blank=True,
+        crop=['middle', 'center'],
+        force_format='PNG',
+        keep_meta=False,
+        size=[AVATAR_SIZE, AVATAR_SIZE],
+        help_text=f'will be resized to {AVATAR_SIZE}x{AVATAR_SIZE} and converted to png, so provide that if you can',
+        # it'd be nice to optipng these as they're uploaded, but we can always do it later or in a cron job
+    )
+    display_name = models.CharField(max_length=100, blank=True)
+
+    is_patron = models.BooleanField(default=False)
+    is_abuser = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return f'{self.display_name} ({self.user.username})'
+
+    def _twitter_user_and_profile(
+        self,
+    ) -> tuple[Optional[TwitterUser], Optional[Profile]]:
+        return (self.twitter_user, self)
+
+    def get_absolute_url(self) -> str:
+        return reverse("vote:profiles:profile", kwargs={'username': self.user.username})
+
+    def get_avatar_url(self) -> str:
+        if self.avatar:
+            return self.avatar.url
+        elif self.twitter_user:
+            return self.twitter_user.get_avatar_url(try_profile=False)
+        else:
+            return static(placeholder_avatar_for(self))
+
+    @memoize
+    def unordered_votes(self) -> models.QuerySet[Vote]:
+        q = Q(user=self.user)
+        if self.twitter_user:
+            q = q | Q(twitter_user=self.twitter_user)
+
+        return Vote.objects.filter(q)
+
+    @property  # type: ignore[override]
+    def name(self) -> str:
+        return self.display_name or f'@{self.user.username}'
+
+    @name.setter
+    def name(self, name: str) -> None:
+        self.display_name = name
+
+    def get_toggle_abuser_url(self) -> str:
+        return reverse('vote:admin:toggle_local_abuser', kwargs={'user_id': self.pk})
+
+    @property
+    @memoize
+    def badges(self) -> models.QuerySet[UserBadge]:
+        if self.twitter_user:
+            return self.twitter_user.userbadge_set.all()
+        else:
+            return UserBadge.objects.none()  # to be properly handled in issue #245
 
 
 def art_path(i: Track, f: str) -> str:
@@ -975,22 +919,33 @@ class Track(CleanOnSaveMixin, models.Model):
     def public_notes(self) -> models.QuerySet[Note]:
         return self.notes().filter(public=True)
 
-    def play(self, tweet: bool = True) -> Play:
+    def play_tweet_content(self) -> str:
+        # here we add a zwsp after every . to prevent twitter from turning
+        # things into links
+        delinked_name = str(self).replace('.', '.\u200b')
+
+        status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
+
+        if len(status) > settings.TWEET_LENGTH:
+            # twitter counts ellipses as two characters for some reason, so we get rid of two:
+            status = status[: settings.TWEET_LENGTH - 2].strip() + '…'
+
+        return status
+
+    def play_tweet_intent_url(self) -> str:
+        return 'https://twitter.com/intent/tweet?text={text}'.format(
+            text=quote(self.play_tweet_content())
+        )
+
+    def play(self) -> Play:
         """
         Mark this track as played.
         """
 
-        play = Play(
+        return Play.objects.create(
             track=self,
             date=timezone.now(),
         )
-
-        play.save()
-
-        if tweet:
-            play.tweet()
-
-        return play
 
     play.alters_data = True  # type: ignore
 
@@ -1068,10 +1023,10 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def get_vote_url(self) -> str:
         """
-        Return the Twitter intent url for voting for this track alone.
+        Return the url for voting for this track alone.
         """
 
-        return vote_tweet_intent_url([self])
+        return vote_url([self])
 
     def get_lastfm_track(self) -> dict[str, Any]:
         return lastfm(
@@ -1237,12 +1192,32 @@ MANUAL_VOTE_KINDS = (
 )
 
 
+class VoteKind(Enum):
+    #: A request made using the website's built-in requesting machinery
+    local = auto()
+
+    #: A request derived from a tweet
+    twitter = auto()
+
+    #: A request manually created by an admin to reflect, for example, an email
+    manual = auto()
+
+
 class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     # universal
     tracks = models.ManyToManyField(Track, db_index=True)
     date = models.DateTimeField(db_index=True)
     show = models.ForeignKey(Show, related_name='vote_set', on_delete=models.CASCADE)
-    text = models.TextField(blank=True)
+    text = models.TextField(
+        blank=True,
+        max_length=280,
+        help_text='A comment to be shown alongside your request',
+    )
+
+    # local only
+    user = models.ForeignKey(
+        User, blank=True, null=True, db_index=True, on_delete=models.SET_NULL
+    )
 
     # twitter only
     twitter_user = models.ForeignKey(
@@ -1254,122 +1229,67 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     name = models.CharField(max_length=40, blank=True)
     kind = models.CharField(max_length=10, choices=MANUAL_VOTE_KINDS, blank=True)
 
-    @classmethod
-    def handle_tweet(cls, tweet) -> Optional[Vote]:
-        """
-        Take a tweet json object and create, save and return the vote it has
-        come to represent (or None if it's not a valid vote).
-        """
-
-        text = tweet.get('full_text', None) or tweet.get('text', None)
-
-        if text is None:
-            if 'delete' in tweet:
-                Vote.objects.filter(tweet_id=tweet['delete']['status']['id']).delete()
-            return None
-
-        if cls.objects.filter(tweet_id=tweet['id']).exists():
-            return None  # we already have this tweet
-
-        created_at = date_parser.parse(tweet['created_at'])
-
-        def mention_is_first_and_for_us(mention):
-            return (
-                mention['indices'][0] == 0
-                and mention['screen_name'] == READING_USERNAME
-            )
-
-        if not any(
-            [mention_is_first_and_for_us(m) for m in tweet['entities']['user_mentions']]
-        ):
-            return None
-
-        show = Show.at(created_at)
-
-        user_qs = TwitterUser.objects.filter(user_id=tweet['user']['id'])
-        try:
-            twitter_user = user_qs.get()
-        except TwitterUser.DoesNotExist:
-            twitter_user = TwitterUser(
-                user_id=tweet['user']['id'],
-            )
-
-        twitter_user.screen_name = tweet['user']['screen_name']
-        twitter_user.name = tweet['user']['name']
-        twitter_user.updated = created_at
-        twitter_user.save()
-
-        tracks = []
-        for url in (tweet.get('extended_entities') or tweet.get('entities', {})).get(
-            'urls', ()
-        ):
-            parsed = urlparse(url['expanded_url'])
-
-            try:
-                match = resolve(parsed.path)
-            except Resolver404:
-                continue
-
-            if match.namespace == 'vote' and match.url_name == 'track':
-                track_qs = Track.objects.public().filter(pk=match.kwargs['pk'])
-
-                try:
-                    track = track_qs.get()
-                except Track.DoesNotExist:
-                    continue
-
-                if (
-                    track.pk
-                    not in (t.pk for t in twitter_user.tracks_voted_for_for(show))
-                    and track.eligible()
-                ):
-                    tracks.append(track)
-
-        if tracks:
-            vote = cls(
-                tweet_id=tweet['id'],
-                twitter_user=twitter_user,
-                date=created_at,
-                text=text,
-            )
-
-            vote.save()
-
-            for track in tracks:
-                vote.tracks.add(track)
-
-            vote.save()
-            return vote
-        else:
-            return None
-
     def clean(self) -> None:
-        if self.is_manual:
-            if self.tweet_id or self.twitter_user_id:
-                raise ValidationError('Twitter attributes present on manual vote')
-            if not (self.name and self.kind):
-                raise ValidationError('Attributes missing from manual vote')
+        match self.vote_kind:
+            case VoteKind.twitter:
+                if self.tweet_id or self.twitter_user_id:
+                    raise ValidationError('Twitter attributes present on manual vote')
+                if self.user:
+                    raise ValidationError('Local attributes present on manual vote')
+                if not (self.name and self.kind):
+                    raise ValidationError('Attributes missing from manual vote')
+                return
+            case VoteKind.manual:
+                if self.name or self.kind:
+                    raise ValidationError('Manual attributes present on Twitter vote')
+                if self.user:
+                    raise ValidationError('Local attributes present on Twitter vote')
+                if not (self.tweet_id and self.twitter_user_id):
+                    raise ValidationError(
+                        'Twitter attributes missing from Twitter vote'
+                    )
+                return
+            case VoteKind.local:
+                if self.name or self.kind:
+                    raise ValidationError('Manual attributes present on local vote')
+                if self.tweet_id or self.twitter_user_id:
+                    raise ValidationError('Twitter attributes present on local vote')
+                if not self.user:
+                    raise ValidationError('No user specified for local vote')
+                return
+
+        assert_never(self.vote_kind)
+
+    @property
+    def vote_kind(self) -> VoteKind:
+        if self.tweet_id:
+            return VoteKind.twitter
+        elif self.kind:
+            return VoteKind.manual
         else:
-            if self.name or self.kind:
-                raise ValidationError('Manual attributes present on Twitter vote')
-            if not (self.tweet_id and self.twitter_user_id):
-                raise ValidationError('Twitter attributes missing from Twitter vote')
+            return VoteKind.local
 
-    def either_name(self) -> str:
-        if self.name:
-            return self.name
-        assert self.twitter_user is not None
-        return '@{0}'.format(self.twitter_user.screen_name)
+    @property
+    def is_twitter(self) -> bool:
+        return self.vote_kind == VoteKind.twitter
 
-    @reify
+    @property
     def is_manual(self) -> bool:
-        return not bool(self.tweet_id)
+        return self.vote_kind == VoteKind.manual
+
+    @property
+    def is_local(self) -> bool:
+        return self.vote_kind == VoteKind.local
 
     def get_image_url(self) -> str:
-        if self.twitter_user:
+        if self.user and self.user.profile:
+            return self.user.profile.get_avatar_url()
+        elif self.twitter_user:
             return self.twitter_user.get_avatar_url()
-        else:
+        elif self.vote_kind == VoteKind.manual:
             return static('i/vote-kinds/{0}.png'.format(self.kind))
+        else:
+            return static('i/noise.png')
 
     def __str__(self) -> str:
         tracks = u', '.join([t.title for t in self.tracks.all()])
@@ -1388,7 +1308,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         content = self.text
 
-        if not self.is_manual:
+        if self.vote_kind == VoteKind.twitter:
             while content.lower().startswith('@{}'.format(READING_USERNAME).lower()):
                 content = content.split(' ', 1)[1]
 
@@ -1521,33 +1441,6 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             self.track.revealed = timezone.now()
             self.track.save()
 
-    def get_tweet_text(self) -> str:
-        # here we add a zwsp after every . to prevent twitter from turning
-        # things into links
-        delinked_name = str(self.track).replace('.', '.\u200b')
-
-        status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
-
-        if len(status) > settings.TWEET_LENGTH:
-            # twitter counts ellipses as two characters for some reason, so we get rid of two:
-            status = status[: settings.TWEET_LENGTH - 2].strip() + '…'
-
-        return status
-
-    def tweet(self) -> None:
-        """
-        Send out a tweet for this play, set self.tweet_id and save.
-        """
-
-        if self.tweet_id is not None:
-            raise TypeError('This play has already been tweeted')
-
-        tweet = posting_tw_api.update_status(self.get_tweet_text())
-        self.tweet_id = tweet.id
-        self.save()
-
-    tweet.alters_data = True  # type: ignore
-
     def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {
             'time': self.date,
@@ -1607,23 +1500,45 @@ class Discard(CleanOnSaveMixin, models.Model):
 
 class Request(CleanOnSaveMixin, models.Model):
     """
-    A request for a database addition. Stored for the benefit of enjoying
-    hilarious spam.
+    A request for a database addition or modification.
     """
 
+    #: keys of `blob` that no longer get set, but which may exist on historic Requests
     METADATA_KEYS = ['trivia', 'trivia_question', 'contact']
 
     created = models.DateTimeField(auto_now_add=True)
-    successful = models.BooleanField()
     blob = models.TextField()
+    submitted_by = models.ForeignKey(
+        User,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='submitted_requests',
+        help_text='the person who submitted this request',
+    )
     filled = models.DateTimeField(blank=True, null=True)
     filled_by = models.ForeignKey(
-        User, blank=True, null=True, on_delete=models.SET_NULL
+        User,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text='the elf who fulfilled this request',
     )
     claimant = models.ForeignKey(
-        User, blank=True, null=True, related_name='claims', on_delete=models.SET_NULL
+        User,
+        blank=True,
+        null=True,
+        related_name='claims',
+        on_delete=models.SET_NULL,
+        help_text='the elf who is taking care of this request',
     )
-    track = models.ForeignKey(Track, blank=True, null=True, on_delete=models.SET_NULL)
+    track = models.ForeignKey(
+        Track,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text='the track that this request is about, if this is a request for a correction',
+    )
 
     def serialise(self, struct):
         self.blob = json.dumps(struct)

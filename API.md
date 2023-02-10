@@ -59,4 +59,3 @@ that's broken, [file a bug][new_issue].
 [eg_latest_week]: https://nkd.su/api/week/
 [eg_week]: https://nkd.su/api/week/2013-01-05/
 [eg_search]: https://nkd.su/api/search/?q=character%20song
-[pester]: https://twitter.com/intent/tweet?text=%40mftb

@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import Iterable, Optional
 
+from django.contrib.auth.models import AnonymousUser, User
 from django.db.models import QuerySet
 from django.template import Library
 from django.utils import timezone
@@ -66,3 +67,22 @@ def total_length(tracks: Iterable[Track]):
 @register.filter
 def markdown(text: str) -> SafeText:
     return mark_safe(md(text))
+
+
+@register.filter
+def is_elf(user: User) -> bool:
+    from ..elfs import is_elf
+
+    return is_elf(user)
+
+
+@register.filter
+def eligible_for(track: Track, user: User | AnonymousUser) -> bool:
+    return (
+        (user.is_authenticated)
+        and (
+            track.pk
+            not in (t.pk for t in user.profile.tracks_voted_for_for(Show.current()))
+        )
+        and track.eligible()
+    )

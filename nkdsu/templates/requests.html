@@ -17,8 +17,16 @@
         ">
           <h3>{{ object.created }}</h3>
 
+          {% if object.submitted_by %}
+            <p class="claimant">
+              submitted by <a href="{{ object.submitted_by.profile.get_absolute_url }}">@{{ object.submitted_by.username }}</a>
+            </p>
+          {% endif %}
+
           {% if object.claimant %}
-            <p class="claimant">claimed by <strong>{{ object.claimant.username }}</strong></p>
+            <p class="claimant">
+              claimed by <a href="{{ object.claimant.profile.get_absolute_url }}">@{{ object.claimant.username }}</a>
+            </p>
           {% endif %}
 
           <dl>

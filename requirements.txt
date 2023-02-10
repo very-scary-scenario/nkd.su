@@ -5,7 +5,8 @@ classtools
 django-extensions==3.1.5
 django-instant-coverage==1.2.1
 django-pipeline==2.0.8
-django-stubs>=1.12.0<1.13
+django-resized==1.0.2
+django-stubs>=1.13.0,<1.14
 django>=3.2.14,<3.3
 flake8-import-order<2
 flake8>=3.8
@@ -14,7 +15,7 @@ mypy>=0.990,<1
 ndg-httpsclient
 psycopg2
 pyasn1
-pytest>=7.1<8
+pytest>=7.1,<8
 Levenshtein>=0.20.8
 python-dateutil==2.8.2
 python-memcached==1.59
@@ -22,10 +23,9 @@ requests==2.28.1
 sly==0.5
 social-auth-app-django==5.0.0
 social-auth-core==4.3.0
-tweepy==3.10.0
 typeguard>=2.12.3,<3
 types-markdown==3.4.2.1
 types-python-dateutil==2.8.19.3
-types-requests==2.28.11.4
-types-ujson==5.5.0
-ujson==5.5.0
+types-requests==2.28.11.5
+types-ujson==5.6.0.0
+ujson==5.6.0
