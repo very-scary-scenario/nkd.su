@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from django.db.models.signals import post_save
+from django.db.models.signals import post_migrate, post_save
 
 
 class VoteConfig(AppConfig):
@@ -9,3 +9,4 @@ class VoteConfig(AppConfig):
         from . import signals
 
         post_save.connect(signals.create_profile_on_user_creation)
+        post_migrate.connect(signals.make_elfs)
