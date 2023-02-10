@@ -1,4 +1,4 @@
-It's no longer acceptable for nkd.su to require the use of Twitter, so we're
+It's no longer possible for nkd.su to require the use of Twitter, so we're
 migrating to a local account system for making requests.
 
 **If you're an existing nkd.su requester**, you should register using your
