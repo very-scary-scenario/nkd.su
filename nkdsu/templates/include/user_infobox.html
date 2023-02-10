@@ -17,7 +17,6 @@
           <form method="post" action="{% url "social:disconnect" backend="twitter" %}">
             {% csrf_token %}
 
-            {# XXX make sure this password change link works for users that have never set a password #}
             <p>
               {% if user.has_usable_password %}
                 we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_change" %}">make sure you know your nkd.su password</a> and then <button class="link">disconnect your account from twitter</button>
