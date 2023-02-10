@@ -32,6 +32,7 @@ import requests
 
 from .managers import NoteQuerySet, TrackQuerySet
 from .parsers import ParsedArtist, parse_artist
+from .placeholder_avatars import placeholder_avatar_for
 from .utils import (
     READING_USERNAME,
     assert_never,
@@ -390,7 +391,7 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
     def get_avatar_url(self, try_profile: bool = True) -> str:
         if try_profile and hasattr(self, 'profile'):
             return self.profile.get_avatar_url()
-        return static('i/vote-kinds/tweet.png')
+        return static(placeholder_avatar_for(self))
 
     @memoize
     def unordered_votes(self) -> models.QuerySet[Vote]:
@@ -478,7 +479,7 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         elif self.twitter_user:
             return self.twitter_user.get_avatar_url(try_profile=False)
         else:
-            return static('i/noise.png')
+            return static(placeholder_avatar_for(self))
 
     @memoize
     def unordered_votes(self) -> models.QuerySet[Vote]:
