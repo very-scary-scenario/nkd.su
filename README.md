@@ -24,8 +24,9 @@ box to find something more your style. Once you've found something, click the +
 button. If you can't find what you're looking for and would like to get it
 added to the library, you can fill out the [request an addition] form.
 
-If you have javascript enabled, you can select tracks so that you can request
-several at once by clicking anywhere in a track box that is not a link.
+If you have javascript enabled, you can select multiple tracks to request them
+at the same time. You can do this by clicking anywhere in a track box that is
+not a link.
 
 [request an addition]: https://nkd.su/request
 
