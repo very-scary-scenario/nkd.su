@@ -668,6 +668,10 @@ form {
       margin-top: .25em;
       display: block;
     }
+
+    .clear-file {
+      display: block;
+    }
   }
 
   ul.errorlist li {
@@ -903,7 +907,7 @@ dl.metadata-check {
 @media (min-width:551px) {
   form {
     p {
-      label {
+      > label {
         clear: both;
         float: left;
         width: 42%;
@@ -912,7 +916,7 @@ dl.metadata-check {
       }
     }
 
-    .helptext {
+    .helptext, .clear-file, .replacement-file-input {
       margin-left: 42%;
       padding-left: .5em;
     }
