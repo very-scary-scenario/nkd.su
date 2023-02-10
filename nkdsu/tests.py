@@ -4,6 +4,9 @@ from django.test import TestCase
 from instant_coverage import InstantCoverageMixin, optional
 
 
+User = get_user_model()
+
+
 class EverythingTest(
     optional.ExternalLinks,
     optional.ValidHTML5,
@@ -58,7 +61,9 @@ class EverythingTest(
         '/info/api/',
         '/info/privacy/',
         '/info/tos/',
+        '/profile/',
         '/request/',
+        '/request/?t=0007C3F2760E0541',
         '/request-addition/',
         '/roulette/',
         '/roulette/hipster/',
@@ -123,7 +128,7 @@ class EverythingTest(
 
     def setUp(self) -> None:
         super().setUp()
-        user = get_user_model()(
+        user = User(
             username='what',
             is_staff=True,
             is_superuser=True,
@@ -139,12 +144,15 @@ class EverythingTest(
 
 
 class LoggedInEverythingTest(EverythingTest):
-    covered_urls = [
-        # some views require you to be logged in
-        '/profile/',
-        '/request/?t=0007C3F2760E0541',
-    ] + EverythingTest.covered_urls
-
     def setUp(self) -> None:
         super().setUp()
+        self.assertTrue(self.client.login(username='what', password='what'))
+
+
+class StaffEverythingTest(EverythingTest):
+    def setUp(self) -> None:
+        super().setUp()
+        us = User.objects.get(username='what')
+        us.is_staff = True
+        us.save()
         self.assertTrue(self.client.login(username='what', password='what'))
