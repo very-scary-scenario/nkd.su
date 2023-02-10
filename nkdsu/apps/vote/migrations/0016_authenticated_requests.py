@@ -11,7 +11,7 @@ def remove_unsuccessful_trivia_requests(
     apps: StateApps, schema_editor: BaseDatabaseSchemaEditor
 ) -> None:
     Request = apps.get_model('vote', 'Request')
-    print(Request.objects.filter(successful=False).delete())
+    Request.objects.filter(successful=False).delete()
 
 
 def do_nothing(apps: StateApps, schema_editor: BaseDatabaseSchemaEditor) -> None:
