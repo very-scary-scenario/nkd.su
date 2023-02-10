@@ -1231,7 +1231,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
     def clean(self) -> None:
         match self.vote_kind:
-            case VoteKind.twitter:
+            case VoteKind.manual:
                 if self.tweet_id or self.twitter_user_id:
                     raise ValidationError('Twitter attributes present on manual vote')
                 if self.user:
@@ -1239,7 +1239,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
                 if not (self.name and self.kind):
                     raise ValidationError('Attributes missing from manual vote')
                 return
-            case VoteKind.manual:
+            case VoteKind.twitter:
                 if self.name or self.kind:
                     raise ValidationError('Manual attributes present on Twitter vote')
                 if self.user:
