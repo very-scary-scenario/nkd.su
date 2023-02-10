@@ -71,9 +71,9 @@ def markdown(text: str) -> SafeText:
 
 @register.filter
 def is_elf(user: User) -> bool:
-    from ..elfs import ELFS
+    from ..elfs import is_elf
 
-    return user.is_staff or user.groups.filter(pk=ELFS.pk).exists()
+    return is_elf(user)
 
 
 @register.filter

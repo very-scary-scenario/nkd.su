@@ -3,6 +3,8 @@ from django.test import TestCase
 
 from instant_coverage import InstantCoverageMixin, optional
 
+from .apps.vote.elfs import _get_elfs, is_elf
+
 
 User = get_user_model()
 
@@ -130,8 +132,6 @@ class EverythingTest(
         super().setUp()
         user = User(
             username='what',
-            is_staff=True,
-            is_superuser=True,
         )
         user.set_password('what')
         user.save()
@@ -149,10 +149,22 @@ class LoggedInEverythingTest(EverythingTest):
         self.assertTrue(self.client.login(username='what', password='what'))
 
 
+class ElfEverythingTest(EverythingTest):
+    def setUp(self) -> None:
+        super().setUp()
+        us = User.objects.get(username='what')
+        self.assertFalse(is_elf(us))
+        us.groups.add(_get_elfs())
+        us.save()
+        self.assertTrue(is_elf(us))
+        self.assertTrue(self.client.login(username='what', password='what'))
+
+
 class StaffEverythingTest(EverythingTest):
     def setUp(self) -> None:
         super().setUp()
         us = User.objects.get(username='what')
+        self.assertFalse(us.is_staff)
         us.is_staff = True
         us.save()
         self.assertTrue(self.client.login(username='what', password='what'))
