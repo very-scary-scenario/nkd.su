@@ -11,7 +11,6 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView
 
 from .apps.vote.models import Track
-from .apps.vote.utils import vote_tweet_intent_url
 from .forms import RegistrationForm
 from .mixins import MarkdownView
 
@@ -27,7 +26,6 @@ class LoginView(MarkdownView, auth_views.LoginView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
-        twitter_vote_url = None
         tracks = []
 
         query_string = urlparse(context[self.redirect_field_name]).query
@@ -40,13 +38,9 @@ class LoginView(MarkdownView, auth_views.LoginView):
                 for pk in pk_string.split(',')
             ]
 
-        if tracks:
-            twitter_vote_url = vote_tweet_intent_url(tracks)
-
         return {
             **context,
             'is_vote': bool(tracks),  # this is naive, but we don't use ?t= for a lot
-            'twitter_vote_url': twitter_vote_url,
             'registration_form': RegistrationForm(),
         }
 

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import re
 import string
 from dataclasses import dataclass
 from functools import partial
@@ -16,7 +15,7 @@ from typing import (
     TypeVar,
     cast,
 )
-from urllib.parse import quote, urlencode
+from urllib.parse import urlencode
 
 from classtools import reify as ct_reify
 from django.conf import settings
@@ -96,34 +95,6 @@ def vote_url(tracks: Iterable[Track]) -> str:
     base = reverse('vote:vote')
     query = {'t': ','.join(t.id for t in tracks)}
     return f'{base}?{urlencode(query)}'
-
-
-def tweet_url(tweet: str) -> str:
-    return 'https://twitter.com/intent/tweet?in_reply_to={reply_id}&text={text}'.format(
-        reply_id='744237593164980224', text=quote(tweet)
-    )
-
-
-def vote_tweet(tracks: Iterable[Track]) -> str:
-    """
-    Return what a person should tweet to request `tracks`.
-    """
-
-    return ' '.join([t.get_public_url() for t in tracks])
-
-
-def vote_tweet_intent_url(tracks: Iterable[Track]) -> str:
-    tweet = vote_tweet(tracks)
-    return tweet_url(tweet)
-
-
-def tweet_len(tweet: str) -> int:
-    placeholder_url = ''
-    while len(placeholder_url) < SHORT_URL_LENGTH:
-        placeholder_url = placeholder_url + 'x'
-
-    shortened = re.sub(r'https?://[^\s]+', placeholder_url, tweet)
-    return len(shortened)
 
 
 def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
