@@ -369,7 +369,7 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
         return self.screen_name
 
     def _twitter_user_and_profile(self) -> tuple[Optional[TwitterUser], Optional[Profile]]:
-        return (self, getattr(self, 'profile'))
+        return (self, getattr(self, 'profile', None))
 
     def twitter_url(self) -> str:
         return 'https://twitter.com/%s' % self.screen_name
