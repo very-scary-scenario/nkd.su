@@ -407,24 +407,6 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
             'user_id': self.user_id,
         }
 
-    @memoize
-    def is_new(self) -> bool:
-        return not self.vote_set.exclude(show=Show.current()).exists()
-
-    @memoize
-    def is_placated(self) -> bool:
-        return self.vote_set.filter(
-            tracks__play__show=Show.current(),
-            show=Show.current(),
-        ).exists()
-
-    @memoize
-    def is_shortlisted(self) -> bool:
-        return self.vote_set.filter(
-            tracks__shortlist__show=Show.current(),
-            show=Show.current(),
-        ).exists()
-
     @property
     @memoize
     def badges(self) -> models.QuerySet[UserBadge]:
@@ -1299,6 +1281,19 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             date=self.date,
             tracks=tracks,
         )
+
+    @property
+    @memoize
+    def voter(self) -> Optional[Voter]:
+        match self.vote_kind:
+            case VoteKind.manual:
+                return None
+            case VoteKind.twitter:
+                return self.twitter_user
+            case VoteKind.local:
+                return self.user.profile if self.user else None
+
+        assert_never(self.vote_kind)
 
     @memoize
     def content(self) -> str:

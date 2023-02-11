@@ -4,11 +4,11 @@
   {% if vote.birthday %}birthday{% endif %}
   {% if vote.is_twitter and vote.twitter_user.is_abuser %}abuser{% endif %}
   {% if user.is_staff %}
-    {% if vote.twitter_user.is_new %}new-user{% endif %}
-    {% if vote.twitter_user.is_placated %}placated{% endif %}
-    {% if vote.twitter_user.is_shortlisted %}shortlisted{% endif %}
+    {% if vote.voter.is_new %}new-user{% endif %}
+    {% if vote.voter.is_placated %}placated{% endif %}
+    {% if vote.voter.is_shortlisted %}shortlisted{% endif %}
   {% else %}
-    {% if vote.twitter_user.is_patron %}patron{% endif %}
+    {% if vote.voter.is_patron %}patron{% endif %}
   {% endif %}
   "
   >
