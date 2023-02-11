@@ -3,13 +3,6 @@
 <div id="footer">
   <a id="stamp" target="_blank" href="https://vscary.co"><img alt="the very scary scenario logo" src="https://vscary.co/logo-grey.svg"></a>
 
-  <form class="credit" id="dark-mode-settings" method="post" action="{% url "vote:set-dark-mode" %}">
-    {% csrf_token %}
-    <span><button class="link" name="mode" value="light">light</button></span>
-    <span><button class="link" name="mode" value="dark">dark</button></span>
-    <span><button class="link" name="mode" value="system">system</button></span>
-  </form>
-
   <p class="credit">
     {% if user.is_staff %}
       <span><a href="{% url "admin:index" %}">admin</a></span>
@@ -24,31 +17,6 @@
       <span><a href="{% url "vote:api_docs" %}">api</a></span>
       <span><a target="_blank" href="https://github.com/very-scary-scenario/nkd.su">source</a></span>
       <span><a target="_blank" href="https://github.com/very-scary-scenario/nkd.su/issues/new">issues</a></span>
-    {% endif %}
-  </p>
-
-  <p class="credit">
-    {% if user.is_authenticated %}
-      {% if user|is_elf %}
-        <span><a href="{% url "vote:browse_roles" %}">all roles</a></span>
-        <span><a href="{% url "vote:admin:requests" %}">requests</a></span>
-        <span><a href="{% url "vote:admin:check_metadata" %}">check metadata</a></span>
-      {% endif %}
-
-      {% if user.has_usable_password %}
-        <span><a href="{% url "password_change" %}">change password</a></span>
-      {% else %}
-        <span><a href="{% url "password_set" %}">set password</a></span>
-      {% endif %}
-
-      <span>
-        <a href="{% url "vote:profiles:profile" username=user.username %}">@{{ user.username }}</a>
-        (<a href="{% url "vote:profiles:edit-profile" %}">edit</a>)
-      </span>
-
-      <span><a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a></span>
-    {% else %}
-      <span><a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a></span>
     {% endif %}
   </p>
 </div>
