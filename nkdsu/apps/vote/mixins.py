@@ -100,7 +100,7 @@ class ShowDetailMixin(LetMemoizeGetObject[Show]):
     date: Optional[datetime.datetime] = None
 
     @memoize
-    def get_show(self) -> Show:
+    def get_memoizable_object(self) -> Show:
         """
         Get the show relating to :attr:`.date` or, if :attr:`.date` is
         :data:`None`, the most recent complete show. If self.default_to_current
