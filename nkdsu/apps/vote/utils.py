@@ -132,6 +132,11 @@ def split_query_into_keywords(query: str) -> list[str]:
     """
     Split the query into keywords. Where keywords are double quoted together,
     use as one keyword.
+
+    >>> split_query_into_keywords('hello there, how are you doing')
+    ['hello', 'there,', 'how', 'are', 'you', 'doing']
+    >>> split_query_into_keywords('hello there, "how are you doing"')
+    ['how are you doing', 'hello', 'there,']
     """
     keywords = []
     # Deal with quoted keywords
@@ -168,8 +173,12 @@ class Memoize(Generic[T]):
     ...     def add_to(self, arg):
     ...         return self + arg
 
-    >>> Obj.add_to(1) # not enough arguments
-    >>> Obj.add_to(1, 2) # returns 3, result is not cached
+    >>> Obj.add_to(1)
+    Traceback (most recent call last):
+      ...
+    TypeError: Obj.add_to() missing 1 required positional argument: 'arg'
+    >>> Obj.add_to(1, 2) # result is not cached
+    3
     """
 
     def __init__(self, func: Callable[..., T]) -> None:
