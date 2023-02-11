@@ -156,7 +156,7 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
         )
 
     def _streak(self, ls=[]) -> int:
-        from .models import Show
+        from .models import Show, Profile, TwitterUser
 
         show = Show.current().prev()
         streak = 0
@@ -166,7 +166,13 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
                 return streak
             elif not show.voting_allowed:
                 show = show.prev()
-            elif show.votes().filter(twitter_user=self).exists():
+            elif (
+                isinstance(self, TwitterUser)
+                and show.votes().filter(twitter_user=self).exists()
+            ) or (
+                isinstance(self, Profile)
+                and show.votes().filter(user__profile=self).exists()
+            ):
                 streak += 1
                 show = show.prev()
             else:
