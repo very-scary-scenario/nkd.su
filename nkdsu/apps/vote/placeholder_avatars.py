@@ -1,4 +1,5 @@
 from typing import Optional
+from zlib import crc32
 
 from django.contrib.staticfiles import finders
 
@@ -10,9 +11,10 @@ __all__ = ['placeholder_avatar_for']
 
 def placeholder_avatar_for(voter: Voter) -> str:
     uid: tuple[str, Optional[int], Optional[int]] = ('nkdsu-voter',) + voter.voter_id
+    hashed: int = crc32(str(uid).encode('ascii'))
 
     return _static_path_from_filename(
-        AVATAR_FILENAMES[hash(uid) % len(AVATAR_FILENAMES)]
+        AVATAR_FILENAMES[hashed % len(AVATAR_FILENAMES)]
     )
 
 
