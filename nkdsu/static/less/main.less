@@ -625,8 +625,9 @@ header {
     }
 
     details#user-menu {
-      padding: 1.65em 1em 0;
       position: relative;
+      padding: 1.65em 1em 0;
+      @media (max-width: @breakpoint) { padding: .2em; }
 
       > summary {
         cursor: pointer;
@@ -649,17 +650,24 @@ header {
 
       > ul {
         position: absolute;
+        @media (max-width: @breakpoint) { position: static }
+
         right: 0;
         top: 4em;
         z-index: 1;
         width: 13em;
+
+        @media (max-width: @breakpoint) {
+          width: auto;
+          margin-top: .3em;
+        }
 
         .noise();
         background-color: @inv_bg;
         border: 1px solid @light;
         outline: 1px solid @fg;
         border-radius: .2em;
-
+        
         > li {
           text-align: left;
           border-bottom: 1px solid fade(@light, 20%);
