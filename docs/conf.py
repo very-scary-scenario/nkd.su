@@ -19,6 +19,7 @@ author = 'Very Scary Scenario'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
+    'sphinx.ext.intersphinx',
     'sphinx_rtd_theme',
 ]
 
@@ -36,3 +37,10 @@ html_static_path = ['_static']
 autodoc_member_order = "bysource"
 autodoc_typehints_format = "short"
 autodoc_inherit_docstrings = False
+
+# intersphinx
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3.11", None),
+    "django": ("https://docs.djangoproject.com/en/3.2", "https://docs.djangoproject.com/en/3.2/_objects/"),
+}
