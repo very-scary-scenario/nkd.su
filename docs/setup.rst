@@ -24,17 +24,10 @@ System packages
 
 You will need to install some things with your system package manager:
 
-- Python 3.11 (and headers)
+- Python 3.11
 
-  If Python 3.11 isn't in your package manager, 3.9 or 3.10 will probably work,
-  but I can't guarantee it. Barring major deprecations, future versions should
-  work too.
-
-  .. _python-dev:
-
-  Some of our dependencies are distributed in source form, which means you need
-  the Python headers for them to install. This will probably be a package
-  called something like ``python3.11-dev`` in your package manager.
+  If Python 3.11 isn't in your package manager, 3.10 might work. 3.9 definitely
+  won't. Barring major deprecations, I expect future versions to probably work.
 
 - npm
 
@@ -42,6 +35,21 @@ You will need to install some things with your system package manager:
   certainly don't matter, since we do not run any part of nkd.su itself using
   node. We only use it to pull in javascript and fonts and stuff that we will
   be serving on the website [#cdns]_.
+
+.. _headers:
+
+- Headers for:
+
+   - Python itself
+
+     Some of our dependencies are distributed in source form, which means you need
+     the Python headers for them to install. This will probably be a package
+     called something like ``python3.11-dev`` in your package manager.
+
+   - libpq
+
+     You don't have install PostgreSQL itself. There should be a package called
+     something like ``libpq-dev`` in your package manager.
 
 .. [#cdns] Lots of websites use external CDNs to load common libraries. nkd.su,
    very consciously, does not and will never do that. It's a small thing, but
@@ -53,9 +61,9 @@ Python packages
 
 Before anything else, you'll need to create a :ref:`virtualenv
 <python:tut-venv>` for yourself. Then, once you're in that virtualenv, run
-``pip install -r requirements.txt`` from the repository root. If ``psycopg2``
-fails to install, that probably means you don't have the right :ref:`Python
-headers <python-dev>` installed.
+``pip install -r requirements.txt`` from the repository root. If you get
+compiler errors, at this point, that probably means you don't have the right
+:ref:`headers <headers>` installed.
 
 npm packages
 ````````````
