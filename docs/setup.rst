@@ -11,7 +11,7 @@ fine, as long as you have a package manager to install things with [#macos]_.
 
 From hereon out, I'm going to assume that you are somewhat comfortable in a
 unix-like terminal and that you have a package manager you're familiar with. I
-also will assume you have a copy of the nkd.su git repository
+also will assume you have a copy of the nkd.su git repository.
 
 .. [#macos] Sorry, I'm out of the loop on macOS package managers. I assume
    people still use Homebrew. Are Fink and MacPorts keeping up with the annual
