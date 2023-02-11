@@ -633,22 +633,25 @@ header {
         cursor: pointer;
         list-style: none;
 
-        .user-menu-icon {
+        i, img {
           display: inline-block;
         }
-        i.user-menu-icon {
+
+        i {
           font-size: 2em;
+          transform: scale(0.8);
           color: @hl;
-          &:hover { color: @inv_fg }
         }
+        &:hover i { color: @inv_fg }
+
         img.user-menu-icon {
           width: 2em;
           height: 2em;
           border-radius: .2em;
           background-color: fade(@light, 50%);
           outline: 1px solid fade(@light, 50%);
-          &:hover { outline-color: @hl }
         }
+        &:hover img { outline-color: @hl }
       }
 
       > ul {
