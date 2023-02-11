@@ -638,13 +638,23 @@ header {
         }
         i.user-menu-icon {
           font-size: 2em;
+          color: @hl;
+          &:hover { color: @inv_fg }
         }
         img.user-menu-icon {
           width: 2em;
           height: 2em;
           border-radius: .2em;
-          outline: 1px solid fade(@light, 50%);
           background-color: fade(@light, 50%);
+          outline: 1px solid fade(@light, 50%);
+          &:hover { outline-color: @hl }
+        }
+      }
+
+      &[open] > summary {
+        img.user-menu-icon {
+          outline-color: @hl;
+          &:hover { outline-color: @inv_fg; }
         }
       }
 
