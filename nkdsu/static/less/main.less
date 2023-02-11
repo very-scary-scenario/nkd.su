@@ -625,7 +625,7 @@ header {
     }
 
     details#user-menu {
-      padding: .2em 1em;
+      padding: 1.65em 1em 0;
       position: relative;
 
       > summary {
@@ -641,12 +641,16 @@ header {
         img.user-menu-icon {
           width: 2em;
           height: 2em;
+          border-radius: .2em;
+          outline: 1px solid fade(@light, 50%);
+          background-color: fade(@light, 50%);
         }
       }
 
       > ul {
         position: absolute;
         right: 0;
+        top: 4em;
         z-index: 1;
         width: 13em;
 
