@@ -101,7 +101,7 @@ def vote_url(tracks: Iterable[Track]) -> str:
 
 def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
     """
-    Take a 'Title (role)'-style ID3 title and return (title, role)
+    Take a 'Title (role)'-style ID3 title and return ``(title, role)``.
     """
     role = None
 
@@ -129,9 +129,10 @@ def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
 
 # http://zeth.net/post/327/
 def split_query_into_keywords(query: str) -> list[str]:
-    """Split the query into keywords,
-    where keywords are double quoted together,
-    use as one keyword."""
+    """
+    Split the query into keywords. Where keywords are double quoted together,
+    use as one keyword.
+    """
     keywords = []
     # Deal with quoted keywords
     while '"' in query:
