@@ -8,11 +8,11 @@ CACHES = {
     'default': {
         # i think this is a reasonable default:
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-
+        #
         # when you want to test something like stats generation, the cache will
         # just get in your way. disable it by using the dummy cache:
         # 'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-
+        #
         # if you want to use the database cache, be sure to run `python
         # manage.py createcachetable` after you've uncommented these:
         # 'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
