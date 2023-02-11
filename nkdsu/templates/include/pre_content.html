@@ -74,6 +74,7 @@
 						<a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a>
 					</li>
 				{% endif %}
+      </ul>
     </details>
   </div>
 </header>
