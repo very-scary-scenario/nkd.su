@@ -589,7 +589,6 @@ header {
   width: 100%;
   .invert();
   .noise();
-  overflow: hidden;
   text-align: center;
   padding: .2em 0 .4em;
 
@@ -601,12 +600,12 @@ header {
     @media (max-width: @breakpoint) {
       display: block !important;
 
-      > div {
+      > * {
         display: block !important;
       }
     }
 
-    > div {
+    > * {
       display: table-cell;
       vertical-align: middle;
     }
@@ -622,6 +621,61 @@ header {
 
       input {
         .search-field();
+      }
+    }
+
+    details#user-menu {
+      padding: .2em 1em;
+      position: relative;
+
+      > summary {
+        cursor: pointer;
+        list-style: none;
+
+        .user-menu-icon {
+          display: inline-block;
+        }
+        i.user-menu-icon {
+          font-size: 2em;
+        }
+        img.user-menu-icon {
+          width: 2em;
+          height: 2em;
+        }
+      }
+
+      > ul {
+        position: absolute;
+        right: 0;
+        z-index: 1;
+        width: 13em;
+
+        .noise();
+        background-color: @inv_bg;
+        border: 1px solid @light;
+        outline: 1px solid @fg;
+        border-radius: .2em;
+
+        > li {
+          text-align: left;
+          border-bottom: 1px solid fade(@light, 20%);
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          > form, > a {
+            width: 100%;
+            display: block;
+            padding: .5em;
+          }
+
+          form#dark-mode-settings {
+            .child-iter();
+            text-align: inherit;
+            margin: 0;
+          }
+        }
       }
     }
   }

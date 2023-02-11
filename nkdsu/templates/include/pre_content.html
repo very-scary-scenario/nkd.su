@@ -39,15 +39,16 @@
 				{% if user.is_authenticated %}
 					<li>
 						<a href="{% url "vote:profiles:profile" username=user.username %}">@{{ user.username }}</a>
-						(<a href="{% url "vote:profiles:edit-profile" %}">edit</a>)
 					</li>
-
+					<li>
+            <a href="{% url "vote:profiles:edit-profile" %}">edit profile</a>
+					</li>
 					<li>
 						<form id="dark-mode-settings" method="post" action="{% url "vote:set-dark-mode" %}">
 							{% csrf_token %}
-							<span><button class="link" name="mode" value="light">light</button></span>
-							<span><button class="link" name="mode" value="dark">dark</button></span>
-							<span><button class="link" name="mode" value="system">system</button></span>
+							<span><button class="link mono" name="mode" value="light">light</button></span>
+							<span><button class="link mono" name="mode" value="dark">dark</button></span>
+							<span><button class="link mono" name="mode" value="system">system</button></span>
 						</form>
 					</li>
 
