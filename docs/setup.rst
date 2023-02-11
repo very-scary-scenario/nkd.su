@@ -24,11 +24,17 @@ System packages
 
 You will need to install some things with your system package manager:
 
-- Python 3.11
+- Python 3.11 (and headers)
 
   If Python 3.11 isn't in your package manager, 3.9 or 3.10 will probably work,
   but I can't guarantee it. Barring major deprecations, future versions should
   work too.
+
+  .. _python-dev:
+
+  Some of our dependencies are distributed in source form, which means you need
+  the Python headers for them to install. This will probably be a package
+  called something like ``python3.11-dev`` in your package manager.
 
 - npm
 
@@ -47,7 +53,9 @@ Python packages
 
 Before anything else, you'll need to create a :ref:`virtualenv
 <python:tut-venv>` for yourself. Then, once you're in that virtualenv, run
-``pip install -r requirements.txt`` from the repository root.
+``pip install -r requirements.txt`` from the repository root. If ``psycopg2``
+fails to install, that probably means you don't have the right :ref:`Python
+headers <python-dev>` installed.
 
 npm packages
 ````````````
