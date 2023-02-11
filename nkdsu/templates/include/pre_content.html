@@ -43,15 +43,18 @@
 					<li>
             <a href="{% url "vote:profiles:edit-profile" %}">edit profile</a>
 					</li>
-					<li>
-						<form id="dark-mode-settings" method="post" action="{% url "vote:set-dark-mode" %}">
-							{% csrf_token %}
-							<span><button class="link mono" name="mode" value="light">light</button></span>
-							<span><button class="link mono" name="mode" value="dark">dark</button></span>
-							<span><button class="link mono" name="mode" value="system">system</button></span>
-						</form>
-					</li>
+        {% endif %}
 
+        <li>
+          <form id="dark-mode-settings" method="post" action="{% url "vote:set-dark-mode" %}">
+            {% csrf_token %}
+            <span><button class="link mono" name="mode" value="light">light</button></span>
+            <span><button class="link mono" name="mode" value="dark">dark</button></span>
+            <span><button class="link mono" name="mode" value="system">system</button></span>
+          </form>
+        </li>
+
+				{% if user.is_authenticated %}
 					{% if user|is_elf %}
 						<li><a href="{% url "vote:browse_roles" %}">all roles</a></li>
 						<li><a href="{% url "vote:admin:requests" %}">requests</a></li>
@@ -63,7 +66,6 @@
 					{% else %}
 						<li><a href="{% url "password_set" %}">set password</a></li>
 					{% endif %}
-
 					<li>
 						<a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a>
 					</li>
