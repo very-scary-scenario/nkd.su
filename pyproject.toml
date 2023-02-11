@@ -16,4 +16,4 @@ django_settings_module = "nkdsu.settings"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "nkdsu.settings_testing"
 python_files = "*.py"
-addopts = "--doctest-modules --doctest-glob=*.rst"
+addopts = "--doctest-modules --doctest-glob=*.rst --numprocesses=auto --dist=worksteal --pyargs"
