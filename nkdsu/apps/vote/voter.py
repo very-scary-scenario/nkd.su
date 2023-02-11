@@ -89,19 +89,27 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
     def is_placated(self) -> bool:
         from .models import Show
 
-        return self.votes().filter(
-            tracks__play__show=Show.current(),
-            show=Show.current(),
-        ).exists()
+        return (
+            self.votes()
+            .filter(
+                tracks__play__show=Show.current(),
+                show=Show.current(),
+            )
+            .exists()
+        )
 
     @memoize
     def is_shortlisted(self) -> bool:
         from .models import Show
 
-        return self.votes().filter(
-            tracks__shortlist__show=Show.current(),
-            show=Show.current(),
-        ).exists()
+        return (
+            self.votes()
+            .filter(
+                tracks__shortlist__show=Show.current(),
+                show=Show.current(),
+            )
+            .exists()
+        )
 
     def _batting_average(
         self,
