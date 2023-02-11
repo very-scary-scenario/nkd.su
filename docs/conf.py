@@ -42,5 +42,8 @@ autodoc_inherit_docstrings = False
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3.11", None),
-    "django": ("https://docs.djangoproject.com/en/3.2", "https://docs.djangoproject.com/en/3.2/_objects/"),
+    "django": (
+        "https://docs.djangoproject.com/en/3.2",
+        "https://docs.djangoproject.com/en/3.2/_objects/",
+    ),
 }
