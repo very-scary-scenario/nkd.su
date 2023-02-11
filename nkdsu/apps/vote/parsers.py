@@ -168,8 +168,8 @@ def check_for_group(full_string: str, maybe_group_name: str) -> bool:
 
 def chunk_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChunk]:
     """
-    Return a bunch of `ArtistChunk`s which, when combined, reform the string
-    handed in.
+    Return a bunch of :class:`ArtistChunk`\\ s which, when combined, reform the
+    string handed in.
     """
 
     # look i don't understand how sly works, and i think i might need to spend
