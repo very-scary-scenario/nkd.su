@@ -79,6 +79,17 @@ def length_str(msec: float) -> str:
     """
     Convert a number of milliseconds into a human-readable representation of
     the length of a track.
+
+    >>> length_str(999)
+    '0:00'
+    >>> length_str(1000)
+    '0:01'
+    >>> length_str(1000 * (60 + 15))
+    '1:15'
+    >>> length_str(1000 * (60 + 15))
+    '1:15'
+    >>> length_str((60 * 60 * 1000) + (1000 * (60 + 15)))
+    '1:01:15'
     """
 
     seconds = (msec or 0) / 1000
