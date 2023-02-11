@@ -1,6 +1,8 @@
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
+SPHINXAPIDOC  ?= sphinx-apidoc
 SOURCEDIR     = .
+PYTHONROOT    = ../nkdsu
 BUILDDIR      = _build
 
 help:
@@ -8,5 +10,10 @@ help:
 
 .PHONY: help Makefile
 
+clean:
+	@rm -rf "$(BUILDDIR)"
+	@rm -rf "$(SOURCEDIR)/code"
+
 %: Makefile
+	@(find $(SOURCEROOT) -path "*/migrations/*.py") | xargs $(SPHINXAPIDOC) --module-first --ext-viewcode --force -o "$(SOURCEDIR)/code" $(PYTHONROOT) -H code
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

@@ -1,5 +1,6 @@
 *.pyc
 docs/_build/
+docs/code/
 nkdsu/db*
 nkdsu/media/
 nkdsu/settings_local.py
