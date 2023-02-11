@@ -75,12 +75,18 @@ nkd.su itself
 `````````````
 
 To run the site in debug mode and not require a local PostgreSQL server, copy
-``nkdsu/settings_local.example.py`` to ``nkdsu/settings_local.py``.
+``nkdsu/settings_local_example.py`` to ``nkdsu/settings_local.py``.
 ``settings_local.py`` is ignored by git, so if you have specific Django
 settings you want to apply, feel free to add them here. Then, to set up your
 local database, run ``python manage.py migrate``.
 
 You should now be able to do routine stuff; to run the development server, run
-``python manage.py runserver``. To run the tests, run `pytest``. Have a look at
-the ``"scripts"`` section in ``package.json`` to see how to run the linters
-that get run in CI.
+``python manage.py runserver``. To run the tests, run `pytest``
+[#collectstatic]_. Have a look at the ``"scripts"`` section in ``package.json``
+to see how to run the linters that get run in CI.
+
+.. [#collectstatic] At the moment, some of the tests fail if you don't run
+   ``python manage.py collectstatic`` first. That's not ideal, but it does mean
+   that we can make sure none of the javascript or CSS build pipelines we use
+   in production are broken, so I'm not treating fixing this as a high
+   priority.
