@@ -1,0 +1,9 @@
+#!/bin/sh -ex
+
+# a script to symlink from .git/hooks/pre-commit if you want to avoid making
+# easily-catchable mistakes that CI will later complain at you about
+
+npm run-script lint-black
+npm run-script lint-flake8
+npm run-script lint-mypy
+npm run-script lint-js
