@@ -113,6 +113,27 @@ def vote_url(tracks: Iterable[Track]) -> str:
 def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
     """
     Take a 'Title (role)'-style ID3 title and return ``(title, role)``.
+
+    >>> split_id3_title('title')
+    ('title', None)
+    >>> split_id3_title('title (role)')
+    ('title', 'role')
+
+    The role will be populated if we're able to find a set of matching brackets
+    starting with the final character:
+
+    >>> split_id3_title('title ((role)')
+    ('title (', 'role')
+    >>> split_id3_title('title ((r(o)(l)e)')
+    ('title (', 'r(o)(l)e')
+
+    But no role will be returned if the brackets close more than they open, or
+    if the final character is not a ``)``:
+
+    >>> split_id3_title('title (role) ')
+    ('title (role) ', None)
+    >>> split_id3_title('title (role))')
+    ('title (role))', None)
     """
     role = None
 
