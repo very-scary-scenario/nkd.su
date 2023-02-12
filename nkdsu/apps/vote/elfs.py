@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AnonymousUser, User
 
 
-#: The of the group that elfs belong to
+#: The name of the group that elfs belong to
 ELFS_NAME = "Elfs"
 
 
