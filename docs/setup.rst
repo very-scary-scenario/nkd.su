@@ -59,7 +59,7 @@ Python packages
 Before anything else, you'll need to create a :ref:`virtualenv
 <python:tut-venv>` for yourself. Then, once you're in that virtualenv, run
 ``pip install -r requirements.txt`` from the repository root. If you get
-compiler errors, at this point, that probably means you don't have the right
+compiler errors at this point, that probably means you don't have the right
 :ref:`headers <headers>` installed.
 
 npm packages
