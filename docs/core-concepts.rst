@@ -11,23 +11,23 @@ nkd.su has a few different ways of presenting itself, depending on who is
 looking at it. Depending on what you're working on  There are:
 
 Anonymous users
-  People who aren't signed in. The site is functionally read-only for them.
+   People who aren't signed in. The site is functionally read-only for them.
 
 Normal users
-  People signed in to an account, for whom
-  :attr:`~django.contrib.auth.models.User.is_authenticated` is :data:`True`.
-  They can request music to be played and they can choose how they are
-  represented on the website.
+   People signed in to an account, for whom
+   :attr:`~django.contrib.auth.models.User.is_authenticated` is :data:`True`.
+   They can request music to be played and they can choose how they are
+   represented on the website.
 
 Elfs
-  Members of the :class:`~django.contrib.auth.models.Group` named :data:`Elfs
-  <.ELFS_NAME>`, who will pass the :func:`~.elfs.is_elf` check. These are
-  people who deal with sourcing music and metadata for the library. They have
-  access to library update requests from users.
+   Members of the :class:`~django.contrib.auth.models.Group` named :data:`Elfs
+   <.ELFS_NAME>`, who will pass the :func:`~.elfs.is_elf` check. These are
+   people who deal with sourcing music and metadata for the library. They have
+   access to library update requests from users.
 
 Staff
-  The host of the show. Represented by
-  :attr:`~django.contrib.auth.models.User.is_staff` being :data:`True`.
+   The host of the show. Represented by
+   :attr:`~django.contrib.auth.models.User.is_staff` being :data:`True`.
 
 Models
 ------
