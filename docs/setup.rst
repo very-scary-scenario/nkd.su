@@ -82,6 +82,9 @@ You should now be able to do routine stuff; to run the development server, run
 [#collectstatic]_. Have a look at the ``"scripts"`` section in ``package.json``
 to see how to run the linters that get run in CI.
 
+To build these docs, ``cd`` to the ``docs/`` directory in the repository root,
+and then run ``make html``.
+
 .. [#collectstatic] At the moment, some of the tests fail if you don't run
    ``python manage.py collectstatic`` first. That's not ideal, but it does mean
    that we can make sure none of the javascript or CSS build pipelines we use
