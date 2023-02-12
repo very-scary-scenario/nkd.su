@@ -85,5 +85,4 @@ and then run ``make html``.
 .. [#collectstatic] At the moment, some of the tests fail if you don't run
    ``python manage.py collectstatic`` first. That's not ideal, but it does mean
    that we can make sure none of the javascript or CSS build pipelines we use
-   in production are broken, so I'm not treating fixing this as a high
-   priority.
+   in production are broken, so I'm not prioritising fixing this.
