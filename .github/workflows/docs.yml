@@ -1,6 +1,6 @@
 on:
   push:
-    branches: ["main", "developer-docs"]
+    branches: ["main"]
 
 permissions:
   contents: read
