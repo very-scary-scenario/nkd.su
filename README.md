@@ -32,13 +32,11 @@ not a link.
 
 ## How does it work?
 
-Short answer: [Django].
+The code is on [GitHub] and there is developer-facing documentation at
+[dev-docs.nkd.su][dev-docs].
 
-Long answer: [GitHub]. [Suggestions] welcome.
-
-[Django]: https://www.djangoproject.com
 [Github]: https://github.com/very-scary-scenario/nkd.su
-[Suggestions]: https://github.com/very-scary-scenario/nkd.su/issues/new
+[dev-docs]: https://dev-docs.nkd.su/
 
 ## Can I build things with this data?
 
