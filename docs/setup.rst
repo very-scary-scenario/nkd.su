@@ -4,7 +4,7 @@ Setting up your local development environment
 nkd.su is primarily built and developed on linux-based computers. I do not know
 how compatible with Windows it might be, so if you do want to develop on a
 Windows system, you probably want to use `WSL`_. Running on macOS should be
-fine, as long as you have a package manager to install things with [#macos]_.
+fine, as long as you have a package manager to install things with\ [#macos]_.
 
 From hereon out, I'm going to assume that you are somewhat comfortable in a
 unix-like terminal and that you have a package manager you're familiar with. I
@@ -30,7 +30,7 @@ npm
    npm will pull Node.js in as a dependency. The versions of these almost
    certainly don't matter, since we do not run any part of nkd.su itself using
    node. We only use it to pull in javascript and fonts and stuff that we will
-   be serving on the website [#cdns]_.
+   be serving on the website\ [#cdns]_.
 
 .. _headers:
 
@@ -83,7 +83,7 @@ settings you want to apply, feel free to add them here. Then, to set up your
 local database, run ``python manage.py migrate``.
 
 You should now be able to do routine stuff; to run the development server, run
-``python manage.py runserver``. To run the tests, run ``pytest``
+``python manage.py runserver``. To run the tests, run ``pytest``\
 [#collectstatic]_. Have a look at the ``"scripts"`` section in ``package.json``
 to see how to run the linters that get run in CI.
 
