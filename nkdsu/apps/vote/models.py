@@ -1508,7 +1508,7 @@ class Request(CleanOnSaveMixin, models.Model):
     A request for a database addition or modification.
     """
 
-    #: keys of `blob` that no longer get set, but which may exist on historic Requests
+    #: keys of :attr:`blob` that no longer get set, but which may exist on historic :class:`Request`\ s
     METADATA_KEYS = ['trivia', 'trivia_question', 'contact']
 
     created = models.DateTimeField(auto_now_add=True)
