@@ -25,7 +25,8 @@ Elfs
   access to library update requests from users.
 
 Staff
-  The host of the show.  :attr:`~django.contrib.auth.is_staff`
+  The host of the show. Represented by
+  :attr:`~django.contrib.auth.models.User.is_staff` being :data:`True`.
 
 Models
 ------
