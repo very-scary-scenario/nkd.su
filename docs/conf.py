@@ -38,6 +38,9 @@ html_static_path = ['_static']
 autodoc_member_order = "bysource"
 autodoc_typehints_format = "short"
 autodoc_inherit_docstrings = False
+autodoc_default_options = {
+    'private-members': True,
+}
 
 # intersphinx
 

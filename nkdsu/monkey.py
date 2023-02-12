@@ -9,14 +9,15 @@ def patch() -> None:
 
 def _replace_password_validators_help_text_html() -> None:
     """
-    Don't use a <ul> to surface multiple password requirements against password
-    fields. It's invalid HTML when used within an `as_p`-rendered form, and
-    browsers interpret the DOM structure wrong as a result. As far as Firefox
-    is concerned, if we let Django do what it does by default, these help texts
-    aren't within a `.helptext` element at all.
+    Don't use a ``<ul>`` to surface multiple password requirements against
+    password fields. It's invalid HTML when used within an
+    :meth:`~django.forms.Form.as_p`-rendered form, and browsers interpret the
+    DOM structure wrong as a result. As far as Firefox is concerned, if we let
+    Django do what it does by default, these help texts aren't within a
+    ``.helptext`` element at all.
 
-    I hope this is made unnecessary if we adopt the `<div>`-based form renderer
-    that becomes the default in Django 5.0.
+    I hope this is made unnecessary if we adopt the ``<div>``-based form
+    renderer that becomes the default in Django 5.0.
     """
 
     from django.utils.functional import lazy
