@@ -180,7 +180,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @memoize
     def broadcasting(self, time: Optional[datetime.datetime] = None) -> bool:
         """
-        Return True if the time specified is during this week's show.
+        Return :data:`True` if the time specified is during this week's show.
         """
 
         if time is None:
@@ -192,7 +192,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @pk_cached(indefinitely)
     def next(self, create: bool = False) -> Optional[Show]:
         """
-        Return the next Show.
+        Return the :class:`Show` chronologically after that one.
         """
 
         return Show._at(self.end + datetime.timedelta(microseconds=1), create)
@@ -201,7 +201,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @pk_cached(indefinitely)
     def prev(self) -> Optional[Show]:
         """
-        Return the previous Show.
+        Return the :class:`Show` chronologically before that one.
         """
 
         qs = Show.objects.filter(end__lt=self.end)
@@ -291,7 +291,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @pk_cached(60)
     def revealed(self, show_hidden: bool = False) -> TrackQuerySet:
         """
-        Return a all public (unhidden, non-inudesu) tracks revealed in the
+        Return all public (unhidden, non-inudesu) tracks revealed in the
         library this week.
         """
 
@@ -856,7 +856,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def eligible(self) -> bool:
         """
-        Returns True if this track can be requested.
+        Returns :data:`True` if this track can be requested.
         """
 
         return not self.ineligible()
