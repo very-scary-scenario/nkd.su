@@ -59,17 +59,6 @@ MAX_REQUEST_TRACKS = 6
 
 OPTIONS = {'timeout': 20}
 
-CONSUMER_KEY = ''  # secret
-CONSUMER_SECRET = ''  # secret
-
-# @nkdsu
-READING_ACCESS_TOKEN = ''  # secret
-READING_ACCESS_TOKEN_SECRET = ''  # secret
-
-# @nekodesuradio
-POSTING_ACCESS_TOKEN = ''  # secret
-POSTING_ACCESS_TOKEN_SECRET = ''  # secret
-
 # social-auth
 SOCIAL_AUTH_TWITTER_KEY = ''  # secret
 SOCIAL_AUTH_TWITTER_SECRET = ''  # secret
