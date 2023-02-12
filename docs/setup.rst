@@ -1,8 +1,5 @@
-Developing nkd.su
-=================
-
 Setting up your local development environment
----------------------------------------------
+=============================================
 
 nkd.su is primarily built and developed on linux-based computers. I do not know
 how compatible with Windows it might be, so if you do want to develop on a
@@ -20,7 +17,7 @@ also will assume you have a copy of the nkd.su git repository.
 .. _WSL: https://learn.microsoft.com/en-us/windows/wsl/
 
 System packages
-```````````````
+---------------
 
 You will need to install some things with your system package manager:
 
@@ -57,7 +54,7 @@ You will need to install some things with your system package manager:
    internet. I am sorry that it means you have to install npm on your computer.
 
 Python packages
-```````````````
+---------------
 
 Before anything else, you'll need to create a :ref:`virtualenv
 <python:tut-venv>` for yourself. Then, once you're in that virtualenv, run
@@ -66,13 +63,13 @@ compiler errors, at this point, that probably means you don't have the right
 :ref:`headers <headers>` installed.
 
 npm packages
-````````````
+------------
 
 You don't need to manually set up an environment for this one. Run ``npm
 install`` from the repository root and you should be all.
 
 nkd.su itself
-`````````````
+-------------
 
 To run the site in debug mode and not require a local PostgreSQL server, copy
 ``nkdsu/settings_local_example.py`` to ``nkdsu/settings_local.py``.
