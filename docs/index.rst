@@ -7,6 +7,8 @@ nkd.su
    setup
    code/modules
 
+----
+
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
