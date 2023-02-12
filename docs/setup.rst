@@ -57,8 +57,15 @@ You'll need to create a local environment for nkd.su. I strongly recommend
 (like Conda or something), feel free to use that.
 
 Once you're in your environment, run ``pip install -r requirements.txt`` from
-the repository root. If you get compiler errors at this point, that probably
-means you don't have the right :ref:`headers <headers>` installed.
+the repository root to install all of our Python dependencies.
+
+If you get compiler errors at this point, please try to skim through them for
+pointers about what the problem might be. There's a decent chance that compiler
+errors mean you don't have the right :ref:`headers <headers>` installed. If you
+are unable to resolve issues involving ``psycopg2``, you may be able to work
+around them by temporarily editing ``requirements.txt`` to list
+``psycopg2-binary`` instead of ``psycopg2`` and running ``pip install -r
+requirements.txt`` again.
 
 npm packages
 ------------
