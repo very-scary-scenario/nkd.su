@@ -1,9 +1,11 @@
-node_modules/
 *.pyc
-nkdsu/settings_local.py
+docs/_build/
+docs/code/
 nkdsu/db*
-songlibrary*.xml
-nkdsu/static/less/*.css
 nkdsu/media/
+nkdsu/settings_local.py
 nkdsu/static/admin/
+nkdsu/static/less/*.css
 nkdsu/staticfiles/
+node_modules/
+songlibrary*.xml

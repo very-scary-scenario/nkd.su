@@ -31,14 +31,24 @@ class CurrentShowMixin(ContextMixin):
 
 
 class LetMemoizeGetObject(Generic[M]):
+    """
+    A view mixin that allows objects to be memoized if, and only if, the base
+    queryset is not overridden, so we can be confident that sequential
+    retrievals would have been the same.
+
+    Helpful for views where
+    :meth:`~django.views.generic.detail.SingleObjectMixin.get_object` is
+    particularly expensive.
+    """
+
     def get_object(self, queryset: Optional[QuerySet] = None) -> M:
         if queryset is None:
-            return self._get_object()
+            return self.get_memoizable_object()
         else:
             return super().get_object(queryset=queryset)  # type: ignore
 
     @abstractmethod
-    def _get_object(self) -> M:
+    def get_memoizable_object(self) -> M:
         raise NotImplementedError()
 
 
@@ -87,16 +97,18 @@ class ShowDetailMixin(LetMemoizeGetObject[Show]):
     model = Show
     view_name: Optional[str] = None
     default_to_current = False
+    date: Optional[datetime.datetime] = None
 
     @memoize
-    def _get_object(self) -> Show:
+    def get_memoizable_object(self) -> Show:
         """
-        Get the show relating to self.date or, if self.date is None, the most
-        recent complete show. If self.default_to_current is True, get the show
-        in progress rather than the most recent complete show.
+        Get the show relating to :attr:`.date` or, if :attr:`.date` is
+        :data:`None`, the most recent complete show. If self.default_to_current
+        is True, get the show in progress rather than the most recent complete
+        show.
 
-        Doesn't use Show.at() because I don't want views creating Shows in the
-        database.
+        Doesn't use :meth:`.Show.at` because I don't want views creating
+        :class:`.Show` instances in the database.
         """
 
         assert self.model is not None
@@ -246,7 +258,8 @@ class TwitterUserDetailMixin(LetMemoizeGetObject[TwitterUser]):
     model = TwitterUser
 
     @memoize
-    def _get_object(self):
+    def get_memoizable_object(self) -> TwitterUser:
+        assert hasattr(self, 'kwargs')
         user_id = self.kwargs.get('user_id')
 
         if user_id:

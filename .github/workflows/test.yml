@@ -1,5 +1,20 @@
 on: [push]
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: npm run-script test
+
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - working-directory: docs
+        run: make html
+
   black:
     runs-on: ubuntu-latest
     steps:
@@ -28,9 +43,3 @@ jobs:
       - uses: ./.github/actions/setup
       - run: npm run-script lint-js
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup
-      - run: npm run-script test
