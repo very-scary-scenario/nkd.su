@@ -3,5 +3,5 @@
 </a>
 <p class="name">{{ voter.name }}</p>
 <p><a class="screen_name" href="{{ voter.get_absolute_url }}">
-  @{% firstof voter.user.username voter.screen_name %}
+  @{% firstof voter.username %}
 </a></p>
