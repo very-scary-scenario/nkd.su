@@ -856,8 +856,8 @@ class Track(CleanOnSaveMixin, models.Model):
     @memoize
     def ineligible(self) -> Optional[str]:
         """
-        Return a string describing why a track is ineligible, or None if it
-        is not.
+        Return a string describing why a track is ineligible, or :data:`None`
+        if it is not.
         """
 
         if self.inudesu:
@@ -1330,7 +1330,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     def hat(self) -> Optional[UserBadge]:
         """
         Get the most important badge for a given vote, where the most important
-        badge is the last one defined in `BADGES`.
+        badge is the last one defined in :data:`BADGES` that we are currently
+        within the time range of.
         """
 
         badge_order = [b.slug for b in BADGES]
@@ -1362,8 +1363,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     @pk_cached(indefinitely)
     def success(self) -> Optional[float]:
         """
-        Return how successful this vote is, as a float between 0 and 1, or None
-        if we don't know yet.
+        Return how successful this :class:`Vote` is, as a :class:`float`
+        between 0 and 1, or :data:`None` if we don't know yet.
         """
 
         if not self.show.has_ended():
@@ -1594,6 +1595,8 @@ class Badge:
         }
 
 
+#: A list of accolades we can give to users for showing off on user pages and,
+#: during a specified time range, against every :class:`Vote` they make.
 BADGES: list[Badge] = [
     Badge(
         'tblc',
