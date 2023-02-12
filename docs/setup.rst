@@ -51,11 +51,13 @@ Headers for:
 Python packages
 ---------------
 
-Before anything else, you'll need to create a :ref:`virtualenv
-<python:tut-venv>` for yourself. Then, once you're in that virtualenv, run
-``pip install -r requirements.txt`` from the repository root. If you get
-compiler errors at this point, that probably means you don't have the right
-:ref:`headers <headers>` installed.
+You'll need to create a local environment for nkd.su. I strongly recommend
+:ref:`virtualenv <python:tut-venv>` for this, but if you have a tool you prefer
+(like Conda or something), feel free to use that.
+
+Once you're in your environment, run ``pip install -r requirements.txt`` from
+the repository root. If you get compiler errors at this point, that probably
+means you don't have the right :ref:`headers <headers>` installed.
 
 npm packages
 ------------
