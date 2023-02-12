@@ -78,7 +78,7 @@ settings you want to apply, feel free to add them here. Then, to set up your
 local database, run ``python manage.py migrate``.
 
 You should now be able to do routine stuff; to run the development server, run
-``python manage.py runserver``. To run the tests, run `pytest``
+``python manage.py runserver``. To run the tests, run ``pytest``
 [#collectstatic]_. Have a look at the ``"scripts"`` section in ``package.json``
 to see how to run the linters that get run in CI.
 
