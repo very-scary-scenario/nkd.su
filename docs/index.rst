@@ -5,6 +5,7 @@ nkd.su
    :maxdepth: 2
 
    setup
+   core-concepts
    code/modules
 
 ----

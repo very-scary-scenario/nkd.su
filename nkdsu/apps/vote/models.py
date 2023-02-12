@@ -1164,6 +1164,7 @@ class Track(CleanOnSaveMixin, models.Model):
         return the_track
 
 
+#: The kinds of vote that can be imported manually
 MANUAL_VOTE_KINDS = (
     ('email', 'email'),
     ('discord', 'discord'),
@@ -1175,13 +1176,13 @@ MANUAL_VOTE_KINDS = (
 
 
 class VoteKind(Enum):
-    #: A request made using the website's built-in requesting machinery
+    #: A request made using the website's built-in requesting machinery.
     local = auto()
 
-    #: A request derived from a tweet
+    #: A historical request, initially derived from a tweet we received via the Twitter API.
     twitter = auto()
 
-    #: A request manually created by an admin to reflect, for example, an email
+    #: A request manually created by an admin to reflect, for example, an email.
     manual = auto()
 
 
