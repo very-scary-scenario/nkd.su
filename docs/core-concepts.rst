@@ -10,7 +10,8 @@ Types of user
 nkd.su has a few different ways of presenting itself, depending on who is
 looking at it. Depending on what you're working on  There are:
 
-Anonymous users People who aren't signed in. The site is functionally read-only for them.
+Anonymous users
+  People who aren't signed in. The site is functionally read-only for them.
 
 Normal users
   People signed in to an account, for whom
