@@ -78,5 +78,5 @@ do that too.
 [lastfmapikeys]: http://www.last.fm/api/account/create
 [db]: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 [venv]: https://docs.python.org/3.11/tutorial/venv.html#tut-venv
-[vew]: http://virtualenvwrapper.readthedocs.org/
-[pl]: http://django-pipeline.readthedocs.org/
+[vew]: https://virtualenvwrapper.readthedocs.io/
+[pl]: https://django-pipeline.readthedocs.io/
