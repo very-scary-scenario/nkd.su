@@ -20,9 +20,9 @@ Normal users
 
 Elfs
   Members of the :class:`~django.contrib.auth.models.Group` named :data:`Elfs
-  <.ELFS>`, who will pass the :func:`~.elfs.is_elf` check. These are people who
-  deal with sourcing music and metadata for the library. They have access to
-  library update requests from users.
+  <.ELFS_NAME>`, who will pass the :func:`~.elfs.is_elf` check. These are
+  people who deal with sourcing music and metadata for the library. They have
+  access to library update requests from users.
 
 Staff
   The host of the show.  :attr:`~django.contrib.auth.is_staff`
