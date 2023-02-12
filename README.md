@@ -42,7 +42,9 @@ The code is on [GitHub] and there is developer-facing documentation at
 
 Totally! There's a JSON API documented [here](https://nkd.su/info/api/). If
 there's some data you want that isn't currently surfaced in that API, [let me
-know][Suggestions].
+know][new-issue].
+
+[new-issue]: https://github.com/very-scary-scenario/nkd.su/issues/new
 
 ## Who's to blame?
 
