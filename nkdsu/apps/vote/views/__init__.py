@@ -28,7 +28,7 @@ from django.views.generic import (
     TemplateView,
 )
 
-from nkdsu.mixins import AnyLoggedInUserMixin, MarkdownView
+from nkdsu.mixins import MarkdownView
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import Profile, Request, Show, Track, TrackQuerySet, TwitterUser, Vote
 from ..templatetags.vote_tags import eligible_for
@@ -642,7 +642,7 @@ class TermsOfService(MarkdownView):
     filename = 'TOS.md'
 
 
-class ReportBadMetadata(AnyLoggedInUserMixin, mixins.BreadcrumbMixin, FormView):
+class ReportBadMetadata(LoginRequiredMixin, mixins.BreadcrumbMixin, FormView):
     form_class = BadMetadataForm
     template_name = 'report.html'
 
@@ -665,7 +665,7 @@ class ReportBadMetadata(AnyLoggedInUserMixin, mixins.BreadcrumbMixin, FormView):
     def form_valid(self, form: BaseForm) -> HttpResponse:
         track = Track.objects.get(pk=self.kwargs['pk'])
 
-        assert self.request.user.is_authenticated  # guaranteed by AnyLoggedInUserMixin
+        assert self.request.user.is_authenticated  # guaranteed by LoginRequiredMixin
 
         request = Request(submitted_by=self.request.user, track=track)
         request.serialise(form.cleaned_data)
@@ -698,7 +698,7 @@ class ReportBadMetadata(AnyLoggedInUserMixin, mixins.BreadcrumbMixin, FormView):
         ]
 
 
-class RequestAddition(AnyLoggedInUserMixin, MarkdownView, FormView):
+class RequestAddition(LoginRequiredMixin, MarkdownView, FormView):
     form_class = RequestForm
     template_name = 'request.html'
     success_url = reverse_lazy('vote:index')
@@ -712,7 +712,7 @@ class RequestAddition(AnyLoggedInUserMixin, MarkdownView, FormView):
         }
 
     def form_valid(self, form: BaseForm) -> HttpResponse:
-        assert self.request.user.is_authenticated  # guaranteed by AnyLoggedInUserMixin
+        assert self.request.user.is_authenticated  # guaranteed by LoginRequiredMixin
         request = Request(submitted_by=self.request.user)
         request.serialise(form.cleaned_data)
         request.save()
