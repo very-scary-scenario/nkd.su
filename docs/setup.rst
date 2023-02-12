@@ -71,7 +71,7 @@ npm packages
 ------------
 
 You don't need to manually set up an environment for this one. Run ``npm
-install`` from the repository root and you should be all.
+install`` from the repository root and you should be all set.
 
 nkd.su itself
 -------------
