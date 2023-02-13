@@ -1,7 +1,22 @@
 import os
+import subprocess
 import sys
 
 import django
+
+
+def _commit_year_range() -> str:
+    commit_years = [
+        int(y)
+        for y in subprocess.check_output(
+            ['git', 'log', '--format=%cd', '--date=format:%Y']
+        )
+        .decode('ascii')
+        .split('\n')
+        if y
+    ]
+    return f'{commit_years[-1]}-{commit_years[0]}'
+
 
 sys.path.append(os.path.abspath(os.path.join(__file__, '..', '..')))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'nkdsu.settings'
@@ -10,7 +25,7 @@ django.setup()
 # Project meta
 
 project = 'nkd.su'
-copyright = '2012-2023, colons and nkd.su contributors'
+copyright = f'{_commit_year_range()}, colons and nkd.su contributors'
 author = 'Very Scary Scenario'
 
 # General
