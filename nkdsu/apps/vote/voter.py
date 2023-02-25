@@ -32,6 +32,10 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
         ...
 
     @property
+    def username(self) -> str:
+        ...
+
+    @property
     def voter_id(self) -> tuple[Optional[int], Optional[int]]:
         """
         A unique identifier that will be the same for TwitterUser and Profile
@@ -166,7 +170,7 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
                 return streak
             elif not show.voting_allowed:
                 show = show.prev()
-            elif show.votes().filter(twitter_user=self).exists():
+            elif self.votes().filter(show=show).exists():
                 streak += 1
                 show = show.prev()
             else:

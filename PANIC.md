@@ -23,16 +23,9 @@ installed.
 - Run `npm install` from the repository root to install the node tools used for
   static file preprocessing and linting.
 - Create a `nkdsu/settings_local.py`
-    - Add Twitter API keys as `CONSUMER_KEY`, `CONSUMER_SECRET`,
-      `READING_ACCESS_TOKEN`, `READING_ACCESS_TOKEN_SECRET`,
-      `POSTING_ACCESS_TOKEN` and `POSTING_ACCESS_TOKEN_SECRET`.
-        - `READING_` is for @nkdsu, `POSTING_` is for @NekoDesuRadio. Peter has
-          keys for all of these already, but you should be able to create a new
-          app and get them to reauthenticate them if you want to use your own
-          app keys.
-        - If you're setting up an instance for local development and testing,
-          you probably want to create a testing Twitter account and use that
-          instead, for both `READING_` and `POSTING_`.
+    - Add Twitter API keys as `SOCIAL_AUTH_TWITTER_KEY` and
+      `SOCIAL_AUTH_TWITTER_SECRET` It does not matter what account you use for
+      this.
     - [Make some last.fm API keys][lastfmapikeys] and add them as
       `LASTFM_API_KEY` and `LASTFM_API_SECRET`.
 - Set up a database and add the [settings][db] for it to your
@@ -85,5 +78,5 @@ do that too.
 [lastfmapikeys]: http://www.last.fm/api/account/create
 [db]: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 [venv]: https://docs.python.org/3.11/tutorial/venv.html#tut-venv
-[vew]: http://virtualenvwrapper.readthedocs.org/
-[pl]: http://django-pipeline.readthedocs.org/
+[vew]: https://virtualenvwrapper.readthedocs.io/
+[pl]: https://django-pipeline.readthedocs.io/

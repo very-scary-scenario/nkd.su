@@ -79,6 +79,17 @@ def length_str(msec: float) -> str:
     """
     Convert a number of milliseconds into a human-readable representation of
     the length of a track.
+
+    >>> length_str(999)
+    '0:00'
+    >>> length_str(1000)
+    '0:01'
+    >>> length_str(1000 * (60 + 15))
+    '1:15'
+    >>> length_str(1000 * (60 + 15))
+    '1:15'
+    >>> length_str((60 * 60 * 1000) + (1000 * (60 + 15)))
+    '1:01:15'
     """
 
     seconds = (msec or 0) / 1000
@@ -101,7 +112,28 @@ def vote_url(tracks: Iterable[Track]) -> str:
 
 def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
     """
-    Take a 'Title (role)'-style ID3 title and return (title, role)
+    Take a 'Title (role)'-style ID3 title and return ``(title, role)``.
+
+    >>> split_id3_title('title')
+    ('title', None)
+    >>> split_id3_title('title (role)')
+    ('title', 'role')
+
+    The role will be populated if we're able to find a set of matching brackets
+    starting with the final character:
+
+    >>> split_id3_title('title ((role)')
+    ('title (', 'role')
+    >>> split_id3_title('title ((r(o)(l)e)')
+    ('title (', 'r(o)(l)e')
+
+    But no role will be returned if the brackets close more than they open, or
+    if the final character is not a ``)``:
+
+    >>> split_id3_title('title (role) ')
+    ('title (role) ', None)
+    >>> split_id3_title('title (role))')
+    ('title (role))', None)
     """
     role = None
 
@@ -129,9 +161,15 @@ def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
 
 # http://zeth.net/post/327/
 def split_query_into_keywords(query: str) -> list[str]:
-    """Split the query into keywords,
-    where keywords are double quoted together,
-    use as one keyword."""
+    """
+    Split the query into keywords. Where keywords are double quoted together,
+    use as one keyword.
+
+    >>> split_query_into_keywords('hello there, how are you doing')
+    ['hello', 'there,', 'how', 'are', 'you', 'doing']
+    >>> split_query_into_keywords('hello there, "how are you doing"')
+    ['how are you doing', 'hello', 'there,']
+    """
     keywords = []
     # Deal with quoted keywords
     while '"' in query:
@@ -161,12 +199,18 @@ class Memoize(Generic[T]):
 
     If a memoized method is invoked directly on its class the result will not
     be cached. Instead the method will be invoked like a static method:
-    class Obj(object):
-        @memoize
-        def add_to(self, arg):
-            return self + arg
-    Obj.add_to(1) # not enough arguments
-    Obj.add_to(1, 2) # returns 3, result is not cached
+
+    >>> class Obj(object):
+    ...     @memoize
+    ...     def add_to(self, arg):
+    ...         return self + arg
+
+    >>> Obj.add_to(1)
+    Traceback (most recent call last):
+      ...
+    TypeError: Obj.add_to() missing 1 required positional argument: 'arg'
+    >>> Obj.add_to(1, 2) # result is not cached
+    3
     """
 
     def __init__(self, func: Callable[..., T]) -> None:

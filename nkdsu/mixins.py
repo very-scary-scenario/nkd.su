@@ -3,7 +3,6 @@ from os import path
 from typing import Any
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from markdown import markdown
 
@@ -30,9 +29,3 @@ class MarkdownView(TemplateView):
         )
 
         return context
-
-
-class AnyLoggedInUserMixin:
-    @classmethod
-    def as_view(cls, **kw):
-        return login_required(super().as_view(**kw))

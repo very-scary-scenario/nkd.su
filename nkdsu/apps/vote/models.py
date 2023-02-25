@@ -180,7 +180,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @memoize
     def broadcasting(self, time: Optional[datetime.datetime] = None) -> bool:
         """
-        Return True if the time specified is during this week's show.
+        Return :data:`True` if the time specified is during this week's show.
         """
 
         if time is None:
@@ -192,7 +192,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @pk_cached(indefinitely)
     def next(self, create: bool = False) -> Optional[Show]:
         """
-        Return the next Show.
+        Return the :class:`Show` chronologically after that one.
         """
 
         return Show._at(self.end + datetime.timedelta(microseconds=1), create)
@@ -201,7 +201,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @pk_cached(indefinitely)
     def prev(self) -> Optional[Show]:
         """
-        Return the previous Show.
+        Return the :class:`Show` chronologically before that one.
         """
 
         qs = Show.objects.filter(end__lt=self.end)
@@ -291,7 +291,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @pk_cached(60)
     def revealed(self, show_hidden: bool = False) -> TrackQuerySet:
         """
-        Return a all public (unhidden, non-inudesu) tracks revealed in the
+        Return all public (unhidden, non-inudesu) tracks revealed in the
         library this week.
         """
 
@@ -370,6 +370,10 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
         return self.screen_name
 
     def __repr__(self) -> str:
+        return self.screen_name
+
+    @property
+    def username(self):
         return self.screen_name
 
     def _twitter_user_and_profile(
@@ -451,6 +455,10 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         self,
     ) -> tuple[Optional[TwitterUser], Optional[Profile]]:
         return (self.twitter_user, self)
+
+    @property
+    def username(self):
+        return self.user.username
 
     def get_absolute_url(self) -> str:
         return reverse("vote:profiles:profile", kwargs={'username': self.user.username})
@@ -848,7 +856,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def eligible(self) -> bool:
         """
-        Returns True if this track can be requested.
+        Returns :data:`True` if this track can be requested.
         """
 
         return not self.ineligible()
@@ -856,8 +864,8 @@ class Track(CleanOnSaveMixin, models.Model):
     @memoize
     def ineligible(self) -> Optional[str]:
         """
-        Return a string describing why a track is ineligible, or None if it
-        is not.
+        Return a string describing why a track is ineligible, or :data:`None`
+        if it is not.
         """
 
         if self.inudesu:
@@ -1164,6 +1172,7 @@ class Track(CleanOnSaveMixin, models.Model):
         return the_track
 
 
+#: The kinds of vote that can be imported manually
 MANUAL_VOTE_KINDS = (
     ('email', 'email'),
     ('discord', 'discord'),
@@ -1175,13 +1184,13 @@ MANUAL_VOTE_KINDS = (
 
 
 class VoteKind(Enum):
-    #: A request made using the website's built-in requesting machinery
+    #: A request made using the website's built-in requesting machinery.
     local = auto()
 
-    #: A request derived from a tweet
+    #: A historical request, initially derived from a tweet we received via the Twitter API.
     twitter = auto()
 
-    #: A request manually created by an admin to reflect, for example, an email
+    #: A request manually created by an admin to reflect, for example, an email.
     manual = auto()
 
 
@@ -1329,7 +1338,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     def hat(self) -> Optional[UserBadge]:
         """
         Get the most important badge for a given vote, where the most important
-        badge is the last one defined in `BADGES`.
+        badge is the last one defined in :data:`BADGES` that we are currently
+        within the time range of.
         """
 
         badge_order = [b.slug for b in BADGES]
@@ -1361,8 +1371,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     @pk_cached(indefinitely)
     def success(self) -> Optional[float]:
         """
-        Return how successful this vote is, as a float between 0 and 1, or None
-        if we don't know yet.
+        Return how successful this :class:`Vote` is, as a :class:`float`
+        between 0 and 1, or :data:`None` if we don't know yet.
         """
 
         if not self.show.has_ended():
@@ -1498,7 +1508,7 @@ class Request(CleanOnSaveMixin, models.Model):
     A request for a database addition or modification.
     """
 
-    #: keys of `blob` that no longer get set, but which may exist on historic Requests
+    #: keys of :attr:`blob` that no longer get set, but which may exist on historic :class:`Request`\ s
     METADATA_KEYS = ['trivia', 'trivia_question', 'contact']
 
     created = models.DateTimeField(auto_now_add=True)
@@ -1593,6 +1603,8 @@ class Badge:
         }
 
 
+#: A list of accolades we can give to users for showing off on user pages and,
+#: during a specified time range, against every :class:`Vote` they make.
 BADGES: list[Badge] = [
     Badge(
         'tblc',

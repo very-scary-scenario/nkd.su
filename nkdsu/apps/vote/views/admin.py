@@ -4,6 +4,7 @@ from typing import Any, Optional
 
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.forms import Form
 from django.http import HttpResponse
@@ -21,7 +22,6 @@ from django.views.generic import (
 )
 from django.views.generic.base import TemplateResponseMixin
 
-from nkdsu.mixins import AnyLoggedInUserMixin
 from .js import JSApiMixin
 from ..elfs import is_elf
 from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
@@ -29,7 +29,7 @@ from ..models import Block, Note, Profile, Request, Show, Track, TwitterUser, Vo
 from ..update_library import metadata_consistency_checks, update_library
 
 
-class ElfMixin(AnyLoggedInUserMixin):
+class ElfMixin(LoginRequiredMixin):
     """
     A mixin for views that only elfs (or staff) can see.
     """
@@ -39,7 +39,7 @@ class ElfMixin(AnyLoggedInUserMixin):
         return user_passes_test(is_elf)(super().as_view(**kw))
 
 
-class AdminMixin(AnyLoggedInUserMixin):
+class AdminMixin(LoginRequiredMixin):
     """
     A mixin we should apply to all admin views.
     """
