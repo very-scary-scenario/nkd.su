@@ -41,6 +41,7 @@ class Migration(migrations.Migration):
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name='disabled_shelvings',
                         to=settings.AUTH_USER_MODEL,
+                        null=True,
                     ),
                 ),
                 (

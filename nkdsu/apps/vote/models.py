@@ -1558,6 +1558,24 @@ class Request(CleanOnSaveMixin, models.Model):
             if (k not in Request.METADATA_KEYS or k == 'contact') and v.strip()
         }
 
+    @property
+    def is_shelved(self) -> bool:
+        """
+        >>> from django.utils import timezone
+        >>> user = User.objects.create()
+        >>> request = Request(blob='{}')
+        >>> request.is_shelved
+        False
+        >>> shelving = ElfShelving.objects.create(request=request, created_by=user)
+        >>> request.is_shelved
+        True
+        >>> shelving.disabled_at = timezone.now()
+        >>> shelving.save()
+        >>> request.is_shelved
+        False
+        """
+        return False
+
     class Meta:
         ordering = ['-created']
 
@@ -1580,7 +1598,11 @@ class ElfShelving(CleanOnSaveMixin, models.Model):
 
     disabled_at = models.DateTimeField(blank=True, null=True)
     disabled_by = models.ForeignKey(
-        User, on_delete=models.PROTECT, related_name='disabled_shelvings'
+        User,
+        on_delete=models.PROTECT,
+        related_name='disabled_shelvings',
+        blank=True,
+        null=True,
     )
     reason_disabled = models.TextField(blank=True)
 
