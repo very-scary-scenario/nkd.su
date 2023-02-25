@@ -39,7 +39,7 @@ Headers for:
       Some of our dependencies are distributed in source form, which means you
       need the Python headers for them to install. This will probably be a
       package called something like ``python3.11-dev`` in your package manager.
- 
+
    libpq
       You don't have install PostgreSQL itself. There should be a package
       called something like ``libpq-dev`` in your package manager.
