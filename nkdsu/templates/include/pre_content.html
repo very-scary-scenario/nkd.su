@@ -20,64 +20,65 @@
         <p class="subtitle">next <a href="https://nekodesu.radio/">neko desu</a>: {% include "include/show_date.html" with show=current_show %}</p>
       {% endif %}
     </div>
+
     <div id="search">
       <form name="search" action="{% url "vote:search" %}" method="get">
         <input placeholder="search for anime music" id="query" type="text" name="q" value="{{ query }}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       </form>
     </div>
+  </div>
 
-    <div>
-      <details id="user-menu">
-        <summary>
-          {% if user.is_authenticated %}
-            <img class="user-menu-icon" src="{{ user.profile.get_avatar_url }}" alt="{{ user }}"/>
-          {% else %}
-            <i class="user-menu-icon fa fa-bars"></i>
-          {% endif %}
-        </summary>
+  <div id="user-menu-container">
+    <details id="user-menu">
+      <summary>
+        {% if user.is_authenticated %}
+          <img class="user-menu-icon" src="{{ user.profile.get_avatar_url }}" alt="{{ user }}"/>
+        {% else %}
+          <i class="user-menu-icon fa fa-bars"></i>
+        {% endif %}
+      </summary>
 
-        <ul>
-          {% if user.is_authenticated %}
-            <li>
-              <a href="{% url "vote:profiles:profile" username=user.username %}">@{{ user.username }}</a>
-            </li>
-            <li>
-              <a href="{% url "vote:profiles:edit-profile" %}">edit profile</a>
-            </li>
-          {% endif %}
-
+      <ul>
+        {% if user.is_authenticated %}
           <li>
-            <form id="dark-mode-settings" method="post" action="{% url "vote:set-dark-mode" %}">
-              {% csrf_token %}
-              <span><button class="link mono" name="mode" value="light">light</button></span>
-              <span><button class="link mono" name="mode" value="dark">dark</button></span>
-              <span><button class="link mono" name="mode" value="system">system</button></span>
-            </form>
+            <a href="{% url "vote:profiles:profile" username=user.username %}">@{{ user.username }}</a>
           </li>
+          <li>
+            <a href="{% url "vote:profiles:edit-profile" %}">edit profile</a>
+          </li>
+        {% endif %}
 
-          {% if user.is_authenticated %}
-            {% if user|is_elf %}
-              <li><a href="{% url "vote:browse_roles" %}">all roles</a></li>
-              <li><a href="{% url "vote:admin:requests" %}">requests</a></li>
-              <li><a href="{% url "vote:admin:check_metadata" %}">check metadata</a></li>
-            {% endif %}
+        <li>
+          <form id="dark-mode-settings" method="post" action="{% url "vote:set-dark-mode" %}">
+            {% csrf_token %}
+            <span><button class="link mono" name="mode" value="light">light</button></span>
+            <span><button class="link mono" name="mode" value="dark">dark</button></span>
+            <span><button class="link mono" name="mode" value="system">system</button></span>
+          </form>
+        </li>
 
-            {% if user.has_usable_password %}
-              <li><a href="{% url "password_change" %}">change password</a></li>
-            {% else %}
-              <li><a href="{% url "password_set" %}">set password</a></li>
-            {% endif %}
-            <li>
-              <a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a>
-            </li>
-          {% else %}
-            <li>
-              <a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a>
-            </li>
+        {% if user.is_authenticated %}
+          {% if user|is_elf %}
+            <li><a href="{% url "vote:browse_roles" %}">all roles</a></li>
+            <li><a href="{% url "vote:admin:requests" %}">requests</a></li>
+            <li><a href="{% url "vote:admin:check_metadata" %}">check metadata</a></li>
           {% endif %}
-        </ul>
-      </details>
-    </div>
+
+          {% if user.has_usable_password %}
+            <li><a href="{% url "password_change" %}">change password</a></li>
+          {% else %}
+            <li><a href="{% url "password_set" %}">set password</a></li>
+          {% endif %}
+          <li>
+            <a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a>
+          </li>
+        {% else %}
+          <li>
+            <a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a>
+          </li>
+        {% endif %}
+      </ul>
+    </details>
   </div>
 </header>
 <ul id="nav">
