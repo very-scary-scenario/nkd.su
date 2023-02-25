@@ -53,6 +53,5 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
     ]
