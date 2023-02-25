@@ -48,5 +48,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
-      - run: apt install ripgrep
+      - run: sudo apt install ripgrep
       - run: npm run-script lint-trailing-whitespace
