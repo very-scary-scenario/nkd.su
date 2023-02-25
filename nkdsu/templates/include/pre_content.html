@@ -85,7 +85,7 @@
   {% for s in sections %}
   <li id="{{ s.name|slugify }}-header-link" class="
     {% if s.active %}active{% endif %}
-    {% if s.name == 'new tracks' and True %}lookatme{% endif %}
+    {% if s.name == 'new tracks' and current_show.revealed %}lookatme{% endif %}
   ">
     <a href="{{ s.url }}">{% if s.name == 'new tracks' and current_show.revealed %}<span class="new_tracks">{{ current_show.revealed|length }}</span> {% endif %}<i></i><span class="name">{{ s.name }}</span></a>
     </li>
