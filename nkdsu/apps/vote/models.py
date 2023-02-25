@@ -1564,6 +1564,7 @@ class Request(CleanOnSaveMixin, models.Model):
         >>> from django.utils import timezone
         >>> user = User.objects.create()
         >>> request = Request(blob='{}')
+        >>> request.save()
         >>> request.is_shelved
         False
         >>> shelving = ElfShelving.objects.create(request=request, created_by=user)
@@ -1574,7 +1575,7 @@ class Request(CleanOnSaveMixin, models.Model):
         >>> request.is_shelved
         False
         """
-        return False
+        return self.shelvings.filter(disabled_at__isnull=True).exists()
 
     class Meta:
         ordering = ['-created']
