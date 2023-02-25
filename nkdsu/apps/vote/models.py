@@ -1562,6 +1562,25 @@ class Request(CleanOnSaveMixin, models.Model):
         ordering = ['-created']
 
 
+class ElfShelving(CleanOnSaveMixin, models.Model):
+    """
+    An expression by a :ref:`elf <elfs>` that a :class:`Request` cannot be
+    :attr:`~.Request.filled` at the moment.
+    """
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='created_shelvings'
+    )
+    reason_created = models.TextField(blank=True)
+
+    disabled_at = models.DateTimeField(blank=True, null=True)
+    disabled_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='disabled_shelvings'
+    )
+    reason_disabled = models.TextField(blank=True)
+
+
 NoteManager = models.Manager.from_queryset(NoteQuerySet)
 
 
