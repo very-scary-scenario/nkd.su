@@ -240,7 +240,12 @@ def memoize(func: Callable[..., T]) -> Callable[..., T]:
 
 
 def reify(func: Callable[[Any], T]) -> T:
-    return cast(T, ct_reify(func))
+    wrapped = ct_reify(func)
+
+    # make doctests discoverable by pytest:
+    wrapped.__module__ = func.__module__
+
+    return cast(T, wrapped)
 
 
 C = TypeVar('C', bound=Callable[[VarArg(Any), KwArg(Any)], Any])
