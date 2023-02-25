@@ -1,4 +1,8 @@
 *.pyc
+/.env
+/.venv
+/env
+/venv
 /docs/_build/
 /docs/code/
 /nkdsu/db*

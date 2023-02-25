@@ -54,7 +54,8 @@ Python packages
 
 You'll need to create a local environment for nkd.su. I strongly recommend
 :ref:`virtualenv <python:tut-venv>` for this, but if you have a tool you prefer
-(like Conda or something), feel free to use that.
+(like Conda or something), feel free to use that. Common virtualenv names like
+``venv`` in the repository root will be ignored by git.
 
 Once you're in your environment, run ``pip install -r requirements.txt`` from
 the repository root to install all of our Python dependencies.
