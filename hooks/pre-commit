@@ -4,6 +4,7 @@
 # easily-catchable mistakes that CI will later complain at you about
 
 black .
+npm run-script lint-trailing-whitespace
 npm run-script lint-flake8
 npm run-script lint-mypy
 npm run-script lint-js
