@@ -1,6 +1,7 @@
 on: [push]
 jobs:
   test:
+    name: "run unit tests"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -8,6 +9,7 @@ jobs:
       - run: npm run-script test
 
   migrations:
+    name: "check django migrations"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,6 +17,7 @@ jobs:
       - run: npm run-script check-migrations
 
   docs:
+    name: "ensure the docs build"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
