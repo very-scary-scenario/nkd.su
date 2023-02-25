@@ -3,7 +3,7 @@ function bindUserMenu() {
 
   document.addEventListener('click', e => {
     if (menu.open && !menu.contains(e.target)) {
-      menu.open = false
+      menu.removeAttribute('open')
     }
   })
 }
