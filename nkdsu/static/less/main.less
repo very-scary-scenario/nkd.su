@@ -634,9 +634,11 @@ header {
 
         list-style: none;
         &::-webkit-details-marker { display: none }
+        &::before { display: none }  // for when details-polyfill is applied on firefox 43
 
         i, img {
           display: inline-block;
+          pointer-events: none;  // lets details-polyfill catch clicks properly
         }
 
         i {
