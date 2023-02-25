@@ -416,9 +416,16 @@ class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
         return Track.objects.public().filter(year=int(self.kwargs['year']))
 
     def get_context_data(self):
+        year = int(self.kwargs['year'])
+
+        def year_if_tracks_exist(year: int) -> Optional[int]:
+            return year if Track.objects.public().filter(year=year) else None
+
         return {
             **super().get_context_data(),
-            'year': self.kwargs['year'],
+            'year': year,
+            'previous_year': year_if_tracks_exist(year - 1),
+            'next_year': year_if_tracks_exist(year + 1),
         }
 
 
