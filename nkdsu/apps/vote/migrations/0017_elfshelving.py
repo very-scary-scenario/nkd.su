@@ -43,6 +43,14 @@ class Migration(migrations.Migration):
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
+                (
+                    'request',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='shelvings',
+                        to='vote.request',
+                    ),
+                ),
             ],
             bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),
