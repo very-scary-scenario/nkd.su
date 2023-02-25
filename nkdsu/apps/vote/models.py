@@ -1558,7 +1558,7 @@ class Request(CleanOnSaveMixin, models.Model):
             if (k not in Request.METADATA_KEYS or k == 'contact') and v.strip()
         }
 
-    @property
+    @reify
     def is_shelved(self) -> bool:
         """
         >>> from django.utils import timezone
@@ -1568,10 +1568,12 @@ class Request(CleanOnSaveMixin, models.Model):
         >>> request.is_shelved
         False
         >>> shelving = ElfShelving.objects.create(request=request, created_by=user)
+        >>> del request.is_shelved  # to make @reify forget the cached response
         >>> request.is_shelved
         True
         >>> shelving.disabled_at = timezone.now()
         >>> shelving.save()
+        >>> del request.is_shelved
         >>> request.is_shelved
         False
         """
