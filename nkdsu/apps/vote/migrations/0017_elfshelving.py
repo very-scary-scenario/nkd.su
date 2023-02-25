@@ -42,6 +42,7 @@ class Migration(migrations.Migration):
                         related_name='disabled_shelvings',
                         to=settings.AUTH_USER_MODEL,
                         null=True,
+                        blank=True,
                     ),
                 ),
                 (
