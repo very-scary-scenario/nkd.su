@@ -14,7 +14,9 @@
 <p class="aside">added to the library on <a href="{{ track.show_revealed.get_revealed_url }}">{{ track.revealed|date:"F"|lower }}&nbsp;{{ track.revealed|date:"jS, Y" }}</a></p>
 
 {% if track.plays %}
-  <h3>play history</h3>
+  <h3>
+    {{ track.plays|length }} {{ track.plays|length|pluralize:"play,plays" }} on record:
+  </h3>
   <ul class="plays">
     {% for play in track.plays %}
       <li>
