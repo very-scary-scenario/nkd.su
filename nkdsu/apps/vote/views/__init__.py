@@ -413,7 +413,7 @@ class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
     template_name = 'year.html'
 
     def get_track_queryset(self) -> TrackQuerySet:
-        return Track.objects.filter(year=int(self.kwargs['year']))
+        return Track.objects.public().filter(year=int(self.kwargs['year']))
 
     def get_context_data(self):
         return {
