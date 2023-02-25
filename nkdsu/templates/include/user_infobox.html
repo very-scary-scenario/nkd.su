@@ -1,8 +1,14 @@
+{% load vote_tags %}
+
 <div class="self-infobox">
   {% if user.profile.twitter_user %}
     <p>
       your account has adopted historical requests and statistics from twitter user @{{ user.profile.twitter_user.screen_name }}
     </p>
+  {% endif %}
+
+  {% if user|is_elf %}
+    <p>you are one of the elfs</p>
   {% endif %}
 
   {% if user.social_auth.all %}
