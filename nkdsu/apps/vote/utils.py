@@ -244,6 +244,7 @@ def reify(func: Callable[[Any], T]) -> T:
 
     # make doctests discoverable by pytest:
     wrapped.__module__ = func.__module__
+    wrapped.__wrapped__ = func
 
     return cast(T, wrapped)
 
