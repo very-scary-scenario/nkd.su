@@ -13,7 +13,7 @@ $key-avatar-thumb-size: $avatar-thumb-size * 1.5;
 $fhl: fade($hl, 0%);
 
 @mixin heavy-glow($color, $important: "") {
-  text-shadow: $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em $important;
+  text-shadow: $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em unquote($important);
 }
 
 @mixin tinytrack() {

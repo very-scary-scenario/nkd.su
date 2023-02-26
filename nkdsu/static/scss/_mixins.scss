@@ -34,7 +34,7 @@
 }
 
 @mixin noise($important: "") {
-  background-image: url('../i/noise.png') $important;
+  background-image: url('../i/noise.png') unquote($important);
 }
 
 @mixin search-field {
@@ -74,14 +74,14 @@
 }
 
 @mixin uninvert($important: "") {
-  background-color: none $important;
-  color: $fg $important;
-  text-shadow: $basic-shadow 0 .1em 0 $important;
+  background-color: none unquote($important);
+  color: $fg unquote($important);
+  text-shadow: $basic-shadow 0 .1em 0 unquote($important);
   a, button.link {
     &:hover {
-      color: $fg $important;
+      color: $fg unquote($important);
     }
-    color: $hl $important;
+    color: $hl unquote($important);
   }
 }
 
