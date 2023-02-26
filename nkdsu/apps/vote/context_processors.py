@@ -1,10 +1,12 @@
 from typing import Any
 
+from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.urls import reverse
 
+from .elfs import is_elf
 from .forms import DarkModeForm
-from .models import Show, Track
+from .models import Request, Show, Track
 from .utils import indefinitely
 
 
@@ -46,6 +48,18 @@ def get_sections(request):
     ]
 
 
+def get_pending_requests(request: HttpRequest) -> QuerySet[Request]:
+    if not is_elf(request.user):
+        return Request.objects.none()
+    return Request.objects.filter(
+        shelvings__isnull=True,
+        filled__isnull=True,
+    ).exclude(
+        shelvings__isnull=False,
+        shelvings__disabled_at__isnull=True,
+    )
+
+
 def get_parent(request: HttpRequest) -> str:
     return 'base.html'
 
@@ -64,6 +78,7 @@ def nkdsu_context_processor(request: HttpRequest) -> dict[str, Any]:
     return {
         'current_show': current_show,
         'vote_show': current_show,
+        'pending_requests': get_pending_requests(request),
         'sections': get_sections(request),
         'indefinitely': indefinitely,
         'parent': get_parent(request),

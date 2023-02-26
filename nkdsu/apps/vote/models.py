@@ -1558,8 +1558,63 @@ class Request(CleanOnSaveMixin, models.Model):
             if (k not in Request.METADATA_KEYS or k == 'contact') and v.strip()
         }
 
+    @reify
+    def active_shelving(self) -> Optional[ElfShelving]:
+        try:
+            return self.shelvings.get(disabled_at__isnull=True)
+        except ElfShelving.DoesNotExist:
+            return None
+
+    @property
+    def is_shelved(self) -> bool:
+        """
+        >>> from django.utils import timezone
+        >>> user = User.objects.create()
+        >>> request = Request(blob='{}')
+        >>> request.save()
+        >>> request.is_shelved
+        False
+        >>> shelving = ElfShelving.objects.create(request=request, created_by=user)
+        >>> del request.active_shelving  # to make @reify forget the cached response
+        >>> request.is_shelved
+        True
+        >>> shelving.disabled_at = timezone.now()
+        >>> shelving.save()
+        >>> del request.active_shelving
+        >>> request.is_shelved
+        False
+        """
+        return self.active_shelving is not None
+
     class Meta:
         ordering = ['-created']
+
+
+class ElfShelving(CleanOnSaveMixin, models.Model):
+    """
+    An expression by a :ref:`elf <elfs>` that a :class:`Request` cannot be
+    :attr:`~.Request.filled` at the moment.
+    """
+
+    request = models.ForeignKey(
+        Request, on_delete=models.CASCADE, related_name='shelvings'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='created_shelvings'
+    )
+    reason_created = models.TextField(blank=True)
+
+    disabled_at = models.DateTimeField(blank=True, null=True)
+    disabled_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name='disabled_shelvings',
+        blank=True,
+        null=True,
+    )
+    reason_disabled = models.TextField(blank=True)
 
 
 NoteManager = models.Manager.from_queryset(NoteQuerySet)

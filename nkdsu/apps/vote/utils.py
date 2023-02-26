@@ -4,6 +4,7 @@ import logging
 import string
 from dataclasses import dataclass
 from functools import partial
+from os import environ
 from typing import (
     Any,
     Callable,
@@ -30,6 +31,8 @@ import requests
 if TYPE_CHECKING:
     from .models import Profile, Track
 
+
+BUILDING_DOCS = bool(environ.get('BUILDING_DOCS'))
 
 logger = logging.getLogger(__name__)
 
@@ -240,7 +243,19 @@ def memoize(func: Callable[..., T]) -> Callable[..., T]:
 
 
 def reify(func: Callable[[Any], T]) -> T:
-    return cast(T, ct_reify(func))
+    wrapped = ct_reify(func)
+
+    # make doctests discoverable by pytest:
+    wrapped.__module__ = func.__module__
+
+    # pytest needs us to tell it where the wrapped function came from so that
+    # it can show errors in context. sphinx gets upset about callables if we
+    # set __wrapped__ as a method but surface something static. so, to placate
+    # both at once:
+    if not BUILDING_DOCS:
+        wrapped.__wrapped__ = func
+
+    return cast(T, wrapped)
 
 
 C = TypeVar('C', bound=Callable[[VarArg(Any), KwArg(Any)], Any])

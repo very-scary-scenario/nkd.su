@@ -586,57 +586,69 @@ body[data-dark-mode=system] [value=system] {
 }
 
 header {
-  width: 100%;
   .invert();
   .noise();
-  text-align: center;
-  padding: .2em 0 .4em;
+
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0 .5em .5em;
 
   #header-content {
-    margin: 0 auto;
-    max-width: 80em;
-    display: table;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
 
-    @media (max-width: @breakpoint) {
-      display: block !important;
+    #titles {
+      text-align: center;
 
-      > * {
-        display: block !important;
+      .subtitle {
+        font-size: .8em;
+        margin: 0 auto .3em;
+        padding: 0 .5em;
       }
-    }
-
-    > * {
-      display: table-cell;
-      vertical-align: middle;
-    }
-
-    .subtitle {
-      font-size: .8em;
-      margin: 0 auto .4em;
-      padding: 0 .5em;
     }
 
     #search {
-      padding: .2em 1em;
-
       input {
+        margin: 0 .5em;
         .search-field();
       }
     }
+  }
 
+  #user-menu-container {
     details#user-menu {
       position: relative;
-      padding: 0 1em;
-      @media (max-width: @breakpoint) { padding: .2em; }
+      padding: 0 .5em;
 
       > summary {
         cursor: pointer;
 
         list-style: none;
         &::-webkit-details-marker { display: none }
+        &::before { display: none }  // for when details-polyfill is applied on firefox 43
 
-        i, img {
+        &.pending-requests::before {
+          content: ' ';
+          display: block;
+          position: absolute;
+          top: -.2em;
+          right: .3em;
+          width: .6em;
+          height: .6em;
+          background-color: @pink;
+          border: 1px solid fade(@inv_bg, 50%);
+          border-radius: 50%;
+          background-clip: padding-box;
+        }
+
+        .user-menu-icon {
           display: inline-block;
+          vertical-align: middle;
+          pointer-events: none;  // lets details-polyfill catch clicks properly
         }
 
         i {
@@ -658,24 +670,18 @@ header {
 
       > ul {
         position: absolute;
-        @media (max-width: @breakpoint) { position: static }
 
         right: 0.5em;
         top: 2.3em;
-        z-index: 1;
+        z-index: 10;
         width: 13em;
-
-        @media (max-width: @breakpoint) {
-          width: auto;
-          margin-top: .3em;
-        }
 
         .noise();
         background-color: @inv_bg;
         border: 1px solid @light;
-        outline: 1px solid @fg;
+        box-shadow: 0 0 0 1px @fg;
         border-radius: .2em;
-        
+
         > li {
           text-align: left;
           border-bottom: 1px solid fade(@light, 20%);
@@ -688,6 +694,11 @@ header {
             width: 100%;
             display: block;
             padding: .5em;
+
+            &.alert::before {
+              content: '●';
+              color: @pink;
+            }
           }
 
           form#dark-mode-settings {
@@ -942,6 +953,11 @@ dl.metadata-check {
 #requests {
   > li {
     margin: 1em 0 2em;
+
+    &.shelved {
+      opacity: .5;
+    }
+
     &.claimed {
       opacity: .5;
 
@@ -972,8 +988,11 @@ dl.metadata-check {
       }
     }
 
-    > form {
-      display: inline-block;
+    .request-actions {
+      > form {
+        display: inline-block;
+        margin-right: 1em;
+      }
     }
   }
 }

@@ -25,6 +25,11 @@ admin_patterns = (
             admin.ClaimRequest.as_view(),
             name='claim_request',
         ),
+        url(
+            r'^requests/shelf/(?P<pk>[^/]+)/$',
+            admin.ShelfRequest.as_view(),
+            name='shelf_request',
+        ),
         url(r'^check-metadata/$', admin.CheckMetadata.as_view(), name='check_metadata'),
         url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
         url(

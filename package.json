@@ -2,11 +2,13 @@
   "name": "nkd.su",
   "version": "0.0.0",
   "scripts": {
+    "check-migrations": "python manage.py makemigrations --dry-run --check",
     "lint-black": "black --check --diff .",
     "lint-flake8": "flake8 .",
     "lint-js": "eslint nkdsu/static/js",
     "lint-mypy": "mypy --pretty --show-error-context",
     "lint-trailing-whitespace": "which rg || (echo 'you need to install ripgrep'; false) && ! rg --replace '[trailing whitespace]' '\\s+$'",
+    "manage": "python manage.py",
     "test": "pytest"
   },
   "devDependencies": {
@@ -21,6 +23,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "details-polyfill": "^1.2.0",
     "jsmediatags": "^3.9.7",
     "sortablejs": "^1.14.0"
   }
