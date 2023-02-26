@@ -1,14 +1,14 @@
 body .tracks .nanotrack {
-  .uninvert();
+  @include uninvert();
 
-  background-color: @track_background;
+  background-color: $track_background;
 
   > a {
     overflow: hidden;
     position: relative;
     display: block;
     padding: .1em .4em .3em;
-    .noise();
+    @include noise();
 
     .art {
       position: absolute;
@@ -28,7 +28,7 @@ body .tracks .nanotrack {
 
       &.roles {
         font-size: .8em;
-        .child-iter();
+        @include child-iter();
       }
 
       &.title {
@@ -38,7 +38,7 @@ body .tracks .nanotrack {
   }
 
   &.successful a {
-    background-color: fadeout(@green, 80%);
+    background-color: fadeout($green, 80%);
 
     &::after {
       content: '[played]';
@@ -49,8 +49,8 @@ body .tracks .nanotrack {
       font-weight: bold;
       font-size: 2em;
       opacity: .2;
-      color: darken(@green, 40%);
-      .transform(rotate(20deg));
+      color: darken($green, 40%);
+      @include transform(rotate(20deg));
     }
   }
 }

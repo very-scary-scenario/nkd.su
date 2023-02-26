@@ -1,20 +1,20 @@
-@import "_mixins.less"; 
+@import "_mixins.scss"; 
 
-@metadata-width: 60%;
-@new-compensation: 2.7em;
+$metadata-width: 60%;
+$new-compensation: 2.7em;
 
-@avatar-border-radius: 0.3em;
-@avatar-thumb-size: 32px;
-@avatar-size: 48px;
-@key-avatar-thumb-size: @avatar-thumb-size * 1.5;
+$avatar-border-radius: 0.3em;
+$avatar-thumb-size: 32px;
+$avatar-size: 48px;
+$key-avatar-thumb-size: $avatar-thumb-size * 1.5;
 
-@fhl: fade(@hl, 0%);
+$fhl: fade($hl, 0%);
 
-.heavy-glow(@color) {
-  text-shadow: @color 0 0 .2em, @color 0 0 .2em, @color 0 0 .2em, @color 0 0 .2em;
+@mixin heavy-glow($color) {
+  text-shadow: $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em;
 }
 
-.tinytrack() {
+@mixin tinytrack() {
   display: block;
 
   div.metadata, div.key-vote, div.voting, div.invitation {
@@ -30,7 +30,7 @@
 
   .artist {
     padding-left: 0 !important;  // override NEW! compensation
-    padding-right: @new-compensation;
+    padding-right: $new-compensation;
   }
 
   &.new {
@@ -41,20 +41,20 @@
   }
 }
 
-@track-border-radius: .7em;
+$track-border-radius: .7em;
 
 body main .track {
-  .uninvert();
+  @include uninvert();
 
   margin: .8em 0;
   padding: .5em 0;
   width: 100%;
 
-  background-color: @track_background;
-  .noise();
+  background-color: $track_background;
+  @include noise();
 
-  border: 1px solid @border;
-  border-radius: @track-border-radius;
+  border: 1px solid $border;
+  border-radius: $track-border-radius;
 
   display: table;
   background-clip: padding-box;
@@ -69,10 +69,10 @@ body main .track {
 
   div.metadata {
     text-align: right;
-    width: @metadata-width;
+    width: $metadata-width;
     overflow-wrap: break-word;
 
-    border-right: 1px solid @border;
+    border-right: 1px solid $border;
 
     .artist {
       display: inline-block;
@@ -83,7 +83,7 @@ body main .track {
     }
 
     .refusal, .meta.role-etc, .meta.composer-etc {
-      .child-iter();
+      @include child-iter();
     }
 
     .refusal {
@@ -97,7 +97,7 @@ body main .track {
     }
 
     .roles {
-      .child-iter();
+      @include child-iter();
     }
 
     .notes {
@@ -118,12 +118,12 @@ body main .track {
   }
 
   div.key-vote {
-    width: @key-avatar-thumb-size + 4px;
+    width: $key-avatar-thumb-size + 4px;
     padding-right: 0;
 
     img.avatar.thumb {
-      height: @key-avatar-thumb-size !important;
-      width: @key-avatar-thumb-size !important;
+      height: $key-avatar-thumb-size !important;
+      width: $key-avatar-thumb-size !important;
     }
 
     .deets {
@@ -134,7 +134,7 @@ body main .track {
 
   .admin {
     font-size: .8em;
-    .child-iter();
+    @include child-iter();
   }
 
   .invitation {
@@ -145,7 +145,7 @@ body main .track {
   &::before {
     padding: .3em .3em .2em;
     border-radius: .3em;
-    border: 1px solid @border;
+    border: 1px solid $border;
     line-height: 1em;
     position: absolute;
   }
@@ -153,11 +153,11 @@ body main .track {
   // NEW!
   &.new {
     .artist {
-      padding-left: @new-compensation;
+      padding-left: $new-compensation;
     }
 
     &::before {
-      .uninvert();
+      @include uninvert();
       content: 'New!';
       color: #964 !important;
       padding: .2em .5em .3em .2em;
@@ -181,27 +181,27 @@ body main .track {
     width: 100%;
     height: 100%;
     z-index: 0;
-    border-radius: @track-border-radius;
+    border-radius: $track-border-radius;
     opacity: .08;
   }
 
   // variants
   &.ineligible {
-    .invert();
+    @include invert();
 
     .vote {
       &::after, &::before, .hat {
-        .heavy-glow(@inv_bg) !important;
+        @mixin heavy-glow($inv_bg) !important,
       }
     }
 
     &.inudesu {
       a {
-        color: @inv_inu_hl;
+        color: $inv_inu_hl,
 
         &:hover {
-          border-color: @inv_inu_hl;
-          color: @inv_fg;
+          border-color: $inv_inu_hl,
+          color: $inv_fg,
         }
       }
     }
@@ -209,49 +209,49 @@ body main .track {
 
   &.selectable {
     &:hover {
-      border-color: @hl !important;
+      border-color: $hl !important,
     }
   }
 
   &.pending {
-    opacity: .5;
+    opacity: .5,
   }
 
   &.selected {
-    background-color: @light_hl;
+    background-color: $light_hl,
 
     &.ineligible {
-      background-color: @dark_hl;
+      background-color: $dark_hl,
     }
   }
 
-  @media (max-width: @breakpoint) {
-    .tinytrack();
+  @media (max-width: $breakpoint) {
+    @include tinytrack();
   }
 
   &.tiny {
-    .tinytrack();
+    @include tinytrack();
   }
 }
 
 li.vote {
   .vote-link {
-    height: @avatar-thumb-size + 4px;
+    height: $avatar-thumb-size + 4px;
     display: inline-block;
   }
 
   .avatar {
-    border-radius: @avatar-border-radius;
+    border-radius: $avatar-border-radius;
   }
 
   &.new-user {
     &::before {
       top: -.2em;
       left: -.2em;
-      .heavy-glow(@bg);
+      @include heavy-glow($bg);
     }
   }
-  &.new-user::before { .fas(); content: @fa-var-star; color: @hl; }
+  &.new-user::before { .fas(); content: $fa-var-star; color: $hl; }
 
   &.shortlisted, &.placated {
     img {
@@ -265,7 +265,7 @@ li.vote {
   }
 
   &.placated {
-    background: linear-gradient(to right top, @fhl 48%, @hl 48%, @hl 52%, @fhl 52%);
+    background: linear-gradient(to right top, $fhl 48%, $hl 48%, $hl 52%, $fhl 52%);
   }
 
   .deets .meta {
@@ -280,14 +280,14 @@ li.vote {
       margin-top: -.2em;
     }
     &.when {
-      color: @light;
+      color: $light;
     }
   }
 
   &.patron .deets .full_name::before {
-    .fab();
-    color: @patreon-colour;
-    content: @fa-var-patreon;
+    @include fab();
+    color: $patreon-colour;
+    content: $fa-var-patreon;
     margin-right: .4em;
   }
 }
@@ -303,15 +303,15 @@ li.plusone {
     margin: 2px;
     display: block;
     background-color: fade(black, 10);
-    border: 1px dashed @hl;
-    border-radius: @avatar-border-radius;
-    height: @avatar-thumb-size;
-    width: @avatar-thumb-size;
+    border: 1px dashed $hl;
+    border-radius: $avatar-border-radius;
+    height: $avatar-thumb-size;
+    width: $avatar-thumb-size;
     padding-top: .1em;
     font-size: 1.2em;
 
     &:hover, &:focus {
-      border: 1px dashed @fg;
+      border: 1px dashed $fg;
     }
   }
 }
@@ -326,13 +326,13 @@ body.tracks-expanded li.vote {
   }
 
   .hat-info .fa {
-    color: @badge-colour;
+    color: $badge-colour;
   }
 
   .avatar {
     float: right;
-    width: @avatar-size;
-    height: @avatar-size;
+    width: $avatar-size;
+    height: $avatar-size;
     margin-left: .5em;
 
     &.thumb {
@@ -341,12 +341,12 @@ body.tracks-expanded li.vote {
   }
 
   .deets {
-    color: @fg !important;
+    color: $fg !important;
   }
 }
 
 body.tracks-expanded .track.ineligible li.vote .deets {
-  color: @inv_fg !important;
+  color: $inv_fg !important;
 }
 
 body.tracks-collapsed li.vote {
@@ -360,19 +360,19 @@ body.tracks-collapsed li.vote {
       &.thumb {
         padding: 1px;
         border: 1px solid rgba(128,128,128,0);
-        width: @avatar-thumb-size;
-        height: @avatar-thumb-size;
+        width: $avatar-thumb-size;
+        height: $avatar-thumb-size;
         border-radius: .4em;
       }
     }
 
-    @media (max-width: @breakpoint) {
+    @media (max-width: $breakpoint) {
       .deets {
         display: none;
       }
     }
 
-    @media (min-width: @breakpoint) {
+    @media (min-width: $breakpoint) {
       &:hover {
         img.thumb {
           opacity: 0;
@@ -390,20 +390,20 @@ body.tracks-collapsed li.vote {
         text-align: right;
         z-index: 3;
 
-        .uninvert();
+        @include uninvert();
         padding: .4em;
-        background-color: @bg;
-        .noise();
-        box-shadow: inset @basic-shadow 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
-        border: 1px solid @border;
+        background-color: $bg;
+        @include noise();
+        box-shadow: inset $basic-shadow 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
+        border: 1px solid $border;
         min-width: 9em;
         max-width: 17em;
         border-radius: .4em;
 
         img {
           float: right;
-          width: @avatar-size;
-          height: @avatar-size;
+          width: $avatar-size;
+          height: $avatar-size;
         }
 
         .meta {
@@ -423,7 +423,7 @@ body.tracks-collapsed li.vote {
             box-sizing: border-box;
             display: block;
             width: 80%;
-            border-top: 1px solid @light;
+            border-top: 1px solid $light;
             position: absolute;
             top: 0.7em;
             left: 10%;
@@ -438,15 +438,15 @@ body.tracks-collapsed li.vote {
           padding: .2em 0;
           position: relative;
           z-index: 3;
-          background-color: @bg;
-          .noise();
+          background-color: $bg;
+          @include noise();
         }
 
         .text {
           &::before {
-            .fas();
+            @include fas();
             display: block;
-            content: @fa-var-comment;
+            content: $fa-var-comment;
           }
         }
 
@@ -455,7 +455,7 @@ body.tracks-collapsed li.vote {
           font-size: .8em;
 
           i {
-            color: @badge-colour;
+            color: $badge-colour;
           }
 
           &::after {
@@ -489,34 +489,34 @@ body.tracks-collapsed li.vote {
 
   &.content {
     &::after {
-      .fas();
-      content: @fa-var-comment;
+      @include fas();
+      content: $fa-var-comment;
       bottom: -.1em;
       right: -.1em;
-      .heavy-glow(@bg);
+      @include heavy-glow($bg);
     }
 
     &.birthday {
       &::after {
-        content: @fa-var-birthday-cake;
+        content: $fa-var-birthday-cake;
       }
 
       .deets .text::before {
-        content: @fa-var-birthday-cake !important;
+        content: $fa-var-birthday-cake !important;
       }
     }
   }
 
   .hat {
-    color: @badge-colour;
+    color: $badge-colour;
     top: -.1em;
     right: -.1em;
-    .heavy-glow(@bg);
+    @include heavy-glow($bg);
   }
 
   &.abuser {
     .avatar {
-      .transform(rotate(180deg));
+      @include transform(rotate(180deg));
     }
   }
 }
@@ -533,13 +533,13 @@ body.tracks-collapsed li.vote {
   }
 }
 
-@media (min-width: @breakpoint) {
+@media (min-width: $breakpoint) {
   #playlist.secondary {
     float: right;
     width: 30%;
 
     ul .track {
-      .tinytrack();
+      @include tinytrack();
     }
   }
 
@@ -550,20 +550,20 @@ body.tracks-collapsed li.vote {
 
 details.collapsed-artist {
   summary {
-    .reset-details-summary();
+    @include reset-details-summary();
 
     &::before {
-      .fas();
-      content: @fa-var-angle-right;
+      @include fas();
+      content: $fa-var-angle-right;
       padding-right: .4em;
     }
 
     &:hover {
       &::before {
-        color: @hl;
+        color: $hl;
       }
     }
   }
 
-  &[open] summary::before { content: @fa-var-angle-down; }
+  &[open] summary::before { content: $fa-var-angle-down; }
 }

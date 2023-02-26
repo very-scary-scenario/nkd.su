@@ -1,6 +1,6 @@
 #category-search-form {
   input[type=text] {
-    .search-field();
+    @include search-field();
     margin: .5em auto;
   }
 }
@@ -26,8 +26,8 @@
         padding: 0 1em .2em;
         margin: 0;
         border-radius: 0 0 .5em .5em;
-        background-color: @bg;
-        .noise() !important;
+        background-color: $bg;
+        @include noise() !important;
       }
     }
 
@@ -75,8 +75,8 @@
           display: block;
 
           span.fragment {
-            background-color: fade(@hl, 40%);
-            color: mix(@fg, @hl, 70%);
+            background-color: fade($hl, 40%);
+            color: mix($fg, $hl, 70%);
           }
         }
       }
@@ -86,13 +86,13 @@
 
 .dark({
   .browsable-groups section.browsable-group h3 span {
-    .invert();
+    @include invert();
   }
 });
 
 .dark({
   .browsable-groups.searchable .browsable-group > ul > li.matched span.fragment {
-    color: mix(@bg, @hl, 70%);
+    color: mix($bg, $hl, 70%);
   }
 });
 
@@ -110,9 +110,9 @@ ul.browsable-categories {
       display: block;
       position: relative;
       box-sizing: border-box;
-      background-color: @hl;
-      .noise();
-      color: @fg;
+      background-color: $hl;
+      @include noise();
+      color: $fg;
       min-width: 20rem;
       width: 25vw;
       max-width: 30rem;
@@ -131,7 +131,7 @@ ul.browsable-categories {
       }
 
       &::before {
-        .fas();
+        @include fas();
         transform: rotate(13deg);
         font-size: 6em;
         position: absolute;
@@ -139,18 +139,18 @@ ul.browsable-categories {
         top: -.2em;
         left: -.1em;
         opacity: 0.15;
-        color: @bg;
-        .dark({ color: @fg !important; })
+        color: $bg;
+        .dark({ color: $fg !important; })
       }
 
       &:hover, &:focus {
-        background-color: @fg;
+        background-color: $fg;
         text-shadow: none;
-        color: @hl;
+        color: $hl;
 
         .dark({
-          color: @hl !important;
-          background-color: @bg;
+          color: $hl !important;
+          background-color: $bg;
         })
       }
     }
@@ -163,10 +163,10 @@ ul.browsable-categories {
       bottom: 1.8rem;
     }
 
-    &[data-category=archive] a::before { content: @fa-var-archive; }
-    &[data-category=anime] a::before { content: @fa-var-tv; }
-    &[data-category=artists] a::before { content: @fa-var-microphone; }
-    &[data-category=composers] a::before { content: @fa-var-pen-nib; }
-    &[data-category=years] a::before { content: @fa-var-calendar-alt; }
+    &[data-category=archive] a::before { content: $fa-var-archive; }
+    &[data-category=anime] a::before { content: $fa-var-tv; }
+    &[data-category=artists] a::before { content: $fa-var-microphone; }
+    &[data-category=composers] a::before { content: $fa-var-pen-nib; }
+    &[data-category=years] a::before { content: $fa-var-calendar-alt; }
   }
 }

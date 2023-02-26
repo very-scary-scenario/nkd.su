@@ -1,5 +1,5 @@
-@import "_mixins.less";
-@import "_vars.less";
+@import "_mixins.scss";
+@import "_vars.scss";
 
 h2, h3, h4 {
   text-align: center;
@@ -18,11 +18,11 @@ p.minor {
 
 a, button.link {
   cursor: pointer;
-  color: @hl;
+  color: $hl;
   text-decoration: none;
 
   &:hover {
-    color: @fg;
+    color: $fg;
   }
 }
 
@@ -33,7 +33,7 @@ button.link {
   margin: none;
   font-family: inherit;
   font-size: inherit;
-  text-shadow: @basic-shadow 0 .1em 0;
+  text-shadow: $basic-shadow 0 .1em 0;
 
   &.mono {
     text-shadow: fadeout(black, 50%) 0 .1em 0;
@@ -48,7 +48,7 @@ button.link {
 
 // this rule is specific to override vaguer rules about <a> and <input>
 html body main .button {
-  .nkdsu-font();
+  @include nkdsu-font();
   text-shadow: none;
   font-size: 1em;
 
@@ -60,20 +60,20 @@ html body main .button {
   border: none;
   cursor: pointer;
 
-  color: @bg;
-  background-color: @hl;
+  color: $bg;
+  background-color: $hl;
 
   &:hover {
-    background-color: @fg;
-    color: @bg;
+    background-color: $fg;
+    color: $bg;
   }
 }
 
 .dark({
   main .button {
     &:hover {
-      background-color: @inv_fg;
-      color: @inv_bg;
+      background-color: $inv_fg;
+      color: $inv_bg;
     }
   }
 });

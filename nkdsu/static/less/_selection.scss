@@ -1,4 +1,4 @@
-@import "_mixins.less";
+@import "_mixins.scss";
 
 #selection {
   pointer-events: none;
@@ -15,8 +15,8 @@
     pointer-events: auto;
     max-height: 80vh;
     overflow-y: auto;
-    .noise();
-    background-color: @bg;
+    @include noise();
+    background-color: $bg;
     pointer-events: auto;
     display: inline-block;
     box-shadow: rgba(128, 128, 128, 0.2) 0 .5em 2em;
@@ -27,17 +27,17 @@
 
     details {
       summary {
-        .reset-details-summary();
+        @include reset-details-summary();
 
         h3 {
           padding: 0;
           margin: 0;
 
           &::before {
-            .fa();
-            color: @hl;
+            @include fa();
+            color: $hl;
             padding-right: .4em;
-            content: @fa-var-angle-right;
+            content: $fa-var-angle-right;
           }
         }
 
@@ -46,11 +46,11 @@
         }
       }
 
-      &[open] summary h3::before { content: @fa-var-angle-down; }
+      &[open] summary h3::before { content: $fa-var-angle-down; }
     }
 
     p.actions {
-      .child-iter();
+      @include child-iter();
 
       &.minor {
         font-size: .8em;
@@ -66,7 +66,7 @@
       }
 
       p.roles {
-        .child-iter();
+        @include child-iter();
       }
     }
   }
@@ -74,6 +74,6 @@
 
 .dark({
   #selection #selhead .stuck {
-    .invert();
+    @include invert();
   }
 });

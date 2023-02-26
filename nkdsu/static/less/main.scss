@@ -1,81 +1,81 @@
-@import "../fa/less/fontawesome.less";
-@import "../fa/less/solid.less";
-@import "../fa/less/brands.less";
+@import "../fa/less/fontawesome.scss";
+@import "../fa/less/solid.scss";
+@import "../fa/less/brands.scss";
 
-@import "_reset.less";
-@import "_elements.less";
-@import "_fonts.less";
+@import "_reset.scss";
+@import "_elements.scss";
+@import "_fonts.scss";
 
-@import "_archive.less";
-@import "_browse.less";
-@import "_selection.less";
-@import "_track.less";
-@import "_nanotrack.less";
-@import "_standalone_vote.less";
+@import "_archive.scss";
+@import "_browse.scss";
+@import "_selection.scss";
+@import "_track.scss";
+@import "_nanotrack.scss";
+@import "_standalone_vote.scss";
 
 html {
   height: 100%;
 }
 
 body {
-  .nkdsu-font();
-  .noise();
-  background-color: @bg;
-  color: @fg;
-  text-shadow: @basic-shadow 0 .1em 0;
-  height: 100%;
+  @mixin nkdsu-font(),
+  .noise(),
+  background-color: $bg,
+  color: $fg,
+  text-shadow: $basic-shadow 0 .1em 0,
+  height: 100%,
 
   #everything {
-    min-height: 100%;
-    position: relative;
+    min-height: 100%,
+    position: relative,
 
     #nav {
-      background-color: @bg;
-      .uninvert();
+      background-color: $bg,
+      .uninvert(),
 
-      height: 2em;
-      line-height: 2em;
-      margin: 0 auto;
-      clear: both;
-      font-size: .8em;
-      list-style: none;
-      text-align: center;
-      border: 0 solid #333;
-      border-bottom-width: 3px;
-      /*-webkit-box-shadow: inset #eee 0 .2em 1em;*/
-      width: 100%;
-      overflow: hidden;
+      height: 2em,
+      line-height: 2em,
+      margin: 0 auto,
+      clear: both,
+      font-size: .8em,
+      list-style: none,
+      text-align: center,
+      border: 0 solid #333,
+      border-bottom-width: 3px,
+      /*-webkit-box-shadow: inset #eee 0 .2em 1em,*/
+      width: 100%,
+      overflow: hidden,
 
       li {
-        display: inline-block;
-        position: relative;
+        display: inline-block,
+        position: relative,
 
         i::before {
-          .fas();
-          padding-right: .5em;
+          .fas(),
+          padding-right: .5em,
         }
 
         &.lookatme {
           i::before {
-            .bell-ding();
+            .bell-ding(),
           }
 
           &::before {
-            .bell-strike();
-            .fas();
-            z-index: 2;
-            content: @fa-var-hand-holding;
-            color: @fg;
-            display: block;
-            position: absolute;
-            text-align: center;
-            top: 0;
-            left: .8em;
-            text-shadow: none;
+            .bell-strike(),
+            .fas(),
+            z-index: 2,
+            content: $fa-var-hand-holding,
+            color: $fg,
+            display: block,
+            position: absolute,
+            text-align: center,
+            top: 0,
+            left: .8em,
+            text-shadow: none,
           }
 
           &:hover::before {
-            color: @bg;
+            color: $bg,
           }
         }
 
@@ -91,41 +91,41 @@ body {
           }
         }
 
-        &#home-header-link i::before { content: @fa-var-home; }
-        &#browse-header-link i::before { content: @fa-var-folder; }
-        &#new-tracks-header-link i::before { content: @fa-var-concierge-bell; }
-        &#roulette-header-link i::before { content: @fa-var-dice; }
-        &#stats-header-link i::before { content: @fa-var-chart-bar; }
-        &#donate-header-link i::before { content: @fa-var-donate; }
-        &#etc-header-link i::before { content: @fa-var-ellipsis-h; }
+        &#home-header-link i::before { content: $fa-var-home; }
+        &#browse-header-link i::before { content: $fa-var-folder; }
+        &#new-tracks-header-link i::before { content: $fa-var-concierge-bell; }
+        &#roulette-header-link i::before { content: $fa-var-dice; }
+        &#stats-header-link i::before { content: $fa-var-chart-bar; }
+        &#donate-header-link i::before { content: $fa-var-donate; }
+        &#etc-header-link i::before { content: $fa-var-ellipsis-h; }
 
         &.active a {
           background-color: #ddd;
           text-shadow: none;
           color: #666;
-          .noise();
+          @mixin noise(),
         }
 
         &.lookatme {
-          font-weight: bold;
+          font-weight: bold,
         }
 
         span.new_tracks {
-          display: none;
+          display: none,
         }
 
         a {
-          overflow: hidden;
-          padding: .4em .8em 1em;
+          overflow: hidden,
+          padding: .4em .8em 1em,
 
-          @media (max-width: @breakpoint) {
+          @media (max-width: $breakpoint) {
             padding: .4em .6em 1em;
           }
 
           &:hover {
             border: none;
-            background-color: @hl;
-            .noise();
+            background-color: $hl;
+            @include noise();
             color: #fff;
             text-shadow: none;
 
@@ -135,15 +135,15 @@ body {
               font-weight: bold;
               line-height: 1em;
               color: #fff;
-              text-shadow: @hl 0 0 .5em,
-                           @hl 0 0 1em,
-                           @hl 0 0 1.5em,
-                           @hl 0 0 .5em,
-                           @hl 0 0 1em,
-                           @hl 0 0 1.5em,
-                           @hl 0 0 .5em,
-                           @hl 0 0 1em,
-                           @hl 0 0 1.5em;
+              text-shadow: $hl 0 0 .5em,
+                           $hl 0 0 1em,
+                           $hl 0 0 1.5em,
+                           $hl 0 0 .5em,
+                           $hl 0 0 1em,
+                           $hl 0 0 1.5em,
+                           $hl 0 0 .5em,
+                           $hl 0 0 1em,
+                           $hl 0 0 1.5em;
               font-size: 2em;
               z-index: 4;
               position: absolute;
@@ -158,48 +158,48 @@ body {
 
     #breadcrumbs {
       font-size: .9em;
-      max-width: @max-width;
+      max-width: $max-width;
       margin: 0 auto;
 
       ul {
-        .invert();
-        border-radius: 0 0 .5em .5em;
-        padding: 0 .5em .1em;
-        display: inline-block;
+        @mixin invert(),
+        border-radius: 0 0 .5em .5em,
+        padding: 0 .5em .1em,
+        display: inline-block,
 
         li {
-          display: inline-block;
-          text-wrap: nowrap;
+          display: inline-block,
+          text-wrap: nowrap,
 
           &::after {
-            content: " »";
-            padding: 0 .1em;
+            content: " »",
+            padding: 0 .1em,
           }
 
           &:last-child::after {
-            padding-right: 0;
+            padding-right: 0,
           }
         }
       }
     }
 
     main {
-      display: block;
-      margin: 0 auto;
-      max-width: @max-width;
-      min-width: 200px;
-      padding: 1em;
-      position: relative;
-      padding-bottom: 13em;
+      display: block,
+      margin: 0 auto,
+      max-width: $max-width,
+      min-width: 200px,
+      padding: 1em,
+      position: relative,
+      padding-bottom: 13em,
 
       .markdown {
-        padding-bottom: 1em;
+        padding-bottom: 1em,
 
         h1 {
-          text-align: center;
+          text-align: center,
         }
 
-        @media (min-width: @breakpoint) {
+        @media (min-width: $breakpoint) {
           width: 80%;
           margin: 0 auto;
 
@@ -234,7 +234,7 @@ body {
       }
 
       .roulette-mode-switch, .confirm {
-        .child-iter();
+        @include child-iter();
       }
 
       .roulette-mode-switch {
@@ -249,8 +249,8 @@ body {
 
           &.roulette-pro {
             &::before {
-              .fas();
-              content: @fa-var-exclamation-triangle;
+              @include fas();
+              content: $fa-var-exclamation-triangle;
             }
           }
         }
@@ -278,18 +278,18 @@ body {
         }
 
         &.abuser img.avatar {
-          .transform(rotate(180deg));
+          @include transform(rotate(180deg));
         }
 
         .patron {
           text-align: center;
 
           &::before {
-            .fab();
+            @include fab();
             font-size: 1.5em;
             margin-bottom: .3em;
-            color: @patreon-colour;
-            content: @fa-var-patreon;
+            color: $patreon-colour;
+            content: $fa-var-patreon;
             display: block;
           }
         }
@@ -306,7 +306,7 @@ body {
             }
 
             i.fa {
-              color: @badge-colour;
+              color: $badge-colour;
               font-size: 1.5em;
             }
           }
@@ -314,7 +314,7 @@ body {
 
         .user-votes {
           > ul {
-            .clearfix();
+            @include clearfix();
           }
         }
       }
@@ -344,7 +344,7 @@ body {
           width: 20%;
         }
 
-        @media (max-width: @breakpoint) {
+        @media (max-width: $breakpoint) {
           .summary {
             width: 80%;
             max-width: 70vw !important;
@@ -363,8 +363,8 @@ body {
           td.summary {
             max-width: 60vw;
 
-            @media (min-width: @max-width) {
-              max-width: 6*(@max-width/10);
+            @media (min-width: $max-width) {
+              max-width: 6*($max-width/10);
             }
 
             img {
@@ -415,36 +415,36 @@ body {
         }
 
         .years {
-          .child-iter();
+          @include child-iter();
         }
       }
 
       &.grouped-tracks, &.stats-page {
         details.track-group {
           summary {
-            .reset-details-summary();
+            @mixin reset-details-summary(),
 
             h3::before {
-              .fas();
-              content: @fa-var-angle-right;
-              padding-right: .4em;
+              .fas(),
+              content: $fa-var-angle-right,
+              padding-right: .4em,
             }
 
-            &:hover h3::before { color: @hl; }
+            &:hover h3::before { color: $hl, }
           }
 
-          &[open] summary h3::before { content: @fa-var-angle-down; }
+          &[open] summary h3::before { content: $fa-var-angle-down, }
         }
 
         > p {
-          max-width: @max-width;
-          margin: 0 auto;
-          text-align: center;
+          max-width: $max-width,
+          margin: 0 auto,
+          text-align: center,
         }
 
-        @media (min-width: @breakpoint * 2) {
+        @media (min-width: $breakpoint * 2) {
           &.stats-page {
-            max-width: @max-width * 1.7;
+            max-width: $max-width * 1.7;
           }
 
           .track-groups {
@@ -457,12 +457,12 @@ body {
             text-align: start;
             display: inline-block;
             width: 40%;
-            max-width: @max-width;
+            max-width: $max-width;
           }
         }
       }
 
-      @media (min-width: @breakpoint * 2) {
+      @media (min-width: $breakpoint * 2) {
         &.wide, &.grouped-tracks {
           max-width: none;
         }
@@ -476,7 +476,7 @@ body {
     width: 100%;
     font-size: .8em;
     text-align: center;
-    color: @light;
+    color: $light;
     line-height: 1.5em;
 
     a#stamp {
@@ -497,7 +497,7 @@ body {
     }
 
     .credit {
-      .child-iter();
+      @include child-iter();
 
       margin-bottom: 0;
 
@@ -509,11 +509,11 @@ body {
 }
 
 .dark({
-  .invert();
+  @include invert();
 
   #breadcrumbs ul {
-    background-color: @bg !important;
-    .uninvert() !important;
+    background-color: $bg !important;
+    @include uninvert() !important;
   }
 });
 
@@ -531,25 +531,25 @@ body[data-dark-mode=system] [value=system] {
 .messages {
   text-align: center;
   cursor: pointer;
-  .noise();
-  background-color: @inv_bg;
-  color: @fg;
+  @include noise();
+  background-color: $inv_bg;
+  color: $fg;
   overflow: hidden;
   text-shadow: none;
   position: relative;
 
   &::before, li {
-    .noise();
+    @include noise();
     background-color: #ddd;
     padding: .3em 1em;
     transition: margin-bottom 3s;
   }
 
   li {
-    &.success {background-color: @green}
-    &.error {background-color: @pink}
-    &.warning {background-color: @yellow}
-    &.info {background-color: @blue}
+    &.success {background-color: $green}
+    &.error {background-color: $pink}
+    &.warning {background-color: $yellow}
+    &.info {background-color: $blue}
   }
 
   &::before {
@@ -586,8 +586,8 @@ body[data-dark-mode=system] [value=system] {
 }
 
 header {
-  .invert();
-  .noise();
+  @include invert();
+  @include noise();
 
   display: flex;
   flex-flow: row;
@@ -614,7 +614,7 @@ header {
     #search {
       input {
         margin: 0 .5em;
-        .search-field();
+        @include search-field();
       }
     }
   }
@@ -639,8 +639,8 @@ header {
           right: .3em;
           width: .6em;
           height: .6em;
-          background-color: @pink;
-          border: 1px solid fade(@inv_bg, 50%);
+          background-color: $pink;
+          border: 1px solid fade($inv_bg, 50%);
           border-radius: 50%;
           background-clip: padding-box;
         }
@@ -654,18 +654,18 @@ header {
         i {
           font-size: 2em;
           transform: scale(0.75);
-          color: @hl;
+          color: $hl;
         }
-        &:hover i { color: @inv_fg }
+        &:hover i { color: $inv_fg }
 
         img.user-menu-icon {
           width: 2em;
           height: 2em;
           border-radius: .3em;
-          background-color: fade(@light, 50%);
-          border: 1px solid fade(@light, 50%);
+          background-color: fade($light, 50%);
+          border: 1px solid fade($light, 50%);
         }
-        &:hover img { border-color: @hl }
+        &:hover img { border-color: $hl }
       }
 
       > ul {
@@ -676,15 +676,15 @@ header {
         z-index: 10;
         width: 13em;
 
-        .noise();
-        background-color: @inv_bg;
-        border: 1px solid @light;
-        box-shadow: 0 0 0 1px @fg;
+        @include noise();
+        background-color: $inv_bg;
+        border: 1px solid $light;
+        box-shadow: 0 0 0 1px $fg;
         border-radius: .2em;
 
         > li {
           text-align: left;
-          border-bottom: 1px solid fade(@light, 20%);
+          border-bottom: 1px solid fade($light, 20%);
 
           &:last-child {
             border-bottom: none;
@@ -697,12 +697,12 @@ header {
 
             &.alert::before {
               content: '●';
-              color: @pink;
+              color: $pink;
             }
           }
 
           form#dark-mode-settings {
-            .child-iter();
+            @include child-iter();
             text-align: inherit;
             margin: 0;
           }
@@ -762,7 +762,7 @@ form {
   ul.errorlist li {
     list-style: none;
     font-size: .9em;
-    color: @light;
+    color: $light;
   }
 
   &.login tr {
@@ -771,7 +771,7 @@ form {
 }
 
 main.login {
-  max-width: 1.5 * @max-width !important;
+  max-width: 1.5 * $max-width !important;
 
   #login-methods {
     display: flex;
@@ -791,7 +791,7 @@ main.login {
 
 .self-infobox {
   padding: 1em 0;
-  background-color: fade(@light, 20%);
+  background-color: fade($light, 20%);
   border-radius: .5em;
 
   p {
@@ -804,7 +804,7 @@ main.login {
   }
 
   section {
-    border: .3em solid fade(@light, 30%);
+    border: .3em solid fade($light, 30%);
     border-width: .3em 0;
 
     &:first-child { border-top-width: 0; > p:first-child { margin-top: 0; } }
@@ -818,10 +818,10 @@ p.update-message {
   padding: .2em .4em .3em;
   margin-top: .2em;
 
-  .uninvert();
+  @include uninvert();
 
   &::before {
-    .fas();
+    @include fas();
     display: inline-block;
     width: 1.4em;
     text-align: center;
@@ -829,22 +829,22 @@ p.update-message {
   }
 
   &.update-warning {
-    background-color: mix(@pink, @bg, 25%);
-    color: @danger;
-    border: 1px solid darken(@pink, 20);
+    background-color: mix($pink, $bg, 25%);
+    color: $danger;
+    border: 1px solid darken($pink, 20);
 
     &::before {
-      content: @fa-var-exclamation-triangle;
+      content: $fa-var-exclamation-triangle;
     }
   }
 
   &.update-info {
-    background-color: mix(@blue, @bg, 25%);
-    color: darken(@blue, 20);
-    border: 1px solid darken(@blue, 20);
+    background-color: mix($blue, $bg, 25%);
+    color: darken($blue, 20);
+    border: 1px solid darken($blue, 20);
 
     &::before {
-      content: @fa-var-info;
+      content: $fa-var-info;
     }
   }
 }
@@ -867,8 +867,8 @@ p.update-message {
       li {
         code {
           display: inline-block;
-          color: @pink;
-          background-color: fade(@pink, 10%);
+          color: $pink;
+          background-color: fade($pink, 10%);
           padding: 0 .2em;
           border-radius: .2em;
         }
@@ -892,7 +892,7 @@ dl.metadata-check {
     margin-bottom: .5rem;
 
     .roles {
-      .child-iter();
+      @include child-iter();
     }
   }
 }
@@ -911,12 +911,12 @@ dl.metadata-check {
 
   #trivia .successful .exchange .answer:after {
     content: '[correct]';
-    color: @hl;
+    color: $hl;
     margin-left: .5em;
   }
 
   #trivia .created {
-    color: @light;
+    color: $light;
     font-size: .8em;
   }
 
@@ -925,7 +925,7 @@ dl.metadata-check {
   }
 
     #trivia .exchange p:before {
-      color: @light;
+      color: $light;
       width: 1em;
       margin-left: .3em;
       display: inline-block;
@@ -935,7 +935,7 @@ dl.metadata-check {
 
     #trivia .trivia:hover p:before,
     #trivia .trivia:hover .created {
-      color: @hl;
+      color: $hl;
     }
 
     #trivia .exchange .question {
@@ -963,35 +963,35 @@ dl.metadata-check {
 
       &.mine {
         opacity: 1;
-        background-color: fadeout(@pink, 75%);
-        .noise();
-        border-radius: .5em;
-        padding: .5em;
+        background-color: fadeout($pink, 75%);
+        @mixin noise(),
+        border-radius: .5em,
+        padding: .5em,
       }
     }
 
     > h3 {
-      font-size: 1em;
-      text-align: left;
-      margin: 0;
+      font-size: 1em,
+      text-align: left,
+      margin: 0,
     }
 
     > dl {
-      margin: .5em 1em;
+      margin: .5em 1em,
 
       > dt {
-        font-weight: bold;
+        font-weight: bold,
       }
 
       > dd {
-        margin-left: 1em;
+        margin-left: 1em,
       }
     }
 
     .request-actions {
       > form {
-        display: inline-block;
-        margin-right: 1em;
+        display: inline-block,
+        margin-right: 1em,
       }
     }
   }

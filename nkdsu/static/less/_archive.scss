@@ -1,4 +1,4 @@
-@import "_mixins.less";
+@import "_mixins.scss";
 
 .archive-months {
   display: flex;
@@ -18,7 +18,7 @@
         }
 
         p.subheading {
-          .child-iter();
+          @include child-iter();
         }
       }
     }

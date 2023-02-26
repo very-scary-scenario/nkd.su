@@ -1,4 +1,4 @@
-@standalone-vote-border-radius: .4em;
+$standalone-vote-border-radius: .4em;
 
 .standalone-vote, .vote-preview {
   display: inline-block;
@@ -7,33 +7,33 @@
 
   width: 100%;
 
-  @media (min-width: @breakpoint) {
+  @media (min-width: $breakpoint) {
     width: 50%;
   }
   
   .tracks {
     clear: both;
 
-    border: 1px solid @border;
-    border-radius: @standalone-vote-border-radius;
+    border: 1px solid $border;
+    border-radius: $standalone-vote-border-radius;
 
-    @media (min-width: @breakpoint) {
+    @media (min-width: $breakpoint) {
       margin: 0 .1em;
     }
 
     > * {
-      border-top: 1px solid @border;
+      border-top: 1px solid $border;
       overflow: hidden;
 
       &:first-child {
         border-top: none;
-        border-top-left-radius: @standalone-vote-border-radius;
-        border-top-right-radius: @standalone-vote-border-radius;
+        border-top-left-radius: $standalone-vote-border-radius;
+        border-top-right-radius: $standalone-vote-border-radius;
       }
 
       &:last-child {
-        border-bottom-left-radius: @standalone-vote-border-radius;
-        border-bottom-right-radius: @standalone-vote-border-radius;
+        border-bottom-left-radius: $standalone-vote-border-radius;
+        border-bottom-right-radius: $standalone-vote-border-radius;
       }
     }
   }
@@ -52,7 +52,7 @@
 }
 
 .vote-preview {
-  @media (min-width: @breakpoint) {
+  @media (min-width: $breakpoint) {
     margin-left: 25%;
   }
 }
