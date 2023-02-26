@@ -631,7 +631,21 @@ header {
         &::-webkit-details-marker { display: none }
         &::before { display: none }  // for when details-polyfill is applied on firefox 43
 
-        i, img {
+        &.pending-requests::before {
+          content: ' ';
+          display: block;
+          position: absolute;
+          top: -.2em;
+          right: .3em;
+          width: .6em;
+          height: .6em;
+          background-color: @pink;
+          border: 1px solid fade(@inv_bg, 50%);
+          border-radius: 50%;
+          background-clip: padding-box;
+        }
+
+        .user-menu-icon {
           display: inline-block;
           vertical-align: middle;
           pointer-events: none;  // lets details-polyfill catch clicks properly
@@ -680,6 +694,11 @@ header {
             width: 100%;
             display: block;
             padding: .5em;
+
+            &.alert::before {
+              content: '●';
+              color: @pink;
+            }
           }
 
           form#dark-mode-settings {

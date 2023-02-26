@@ -30,7 +30,11 @@
 
   <div id="user-menu-container">
     <details id="user-menu">
-      <summary>
+      <summary
+        {% if pending_requests %}
+          class="pending-requests"
+        {% endif %}
+      >
         {% if user.is_authenticated %}
           <img class="user-menu-icon" src="{{ user.profile.get_avatar_url }}" alt="{{ user }}"/>
         {% else %}
@@ -60,7 +64,17 @@
         {% if user.is_authenticated %}
           {% if user|is_elf %}
             <li><a href="{% url "vote:browse_roles" %}">all roles</a></li>
-            <li><a href="{% url "vote:admin:requests" %}">requests</a></li>
+            <li>
+              <a
+                href="{% url "vote:admin:requests" %}"
+                {% if pending_requests %}class="alert"{% endif %}
+              >
+                requests
+                {% if pending_requests %}
+                  ({{ pending_requests.count }} pending)
+                {% endif %}
+              </a>
+            </li>
             <li><a href="{% url "vote:admin:check_metadata" %}">check metadata</a></li>
           {% endif %}
 
