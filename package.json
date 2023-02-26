@@ -7,7 +7,7 @@
     "lint-flake8": "flake8 .",
     "lint-js": "eslint nkdsu/static/js",
     "lint-mypy": "mypy --pretty --show-error-context",
-    "lint-trailing-whitespace": "which rg || (echo 'you need to install ripgrep'; false) && ! rg --replace '[trailing whitespace]' '\\s+$'",
+    "lint-regexes": "./lint-regexes.sh",
     "manage": "python manage.py",
     "test": "pytest"
   },

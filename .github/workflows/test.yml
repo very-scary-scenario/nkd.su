@@ -53,10 +53,10 @@ jobs:
       - uses: ./.github/actions/setup
       - run: npm run-script lint-js
 
-  trailing-whitespace:
+  lint-regexes:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - run: sudo apt install ripgrep
-      - run: npm run-script lint-trailing-whitespace
+      - run: npm run-script lint-regexes
