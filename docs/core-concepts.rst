@@ -19,11 +19,15 @@ Normal users
    They can request music to be played and they can choose how they are
    represented on the website.
 
+.. _elfs:
+
 Elfs
    Members of the :class:`~django.contrib.auth.models.Group` named :data:`Elfs
    <.ELFS_NAME>`, who will pass the :func:`~.elfs.is_elf` check. These are
    people who deal with sourcing music and metadata for the library. They have
    access to library update requests from users.
+
+.. _staff:
 
 Staff
    The host of the show. Represented by

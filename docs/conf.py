@@ -20,6 +20,7 @@ def _commit_year_range() -> str:
 
 sys.path.append(os.path.abspath(os.path.join(__file__, '..', '..')))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'nkdsu.settings'
+os.environ['BUILDING_DOCS'] = '1'
 django.setup()
 
 # Project meta

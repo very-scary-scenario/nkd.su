@@ -1,13 +1,23 @@
 on: [push]
 jobs:
   test:
+    name: "run unit tests"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - run: npm run-script test
 
-  build-docs:
+  migrations:
+    name: "check django migrations"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: npm run-script check-migrations
+
+  docs:
+    name: "ensure the docs build"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -43,3 +53,10 @@ jobs:
       - uses: ./.github/actions/setup
       - run: npm run-script lint-js
 
+  lint-regexes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: sudo apt install ripgrep
+      - run: npm run-script lint-regexes
