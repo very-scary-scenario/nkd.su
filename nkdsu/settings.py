@@ -225,13 +225,13 @@ PIPELINE = {
     'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
     'UGLIFYJS_BINARY': '/usr/bin/env npx uglifyjs',
     'UGLIFYJS_ARGUMENTS': '--mangle',
-    'COMPILERS': ['pipeline.compilers.less.LessCompiler'],
-    'LESS_BINARY': '/usr/bin/env npx lessc',
+    'COMPILERS': ['pipeline.compilers.sass.SASSCompiler'],
+    'SASS_BINARY': '/usr/bin/env npx sass',
     'DISABLE_WRAPPER': True,
     'STYLESHEETS': {
         'main': {
             'source_filenames': [
-                'less/main.less',
+                'scss/main.scss',
             ],
             'output_filename': 'css/main.min.css',
         }
