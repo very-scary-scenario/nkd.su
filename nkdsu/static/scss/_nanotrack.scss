@@ -38,7 +38,7 @@ body .tracks .nanotrack {
   }
 
   &.successful a {
-    background-color: fadeout($green, 80%);
+    background-color: rgba($green, 20%);
 
     &::after {
       content: '[played]';

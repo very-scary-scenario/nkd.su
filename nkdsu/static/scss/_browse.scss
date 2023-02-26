@@ -78,7 +78,7 @@
           display: block;
 
           span.fragment {
-            background-color: fade($hl, 40%);
+            background-color: rgba($hl, 40%);
             color: mix($fg, $hl, 70%);
           }
         }

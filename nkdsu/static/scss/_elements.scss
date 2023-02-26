@@ -36,13 +36,13 @@ button.link {
   text-shadow: $basic-shadow 0 .1em 0;
 
   &.mono {
-    text-shadow: fadeout(black, 50%) 0 .1em 0;
+    text-shadow: rgba(black, 50%) 0 .1em 0;
   }
 }
 
 @include dark {
   button.link {
-    text-shadow: fadeout(black, 50%) 0 .1em 0;
+    text-shadow: rgba(black, 50%) 0 .1em 0;
   }
 };
 

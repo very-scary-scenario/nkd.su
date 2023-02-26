@@ -10,7 +10,7 @@ $avatar-thumb-size: 32px;
 $avatar-size: 48px;
 $key-avatar-thumb-size: $avatar-thumb-size * 1.5;
 
-$fhl: fade($hl, 0%);
+$fhl: rgba($hl, 0%);
 
 @mixin heavy-glow($color, $important: "") {
   text-shadow: $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em unquote($important);
@@ -304,7 +304,7 @@ li.plusone {
     box-sizing: border-box;
     margin: 2px;
     display: block;
-    background-color: fade(black, 10);
+    background-color: rgba(black, 10);
     border: 1px dashed $hl;
     border-radius: $avatar-border-radius;
     height: $avatar-thumb-size;

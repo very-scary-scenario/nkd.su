@@ -63,7 +63,7 @@
 @mixin invert() {
   background-color: $inv_bg;
   color: $inv_fg;
-  text-shadow: fadeout(black, 50%) 0 .1em 0;
+  text-shadow: rgba(black, 50%) 0 .1em 0;
 
   a, button.link {
     &:hover {

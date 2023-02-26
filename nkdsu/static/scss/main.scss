@@ -642,7 +642,7 @@ header {
           width: .6em;
           height: .6em;
           background-color: $pink;
-          border: 1px solid fade($inv_bg, 50%);
+          border: 1px solid rgba($inv_bg, 50%);
           border-radius: 50%;
           background-clip: padding-box;
         }
@@ -664,8 +664,8 @@ header {
           width: 2em;
           height: 2em;
           border-radius: .3em;
-          background-color: fade($light, 50%);
-          border: 1px solid fade($light, 50%);
+          background-color: rgba($light, 50%);
+          border: 1px solid rgba($light, 50%);
         }
         &:hover img { border-color: $hl }
       }
@@ -686,7 +686,7 @@ header {
 
         > li {
           text-align: left;
-          border-bottom: 1px solid fade($light, 20%);
+          border-bottom: 1px solid rgba($light, 20%);
 
           &:last-child {
             border-bottom: none;
@@ -793,7 +793,7 @@ main.login {
 
 .self-infobox {
   padding: 1em 0;
-  background-color: fade($light, 20%);
+  background-color: rgba($light, 20%);
   border-radius: .5em;
 
   p {
@@ -806,7 +806,7 @@ main.login {
   }
 
   section {
-    border: .3em solid fade($light, 30%);
+    border: .3em solid rgba($light, 30%);
     border-width: .3em 0;
 
     &:first-child { border-top-width: 0; > p:first-child { margin-top: 0; } }
@@ -870,7 +870,7 @@ p.update-message {
         code {
           display: inline-block;
           color: $pink;
-          background-color: fade($pink, 10%);
+          background-color: rgba($pink, 10%);
           padding: 0 .2em;
           border-radius: .2em;
         }
@@ -965,7 +965,7 @@ dl.metadata-check {
 
       &.mine {
         opacity: 1;
-        background-color: fadeout($pink, 75%);
+        background-color: rgba($pink, 75%);
         @include noise;
         border-radius: .5em;
         padding: .5em;
