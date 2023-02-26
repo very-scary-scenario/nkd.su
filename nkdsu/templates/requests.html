@@ -44,15 +44,15 @@
             {% csrf_token %}
 
             {% if not object.claimant %}
-              <input type="submit" name="claim" value="Claim">
+              <input class="button" type="submit" name="claim" value="Claim">
             {% elif object.claimant == request.user %}
-              <input type="submit" name="unclaim" value="Unclaim">
+              <input class="button" type="submit" name="unclaim" value="Unclaim">
             {% endif %}
           </form>
 
           <form action="{% url "vote:admin:fill_request" pk=object.pk %}" method="post">
             {% csrf_token %}
-            <input type="submit" value="Mark as filled">
+            <input class="button" type="submit" value="Mark as filled">
           </form>
         </li>
       {% endfor %}
