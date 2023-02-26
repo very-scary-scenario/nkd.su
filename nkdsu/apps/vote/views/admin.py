@@ -527,3 +527,8 @@ class RemoveNote(DestructiveAdminAction, DetailView):
     def do_thing(self) -> None:
         self.get_object().delete()
         messages.success(self.request, 'note removed')
+
+
+class Throw500(AdminMixin, DetailView):
+    def dispatch(self, *args, **kwargs):
+        raise RuntimeError('throwing a 500 for you')

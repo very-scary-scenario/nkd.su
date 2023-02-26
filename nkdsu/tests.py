@@ -121,6 +121,8 @@ class EverythingTest(
         '/set-dark-mode/',
         # can only be accessed if you are logged in with an unusable password
         '/spw/',
+        # is intentionally broken
+        '/vote-admin/throw-500/',
     ]
 
     uncovered_includes = [
