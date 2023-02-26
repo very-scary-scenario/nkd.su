@@ -1,115 +1,110 @@
 from django.urls import include, path, re_path as url
 
 from nkdsu.apps.vote import views
-from nkdsu.apps.vote.views import admin, api, js, profiles
+from nkdsu.apps.vote.views import admin, api, elf, js, profiles
 
 
 app_name = 'vote'
 
-admin_patterns = (
-    [
-        url(r'^upload/$', admin.LibraryUploadView.as_view(), name='upload_library'),
-        url(
-            r'^upload/confirm/$',
-            admin.LibraryUploadConfirmView.as_view(),
-            name='confirm_upload',
-        ),
-        url(r'^requests/$', admin.RequestList.as_view(), name='requests'),
-        url(
-            r'^requests/fill/(?P<pk>[^/]+)/$',
-            admin.FillRequest.as_view(),
-            name='fill_request',
-        ),
-        url(
-            r'^requests/claim/(?P<pk>[^/]+)/$',
-            admin.ClaimRequest.as_view(),
-            name='claim_request',
-        ),
-        url(
-            r'^requests/shelf/(?P<pk>[^/]+)/$',
-            admin.ShelfRequest.as_view(),
-            name='shelf_request',
-        ),
-        url(r'^check-metadata/$', admin.CheckMetadata.as_view(), name='check_metadata'),
-        url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
-        url(
-            r'^post-about-play/(?P<pk>.+)/$',
-            admin.PostAboutPlay.as_view(),
-            name='post_about_play',
-        ),
-        url(
-            r'^add-manual-vote/(?P<pk>.+)/$',
-            admin.ManualVote.as_view(),
-            name='manual_vote',
-        ),
-        url(
-            r'^block/(?P<pk>[^/]+)/reason$',
-            admin.MakeBlockWithReason.as_view(),
-            name='block_with_reason',
-        ),
-        url(r'^block/(?P<pk>[^/]+)/$', admin.MakeBlock.as_view(), name='block'),
-        url(r'^unblock/(?P<pk>[^/]+)/$', admin.Unblock.as_view(), name='unblock'),
-        url(r'^hidden/$', admin.HiddenTracks.as_view(), name='hidden'),
-        url(r'^hide/(?P<pk>.+)/$', admin.Hide.as_view(), name='hide'),
-        url(r'^unhide/(?P<pk>.+)/$', admin.Unhide.as_view(), name='unhide'),
-        url(r'^lm/(?P<pk>.+)/$', admin.LockMetadata.as_view(), name='lock_metadata'),
-        url(
-            r'^ulm/(?P<pk>.+)/$', admin.UnlockMetadata.as_view(), name='unlock_metadata'
-        ),
-        url(r'^hide-selection/$', admin.HideSelection.as_view(), name='hide_selection'),
-        url(
-            r'^unhide-selection/$',
-            admin.UnhideSelection.as_view(),
-            name='unhide_selection',
-        ),
-        url(r'^inudesu/$', admin.InuDesuTracks.as_view(), name='inudesu'),
-        url(r'^artless/$', admin.ArtlessTracks.as_view(), name='artless'),
-        url(
-            r'^shortlist/(?P<pk>.+)/$', admin.MakeShortlist.as_view(), name='shortlist'
-        ),
-        url(
-            r'^shortlist-order/$',
-            admin.OrderShortlist.as_view(),
-            name='shortlist_order',
-        ),
-        url(r'^discard/(?P<pk>.+)/$', admin.MakeDiscard.as_view(), name='discard'),
-        url(
-            r'^reset/(?P<pk>.+)/$',
-            admin.ResetShortlistAndDiscard.as_view(),
-            name='reset',
-        ),
-        url(
-            r'^shortlist-selection/$',
-            admin.ShortlistSelection.as_view(),
-            name='shortlist_selection',
-        ),
-        url(
-            r'^discard-selection/$',
-            admin.DiscardSelection.as_view(),
-            name='discard_selection',
-        ),
-        url(
-            r'^reset-shortlist-discard-selection/$',
-            admin.ResetShortlistAndDiscardSelection.as_view(),
-            name='reset_shortlist_discard_selection',
-        ),
-        url(
-            r'^tw-abuse/(?P<user_id>.+)/$',
-            admin.ToggleTwitterAbuser.as_view(),
-            name='toggle_twitter_abuser',
-        ),
-        url(
-            r'^local-abuse/(?P<user_id>.+)/$',
-            admin.ToggleLocalAbuser.as_view(),
-            name='toggle_local_abuser',
-        ),
-        url(r'^make-note/(?P<pk>.+)/$', admin.MakeNote.as_view(), name='make_note'),
-        url(
-            r'^remove-note/(?P<pk>.+)/$', admin.RemoveNote.as_view(), name='remove_note'
-        ),
-    ],
-    'admin',
-)
+admin_patterns = [
+    url(r'^upload/$', admin.LibraryUploadView.as_view(), name='upload_library'),
+    url(
+        r'^upload/confirm/$',
+        admin.LibraryUploadConfirmView.as_view(),
+        name='confirm_upload',
+    ),
+    url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
+    url(
+        r'^post-about-play/(?P<pk>.+)/$',
+        admin.PostAboutPlay.as_view(),
+        name='post_about_play',
+    ),
+    url(
+        r'^add-manual-vote/(?P<pk>.+)/$',
+        admin.ManualVote.as_view(),
+        name='manual_vote',
+    ),
+    url(
+        r'^block/(?P<pk>[^/]+)/reason$',
+        admin.MakeBlockWithReason.as_view(),
+        name='block_with_reason',
+    ),
+    url(r'^block/(?P<pk>[^/]+)/$', admin.MakeBlock.as_view(), name='block'),
+    url(r'^unblock/(?P<pk>[^/]+)/$', admin.Unblock.as_view(), name='unblock'),
+    url(r'^hidden/$', admin.HiddenTracks.as_view(), name='hidden'),
+    url(r'^hide/(?P<pk>.+)/$', admin.Hide.as_view(), name='hide'),
+    url(r'^unhide/(?P<pk>.+)/$', admin.Unhide.as_view(), name='unhide'),
+    url(r'^lm/(?P<pk>.+)/$', admin.LockMetadata.as_view(), name='lock_metadata'),
+    url(r'^ulm/(?P<pk>.+)/$', admin.UnlockMetadata.as_view(), name='unlock_metadata'),
+    url(r'^hide-selection/$', admin.HideSelection.as_view(), name='hide_selection'),
+    url(
+        r'^unhide-selection/$',
+        admin.UnhideSelection.as_view(),
+        name='unhide_selection',
+    ),
+    url(r'^inudesu/$', admin.InuDesuTracks.as_view(), name='inudesu'),
+    url(r'^artless/$', admin.ArtlessTracks.as_view(), name='artless'),
+    url(r'^shortlist/(?P<pk>.+)/$', admin.MakeShortlist.as_view(), name='shortlist'),
+    url(
+        r'^shortlist-order/$',
+        admin.OrderShortlist.as_view(),
+        name='shortlist_order',
+    ),
+    url(r'^discard/(?P<pk>.+)/$', admin.MakeDiscard.as_view(), name='discard'),
+    url(
+        r'^reset/(?P<pk>.+)/$',
+        admin.ResetShortlistAndDiscard.as_view(),
+        name='reset',
+    ),
+    url(
+        r'^shortlist-selection/$',
+        admin.ShortlistSelection.as_view(),
+        name='shortlist_selection',
+    ),
+    url(
+        r'^discard-selection/$',
+        admin.DiscardSelection.as_view(),
+        name='discard_selection',
+    ),
+    url(
+        r'^reset-shortlist-discard-selection/$',
+        admin.ResetShortlistAndDiscardSelection.as_view(),
+        name='reset_shortlist_discard_selection',
+    ),
+    url(
+        r'^tw-abuse/(?P<user_id>.+)/$',
+        admin.ToggleTwitterAbuser.as_view(),
+        name='toggle_twitter_abuser',
+    ),
+    url(
+        r'^local-abuse/(?P<user_id>.+)/$',
+        admin.ToggleLocalAbuser.as_view(),
+        name='toggle_local_abuser',
+    ),
+    url(r'^make-note/(?P<pk>.+)/$', admin.MakeNote.as_view(), name='make_note'),
+    url(r'^remove-note/(?P<pk>.+)/$', admin.RemoveNote.as_view(), name='remove_note'),
+]
+
+
+elf_patterns = [
+    url(r'^requests/$', elf.RequestList.as_view(), name='requests'),
+    url(
+        r'^requests/fill/(?P<pk>[^/]+)/$',
+        elf.FillRequest.as_view(),
+        name='fill_request',
+    ),
+    url(
+        r'^requests/claim/(?P<pk>[^/]+)/$',
+        elf.ClaimRequest.as_view(),
+        name='claim_request',
+    ),
+    url(
+        r'^requests/shelf/(?P<pk>[^/]+)/$',
+        elf.ShelfRequest.as_view(),
+        name='shelf_request',
+    ),
+    url(r'^check-metadata/$', elf.CheckMetadata.as_view(), name='check_metadata'),
+]
 
 
 js_patterns = (
@@ -149,7 +144,7 @@ profile_patterns = (
 
 
 urlpatterns = [
-    url(r'^vote-admin/', include(admin_patterns)),
+    url(r'^vote-admin/', include((admin_patterns + elf_patterns, 'admin'))),
     url(r'^js/', include(js_patterns)),
     url(r'^api/', include(api_patterns)),
     url(r'^', include(profile_patterns)),
