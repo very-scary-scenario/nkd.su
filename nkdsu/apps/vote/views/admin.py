@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.forms import Form
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse, reverse_lazy
@@ -25,7 +25,17 @@ from django.views.generic.base import TemplateResponseMixin
 from .js import JSApiMixin
 from ..elfs import is_elf
 from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
-from ..models import Block, Note, Profile, Request, Show, Track, TwitterUser, Vote
+from ..models import (
+    Block,
+    ElfShelving,
+    Note,
+    Profile,
+    Request,
+    Show,
+    Track,
+    TwitterUser,
+    Vote,
+)
 from ..update_library import metadata_consistency_checks, update_library
 
 
@@ -600,6 +610,47 @@ class ClaimRequest(ElfMixin, FormView):
             request.claimant = self.request.user
             request.save()
             messages.success(self.request, u"request claimed")
+
+        return redirect(reverse('vote:admin:requests'))
+
+
+class ShelfRequest(ElfMixin, FormView):
+    allowed_methods = ['post']
+    form_class = Form
+
+    def form_valid(self, form: Form) -> HttpResponse:
+        assert self.request.user.is_authenticated  # enforced by ElfMixin
+
+        request = get_object_or_404(Request, pk=self.kwargs['pk'])
+        reason = self.request.POST.get('reason')
+
+        if not reason:
+            messages.error(self.request, 'please explain your shelf actions')
+
+        elif 'shelf' in self.request.POST:
+            if request.is_shelved:
+                messages.warning(self.request, 'request was already shelved')
+            else:
+                ElfShelving.objects.create(
+                    request=request, reason_created=reason, created_by=self.request.user
+                )
+                messages.success(self.request, 'request shelved')
+
+        elif 'unshelf' in self.request.POST:
+            if not request.is_shelved:
+                messages.warning(self.request, 'request is not shelved')
+            else:
+                shelving = get_object_or_404(
+                    request.shelvings.filter(disabled_at__isnull=True)
+                )
+                shelving.disabled_at = timezone.now()
+                shelving.disabled_by = self.request.user
+                shelving.reason_disabled = reason
+                shelving.save()
+                messages.success(self.request, 'request unshelved')
+
+        else:
+            raise Http404('no action specified')
 
         return redirect(reverse('vote:admin:requests'))
 

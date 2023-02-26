@@ -54,6 +54,16 @@
             {% csrf_token %}
             <input class="button" type="submit" value="Mark as filled">
           </form>
+
+          <form action="{% url "vote:admin:shelf_request" pk=object.pk %}" method="post">
+            {% csrf_token %}
+            <input name="reason" type="text" placeholder="why?">
+            {% if not object.is_shelved %}
+              <input name="shelf" class="button" type="submit" value="Shelf">
+            {% else %}
+              <input name="unshelf" class="button" type="submit" value="Unshelf">
+            {% endif %}
+          </form>
         </li>
       {% endfor %}
     </ul>
