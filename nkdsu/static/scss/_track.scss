@@ -374,96 +374,94 @@ body.tracks-collapsed li.vote {
       }
     }
 
-    @media (min-width: $breakpoint) {
-      &:hover {
-        img.thumb {
-          opacity: 0;
-          // long enough that we're never going to see it, and only
-          // applicable on hover, so it'll reappear immediately:
-          transition: opacity 1s;
+    &:hover {
+      img.thumb {
+        opacity: 0;
+        // long enough that we're never going to see it, and only
+        // applicable on hover, so it'll reappear immediately:
+        transition: opacity 1s;
+      }
+    }
+
+    .deets {
+      position: absolute;
+      right: -.8em;
+      top: -.8em;
+      pointer-events: none;
+      text-align: right;
+      z-index: 3;
+
+      @include uninvert();
+      padding: .4em;
+      background-color: $bg;
+      @include noise();
+      box-shadow: inset $basic-shadow 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
+      border: 1px solid $border;
+      min-width: 9em;
+      max-width: 17em;
+      border-radius: .4em;
+
+      img {
+        float: right;
+        width: $avatar-size;
+        height: $avatar-size;
+      }
+
+      .meta {
+        margin-right: 55px;
+        color: #666;
+      }
+
+      .text, .hat-info {
+        clear: both;
+        text-align: center;
+        word-wrap: break-word;
+        overflow: hidden;
+        position: relative;
+
+        &::after {
+          content: ' ';
+          box-sizing: border-box;
+          display: block;
+          width: 80%;
+          border-top: 1px solid $light;
+          position: absolute;
+          top: 0.7em;
+          left: 10%;
+          z-index: 2;
         }
       }
 
-      .deets {
-        position: absolute;
-        right: -.8em;
-        top: -.8em;
-        pointer-events: none;
-        text-align: right;
+      .text::before, .hat-info i {
+        display: block;
+        margin: 0 auto;
+        width: 2.5em;
+        padding: .2em 0;
+        position: relative;
         z-index: 3;
-
-        @include uninvert();
-        padding: .4em;
         background-color: $bg;
         @include noise();
-        box-shadow: inset $basic-shadow 0 0 1em, rgba(0,0,0,.5) 0 .2em .5em;
-        border: 1px solid $border;
-        min-width: 9em;
-        max-width: 17em;
-        border-radius: .4em;
+      }
 
-        img {
-          float: right;
-          width: $avatar-size;
-          height: $avatar-size;
-        }
-
-        .meta {
-          margin-right: 55px;
-          color: #666;
-        }
-
-        .text, .hat-info {
-          clear: both;
-          text-align: center;
-          word-wrap: break-word;
-          overflow: hidden;
-          position: relative;
-
-          &::after {
-            content: ' ';
-            box-sizing: border-box;
-            display: block;
-            width: 80%;
-            border-top: 1px solid $light;
-            position: absolute;
-            top: 0.7em;
-            left: 10%;
-            z-index: 2;
-          }
-        }
-
-        .text::before, .hat-info i {
+      .text {
+        &::before {
+          @extend .fas;
           display: block;
-          margin: 0 auto;
-          width: 2.5em;
-          padding: .2em 0;
-          position: relative;
-          z-index: 3;
-          background-color: $bg;
-          @include noise();
+          content: fa-content($fa-var-comment);
+        }
+      }
+
+      .hat-info {
+        margin-top: .1em;
+        font-size: .8em;
+
+        i {
+          color: $badge-colour;
         }
 
-        .text {
-          &::before {
-            @include fa-icon;
-            display: block;
-            content: fa-content($fa-var-comment);
-          }
-        }
-
-        .hat-info {
-          margin-top: .1em;
-          font-size: .8em;
-
-          i {
-            color: $badge-colour;
-          }
-
-          &::after {
-            width: 60% !important;
-            left: 20% !important;
-          }
+        &::after {
+          width: 60% !important;
+          left: 20% !important;
         }
       }
     }
@@ -475,10 +473,12 @@ body.tracks-collapsed li.vote {
       transform-origin: 85% 2em;
     }
 
-    &:hover {
-      .deets {
-        opacity: 1;
-        transform: scale(1, 1);
+    @media (min-width: $breakpoint) {
+      &:hover {
+        .deets {
+          opacity: 1;
+          transform: scale(1, 1);
+        }
       }
     }
   }
