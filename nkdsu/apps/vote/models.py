@@ -1559,6 +1559,13 @@ class Request(CleanOnSaveMixin, models.Model):
         }
 
     @reify
+    def active_shelving(self) -> Optional[ElfShelving]:
+        try:
+            return self.shelvings.get(disabled_at__isnull=True)
+        except ElfShelving.DoesNotExist:
+            return None
+
+    @property
     def is_shelved(self) -> bool:
         """
         >>> from django.utils import timezone
@@ -1568,16 +1575,16 @@ class Request(CleanOnSaveMixin, models.Model):
         >>> request.is_shelved
         False
         >>> shelving = ElfShelving.objects.create(request=request, created_by=user)
-        >>> del request.is_shelved  # to make @reify forget the cached response
+        >>> del request.active_shelving  # to make @reify forget the cached response
         >>> request.is_shelved
         True
         >>> shelving.disabled_at = timezone.now()
         >>> shelving.save()
-        >>> del request.is_shelved
+        >>> del request.active_shelving
         >>> request.is_shelved
         False
         """
-        return self.shelvings.filter(disabled_at__isnull=True).exists()
+        return self.active_shelving is not None
 
     class Meta:
         ordering = ['-created']
