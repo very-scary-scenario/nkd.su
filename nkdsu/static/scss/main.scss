@@ -66,7 +66,7 @@ body {
             @extend .fas;
             @include bell-strike;
             z-index: 2;
-            content: $fa-var-hand-holding;
+            content: fa-content($fa-var-hand-holding);
             color: $fg;
             display: block;
             position: absolute;
@@ -93,13 +93,13 @@ body {
           }
         }
 
-        &#home-header-link i::before { content: $fa-var-home; }
-        &#browse-header-link i::before { content: $fa-var-folder; }
-        &#new-tracks-header-link i::before { content: $fa-var-concierge-bell; }
-        &#roulette-header-link i::before { content: $fa-var-dice; }
-        &#stats-header-link i::before { content: $fa-var-chart-bar; }
-        &#donate-header-link i::before { content: $fa-var-donate; }
-        &#etc-header-link i::before { content: $fa-var-ellipsis-h; }
+        &#home-header-link i::before { content: fa-content($fa-var-home); }
+        &#browse-header-link i::before { content: fa-content($fa-var-folder); }
+        &#new-tracks-header-link i::before { content: fa-content($fa-var-concierge-bell); }
+        &#roulette-header-link i::before { content: fa-content($fa-var-dice); }
+        &#stats-header-link i::before { content: fa-content($fa-var-chart-bar); }
+        &#donate-header-link i::before { content: fa-content($fa-var-donate); }
+        &#etc-header-link i::before { content: fa-content($fa-var-ellipsis-h); }
 
         &.active a {
           background-color: #ddd;
@@ -252,7 +252,7 @@ body {
           &.roulette-pro {
             &::before {
               @extend .fas;
-              content: $fa-var-exclamation-triangle;
+              content: fa-content($fa-var-exclamation-triangle);
             }
           }
         }
@@ -291,7 +291,7 @@ body {
             font-size: 1.5em;
             margin-bottom: .3em;
             color: $patreon-colour;
-            content: $fa-var-patreon;
+            content: fa-content($fa-var-patreon);
             display: block;
           }
         }
@@ -428,14 +428,14 @@ body {
 
             h3::before {
               @extend .fas;
-              content: $fa-var-angle-right;
+              content: fa-content($fa-var-angle-right);
               padding-right: .4em;
             }
 
             &:hover h3::before { color: $hl; }
           }
 
-          &[open] summary h3::before { content: $fa-var-angle-down; }
+          &[open] summary h3::before { content: fa-content($fa-var-angle-down); }
         }
 
         > p {
@@ -836,7 +836,7 @@ p.update-message {
     border: 1px solid darken($pink, 20);
 
     &::before {
-      content: $fa-var-exclamation-triangle;
+      content: fa-content($fa-var-exclamation-triangle);
     }
   }
 
@@ -846,7 +846,7 @@ p.update-message {
     border: 1px solid darken($blue, 20);
 
     &::before {
-      content: $fa-var-info;
+      content: fa-content($fa-var-info);
     }
   }
 }

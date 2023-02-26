@@ -253,7 +253,7 @@ li.vote {
       @include heavy-glow($bg);
     }
   }
-  &.new-user::before { @extend .fas; content: $fa-var-star; color: $hl; }
+  &.new-user::before { @extend .fas; content: fa-content($fa-var-star); color: $hl; }
 
   &.shortlisted, &.placated {
     img {
@@ -289,7 +289,7 @@ li.vote {
   &.patron .deets .full_name::before {
     @extend .fab;
     color: $patreon-colour;
-    content: $fa-var-patreon;
+    content: fa-content($fa-var-patreon);
     margin-right: .4em;
   }
 }
@@ -448,7 +448,7 @@ body.tracks-collapsed li.vote {
           &::before {
             @include fa-icon;
             display: block;
-            content: $fa-var-comment;
+            content: fa-content($fa-var-comment);
           }
         }
 
@@ -492,7 +492,7 @@ body.tracks-collapsed li.vote {
   &.content {
     &::after {
       @extend .fas;
-      content: $fa-var-comment;
+      content: fa-content($fa-var-comment);
       bottom: -.1em;
       right: -.1em;
       @include heavy-glow($bg);
@@ -500,11 +500,11 @@ body.tracks-collapsed li.vote {
 
     &.birthday {
       &::after {
-        content: $fa-var-birthday-cake;
+        content: fa-content($fa-var-birthday-cake);
       }
 
       .deets .text::before {
-        content: $fa-var-birthday-cake !important;
+        content: fa-content($fa-var-birthday-cake) !important;
       }
     }
   }
@@ -556,7 +556,7 @@ details.collapsed-artist {
 
     &::before {
       @extend .fas;
-      content: $fa-var-angle-right;
+      content: fa-content($fa-var-angle-right);
       padding-right: .4em;
     }
 
@@ -567,5 +567,5 @@ details.collapsed-artist {
     }
   }
 
-  &[open] summary::before { content: $fa-var-angle-down; }
+  &[open] summary::before { content: fa-content($fa-var-angle-down); }
 }

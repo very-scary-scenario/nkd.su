@@ -38,7 +38,7 @@
             @extend .fa;
             color: $hl;
             padding-right: .4em;
-            content: $fa-var-angle-right;
+            content: fa-content($fa-var-angle-right);
           }
         }
 
@@ -47,7 +47,7 @@
         }
       }
 
-      &[open] summary h3::before { content: $fa-var-angle-down; }
+      &[open] summary h3::before { content: fa-content($fa-var-angle-down); }
     }
 
     p.actions {
