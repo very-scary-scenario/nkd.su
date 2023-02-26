@@ -553,7 +553,9 @@ class FillRequest(ElfMixin, FormView):
     allowed_methods = ['post']
     form_class = Form
 
-    def form_valid(self, form):
+    def form_valid(self, form: Form) -> HttpResponse:
+        assert self.request.user.is_authenticated  # enforced by ElfMixin
+
         request = get_object_or_404(
             Request,
             pk=self.kwargs['pk'],
@@ -572,7 +574,9 @@ class ClaimRequest(ElfMixin, FormView):
     allowed_methods = ['post']
     form_class = Form
 
-    def form_valid(self, form):
+    def form_valid(self, form: Form) -> HttpResponse:
+        assert self.request.user.is_authenticated  # enforced by ElfMixin
+
         if 'unclaim' in self.request.POST:
             request = get_object_or_404(
                 Request,
