@@ -117,6 +117,7 @@ class EverythingTest(
         '/vote-admin/shortlist-order/',
         '/vote-admin/requests/fill/1/',
         '/vote-admin/requests/claim/1/',
+        '/vote-admin/requests/shelf/1/',
         '/set-dark-mode/',
         # can only be accessed if you are logged in with an unusable password
         '/spw/',
