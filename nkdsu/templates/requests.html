@@ -14,6 +14,9 @@
               mine
             {% endif %}
           {% endif %}
+          {% if object.is_shelved %}
+            shelved
+          {% endif %}
         ">
           <h3>{{ object.created }}</h3>
 
@@ -26,6 +29,13 @@
           {% if object.claimant %}
             <p class="claimant">
               claimed by <a href="{{ object.claimant.profile.get_absolute_url }}">@{{ object.claimant.username }}</a>
+            </p>
+          {% endif %}
+
+          {% if object.active_shelving %}
+            <p class="shelving">
+              shelved by <a href="{{ object.active_shelving.created_by.get_absolute_url }}">@{{ object.active_shelving.created_by.username }}</a>, because:
+              <em>{{ object.active_shelving.reason_created }}</em>
             </p>
           {% endif %}
 
