@@ -1,6 +1,6 @@
-@import "../fa/less/fontawesome.scss";
-@import "../fa/less/solid.scss";
-@import "../fa/less/brands.scss";
+@import "../fa/scss/fontawesome.scss";
+@import "../fa/scss/solid.scss";
+@import "../fa/scss/brands.scss";
 
 @import "_reset.scss";
 @import "_elements.scss";
@@ -18,64 +18,64 @@ html {
 }
 
 body {
-  @mixin nkdsu-font(),
-  .noise(),
-  background-color: $bg,
-  color: $fg,
-  text-shadow: $basic-shadow 0 .1em 0,
-  height: 100%,
+  @include nkdsu-font;
+  @include noise;
+  background-color: $bg;
+  color: $fg;
+  text-shadow: $basic-shadow 0 .1em 0;
+  height: 100%;
 
   #everything {
-    min-height: 100%,
-    position: relative,
+    min-height: 100%;
+    position: relative;
 
     #nav {
-      background-color: $bg,
-      .uninvert(),
+      background-color: $bg;
+      @include uninvert;
 
-      height: 2em,
-      line-height: 2em,
-      margin: 0 auto,
-      clear: both,
-      font-size: .8em,
-      list-style: none,
-      text-align: center,
-      border: 0 solid #333,
-      border-bottom-width: 3px,
+      height: 2em;
+      line-height: 2em;
+      margin: 0 auto;
+      clear: both;
+      font-size: .8em;
+      list-style: none;
+      text-align: center;
+      border: 0 solid #333;
+      border-bottom-width: 3px;
       /*-webkit-box-shadow: inset #eee 0 .2em 1em,*/
-      width: 100%,
-      overflow: hidden,
+      width: 100%;
+      overflow: hidden;
 
       li {
-        display: inline-block,
-        position: relative,
+        display: inline-block;
+        position: relative;
 
         i::before {
-          .fas(),
-          padding-right: .5em,
+          @extend .fas;
+          padding-right: .5em;
         }
 
         &.lookatme {
           i::before {
-            .bell-ding(),
+            @include bell-ding;
           }
 
           &::before {
-            .bell-strike(),
-            .fas(),
-            z-index: 2,
-            content: $fa-var-hand-holding,
-            color: $fg,
-            display: block,
-            position: absolute,
-            text-align: center,
-            top: 0,
-            left: .8em,
-            text-shadow: none,
+            @extend .fas;
+            @include bell-strike;
+            z-index: 2;
+            content: $fa-var-hand-holding;
+            color: $fg;
+            display: block;
+            position: absolute;
+            text-align: center;
+            top: 0;
+            left: .8em;
+            text-shadow: none;
           }
 
           &:hover::before {
-            color: $bg,
+            color: $bg;
           }
         }
 
@@ -103,20 +103,20 @@ body {
           background-color: #ddd;
           text-shadow: none;
           color: #666;
-          @mixin noise(),
+          @include noise();
         }
 
         &.lookatme {
-          font-weight: bold,
+          font-weight: bold;
         }
 
         span.new_tracks {
-          display: none,
+          display: none;
         }
 
         a {
-          overflow: hidden,
-          padding: .4em .8em 1em,
+          overflow: hidden;
+          padding: .4em .8em 1em;
 
           @media (max-width: $breakpoint) {
             padding: .4em .6em 1em;
@@ -162,41 +162,41 @@ body {
       margin: 0 auto;
 
       ul {
-        @mixin invert(),
-        border-radius: 0 0 .5em .5em,
-        padding: 0 .5em .1em,
-        display: inline-block,
+        @include invert();
+        border-radius: 0 0 .5em .5em;
+        padding: 0 .5em .1em;
+        display: inline-block;
 
         li {
-          display: inline-block,
-          text-wrap: nowrap,
+          display: inline-block;
+          text-wrap: nowrap;
 
           &::after {
-            content: " »",
-            padding: 0 .1em,
+            content: " »";
+            padding: 0 .1em;
           }
 
           &:last-child::after {
-            padding-right: 0,
+            padding-right: 0;
           }
         }
       }
     }
 
     main {
-      display: block,
-      margin: 0 auto,
-      max-width: $max-width,
-      min-width: 200px,
-      padding: 1em,
-      position: relative,
-      padding-bottom: 13em,
+      display: block;
+      margin: 0 auto;
+      max-width: $max-width;
+      min-width: 200px;
+      padding: 1em;
+      position: relative;
+      padding-bottom: 13em;
 
       .markdown {
-        padding-bottom: 1em,
+        padding-bottom: 1em;
 
         h1 {
-          text-align: center,
+          text-align: center;
         }
 
         @media (min-width: $breakpoint) {
@@ -249,7 +249,7 @@ body {
 
           &.roulette-pro {
             &::before {
-              @include fas();
+              @extend .fas;
               content: $fa-var-exclamation-triangle;
             }
           }
@@ -285,7 +285,7 @@ body {
           text-align: center;
 
           &::before {
-            @include fab();
+            @extend .fab;
             font-size: 1.5em;
             margin-bottom: .3em;
             color: $patreon-colour;
@@ -422,24 +422,24 @@ body {
       &.grouped-tracks, &.stats-page {
         details.track-group {
           summary {
-            @mixin reset-details-summary(),
+            @include reset-details-summary;
 
             h3::before {
-              .fas(),
-              content: $fa-var-angle-right,
-              padding-right: .4em,
+              @extend .fas;
+              content: $fa-var-angle-right;
+              padding-right: .4em;
             }
 
-            &:hover h3::before { color: $hl, }
+            &:hover h3::before { color: $hl; }
           }
 
-          &[open] summary h3::before { content: $fa-var-angle-down, }
+          &[open] summary h3::before { content: $fa-var-angle-down; }
         }
 
         > p {
-          max-width: $max-width,
-          margin: 0 auto,
-          text-align: center,
+          max-width: $max-width;
+          margin: 0 auto;
+          text-align: center;
         }
 
         @media (min-width: $breakpoint * 2) {
@@ -497,7 +497,7 @@ body {
     }
 
     .credit {
-      @include child-iter();
+      @include child-iter;
 
       margin-bottom: 0;
 
@@ -508,14 +508,14 @@ body {
   }
 }
 
-.dark({
-  @include invert();
+@include dark {
+  @include invert;
 
   #breadcrumbs ul {
     background-color: $bg !important;
-    @include uninvert() !important;
+    @include uninvert(!important);
   }
-});
+};
 
 body[data-dark-mode=dark] [value=dark],
 body[data-dark-mode=light] [value=light],
@@ -531,7 +531,7 @@ body[data-dark-mode=system] [value=system] {
 .messages {
   text-align: center;
   cursor: pointer;
-  @include noise();
+  @include noise;
   background-color: $inv_bg;
   color: $fg;
   overflow: hidden;
@@ -539,7 +539,7 @@ body[data-dark-mode=system] [value=system] {
   position: relative;
 
   &::before, li {
-    @include noise();
+    @include noise;
     background-color: #ddd;
     padding: .3em 1em;
     transition: margin-bottom 3s;
@@ -586,8 +586,8 @@ body[data-dark-mode=system] [value=system] {
 }
 
 header {
-  @include invert();
-  @include noise();
+  @include invert;
+  @include noise;
 
   display: flex;
   flex-flow: row;
@@ -614,7 +614,7 @@ header {
     #search {
       input {
         margin: 0 .5em;
-        @include search-field();
+        @include search-field;
       }
     }
   }
@@ -676,7 +676,7 @@ header {
         z-index: 10;
         width: 13em;
 
-        @include noise();
+        @include noise;
         background-color: $inv_bg;
         border: 1px solid $light;
         box-shadow: 0 0 0 1px $fg;
@@ -702,7 +702,7 @@ header {
           }
 
           form#dark-mode-settings {
-            @include child-iter();
+            @include child-iter;
             text-align: inherit;
             margin: 0;
           }
@@ -818,10 +818,10 @@ p.update-message {
   padding: .2em .4em .3em;
   margin-top: .2em;
 
-  @include uninvert();
+  @include uninvert;
 
   &::before {
-    @include fas();
+    @extend .fas;
     display: inline-block;
     width: 1.4em;
     text-align: center;
@@ -892,7 +892,7 @@ dl.metadata-check {
     margin-bottom: .5rem;
 
     .roles {
-      @include child-iter();
+      @include child-iter;
     }
   }
 }
@@ -964,34 +964,34 @@ dl.metadata-check {
       &.mine {
         opacity: 1;
         background-color: fadeout($pink, 75%);
-        @mixin noise(),
-        border-radius: .5em,
-        padding: .5em,
+        @include noise;
+        border-radius: .5em;
+        padding: .5em;
       }
     }
 
     > h3 {
-      font-size: 1em,
-      text-align: left,
-      margin: 0,
+      font-size: 1em;
+      text-align: left;
+      margin: 0;
     }
 
     > dl {
-      margin: .5em 1em,
+      margin: .5em 1em;
 
       > dt {
-        font-weight: bold,
+        font-weight: bold;
       }
 
       > dd {
-        margin-left: 1em,
+        margin-left: 1em;
       }
     }
 
     .request-actions {
       > form {
-        display: inline-block,
-        margin-right: 1em,
+        display: inline-block;
+        margin-right: 1em;
       }
     }
   }

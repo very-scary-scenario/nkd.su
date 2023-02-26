@@ -40,11 +40,11 @@ button.link {
   }
 }
 
-.dark({
+@include dark {
   button.link {
     text-shadow: fadeout(black, 50%) 0 .1em 0;
   }
-});
+};
 
 // this rule is specific to override vaguer rules about <a> and <input>
 html body main .button {
@@ -69,11 +69,11 @@ html body main .button {
   }
 }
 
-.dark({
+@include dark {
   main .button {
     &:hover {
       background-color: $inv_fg;
       color: $inv_bg;
     }
   }
-});
+};

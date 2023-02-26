@@ -1,14 +1,14 @@
 @import "_vars.scss";
 
-@mixin dark($rules) {
+@mixin dark {
   body[data-dark-mode=system] {
     @media (prefers-color-scheme: dark) {
-      $rules();
+      @content;
     }
   }
 
   body[data-dark-mode=dark] {
-    $rules();
+    @content;
   }
 }
 
@@ -33,21 +33,21 @@
     transform: $value;
 }
 
-@mixin noise() {
-  background-image: url('../i/noise.png');
+@mixin noise($important: "") {
+  background-image: url('../i/noise.png') $important;
 }
 
-.search-field {
-  @mixin noise(),
-  .nkdsu-font(),
-  background-color: $inv_fg,
-  color: $inv_bg,
-  border-radius: .3em,
-  border: none,
-  outline: none,
-  height: 1.5em,
-  padding: .1em .3em,
-  font-size: 1.1em,
+@mixin search-field {
+  @include noise;
+  @include nkdsu-font;
+  background-color: $inv_fg;
+  color: $inv_bg;
+  border-radius: .3em;
+  border: none;
+  outline: none;
+  height: 1.5em;
+  padding: .1em .3em;
+  font-size: 1.1em;
 }
 
 @mixin child-iter() {
@@ -73,15 +73,15 @@
   }
 }
 
-@mixin uninvert() {
-  background-color: none;
-  color: $fg;
-  text-shadow: $basic-shadow 0 .1em 0;
+@mixin uninvert($important: "") {
+  background-color: none $important;
+  color: $fg $important;
+  text-shadow: $basic-shadow 0 .1em 0 $important;
   a, button.link {
     &:hover {
-      color: $fg;
+      color: $fg $important;
     }
-    color: $hl;
+    color: $hl $important;
   }
 }
 
@@ -94,10 +94,10 @@
   }
 }
 
-.bell-strike {
+@mixin bell-strike {
   animation: bell-strike 2s ease-in infinite;
 }
-.bell-ding {
+@mixin bell-ding {
   animation: bell-ding 2s linear infinite;
 }
 

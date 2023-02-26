@@ -1,3 +1,5 @@
+@import "../fa/scss/brands.scss";
+@import "../fa/scss/_mixins.scss";
 @import "_mixins.scss"; 
 
 $metadata-width: 60%;
@@ -10,8 +12,8 @@ $key-avatar-thumb-size: $avatar-thumb-size * 1.5;
 
 $fhl: fade($hl, 0%);
 
-@mixin heavy-glow($color) {
-  text-shadow: $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em;
+@mixin heavy-glow($color, $important: "") {
+  text-shadow: $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em, $color 0 0 .2em $important;
 }
 
 @mixin tinytrack() {
@@ -191,17 +193,17 @@ body main .track {
 
     .vote {
       &::after, &::before, .hat {
-        @mixin heavy-glow($inv_bg) !important,
+        @include heavy-glow($inv_bg, !important);
       }
     }
 
     &.inudesu {
       a {
-        color: $inv_inu_hl,
+        color: $inv_inu_hl;
 
         &:hover {
-          border-color: $inv_inu_hl,
-          color: $inv_fg,
+          border-color: $inv_inu_hl;
+          color: $inv_fg;
         }
       }
     }
@@ -209,19 +211,19 @@ body main .track {
 
   &.selectable {
     &:hover {
-      border-color: $hl !important,
+      border-color: $hl !important;
     }
   }
 
   &.pending {
-    opacity: .5,
+    opacity: .5;
   }
 
   &.selected {
-    background-color: $light_hl,
+    background-color: $light_hl;
 
     &.ineligible {
-      background-color: $dark_hl,
+      background-color: $dark_hl;
     }
   }
 
@@ -251,7 +253,7 @@ li.vote {
       @include heavy-glow($bg);
     }
   }
-  &.new-user::before { .fas(); content: $fa-var-star; color: $hl; }
+  &.new-user::before { @extend .fas; content: $fa-var-star; color: $hl; }
 
   &.shortlisted, &.placated {
     img {
@@ -285,7 +287,7 @@ li.vote {
   }
 
   &.patron .deets .full_name::before {
-    @include fab();
+    @extend .fab;
     color: $patreon-colour;
     content: $fa-var-patreon;
     margin-right: .4em;
@@ -444,7 +446,7 @@ body.tracks-collapsed li.vote {
 
         .text {
           &::before {
-            @include fas();
+            @include fa-icon;
             display: block;
             content: $fa-var-comment;
           }
@@ -489,7 +491,7 @@ body.tracks-collapsed li.vote {
 
   &.content {
     &::after {
-      @include fas();
+      @extend .fas;
       content: $fa-var-comment;
       bottom: -.1em;
       right: -.1em;
@@ -553,7 +555,7 @@ details.collapsed-artist {
     @include reset-details-summary();
 
     &::before {
-      @include fas();
+      @extend .fas;
       content: $fa-var-angle-right;
       padding-right: .4em;
     }

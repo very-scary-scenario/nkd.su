@@ -1,3 +1,4 @@
+@import "../fa/scss/solid.scss";
 @import "_mixins.scss";
 
 #selection {
@@ -34,7 +35,7 @@
           margin: 0;
 
           &::before {
-            @include fa();
+            @extend .fa;
             color: $hl;
             padding-right: .4em;
             content: $fa-var-angle-right;
@@ -72,8 +73,8 @@
   }
 }
 
-.dark({
+@include dark {
   #selection #selhead .stuck {
     @include invert();
   }
-});
+};
