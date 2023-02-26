@@ -8,4 +8,4 @@ complain() {
 
 which rg || complain 'you need to install ripgrep'
 
-rg --replace '[trailing whitespace]' '\s+$' && complain 'there are files containing trailing whitespace'
+(! rg --replace '[trailing whitespace]' '\s+$') || complain 'there are files containing trailing whitespace'
