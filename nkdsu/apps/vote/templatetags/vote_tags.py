@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.safestring import SafeText, mark_safe
 from markdown import markdown as md
 
-from ..models import Show, Track
+from ..models import Play, Show, Track
 from ..utils import length_str
 
 register = Library()
@@ -45,6 +45,12 @@ def when(date: datetime.datetime) -> str:
         return date.strftime('%a %b %d at %I:%M %p').lower()
     else:
         return date.strftime('%a %b %d %Y at %I:%M %p').lower()
+
+
+@register.filter
+def weeks_ago(play: Play) -> int:
+    show = Show.current()
+    return ((show.end - play.date).days + 1) // 7
 
 
 @register.filter

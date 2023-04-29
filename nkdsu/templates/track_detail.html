@@ -20,7 +20,12 @@
   <ul class="plays">
     {% for play in track.plays %}
       <li>
-        <a href="{{ play.show.get_absolute_url }}">{{ play.date|date:"F"|lower }} {{ play.date|date:"jS, Y" }}</a>
+        <a href="{{ play.show.get_absolute_url }}">
+          {{ play.date|date:"F"|lower }} {{ play.date|date:"jS, Y" }}
+        </a>
+        {% with play|weeks_ago as weeks_ago %}
+          ({{ weeks_ago }} week{{ weeks_ago|pluralize }} ago)
+        {% endwith %}
       </li>
     {% endfor %}
   </ul>
