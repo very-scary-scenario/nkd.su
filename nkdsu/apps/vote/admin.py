@@ -14,15 +14,15 @@ class UserAdmin(StockUserAdmin):
     list_display = ('username', 'display_name', 'email', 'is_elf', 'is_staff', 'is_superuser', 'has_usable_password')
 
     @admin.display()
-    def display_name(self, obj: UserType):
+    def display_name(self, obj: UserType) -> str:
         return obj.profile.display_name
 
     @admin.display(boolean=True)
-    def is_elf(self, obj: UserType):
+    def is_elf(self, obj: UserType) -> bool:
         return is_elf(obj)
 
     @admin.display(boolean=True)
-    def has_usable_password(self, obj: UserType):
+    def has_usable_password(self, obj: UserType) -> bool:
         return obj.has_usable_password()
 
 
