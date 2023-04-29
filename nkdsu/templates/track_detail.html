@@ -24,7 +24,13 @@
           {{ play.date|date:"F"|lower }} {{ play.date|date:"jS, Y" }}
         </a>
         {% with play|weeks_ago as weeks_ago %}
-          ({{ weeks_ago }} week{{ weeks_ago|pluralize }} ago)
+          {% if weeks_ago == 0 %}
+            (this week)
+          {% elif weeks_ago == 1 %}
+            (last week)
+          {% else %}
+            ({{ weeks_ago }} week{{ weeks_ago|pluralize }} ago)
+          {% endif %}
         {% endwith %}
       </li>
     {% endfor %}
