@@ -11,7 +11,15 @@ User = get_user_model()
 
 
 class UserAdmin(StockUserAdmin):
-    list_display = ('username', 'display_name', 'email', 'is_elf', 'is_staff', 'is_superuser', 'has_usable_password')
+    list_display = (
+        'username',
+        'display_name',
+        'email',
+        'is_elf',
+        'is_staff',
+        'is_superuser',
+        'has_usable_password',
+    )
 
     @admin.display()
     def display_name(self, obj: UserType) -> str:
