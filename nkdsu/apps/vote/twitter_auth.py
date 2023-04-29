@@ -9,10 +9,15 @@ from django.http import HttpRequest
 import requests
 from social_core.backends.twitter import TwitterOAuth
 from social_core.pipeline import DEFAULT_AUTH_PIPELINE
-from social_django.models import UserSocialAuth
 from social_django.strategy import DjangoStrategy
 
 from .models import TwitterUser, avatar_upload_path
+
+
+TWITTER_NOT_POSSIBLE: str = (
+    'it is no longer possible to authenticate on nkd.su with twitter, sorry. '
+    'please send a twitter direct message to @NekoDesuRadio if you did not already set a password'
+)
 
 
 class DoNotAuthThroughTwitterPlease(BaseException):
@@ -35,57 +40,11 @@ class NkdsuTwitterAuth(TwitterOAuth):
         kwargs['redirect_uri'] = settings.SITE_URL + redir
         super().__init__(*args, **kwargs)
 
+    def auth_url(self) -> str:
+        raise DoNotAuthThroughTwitterPlease(TWITTER_NOT_POSSIBLE)
+
     def auth_allowed(self, response: dict, details: UserDetailsDict) -> bool:
-        allowed = super().auth_allowed(response, details)
-
-        try:
-            existing_twitteruser = TwitterUser.objects.get(user_id=int(response['id']))
-        except TwitterUser.DoesNotExist:
-            existing_twitteruser = None
-
-        try:
-            existing_usa = UserSocialAuth.objects.get(uid=str(response['id']))
-        except UserSocialAuth.DoesNotExist:
-            existing_usa = None
-
-        request: HttpRequest = self.strategy.request
-
-        if existing_twitteruser is None:
-            raise DoNotAuthThroughTwitterPlease(
-                'the twitter account you logged in with has no history of requesting things on nkd.su; '
-                'you should make a account with a username and password instead'
-            )
-
-        if (
-            # block auth attempts if this user is already signed in and already
-            # has an associated twitter account. there's no reason to repeat
-            # this process.
-            (request.user.is_authenticated)
-            and (request.user.profile.twitter_user is not None)
-        ):
-            raise DoNotAuthThroughTwitterPlease(
-                'you are already logged in, and your account is already associated with '
-                f'{request.user.profile.twitter_user.screen_name}. '
-                'you should not associate it again',
-            )
-
-        if hasattr(existing_twitteruser, 'profile'):
-            if (
-                # this account is currently associated with a different user
-                (existing_usa is not None)
-                and (existing_twitteruser.profile.user != existing_usa.user)
-            ):
-                raise DoNotAuthThroughTwitterPlease(
-                    'this twitter account is currently associated with an nkd.su account other than yours'
-                )
-
-            if existing_usa is None:
-                raise DoNotAuthThroughTwitterPlease(
-                    'this twitter account has already been adopted and disconnected. '
-                    'please log in with your username and password'
-                )
-
-        return allowed
+        raise DoNotAuthThroughTwitterPlease(TWITTER_NOT_POSSIBLE)
 
     def get_user_details(self, response: dict) -> UserDetailsDict:
         """
