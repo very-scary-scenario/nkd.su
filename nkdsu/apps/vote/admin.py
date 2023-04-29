@@ -66,6 +66,14 @@ class DiscardShortlistAdmin(admin.ModelAdmin):
     list_display = ('track', 'show')
 
 
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('display_name', 'username', 'is_patron', 'is_abuser')
+
+    @admin.display()
+    def username(self, obj: models.Profile) -> str:
+        return obj.user.username
+
+
 class RequestAdmin(admin.ModelAdmin):
     list_display = ('created', 'filled_by', 'claimant', 'submitted_by')
     list_filter = ('filled_by', 'claimant', 'submitted_by')
@@ -84,5 +92,6 @@ admin.site.register(models.Play, PlayAdmin)
 admin.site.register(models.Block, BlockAdmin)
 admin.site.register(models.Shortlist, DiscardShortlistAdmin)
 admin.site.register(models.Discard, DiscardShortlistAdmin)
+admin.site.register(models.Profile, ProfileAdmin)
 admin.site.register(models.Request, RequestAdmin)
 admin.site.register(models.Note, NoteAdmin)
