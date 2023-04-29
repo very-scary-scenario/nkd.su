@@ -1,6 +1,33 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin as StockUserAdmin
+from django.contrib.auth.models import User as UserType
 
 from ..vote import models
+from ..vote.elfs import is_elf
+
+
+User = get_user_model()
+
+
+class UserAdmin(StockUserAdmin):
+    list_display = ('username', 'display_name', 'email', 'is_elf', 'is_staff', 'is_superuser', 'has_usable_password')
+
+    @admin.display()
+    def display_name(self, obj: UserType):
+        return obj.profile.display_name
+
+    @admin.display(boolean=True)
+    def is_elf(self, obj: UserType):
+        return is_elf(obj)
+
+    @admin.display(boolean=True)
+    def has_usable_password(self, obj: UserType):
+        return obj.has_usable_password()
+
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 
 
 class ShowAdmin(admin.ModelAdmin):
