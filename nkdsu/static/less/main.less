@@ -96,7 +96,8 @@ body {
         &#new-tracks-header-link i::before { content: @fa-var-concierge-bell; }
         &#roulette-header-link i::before { content: @fa-var-dice; }
         &#stats-header-link i::before { content: @fa-var-chart-bar; }
-        &#donate-header-link i::before { content: @fa-var-donate; }
+        &#donate-header-link i::before { .fab(); content: @fa-var-patreon; }
+        &#discord-header-link i::before { .fab(); content: @fa-var-discord; }
         &#etc-header-link i::before { content: @fa-var-ellipsis-h; }
 
         &.active a {
