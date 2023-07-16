@@ -76,7 +76,7 @@
         <p class="refusal">{{ track.ineligible }}</p>
       {% endif %}
 
-      {% if user.is_staff %}
+      {% if user.is_staff or user|is_elf %}
         {% include "include/notes.html" with notes=track.notes %}
       {% else %}
         {% include "include/notes.html" with notes=track.public_notes %}
