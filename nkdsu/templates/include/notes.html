@@ -1,12 +1,16 @@
+{% load vote_tags %}
+
 {% if notes %}
   <ul class="notes">
     {% for note in notes %}
       <li class="
-        {% if user.is_staff and note.public %}
-          public-warn
-        {% endif %}
-        {% if user.is_staff and note.show %}
-          transient
+        {% if user.is_staff or user|is_elf %}
+          {% if note.public %}
+            public-warn
+          {% endif %}
+          {% if note.show %}
+            transient
+          {% endif %}
         {% endif %}
       ">
         <span class="note">{{ note }}</span>
