@@ -97,6 +97,7 @@ class ArtistLexer(Lexer):
         r'Daisy x Daisy|'
         r'Dejo & Bon|'
         r'Digz, Inc. Group|'
+        r'Konya, Anomachikara|'
         r'Dimitri From Paris|'
         r'Fear,\sand\sLoathing\sin\sLas\sVegas|'
         r'GENERATIONS from EXILE TRIBE|'
