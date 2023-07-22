@@ -268,8 +268,8 @@ ROLE_EXAMPLES: dict[str, tuple[Optional[str], Optional[str], str, str, str]] = {
     ),
     'Pop Team Epic Rebroadcast OP': ('Pop Team Epic', 'Rebroadcast ', 'OP', '', 'OP'),
     'takt op.Destiny ED': ('takt op.Destiny', None, 'ED', '', 'ED'),
-    'I am OP Even at Level 1 OP': ('I am OP Even at Level 1', None, 'OP', '', 'OP'),
-    'I am OP Even at Level 1 OP 1': ('I am OP Even at Level 1', None, 'OP', '1', 'OP 1'),
+    'Im OP Even at lv1 OP': ('I am OP Even at lv1', None, 'OP', '', 'OP'),
+    'I am OP Even at Level 1 OP 1': ('I am OP Even at lv1', None, 'OP', '1', 'OP 1'),
     'twgok ED EP07': ('twgok', None, 'ED', 'EP07', 'ED EP07'),
 }
 
