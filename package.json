@@ -5,7 +5,7 @@
     "check-migrations": "python manage.py makemigrations --dry-run --check",
     "lint-black": "black --check --diff .",
     "lint-flake8": "flake8 .",
-    "lint-js": "eslint nkdsu/static/js",
+    "lint-js": "npm exec eslint nkdsu/static/js",
     "lint-mypy": "mypy --pretty --show-error-context",
     "manage": "python manage.py",
     "test": "pytest"
