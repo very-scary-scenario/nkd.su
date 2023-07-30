@@ -83,11 +83,15 @@ then
 
 	cd "${original_wd}"
 	dirty=
+    }
+
+    cleanup_and_exit() {
+	cleanup
 
 	exit 1
     }
 
-    trap 'cleanup' SIGINT
+    trap 'cleanup_and_exit' SIGINT
 
     cd "${root_dir}"
 
