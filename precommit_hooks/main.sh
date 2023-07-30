@@ -1,0 +1,148 @@
+#!/bin/sh
+
+root_dir="$(git rev-parse --show-toplevel)"
+original_wd="${PWD}"
+detailed_log=/dev/null
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+	against=HEAD
+else
+	# Initial commit: diff against an empty tree object
+	against=$(git hash-object -t tree /dev/null)
+fi
+
+# If you want to allow non-ASCII filenames set this variable to true.
+allownonascii=$(git config --type=bool hooks.allownonascii)
+
+# Redirect output to stderr.
+exec 1>&2
+
+status=0
+
+# If there are whitespace errors, print the offending file names and fail.
+echo "Checking for superfluous whitespace..."
+git diff-index --check --cached $against --
+status=$[$status + $?]
+
+echo "Checking for missing newlines at EOF..."
+if git diff-index --cached ${against} --patch -- | grep -e '^+++ b' -e 'No newline at end of file' | sed 's:+++ b/::' | grep -B1 '^\\ No newline at end of file'
+then
+    echo
+    status=$[$status + 1]
+fi
+
+
+if git diff-index --cached ${against} -- | grep '\.py$' > "${detailed_log}"
+then
+    python_modified=1
+else
+    python_modified=
+fi
+
+if git diff-index --cached ${against} -- | grep '\.js$' > "${detailed_log}"
+then
+    js_modified=1
+else
+    js_modified=
+fi
+
+if git diff-index --cached ${against} -- | grep '\.rst$' > "${detailed_log}"
+then
+    rst_modified=1
+else
+    rst_modified=
+fi
+
+if [[ ${python_modified} || ${js_modified} || ${yaml_modified} || ${rst_modified} ]]
+then
+    # We need to look just at our staging area
+    # Temporarily complete this commit so we can stash the rest
+    git commit --no-verify -m "temporary commit" > "${detailed_log}"
+
+    # Stash everything else
+    git stash push --all > "${detailed_log}"
+
+    cd "${root_dir}"
+
+    if [ ${python_modified} ]
+    then
+	echo "Checking Python code quality with black..."
+	if ! npm run-script lint-black
+	then
+	    status=$[$status + 1]
+	    echo
+	fi
+
+	echo "Checking Python code quality with flake8..."
+	if ! npm run-script lint-flake8
+	then
+	    status=$[$status + 1]
+	    echo
+	fi
+
+	echo "Type-checking Python with mypy..."
+	if ! npm run-script lint-mypy
+	then
+	    status=$[$status + 1]
+	    echo
+	fi
+
+	echo "Checking Django migrations..."
+	if ! npm run-script check-migrations
+	then
+	    status=$[$status + 1]
+	    echo
+	fi
+    else
+	echo "Skipping Python code-quality check with black"
+	echo "Skipping Python code-quality check with flake8"
+	echo "Skipping Python type check with mypy"
+	echo "Skipping Django migrations check"
+    fi
+
+    if [[ ${python_modified} || ${rst_modified} ]]
+    then
+	echo "Checking documentation builds..."
+	cd docs
+	if ! make html
+	then
+	    status=$[$status + 1]
+	    echo
+	fi
+	cd ..
+    fi
+
+    if [ ${js_modified} ]
+    then
+	echo "Checking JavaScript code-quality with eslint..."
+	if ! npm run-script lint-js
+	then
+	    status=$[$status + 1]
+	    echo
+	fi
+    else
+	echo "Skipping JavaScript code-quality check with eslint"
+	echo
+    fi
+
+    # Cleanup
+    # Remove any generated files
+    git clean -fdx > "${detailed_log}"
+
+    # Restore stashed files
+    git stash pop > "${detailed_log}"
+
+    # Undo the temporary commit
+    git reset --soft HEAD^ > "${detailed_log}"
+
+    cd "${original_wd}"
+fi
+
+if [[ ${status} > 0 ]]
+then
+    echo "One or more tests failed, aborting commit."
+    echo "Please see details above as to what needs to be fixed."
+fi
+
+exit ${status}
