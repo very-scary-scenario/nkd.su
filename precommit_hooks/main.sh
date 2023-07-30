@@ -3,10 +3,11 @@
 root_dir="$(git rev-parse --show-toplevel)"
 original_wd="${PWD}"
 detailed_log=/dev/null
+dirty=
 
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
-	against=HEAD
+	against=$(git rev-parse HEAD)
 else
 	# Initial commit: diff against an empty tree object
 	against=$(git hash-object -t tree /dev/null)
@@ -62,6 +63,31 @@ then
 
     # Stash everything else
     git stash push --all > "${detailed_log}"
+
+    dirty=1
+
+    cleanup() {
+	if [ ! dirty ]
+	then
+	    return 0
+	fi
+
+	# Remove any generated files
+	git clean -fdx > "${detailed_log}"
+
+	# Undo the temporary commit
+	git reset --soft ${against} > "${detailed_log}"
+
+	# Restore stashed files
+	git stash pop > "${detailed_log}"
+
+	cd "${original_wd}"
+	dirty=
+
+	exit 1
+    }
+
+    trap 'cleanup' SIGINT
 
     cd "${root_dir}"
 
@@ -126,17 +152,7 @@ then
 	echo
     fi
 
-    # Cleanup
-    # Remove any generated files
-    git clean -fdx > "${detailed_log}"
-
-    # Restore stashed files
-    git stash pop > "${detailed_log}"
-
-    # Undo the temporary commit
-    git reset --soft HEAD^ > "${detailed_log}"
-
-    cd "${original_wd}"
+    cleanup
 fi
 
 if [[ ${status} > 0 ]]
