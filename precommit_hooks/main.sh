@@ -57,12 +57,14 @@ fi
 
 if [[ ${python_modified} || ${js_modified} || ${yaml_modified} || ${rst_modified} ]]
 then
+    cd "${root_dir}"
+
     # We need to look just at our staging area
     # Temporarily complete this commit so we can stash the rest
     git commit --no-verify -m "temporary commit" > "${detailed_log}"
 
     # Stash everything else
-    git stash push --all > "${detailed_log}"
+    git stash push --all -- ':!node_modules' > "${detailed_log}"
 
     dirty=1
 
@@ -92,8 +94,6 @@ then
     }
 
     trap 'cleanup_and_exit' SIGINT
-
-    cd "${root_dir}"
 
     if [ ${python_modified} ]
     then
