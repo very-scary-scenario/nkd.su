@@ -5,7 +5,7 @@
     {% if user.email %}
       your email address is <strong>{{ user.email }}</strong>. <a href="{# XXX #}">change it here</a>
     {% else %}
-      you have not set an email address, and will not be able to reset your password if you lose it. <a href="{# XXX #}">please set one</a>
+      <a href="{# XXX #}">please set an email address</a>. without one, you will not be able to reset your password if you lose it
     {% endif %}
   </p>
 
