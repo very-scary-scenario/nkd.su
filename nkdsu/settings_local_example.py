@@ -4,6 +4,12 @@ from .settings import INSTALLED_APPS, MIDDLEWARE, PROJECT_DIR  # noqa
 
 TEMPLATE_DEBUG = DEBUG = True
 
+EMAIL_HOST = 'smtp.website.tld'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'noreply@nkd.su'
+EMAIL_HOST_PASSWORD = 'a good password'
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = 'noreply@nkd.su'
+
 CACHES = {
     'default': {
         # i think this is a reasonable default:
