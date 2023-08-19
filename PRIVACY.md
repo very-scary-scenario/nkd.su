@@ -70,10 +70,10 @@ These will be used to:
 - authenticate you
 - represent you to other users
 
-Email addresses in particular will be used to issue password reset requests. We
-may also use them to notify you about security issues or other things that may
-require action from you, but will not ever send promotional material or share
-addresses with anyone for any reason.
+Email addresses will be used to issue password reset requests. We may also use
+them to notify you about security issues or other things that may require
+action from you. We'll never send promotional material or share addresses with
+anyone, for any reason, except with our hosting provider, as outlined above.
 
 You can change your names or avatar at any time. Please contact an admin if you
 would like to have this information modified or deleted in a way that the
