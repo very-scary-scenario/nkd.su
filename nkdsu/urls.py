@@ -16,18 +16,39 @@ urlpatterns = [
     path('s/', include(social_django.urls, namespace='social')),
     # registration
     url(r'^register/', RegisterView.as_view(), name='register'),
-    url(r'^logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}, name='logout'),
+    url(
+        r'^logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}, name='logout'
+    ),
     url(r'^login/', LoginView.as_view(), name='login'),
-
     url(r'^set-password/', SetPasswordView.as_view(), name='password_set'),
-
-    path('change-password/', auth_views.PasswordChangeView.as_view(), name='password_change'),
-    path('change-password/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
-
-    path('reset-password/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('reset-password/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path(
+        'change-password/',
+        auth_views.PasswordChangeView.as_view(),
+        name='password_change',
+    ),
+    path(
+        'change-password/done/',
+        auth_views.PasswordChangeDoneView.as_view(),
+        name='password_change_done',
+    ),
+    path(
+        'reset-password/', auth_views.PasswordResetView.as_view(), name='password_reset'
+    ),
+    path(
+        'reset-password/done/',
+        auth_views.PasswordResetDoneView.as_view(),
+        name='password_reset_done',
+    ),
+    path(
+        'reset/<uidb64>/<token>/',
+        auth_views.PasswordResetConfirmView.as_view(),
+        name='password_reset_confirm',
+    ),
+    path(
+        'reset/done/',
+        auth_views.PasswordResetCompleteView.as_view(),
+        name='password_reset_complete',
+    ),
 ]
 
 if settings.DEBUG:
