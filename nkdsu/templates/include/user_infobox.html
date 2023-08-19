@@ -1,9 +1,17 @@
 {% load vote_tags %}
 
 <div class="self-infobox">
+  <p>
+    {% if user.email %}
+      your email address is <strong>{{ user.email }}</strong>. <a href="{# XXX #}">change it here</a>
+    {% else %}
+      you have not set an email address, and will not be able to reset your password if you lose it. <a href="{# XXX #}">please set one</a>
+    {% endif %}
+  </p>
+
   {% if user.profile.twitter_user %}
     <p>
-      your account has adopted historical requests and statistics from twitter user @{{ user.profile.twitter_user.screen_name }}
+      your account has adopted historical requests and statistics from twitter user @<strong>{{ user.profile.twitter_user.screen_name }}</strong>
     </p>
   {% endif %}
 
