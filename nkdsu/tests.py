@@ -96,8 +96,12 @@ class EverythingTest(
         '/@what/',
         '/login/',
         '/register/',
-        '/cpw/',
-        '/cpw-done/',
+        '/change-password/',
+        '/change-password/done/',
+        '/reset-password/',
+        '/reset-password/done/',
+        '/reset/abc/def/',
+        '/reset/done/',
         # it's important that logout be last since we have a sublcass of this
         # test that logs in at the start, and we want it to stay logged in
         '/logout/',
@@ -120,7 +124,7 @@ class EverythingTest(
         '/vote-admin/requests/shelf/1/',
         '/set-dark-mode/',
         # can only be accessed if you are logged in with an unusable password
-        '/spw/',
+        '/set-password/',
         # is intentionally broken
         '/vote-admin/throw-500/',
     ]
