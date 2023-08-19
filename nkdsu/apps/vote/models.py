@@ -534,7 +534,7 @@ class Role:
         result = re.match(
             r'^(?P<anime>.*?) ?\b('
             r'(?P<caveat>rebroadcast )?\b(?P<role>'
-            r'((ED|OP)\d*\b[^.]*)|'
+            r'((ED|OP)\d*\b\W*\w*)|'
             r'((character|image) song\b.*)|'
             r'(ep\d+\b.*)|'
             r'(insert (track|song)\b.*)|'

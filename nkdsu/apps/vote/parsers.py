@@ -107,6 +107,7 @@ class ArtistLexer(Lexer):
         r'Kevin & Cherry|'
         r'King & Queen|'
         r'Kisida Kyodan & The Akebosi Rockets|'
+        r'Konya, Anomachikara|'
         r'MYTH\s&\sROID|'
         r'OLIVIA inspi\' REIRA\(TRAPNEST\)|'
         r'Oranges\s(and|&)\sLemons|'
