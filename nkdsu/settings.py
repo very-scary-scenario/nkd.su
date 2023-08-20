@@ -165,6 +165,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'pipeline',
     'social_django',
+    'allauth',
+    'allauth.account',
     'nkdsu.apps.vote',
 ]
 
