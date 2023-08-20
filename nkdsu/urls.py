@@ -39,22 +39,22 @@ urlpatterns = [
         name='password_change_done',
     ),
     path(
-        'reset-password/', auth_views.PasswordResetView.as_view(), name='password_reset'
+        "reset-password/", allauth_views.password_reset, name="account_reset_password"
     ),
     path(
-        'reset-password/done/',
-        auth_views.PasswordResetDoneView.as_view(),
-        name='password_reset_done',
+        "reset-password/done/",
+        allauth_views.password_reset_done,
+        name="account_reset_password_done",
+    ),
+    url(
+        r"^reset-password/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$",
+        allauth_views.password_reset_from_key,
+        name="account_reset_password_from_key",
     ),
     path(
-        'reset/<uidb64>/<token>/',
-        auth_views.PasswordResetConfirmView.as_view(),
-        name='password_reset_confirm',
-    ),
-    path(
-        'reset/done/',
-        auth_views.PasswordResetCompleteView.as_view(),
-        name='password_reset_complete',
+        "reset-password/key/done/",
+        allauth_views.password_reset_from_key_done,
+        name="account_reset_password_from_key_done",
     ),
     path('email/', allauth_views.email, name='account_email'),
     path(
