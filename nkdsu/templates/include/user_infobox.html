@@ -3,9 +3,9 @@
 <div class="self-infobox">
   <p>
     {% if user.email %}
-      your email address is <strong>{{ user.email }}</strong>. <a href="{# XXX #}">change it here</a>
+      your primary email address is <strong>{{ user.email }}</strong>. <a href="{% url "account_email" %}">change it here</a>
     {% else %}
-      <a href="{# XXX #}">please set an email address</a>. without one, you will not be able to reset your password if you lose it
+      <a href="{% url "account_email" %}">please set an email address</a>. without one, you will not be able to reset your password if you lose it
     {% endif %}
   </p>
 

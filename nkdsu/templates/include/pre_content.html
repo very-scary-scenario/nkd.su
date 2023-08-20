@@ -109,6 +109,6 @@
 
 {% if user.is_authenticated and not user.email %}
   <ul class="messages">
-    <li class="warning">you have not set an email address. please <a href="{# XXX #}">set one now</a> so that you're able to reset your password if you lose it.</li>
+    <li class="warning">you have not set an email address. please <a href="{% url "account_email" %}">set one now</a> so that you're able to reset your password if you lose it.</li>
   </ul>
 {% endif %}
