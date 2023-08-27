@@ -553,35 +553,37 @@ body[data-dark-mode=system] [value=system] {
     &.info {background-color: @blue}
   }
 
-  &::before {
-    content: 'okay cool i get it';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    transition: opacity .2s;
-    opacity: 0;
-    width: 100%;
-    padding-top: 100%;
-    margin-top: -100%;
-  }
-
-  &:hover {
+  &.dismissable {
     &::before {
-      opacity: 1;
+      content: 'okay cool i get it';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      transition: opacity .2s;
+      opacity: 0;
+      width: 100%;
+      padding-top: 100%;
+      margin-top: -100%;
     }
-  }
 
-  &.dismissed {
-    cursor: default;
-
-    li {
-      &:last-child {
-        margin-bottom: -100%;  // it'd be cool if this were derived from the height of .messages, but alas it is not.
+    &:hover {
+      &::before {
+        opacity: 1;
       }
     }
 
-    &::before {
-      opacity: 1;
+    &.dismissed {
+      cursor: default;
+
+      li {
+        &:last-child {
+          margin-bottom: -100%;  // it'd be cool if this were derived from the height of .messages, but alas it is not.
+        }
+      }
+
+      &::before {
+        opacity: 1;
+      }
     }
   }
 }
