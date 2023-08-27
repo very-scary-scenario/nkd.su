@@ -94,9 +94,11 @@ class EverythingTest(
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
         '/@what/',
-        '/email/',
+        '/profile/email/',
+        '/profile/',
         '/confirm-email/',
         '/confirm-email/abc/',
+        '/request/',
         '/login/',
         '/account/login/',
         '/register/',
@@ -115,8 +117,6 @@ class EverythingTest(
 
     uncovered_urls = [
         # some urls that require stuff to be in the session
-        '/profile/',
-        '/request/',
         '/vote-admin/upload/confirm/',
         '/vote-admin/shortlist-selection/',
         '/vote-admin/discard-selection/',
