@@ -21,12 +21,17 @@ urlpatterns = [
     url(
         r'^logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}, name='logout'
     ),
-    path(  # XXX remove this once the allauth email templates are replaced
+    path(  # XXX remove this once the allauth templates are replaced
         'account/logout/',
         RedirectView.as_view(url=reverse_lazy('logout')),
         name='account_logout',
     ),
     url(r'^login/', LoginView.as_view(), name='login'),
+    path(  # XXX remove this once the allauth templates are replaced
+        'account/login/',
+        RedirectView.as_view(url=reverse_lazy('login')),
+        name='account_login',
+    ),
     url(r'^set-password/', SetPasswordView.as_view(), name='password_set'),
     path(
         'change-password/',
