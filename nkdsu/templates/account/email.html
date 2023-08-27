@@ -4,9 +4,9 @@
 {% block title %}email addresses{% endblock %}
 
 {% block content %}
-  <h2 class="aligned">email addresses</h2>
-
   {% if user.emailaddress_set.all %}
+    <h2 class="aligned">email addresses</h2>
+
     <p class="subheading"></p>
 
     <form method="post" class="email-addresses">
