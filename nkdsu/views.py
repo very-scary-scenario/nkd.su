@@ -1,16 +1,20 @@
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
+from allauth.account import views as allauth_views
 from django.contrib import messages
 from django.contrib.auth import get_user_model, views as auth_views
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, FormView
 
+from .apps.vote.mixins import BreadcrumbMixin
 from .apps.vote.models import Track
+from .apps.vote.views.profiles import UpdateProfileView
 from .forms import RegistrationForm
 from .mixins import MarkdownView
 
@@ -80,3 +84,7 @@ class SetPasswordView(FormView):
             f'you have set a password. please log in with it. your username is {form.user.get_username()}',
         )
         return super().form_valid(form)
+
+
+class EmailView(LoginRequiredMixin, BreadcrumbMixin, allauth_views.EmailView):
+    breadcrumbs = UpdateProfileView.base_breadcrumbs

@@ -47,6 +47,17 @@
         {% endif %}
       {% endfor %}
     </section>
+  {% else %}
+    <section>
+      <p>
+        {% if user.has_usable_password %}
+          you have a password set. you can <a href="{% url "password_change" %}">change it</a>, if you like
+        {% else %}
+          {# this shouldn't be possible, but i don't want to lie #}
+          you do not have a password set. you should <a href="{% url "password_set" %}">set one</a>
+        {% endif %}
+      </p>
+    </section>
   {% endif %}
 
   {% if not hide_edit_button %}

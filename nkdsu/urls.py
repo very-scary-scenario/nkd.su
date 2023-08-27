@@ -8,7 +8,7 @@ from django.views.static import serve
 import social_django.urls
 
 from nkdsu.apps.vote import urls as vote_urls
-from nkdsu.views import LoginView, RegisterView, SetPasswordView
+from nkdsu.views import EmailView, LoginView, RegisterView, SetPasswordView
 
 admin.autodiscover()
 
@@ -54,7 +54,7 @@ urlpatterns = [
         allauth_views.password_reset_from_key_done,
         name="account_reset_password_from_key_done",
     ),
-    path('email/', allauth_views.email, name='account_email'),
+    path('profile/email/', EmailView.as_view(), name='account_email'),
     path(
         'confirm-email/',
         allauth_views.email_verification_sent,

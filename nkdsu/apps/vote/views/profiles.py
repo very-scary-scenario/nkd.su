@@ -5,7 +5,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import UpdateView
 
 from . import VoterDetail
@@ -39,6 +39,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = Profile
     fields = ['display_name', 'avatar']
     template_name = 'edit_profile.html'
+    base_breadcrumbs = [(reverse_lazy("vote:profiles:edit-profile"), "edit profile")]
 
     def get_form(self):
         form = super().get_form()
