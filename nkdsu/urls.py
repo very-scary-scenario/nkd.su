@@ -18,16 +18,21 @@ urlpatterns = [
     path('s/', include(social_django.urls, namespace='social')),
     # registration
     url(r'^register/', RegisterView.as_view(), name='register'),
+    path(  # XXX try to remove this once the allauth templates are replaced
+        'account/register/',
+        RedirectView.as_view(url=reverse_lazy('register')),
+        name='account_signup',
+    ),
     url(
         r'^logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}, name='logout'
     ),
-    path(  # XXX remove this once the allauth templates are replaced
+    path(  # XXX try to remove this once the allauth templates are replaced
         'account/logout/',
         RedirectView.as_view(url=reverse_lazy('logout')),
         name='account_logout',
     ),
     url(r'^login/', LoginView.as_view(), name='login'),
-    path(  # XXX remove this once the allauth templates are replaced
+    path(  # XXX try to remove this once the allauth templates are replaced
         'account/login/',
         RedirectView.as_view(url=reverse_lazy('login')),
         name='account_login',

@@ -94,17 +94,23 @@ class EverythingTest(
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
         '/@what/',
+        '/email/',
+        '/confirm-email/',
+        '/confirm-email/abc/',
         '/login/',
+        '/account/login/',
         '/register/',
+        '/account/register/',
         '/change-password/',
         '/change-password/done/',
         '/reset-password/',
         '/reset-password/done/',
-        '/reset/abc/def/',
-        '/reset/done/',
+        '/reset-password/key/abc-def/',
+        '/reset-password/key/done/',
         # it's important that logout be last since we have a sublcass of this
         # test that logs in at the start, and we want it to stay logged in
         '/logout/',
+        '/account/logout/',
     ]
 
     uncovered_urls = [
@@ -138,9 +144,7 @@ class EverythingTest(
 
     def setUp(self) -> None:
         super().setUp()
-        user = User(
-            username='what',
-        )
+        user = User(username='what')
         user.set_password('what')
         user.save()
 
