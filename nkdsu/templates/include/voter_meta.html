@@ -23,9 +23,7 @@
     <img class="avatar" src="{{ voter.get_avatar_url }}" alt="{{ voter.name }}">
   </p>
 
-  {% if voter.batting_average == None %}
-    <p class="subheading">needs to vote more</p>
-  {% else %}
+  {% if voter.batting_average != None %}
     <p class="subheading">batting at <strong>{{ voter.batting_average|percent }}</strong> over the last six months</p>
   {% endif %}
 
