@@ -532,7 +532,6 @@ body[data-dark-mode=system] [value=system] {
 
 .messages {
   text-align: center;
-  cursor: pointer;
   .noise();
   background-color: @inv_bg;
   color: @fg;
@@ -555,6 +554,8 @@ body[data-dark-mode=system] [value=system] {
   }
 
   &.dismissable {
+    cursor: pointer;
+
     &::before {
       content: 'okay cool i get it';
       position: absolute;
