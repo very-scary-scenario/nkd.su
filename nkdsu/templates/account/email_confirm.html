@@ -1,0 +1,23 @@
+{% extends parent %}
+
+{% block title %}confirm your email{% endblock %}
+
+{% block content %}
+  <h2>confirm your email</h2>
+
+  {% if confirmation %}
+    {% with confirmation.email_address.email as email %}
+      <p class="subheading">
+        if you want to associate <a href="mailto:{{ email }}">{{ email }}</a> with your account, please confirm it below
+      </p>
+
+      <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+        {% csrf_token %}
+        <input type="submit" value="confirm {{ email }}" class="button">
+      </form>
+    {% endwith %}
+  {% else %}
+    <p class="subheading">this confirmation link either expired or is invalid</p>
+    <p class="subheading">you can issue a new one from <a href="{% url "account_email" %}">the email address management page</a></p>
+  {% endif %}
+{% endblock %}
