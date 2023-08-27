@@ -16,27 +16,15 @@ urlpatterns = [
     url(r'^', include(vote_urls)),
     path('admin/', admin.site.urls),
     path('s/', include(social_django.urls, namespace='social')),
+
     # registration
     url(r'^register/', RegisterView.as_view(), name='register'),
-    path(  # XXX try to remove this once the allauth templates are replaced
-        'account/register/',
-        RedirectView.as_view(url=reverse_lazy('register')),
-        name='account_signup',
-    ),
+
     url(
         r'^logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}, name='logout'
     ),
-    path(  # XXX try to remove this once the allauth templates are replaced
-        'account/logout/',
-        RedirectView.as_view(url=reverse_lazy('logout')),
-        name='account_logout',
-    ),
     url(r'^login/', LoginView.as_view(), name='login'),
-    path(  # XXX try to remove this once the allauth templates are replaced
-        'account/login/',
-        RedirectView.as_view(url=reverse_lazy('login')),
-        name='account_login',
-    ),
+
     url(r'^set-password/', SetPasswordView.as_view(), name='password_set'),
     path(
         'change-password/',
@@ -76,6 +64,23 @@ urlpatterns = [
         r'^confirm-email/(?P<key>[-:\w]+)/$',
         allauth_views.confirm_email,
         name='account_confirm_email',
+    ),
+
+    # account-related views that allauth expects:
+    path(
+        'account/register/',
+        RedirectView.as_view(url=reverse_lazy('register')),
+        name='account_signup',
+    ),
+    path(
+        'account/logout/',
+        RedirectView.as_view(url=reverse_lazy('logout')),
+        name='account_logout',
+    ),
+    path(
+        'account/login/',
+        RedirectView.as_view(url=reverse_lazy('login')),
+        name='account_login',
     ),
 ]
 
