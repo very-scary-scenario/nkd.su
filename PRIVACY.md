@@ -9,7 +9,7 @@ You can look at [the history of changes to this document][history] if you want.
 The **admins**, who control the website and the server it runs on; we are
 colons and Peter Shillito.
 
-The **elves**, who deal with getting new music for the library and correcting
+The **elfs**, who deal with getting new music for the library and correcting
 metadata issues.
 
 The **host**, Peter Shillito, who runs the show.
@@ -50,7 +50,7 @@ They will be used to:
 
 - improve the library
 
-The website only shows these to elves and admins, but they are emailed in plain text and will be shared among the elves.
+The website only shows these to elfs and admins, but they are emailed in plain text and will be shared among the elfs.
 
 ### account information
 

@@ -66,7 +66,7 @@ to accept votes and generally be responsible, though:
 - Make Peter an account with staff and admin permissions.
     - You can do this from the admin interface at /admin. Make them a super
       user.
-- Make non-staff accounts for the elves who gather tracks, so that they can get
+- Make non-staff accounts for the elfs who gather tracks, so that they can get
   to the request list
 
 ----

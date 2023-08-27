@@ -48,9 +48,9 @@ know][new-issue].
 
 ## Who's to blame?
 
-[Peter][peter] runs the show, a bunch of suspiciously [anonymous
-elves][patreon] do work managing the library, and [some nerds][contributors]
-work on this website.
+[Peter][peter] runs the show, a bunch of suspiciously [anonymous elfs][patreon]
+do work managing the library, and [some nerds][contributors] work on this
+website.
 
 [contributors]: https://github.com/very-scary-scenario/nkd.su/graphs/contributors
 [peter]: https://twitter.com/theshillito
