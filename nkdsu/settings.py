@@ -31,6 +31,9 @@ BROKER_URL = "amqp://guest:guest@127.0.0.1:5672//"
 # EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # stuff about when the show is
 SHOWTIME = relativedelta(
     weekday=SA,
