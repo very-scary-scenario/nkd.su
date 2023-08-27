@@ -28,7 +28,7 @@ If you have javascript enabled, you can select multiple tracks to request them
 at the same time. You can do this by clicking anywhere in a track box that is
 not a link.
 
-[request an addition]: https://nkd.su/request
+[request an addition]: https://nkd.su/request-addition/
 
 ## How does it work?
 
