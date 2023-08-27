@@ -16,15 +16,12 @@ urlpatterns = [
     url(r'^', include(vote_urls)),
     path('admin/', admin.site.urls),
     path('s/', include(social_django.urls, namespace='social')),
-
     # registration
     url(r'^register/', RegisterView.as_view(), name='register'),
-
     url(
         r'^logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}, name='logout'
     ),
     url(r'^login/', LoginView.as_view(), name='login'),
-
     url(r'^set-password/', SetPasswordView.as_view(), name='password_set'),
     path(
         'change-password/',
@@ -65,7 +62,6 @@ urlpatterns = [
         allauth_views.confirm_email,
         name='account_confirm_email',
     ),
-
     # account-related views that allauth expects:
     path(
         'account/register/',
