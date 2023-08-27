@@ -3,7 +3,11 @@
 <div class="self-infobox">
   <p>
     {% if user.email %}
-      your primary email address is <strong>{{ user.email }}</strong>. <a href="{% url "account_email" %}">change it here</a>
+      {% if user|has_verified_email %}
+        your primary email address is <strong>{{ user.email }}</strong>. <a href="{% url "account_email" %}">change it here</a>
+      {% else %}
+        your primary email address is <strong>{{ user.email }}</strong>, but it has not been verified. please <a href="{% url "account_email" %}">verify it</a> so you can be confident it works
+      {% endif %}
     {% else %}
       <a href="{% url "account_email" %}">please set an email address</a>. without one, you will not be able to reset your password if you lose it
     {% endif %}

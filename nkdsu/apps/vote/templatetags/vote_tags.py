@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import Iterable, Optional
 
+from allauth.account.models import EmailAddress
 from django.contrib.auth.models import AnonymousUser, User
 from django.db.models import QuerySet
 from django.template import Library
@@ -80,6 +81,11 @@ def is_elf(user: User) -> bool:
     from ..elfs import is_elf
 
     return is_elf(user)
+
+
+@register.filter
+def has_verified_email(user: User) -> bool:
+    return EmailAddress.objects.filter(user=user, verified=True).exists()
 
 
 @register.filter
