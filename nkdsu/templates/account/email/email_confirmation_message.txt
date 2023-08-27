@@ -1,0 +1,8 @@
+{% load account %}{% autoescape off %}{% user_display user as user_display %}hi
+
+we've sent this email because a user with the username '{{ user_display }}' wants to associate this email address with their account on {{ current_site.name }}
+
+if this is something you want to do, go to {{ activate_url }}{% endautoescape %}
+
+okay thanks,
+the robot elf who powers the nkd.su server
