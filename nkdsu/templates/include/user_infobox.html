@@ -47,12 +47,6 @@
         {% endif %}
       {% endfor %}
     </section>
-  {% else %}
-    {% if not user.profile.twitter_user %}
-      <section>
-        <p>it is no longer possible to automatically link a twitter account to adopt all of its historic requests and statistics. please reach out to Peter if you want to do this. if you want to disconnect your acount immediately after, you can do that here too</p>
-      </section>
-    {% endif %}
   {% endif %}
 
   {% if not hide_edit_button %}
