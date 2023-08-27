@@ -112,3 +112,19 @@
     <li class="warning">you do not have a verified email address. please <a href="{% url "account_email" %}">add one and verify it</a> so that you're able to reset your password if you lose it</li>
   </ul>
 {% endif %}
+
+{% if breadcrumbs %}
+  <div id="breadcrumbs">
+    <ul>
+      {% for link, name in breadcrumbs %}
+        <li>
+          {% if link %}
+            <a href="{{ link }}">{{ name }}</a>
+          {% else %}
+            {{ name }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
