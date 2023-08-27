@@ -7,7 +7,13 @@
   {% if user.emailaddress_set.all %}
     <h2 class="aligned">email addresses</h2>
 
-    <p class="subheading"></p>
+    <p class="subheading">
+      any email address here can be used to reset your password
+    </p>
+
+    <p class="subheading">
+      which one is set as primary will only matter if we need to message you proactively, which we don't plan to do often, if ever
+    </p>
 
     <form method="post" class="email-addresses">
       {% csrf_token %}
