@@ -530,6 +530,11 @@ body[data-dark-mode=system] [value=system] {
   }
 }
 
+.dark({
+  // make breadcrumbs not break border symmetry around the message that pesters about verifying an email address
+  .messages { margin-bottom: 3px; }
+});
+
 .messages {
   text-align: center;
   .noise();
@@ -538,7 +543,6 @@ body[data-dark-mode=system] [value=system] {
   overflow: hidden;
   text-shadow: none;
   position: relative;
-  margin-bottom: 3px;
 
   &::before, li {
     .noise();
