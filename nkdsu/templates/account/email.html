@@ -55,6 +55,10 @@
   {% if can_add_email %}
     <h2>add an email address</h2>
 
+    <p class="subheading">
+      you may find it reassuring to look at nkd.su's <a href="{% url "vote:privacy" %}">privacy policy</a> before giving us an email address
+    </p>
+
     <form method="post" class="add_email">
       {% csrf_token %}
       {{ form.as_p }}
