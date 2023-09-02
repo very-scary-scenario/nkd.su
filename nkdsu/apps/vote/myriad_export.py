@@ -4,7 +4,6 @@ Tools for interacting with CSV exports of the library from Myriad Playout.
 
 from csv import DictReader
 from dataclasses import dataclass
-from io import TextIOBase
 from typing import Callable, Iterable, Optional
 
 from .models import Track
