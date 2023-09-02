@@ -12,6 +12,10 @@
   }
 }
 
+.nkdsu-font() {
+  font-family: "Bitter", "Calibri", sans-serif;
+}
+
 .clearfix() {
   &::after {
     content: ' ';
@@ -35,13 +39,13 @@
 
 .search-field {
   .noise();
+  .nkdsu-font();
   background-color: @inv_fg;
   color: @inv_bg;
   border-radius: .3em;
   border: none;
   outline: none;
   height: 1.5em;
-  font-family: "Bitter", "Calibri", sans-serif;
   padding: .1em .3em;
   font-size: 1.1em;
 }

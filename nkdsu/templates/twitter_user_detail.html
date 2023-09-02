@@ -1,89 +1,13 @@
 {% extends parent %}
-{% load vote_tags cache %}
 
 {% block title %}{{ voter.name }}{% endblock %}
 
 {% block content %}
 
 <div class="user {% if voter.is_abuser %}abuser{% endif %}">
-  <div class="user_meta">
-    <h2>{{ voter.name }}</h2>
-    <p class="subheading">
-      <a href="{{ voter.twitter_url }}">
-        @{{ voter.screen_name }}
-      </a>
-    </p>
+  {% include "include/voter_meta.html" %}
 
-    <p class="subheading">
-      <a class="avatar" href="{{ voter.twitter_url }}">
-        <img class="avatar" src="{{ voter.get_avatar_url }}?size=original" alt="{{ voter.name }}">
-      </a>
-    </p>
-
-    {% if voter.batting_average == None %}
-      <p class="subheading">needs to vote more</p>
-    {% else %}
-      <p class="subheading">batting at <strong>{{ voter.batting_average|percent }}</strong> over the last six months</p>
-    {% endif %}
-
-    {% if voter.streak > 1 %}
-      <p class="subheading">voted for the last <strong>{{ voter.streak }}</strong> consecutive shows</p>
-    {% endif %}
-
-    {% if user.is_staff %}
-      <p class="subheading"><a href="{{ voter.get_toggle_abuser_url }}">
-        {% if voter.is_abuser %}
-          redeem {{ voter }}
-        {% else %}
-          condemn {{ voter }}
-        {% endif %}
-      </a></p>
-    {% endif %}
-
-    {% if voter.is_abuser %}
-      <p class="subheading"><strong>{{ voter.name }} is condemned until further notice.</strong></p>
-      <p class="subheading">requests will still appear on tracks, but will not influence their position on the front page.</p>
-    {% endif %}
-
-    {% if voter.is_patron %}
-      <p class="patron">{{ voter.name }} supports Neko Desu on <a href="https://www.patreon.com/NekoDesu">Patreon</a>!</p>
-    {% endif %}
-
-
-    {% if voter.userbadge_set.all %}
-      <ul class="badges">
-        {% for badge in voter.userbadge_set.all %}
-          <li>
-            <i class="fa fa-{{ badge.badge_info.icon }}"></i>
-
-            <p>{{ badge.badge_info.description }}</p>
-
-            {% if badge.badge_info.url %}
-              <p><a href="{{ badge.badge_info.url }}">More info&hellip;</a></p>
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  </div>
-
-  <h2>requests</h2>
-  <div class="user-votes">
-    {% cache 300 user_detail:votes voter.user_id page_obj.number %}
-      {% regroup votes by show as votes_by_show %}
-      {% for group in votes_by_show %}
-        <h3><a href="{{ group.grouper.get_absolute_url }}">{{ group.grouper.showtime|date:"F jS Y" }}</a></h3>
-        {% spaceless %}
-          <ul>
-            {% for vote in group.list %}
-              {% include "include/vote.html" with show=group.grouper %}
-            {% endfor %}
-          </ul>
-        {% endspaceless %}
-      {% endfor %}
-    {% endcache %}
-
-  </div>
+  {% include "include/voter_votes.html" %}
 </div>
 
 {% include "include/paginator.html" %}

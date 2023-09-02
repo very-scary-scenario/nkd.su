@@ -1,14 +1,14 @@
 {% load vote_tags %}
 {% load cache %}
 
-{% cache 20 track track.pk vote_show.pk user.is_staff focus_artist cache_invalidator %}
+{% cache 20 track track.pk vote_show.pk user.is_staff user|is_elf track|eligible_for:user focus_artist cache_invalidator %}
   <li class="track
     {% if track.eligible %}
       eligible
     {% else %}
       ineligible
     {% endif %}
-    {% if user.is_staff or track.eligible %}
+    {% if user.is_staff or track|eligible_for:user %}
       selectable
     {% else %}
       unselectable
@@ -68,7 +68,18 @@
         {% endif %}
 
         {% if track.year %}
-          <a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a>
+          <span><a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a></span>
+        {% endif %}
+
+        {% if user.is_staff and track.media_id %}
+          <span>
+            {% if track.has_hook %}
+              <i class="fa fa-fish" title="has a hook in myriad"></i>
+            {% endif %}
+            <span title="myriad media id">
+              {{ track.media_id|format_otp }}
+            </span>
+          </span>
         {% endif %}
       </p>
 
@@ -76,7 +87,7 @@
         <p class="refusal">{{ track.ineligible }}</p>
       {% endif %}
 
-      {% if user.is_staff %}
+      {% if user.is_staff or user|is_elf %}
         {% include "include/notes.html" with notes=track.notes %}
       {% else %}
         {% include "include/notes.html" with notes=track.public_notes %}
@@ -96,8 +107,8 @@
         {% for vote in track|votes_for:vote_show|slice:"1:" %}
           {% include "include/inline_vote.html" %}
         {% endfor %}
-        {% if track.eligible and not user.is_staff %}
-          <li class="plusone"><a target="_blank" title="request this track" href="{{ track.get_vote_url }}">
+        {% if not user.is_authenticated and track.eligible or not user.is_staff and track|eligible_for:user %}
+          <li class="plusone"><a title="request this track" href="{{ track.get_vote_url }}">
             +
           </a></li>
         {% endif %}

@@ -4,17 +4,17 @@ import datetime
 import json
 import re
 from dataclasses import asdict, dataclass
+from enum import Enum, auto
 from io import BytesIO
 from string import ascii_letters
-from typing import Any, Dict, Iterable, List, Literal, Optional, Set, Tuple, Union, cast
-from urllib.parse import urlparse
+from typing import Any, Iterable, Optional, cast
+from urllib.parse import quote
+from uuid import uuid4
 
 from Levenshtein import ratio
 from PIL import Image, ImageFilter
-from dateutil import parser as date_parser
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.staticfiles import finders
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files import File
@@ -23,20 +23,31 @@ from django.db import models
 from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.templatetags.static import static
-from django.urls import Resolver404, resolve, reverse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.timezone import get_default_timezone
+from django_resized import ResizedImageField
 from markdown import markdown
 import requests
-import tweepy
 
 from .managers import NoteQuerySet, TrackQuerySet
 from .parsers import ParsedArtist, parse_artist
+from .placeholder_avatars import placeholder_avatar_for
 from .utils import (
-    READING_USERNAME, indefinitely, lastfm, length_str, memoize,
-    musicbrainzngs, pk_cached, posting_tw_api, reading_tw_api, reify,
-    split_id3_title, vote_tweet_intent_url,
+    READING_USERNAME,
+    assert_never,
+    cached,
+    indefinitely,
+    lastfm,
+    length_str,
+    memoize,
+    musicbrainzngs,
+    pk_cached,
+    reify,
+    split_id3_title,
+    vote_url,
 )
+from .voter import Voter
 from ..vote import mixcloud
 
 
@@ -50,7 +61,7 @@ class CleanOnSaveMixin:
 
 
 class SetShowBasedOnDateMixin:
-    show: models.ForeignKey[Union[Show, models.expressions.Combinable], Show]
+    show: models.ForeignKey[Show | models.expressions.Combinable, Show]
 
     def save(self, *args, **kwargs):
         self.show = Show.at(self.date)
@@ -77,16 +88,21 @@ class Show(CleanOnSaveMixin, models.Model):
         if self.end < self.showtime:
             raise ValidationError(
                 'Show ends before it begins; {end} < {start}'.format(
-                    end=self.end, start=self.showtime))
+                    end=self.end, start=self.showtime
+                )
+            )
         overlap = Show.objects.exclude(pk=self.pk).filter(
-            showtime__lt=self.end,
-            end__gt=self.showtime)
+            showtime__lt=self.end, end__gt=self.showtime
+        )
         if overlap.exists():
             raise ValidationError(
                 '{self} overlaps existing shows: {overlap}'.format(
-                    self=self, overlap=overlap))
+                    self=self, overlap=overlap
+                )
+            )
 
     @classmethod
+    @cached(2, 'vote:models:Show:current')
     def current(cls) -> Show:
         """
         Get (or create, if necessary) the show that will next end.
@@ -100,21 +116,17 @@ class Show(CleanOnSaveMixin, models.Model):
         Get (or create, if necessary) the show for `time`. Use .at() instead.
         """
 
-        shows_after_time = cls.objects.filter(end__gt=time)
+        existing_show = cls.objects.filter(end__gt=time).order_by('showtime').first()
 
-        try:
-            return shows_after_time.order_by('showtime')[0]
-        except IndexError:
-            pass
-
-        if not create:
+        if existing_show is not None:
+            return existing_show
+        elif not create:
             return None
         else:
             # We have to switch to naive and back to make relativedelta
             # look for the local showtime. If we did not, showtime would be
             # calculated against UTC.
-            naive_time = timezone.make_naive(time,
-                                             timezone.get_current_timezone())
+            naive_time = timezone.make_naive(time, timezone.get_current_timezone())
             naive_end = naive_time + settings.SHOW_END
 
             # Work around an unfortunate shortcoming of dateutil where
@@ -126,10 +138,10 @@ class Show(CleanOnSaveMixin, models.Model):
 
             naive_showtime = naive_end - settings.SHOWTIME
 
-            our_end = timezone.make_aware(naive_end,
-                                          timezone.get_current_timezone())
-            our_showtime = timezone.make_aware(naive_showtime,
-                                               timezone.get_current_timezone())
+            our_end = timezone.make_aware(naive_end, timezone.get_current_timezone())
+            our_showtime = timezone.make_aware(
+                naive_showtime, timezone.get_current_timezone()
+            )
             show = cls()
             show.end = our_end
             show.showtime = our_showtime
@@ -168,7 +180,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @memoize
     def broadcasting(self, time: Optional[datetime.datetime] = None) -> bool:
         """
-        Return True if the time specified is during this week's show.
+        Return :data:`True` if the time specified is during this week's show.
         """
 
         if time is None:
@@ -180,7 +192,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @pk_cached(indefinitely)
     def next(self, create: bool = False) -> Optional[Show]:
         """
-        Return the next Show.
+        Return the :class:`Show` chronologically after that one.
         """
 
         return Show._at(self.end + datetime.timedelta(microseconds=1), create)
@@ -189,7 +201,7 @@ class Show(CleanOnSaveMixin, models.Model):
     @pk_cached(indefinitely)
     def prev(self) -> Optional[Show]:
         """
-        Return the previous Show.
+        Return the :class:`Show` chronologically before that one.
         """
 
         qs = Show.objects.filter(end__lt=self.end)
@@ -202,7 +214,7 @@ class Show(CleanOnSaveMixin, models.Model):
     def has_ended(self) -> bool:
         return timezone.now() > self.end
 
-    def _date_kwargs(self, attr: str = 'date') -> Dict[str, datetime.datetime]:
+    def _date_kwargs(self, attr: str = 'date') -> dict[str, datetime.datetime]:
         """
         The kwargs you would hand to a queryset to find objects applicable to
         this show. Should not be used unless you're doing something that
@@ -226,22 +238,30 @@ class Show(CleanOnSaveMixin, models.Model):
         return self.play_set.order_by('date').select_related('track')
 
     @memoize
-    def playlist(self) -> List[Track]:
+    def playlist(self) -> list[Track]:
         return [p.track for p in self.plays()]
 
     @memoize
-    def shortlisted(self) -> List[Track]:
-        return list(filter(lambda t: t not in self.playlist(),
-                           (p.track for p in self.shortlist_set.all())))
+    def shortlisted(self) -> list[Track]:
+        return list(
+            filter(
+                lambda t: t not in self.playlist(),
+                (p.track for p in self.shortlist_set.all()),
+            )
+        )
 
     @memoize
-    def discarded(self) -> List[Track]:
-        return list(filter(lambda t: t not in self.playlist(),
-                           (p.track for p in self.discard_set.all())))
+    def discarded(self) -> list[Track]:
+        return list(
+            filter(
+                lambda t: t not in self.playlist(),
+                (p.track for p in self.discard_set.all()),
+            )
+        )
 
     @memoize
     @pk_cached(20)
-    def tracks_sorted_by_votes(self) -> List[Track]:
+    def tracks_sorted_by_votes(self) -> list[Track]:
         """
         Return a list of tracks that have been voted for this week, in order of
         when they were last voted for, starting from the most recent.
@@ -250,14 +270,15 @@ class Show(CleanOnSaveMixin, models.Model):
         track_set = set()
         tracks = []
 
-        votes = Vote.objects.filter(show=self).filter(
-            Q(twitter_user__is_abuser=False) |
-            Q(twitter_user__isnull=True)
-        ).prefetch_related('tracks').order_by('-date')
+        votes = (
+            Vote.objects.filter(show=self)
+            .filter(Q(twitter_user__is_abuser=False) | Q(twitter_user__isnull=True))
+            .filter(Q(user__profile__is_abuser=False) | Q(user__isnull=True))
+            .prefetch_related('tracks')
+            .order_by('-date')
+        )
 
-        for track in (
-            track for vote in votes for track in vote.tracks.all()
-        ):
+        for track in (track for vote in votes for track in vote.tracks.all()):
             if track.pk in track_set:
                 continue
 
@@ -268,37 +289,39 @@ class Show(CleanOnSaveMixin, models.Model):
 
     @memoize
     @pk_cached(60)
-    def revealed(self, show_hidden: bool = False) -> models.QuerySet[Track]:
+    def revealed(self, show_hidden: bool = False) -> TrackQuerySet:
         """
-        Return a all public (unhidden, non-inudesu) tracks revealed in the
+        Return all public (unhidden, non-inudesu) tracks revealed in the
         library this week.
         """
 
-        return Track.objects.filter(hidden=False, inudesu=False,
-                                    **self._date_kwargs('revealed'))
+        return Track.objects.filter(
+            hidden=False, inudesu=False, **self._date_kwargs('revealed')
+        )
 
     @memoize
     @pk_cached(60)
-    def cloudcasts(self) -> List[Any]:
+    def cloudcasts(self) -> list[Any]:
         return mixcloud.cloudcasts_for(self.showtime)
 
     def get_absolute_url(self) -> str:
         if self == Show.current():
             return reverse('vote:index')
 
-        return reverse('vote:show', kwargs={
-            'date': self.showtime.date().strftime('%Y-%m-%d')
-        })
+        return reverse(
+            'vote:show', kwargs={'date': self.showtime.date().strftime('%Y-%m-%d')}
+        )
 
     def get_listen_url(self) -> str:
-        return reverse('vote:listen-to-show', kwargs={
-            'date': self.showtime.date().strftime('%Y-%m-%d')
-        })
+        return reverse(
+            'vote:listen-to-show',
+            kwargs={'date': self.showtime.date().strftime('%Y-%m-%d')},
+        )
 
     def get_revealed_url(self) -> str:
-        return reverse('vote:added', kwargs={
-            'date': self.showtime.date().strftime('%Y-%m-%d')
-        })
+        return reverse(
+            'vote:added', kwargs={'date': self.showtime.date().strftime('%Y-%m-%d')}
+        )
 
     @reify
     def start(self) -> Optional[datetime.datetime]:
@@ -309,7 +332,7 @@ class Show(CleanOnSaveMixin, models.Model):
         else:
             return prev.end
 
-    def api_dict(self, verbose: bool = False) -> Dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {
             'playlist': [p.api_dict() for p in self.plays()],
             'added': [t.api_dict() for t in self.revealed()],
@@ -327,9 +350,11 @@ class Show(CleanOnSaveMixin, models.Model):
         ordering = ['-showtime']
 
 
-class TwitterUser(CleanOnSaveMixin, models.Model):
+class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
     class Meta:
         ordering = ['screen_name']
+
+    is_twitteruser = True
 
     # Twitter stuff
     screen_name = models.CharField(max_length=100)
@@ -347,6 +372,15 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
     def __repr__(self) -> str:
         return self.screen_name
 
+    @property
+    def username(self):
+        return self.screen_name
+
+    def _twitter_user_and_profile(
+        self,
+    ) -> tuple[Optional[TwitterUser], Optional[Profile]]:
+        return (self, getattr(self, 'profile', None))
+
     def twitter_url(self) -> str:
         return 'https://twitter.com/%s' % self.screen_name
 
@@ -354,166 +388,22 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
         return reverse('vote:user', kwargs={'screen_name': self.screen_name})
 
     def get_toggle_abuser_url(self) -> str:
-        return reverse('vote:admin:toggle_abuser',
-                       kwargs={'user_id': self.user_id})
-
-    def get_avatar_url(self) -> str:
-        return reverse('vote:twitter-avatar', kwargs={'user_id': self.user_id})
-
-    @memoize
-    def get_avatar(
-        self, size: Optional[Union[Literal['original'], Literal['normal']]] = None, from_cache: bool = True
-    ) -> Tuple[str, bytes]:
-        ck = f'twav:{size}:{self.pk}'
-
-        if from_cache:
-            hit = cache.get(ck)
-            if hit:
-                return hit
-
-        try:
-            url = self.get_twitter_user().profile_image_url_https
-        except tweepy.TweepError as e:
-            if (e.api_code == 63) or (e.api_code == 50):
-                # 63: user is suspended; 50: no such user
-                found = finders.find('i/suspended.png')
-                if found is None or isinstance(found, list):
-                    raise RuntimeError(f'could not find the placeholder image: {found}')
-                rv = ('image/png', open(found, 'rb').read())
-            else:
-                raise
-        else:
-            if size is not None:
-                # `size` here can, I think, also be stuff like '400x400' or whatever,
-                # but i'm not sure exactly what the limits are and we're not using any
-                # of them anyway, so here's what we support:
-                if size != 'original':
-                    url_size = '_{}'.format(size)
-                else:
-                    url_size = ''
-                url = re.sub(r'_normal(?=\.[^.]+$)', url_size, url)
-
-            resp = requests.get(url)
-            rv = (resp.headers['content-type'], resp.content)
-
-        # update_twitter_avatars will call this every day with
-        # from_cache=False, and might sometimes fail, so:
-        cache.set(ck, rv, (60 * 60 * 24 * 2.1))
-
-        return rv
-
-    @memoize
-    def votes(self) -> models.QuerySet[Vote]:
-        return self.vote_set.order_by('-date').prefetch_related('tracks')
-
-    @memoize
-    def votes_with_liberal_preselection(self) -> models.QuerySet[Vote]:
-        return self.votes().prefetch_related(
-            'show',
-            'show__play_set',
-            'show__play_set__track',  # doesn't actually appear to work :<
+        return reverse(
+            'vote:admin:toggle_twitter_abuser', kwargs={'user_id': self.user_id}
         )
 
-    @memoize
-    def votes_for(self, show: Show) -> models.QuerySet[Vote]:
-        return self.votes().filter(show=show)
+    def get_avatar_url(self, try_profile: bool = True) -> str:
+        if try_profile and hasattr(self, 'profile'):
+            return self.profile.get_avatar_url()
+        return static(placeholder_avatar_for(self))
 
     @memoize
-    def tracks_voted_for_for(self, show: Show) -> List[Track]:
-        tracks = []
-        track_pk_set = set()
+    def unordered_votes(self) -> models.QuerySet[Vote]:
+        if hasattr(self, 'profile'):
+            return self.profile.votes()
+        return self.vote_set.all()
 
-        for vote in self.votes_for(show):
-            for track in vote.tracks.all():
-                if track.pk not in track_pk_set:
-                    track_pk_set.add(track.pk)
-                    tracks.append(track)
-
-        return tracks
-
-    def _batting_average(
-        self, cutoff: Optional[datetime.datetime] = None, minimum_weight: float = 1,
-    ) -> Optional[float]:
-
-        def ba(pk, current_show_pk, cutoff: Optional[datetime.datetime]) -> Tuple[float, float]:
-            score: float = 0
-            weight: float = 0
-
-            for vote in self.vote_set.filter(date__gt=cutoff).prefetch_related('tracks'):
-                success = vote.success()
-                if success is not None:
-                    score += success * vote.weight()
-                    weight += vote.weight()
-
-            return (score, weight)
-
-        score, weight = ba(self.pk, Show.current().pk, cutoff)
-
-        if weight >= minimum_weight:
-            return score / weight
-        else:
-            # there were no worthwhile votes
-            return None
-
-        return score
-
-    @memoize
-    def batting_average(self, minimum_weight: float = 1) -> Optional[float]:
-        """
-        Return a user's batting average for the past six months.
-        """
-
-        return self._batting_average(
-            cutoff=Show.at(timezone.now() - datetime.timedelta(days=31*6)).end,
-            minimum_weight=minimum_weight
-        )
-
-    def _streak(self, ls=[]) -> int:
-        show = Show.current().prev()
-        streak = 0
-
-        while True:
-            if show is None:
-                return streak
-            elif not show.voting_allowed:
-                show = show.prev()
-            elif show.votes().filter(twitter_user=self).exists():
-                streak += 1
-                show = show.prev()
-            else:
-                break
-
-        return streak
-
-    @memoize
-    def streak(self) -> int:
-        def streak(pk, current_show):
-            return self._streak()
-
-        return streak(self.pk, Show.current())
-
-    def all_time_batting_average(self, minimum_weight: float = 1) -> Optional[float]:
-        return self._batting_average(minimum_weight=minimum_weight)
-
-    @memoize
-    @pk_cached(60*60*1)
-    def get_twitter_user(self) -> tweepy.User:
-        return reading_tw_api.get_user(user_id=self.user_id)
-
-    def update_from_api(self) -> None:
-        """
-        Update this user's database object based on the Twitter API.
-        """
-
-        api_user = self.get_twitter_user()
-
-        self.name = api_user.name
-        self.screen_name = api_user.screen_name
-        self.updated = timezone.now()
-
-        self.save()
-
-    def api_dict(self, verbose: bool = False) -> Dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {
             'user_name': self.name,
             'user_screen_name': self.screen_name,
@@ -521,23 +411,92 @@ class TwitterUser(CleanOnSaveMixin, models.Model):
             'user_id': self.user_id,
         }
 
+    @property
     @memoize
-    def is_new(self) -> bool:
-        return not self.vote_set.exclude(show=Show.current()).exists()
+    def badges(self) -> models.QuerySet[UserBadge]:
+        return self.userbadge_set.all()
+
+
+def avatar_upload_path(instance: Profile, filename: str) -> str:
+    return f"avatars/{instance.user.username}/{uuid4()}.png"
+
+
+AVATAR_SIZE = 500
+
+
+class Profile(Voter, CleanOnSaveMixin, models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    twitter_user = models.OneToOneField(
+        TwitterUser,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='profile',
+    )
+    avatar = ResizedImageField(
+        upload_to=avatar_upload_path,
+        blank=True,
+        crop=['middle', 'center'],
+        force_format='PNG',
+        keep_meta=False,
+        size=[AVATAR_SIZE, AVATAR_SIZE],
+        help_text=f'will be resized to {AVATAR_SIZE}x{AVATAR_SIZE} and converted to png, so provide that if you can',
+        # it'd be nice to optipng these as they're uploaded, but we can always do it later or in a cron job
+    )
+    display_name = models.CharField(max_length=100, blank=True)
+
+    is_patron = models.BooleanField(default=False)
+    is_abuser = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return f'{self.display_name} ({self.user.username})'
+
+    def _twitter_user_and_profile(
+        self,
+    ) -> tuple[Optional[TwitterUser], Optional[Profile]]:
+        return (self.twitter_user, self)
+
+    @property
+    def username(self):
+        return self.user.username
+
+    def get_absolute_url(self) -> str:
+        return reverse("vote:profiles:profile", kwargs={'username': self.user.username})
+
+    def get_avatar_url(self) -> str:
+        if self.avatar:
+            return self.avatar.url
+        elif self.twitter_user:
+            return self.twitter_user.get_avatar_url(try_profile=False)
+        else:
+            return static(placeholder_avatar_for(self))
 
     @memoize
-    def is_placated(self) -> bool:
-        return self.vote_set.filter(
-            tracks__play__show=Show.current(),
-            show=Show.current(),
-        ).exists()
+    def unordered_votes(self) -> models.QuerySet[Vote]:
+        q = Q(user=self.user)
+        if self.twitter_user:
+            q = q | Q(twitter_user=self.twitter_user)
 
+        return Vote.objects.filter(q)
+
+    @property  # type: ignore[override]
+    def name(self) -> str:
+        return self.display_name or f'@{self.user.username}'
+
+    @name.setter
+    def name(self, name: str) -> None:
+        self.display_name = name
+
+    def get_toggle_abuser_url(self) -> str:
+        return reverse('vote:admin:toggle_local_abuser', kwargs={'user_id': self.pk})
+
+    @property
     @memoize
-    def is_shortlisted(self) -> bool:
-        return self.vote_set.filter(
-            tracks__shortlist__show=Show.current(),
-            show=Show.current(),
-        ).exists()
+    def badges(self) -> models.QuerySet[UserBadge]:
+        if self.twitter_user:
+            return self.twitter_user.userbadge_set.all()
+        else:
+            return UserBadge.objects.none()  # to be properly handled in issue #245
 
 
 def art_path(i: Track, f: str) -> str:
@@ -549,19 +508,15 @@ def _name_is_related(a: str, b: str) -> bool:
         (
             # exclude cases where this is a subword match (to avoid matching
             # 'rec' to 'record', for instance):
-
             # none of these checks matter if b is the longer string or they're
             # the same length
-            (len(a) <= len(b)) or
-
-            a[len(b)] not in ascii_letters or
-
-            b[-1] not in ascii_letters
-
-        ) and
-
+            (len(a) <= len(b))
+            or a[len(b)] not in ascii_letters
+            or b[-1] not in ascii_letters
+        )
+        and
         # run our actual comparison
-        ratio(a[:len(b)].lower(), b.lower()) > 0.8
+        ratio(a[: len(b)].lower(), b.lower()) > 0.8
     )
 
 
@@ -578,10 +533,8 @@ class Role:
 
         result = re.match(
             r'^(?P<anime>.*?) ?\b('
-
             r'(?P<caveat>rebroadcast )?\b(?P<role>'
-
-            r'((ED|OP)\d*\b[^.]*)|'
+            r'((ED|OP)\d*\b\W*\w*)|'
             r'((character|image) song\b.*)|'
             r'(ep\d+\b.*)|'
             r'(insert (track|song)\b.*)|'
@@ -589,7 +542,6 @@ class Role:
             r'((main )?theme ?\d*)|'
             r'(bgm\b.*)|'
             r'(ost)|'
-
             r'()))$',
             full_tag,
             flags=re.IGNORECASE,
@@ -605,12 +557,11 @@ class Role:
             self.full_role = self.full_tag
 
         if self.full_role[:2] in ('OP', 'ED'):
-            self.kind, self.specifics = (
-                self.full_role[:2], self.full_role[2:].strip(),
-            )
+            self.kind, self.specifics = (self.full_role[:2], self.full_role[2:].strip())
         elif self.full_role[:11].lower() == 'insert song':
             self.kind, self.specifics = (
-                self.full_role[:11], self.full_role[11:].strip()
+                self.full_role[:11],
+                self.full_role[11:].strip(),
             )
         elif ' - ' in self.full_role:
             self.kind, self.specifics = self.full_role.split(' - ', 1)
@@ -638,13 +589,13 @@ class Role:
     def __gt__(self, other) -> bool:
         return self.sortkey() > other.sortkey()
 
-    def numbers_in_role(self) -> Tuple[int, ...]:
+    def numbers_in_role(self) -> tuple[int, ...]:
         # basically intended to ensure 'op10' is sorted after 'op9', but also
         # will work perfectly for cases where there's stuff like 'season 3
         # ep10-13'
         return tuple((int(n) for n in re.findall(r'\d+', self.full_role)))
 
-    def sortkey(self) -> Tuple[float, str, Tuple[int, ...], str]:
+    def sortkey(self) -> tuple[float, str, tuple[int, ...], str]:
         return (
             self.sortkey_group,
             self.kind,
@@ -656,32 +607,40 @@ class Role:
         if anime is None or self.anime is None:
             return False
 
-        return (
-            len(self.anime) > 1 and
-            len(anime) > 1
-        ) and (
-            _name_is_related(anime, self.anime) or
-            _name_is_related(self.anime, anime)
+        return (len(self.anime) > 1 and len(anime) > 1) and (
+            _name_is_related(anime, self.anime) or _name_is_related(self.anime, anime)
         )
 
-    def related_anime(self) -> List[str]:
-        return [a for a in Track.all_anime_titles()
-                if a != self.anime and self.anime_is_related(a)]
+    def related_anime(self) -> list[str]:
+        return [
+            a
+            for a in Track.all_anime_titles()
+            if a != self.anime and self.anime_is_related(a)
+        ]
+
+
+TrackManager = models.Manager.from_queryset(TrackQuerySet)
 
 
 class Track(CleanOnSaveMixin, models.Model):
-    objects = models.Manager.from_queryset(TrackQuerySet)()
+    objects = TrackManager()
 
     # derived from iTunes
     id = models.CharField(max_length=16, primary_key=True)
     id3_title = models.CharField(max_length=500)
-    id3_artist = models.CharField(max_length=500)
+    id3_artist = models.CharField(max_length=5000)
     id3_album = models.CharField(max_length=500, blank=True)
     msec = models.IntegerField(blank=True, null=True)
     added = models.DateTimeField()
     composer = models.CharField(max_length=500, blank=True, db_index=True)
     label = models.CharField(max_length=500, blank=True)
     year = models.IntegerField(blank=True, null=True)
+
+    # derived from Myriad
+    media_id = models.IntegerField(blank=True, null=True, unique=True)
+    has_hook = models.NullBooleanField(
+        help_text='Whether this track has a hook in Myriad. Null if not matched against a Myriad export.'
+    )
 
     # nkdsu-specific
     revealed = models.DateTimeField(blank=True, null=True, db_index=True)
@@ -701,54 +660,56 @@ class Track(CleanOnSaveMixin, models.Model):
             return u'‘%s’ - %s' % (self.title, self.artist)
 
     def __eq__(self, other) -> bool:
-        return type(self) == type(other) and self.id == other.id
+        return type(self) is type(other) and self.id == other.id
 
     def __hash__(self) -> int:
         return hash(self.id)
 
     def clean(self) -> None:
         if (not self.inudesu) and (not self.hidden) and (not self.revealed):
-            raise ValidationError('{track} is not hidden but has no revealed '
-                                  'date'.format(track=self))
+            raise ValidationError(
+                '{track} is not hidden but has no revealed ' 'date'.format(track=self)
+            )
 
     @classmethod
-    def all_anime_titles(cls) -> Set[str]:
+    def all_anime_titles(cls) -> set[str]:
         return set(
-            (rd.anime for t in cls.objects.public() for rd in t.role_details)
+            (
+                rd.anime
+                for t in cls.objects.public()
+                for rd in t.role_details
+                if rd.anime is not None
+            )
         )
 
     @classmethod
-    def all_artists(cls) -> Set[str]:
-        return set(
-            a for t in cls.objects.public() for a in t.artist_names()
-        )
+    def all_artists(cls) -> set[str]:
+        return set(a for t in cls.objects.public() for a in t.artist_names())
 
     @classmethod
-    def all_composers(cls) -> Set[str]:
-        return set(
-            c for t in cls.objects.public() for c in t.composer_names()
-        )
+    def all_composers(cls) -> set[str]:
+        return set(c for t in cls.objects.public() for c in t.composer_names())
 
     @classmethod
-    def all_years(cls) -> List[int]:
+    def all_years(cls) -> list[int]:
         tracks = cls.objects.public().filter(year__isnull=False)
 
-        if (
-            settings.DATABASES['default']['ENGINE'] ==
-            'django.db.backends.postgresql'
-        ):
+        if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql':
             return list(
-                year for year in tracks
-                .order_by('year').distinct('year')
+                year  # type: ignore  # we filtered out the null years
+                for year in tracks.order_by('year')
+                .distinct('year')
                 .values_list('year', flat=True)
             )
         else:
-            return sorted({
-                year for year in tracks.values_list('year', flat=True)
-            })
+            return sorted(
+                {
+                    year for year in tracks.values_list('year', flat=True)  # type: ignore # same reason as above
+                }
+            )
 
     @classmethod
-    def complete_decade_range(cls) -> List[Tuple[int, bool]]:
+    def complete_decade_range(cls) -> list[tuple[int, bool]]:
         present_years = cls.all_years()
         if not present_years:
             return []
@@ -761,33 +722,34 @@ class Track(CleanOnSaveMixin, models.Model):
         ]
 
     @classmethod
-    def all_decades(cls) -> List[int]:
+    def all_decades(cls) -> list[int]:
         return sorted({(year // 10) * 10 for year in cls.all_years()})
 
     @classmethod
-    def suggest_artists(cls, string: str) -> Set[str]:
+    def suggest_artists(cls, string: str) -> set[str]:
         artist_names = set()
-        for track in Track.objects.public().filter(
-            id3_artist__icontains=string
-        ):
+        for track in Track.objects.public().filter(id3_artist__icontains=string):
             for artist_name in track.artist_names():
                 artist_names.add(artist_name)
 
         return artist_names
 
     @classmethod
-    def all_roles(cls, qs: Optional[models.QuerySet[Track]] = None) -> Set[str]:
+    def all_roles(cls, qs: Optional[models.QuerySet[Track]] = None) -> set[str]:
         if qs is None:
             qs = cls.objects.all()
 
-        return set((
-            f'{role_detail.full_role}'
-            f'\n | {role_detail.kind}\n | {role_detail.specifics}\n'
-            for t in qs for role_detail in t.role_details
-        ))
+        return set(
+            (
+                f'{role_detail.full_role}'
+                f'\n | {role_detail.kind}\n | {role_detail.specifics}\n'
+                for t in qs
+                for role_detail in t.role_details
+            )
+        )
 
     @classmethod
-    def all_non_inudesu_roles(cls) -> Set[str]:
+    def all_non_inudesu_roles(cls) -> set[str]:
         return cls.all_roles(cls.objects.filter(inudesu=False))
 
     @memoize
@@ -834,7 +796,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
         show = Show.current()
 
-        return (show.end - last_play.date).days // 7
+        return ((show.end - last_play.date).days + 1) // 7
 
     @reify
     def title(self) -> str:
@@ -849,16 +811,16 @@ class Track(CleanOnSaveMixin, models.Model):
         return self.split_id3_title()[1]
 
     @reify
-    def roles(self) -> List[str]:
+    def roles(self) -> list[str]:
         return self.role.split('|') if self.role else []
 
     @reify
-    def role_details(self) -> List[Role]:
+    def role_details(self) -> list[Role]:
         return [Role(role) for role in self.roles]
 
     def role_detail_for_anime(self, anime: str) -> Role:
         self._recently_relevant_anime = anime
-        details, = [r for r in self.role_details if r.anime == anime]
+        (details,) = [r for r in self.role_details if r.anime == anime]
         return details
 
     def role_detail_for_recently_relevant_anime(self) -> Role:
@@ -878,8 +840,8 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def artist_names(self, fail_silently: bool = True) -> Iterable[str]:
         return (
-            chunk.text for chunk in
-            parse_artist(self.artist, fail_silently=fail_silently).chunks
+            chunk.text
+            for chunk in parse_artist(self.artist, fail_silently=fail_silently).chunks
             if chunk.is_artist
         )
 
@@ -890,17 +852,17 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def composer_names(self, fail_silently: bool = True) -> Iterable[str]:
         return (
-            chunk.text for chunk in
-            parse_artist(self.composer, fail_silently=fail_silently).chunks
+            chunk.text
+            for chunk in parse_artist(self.composer, fail_silently=fail_silently).chunks
             if chunk.is_artist
         )
 
-    def split_id3_title(self) -> Tuple[str, Optional[str]]:
+    def split_id3_title(self) -> tuple[str, Optional[str]]:
         return split_id3_title(self.id3_title)
 
     def eligible(self) -> bool:
         """
-        Returns True if this track can be requested.
+        Returns :data:`True` if this track can be requested.
         """
 
         return not self.ineligible()
@@ -908,8 +870,8 @@ class Track(CleanOnSaveMixin, models.Model):
     @memoize
     def ineligible(self) -> Optional[str]:
         """
-        Return a string describing why a track is ineligible, or None if it
-        is not.
+        Return a string describing why a track is ineligible, or :data:`None`
+        if it is not.
         """
 
         if self.inudesu:
@@ -947,28 +909,39 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @memoize
     def notes(self) -> models.QuerySet[Note]:
-        return self.note_set.for_show_or_none(Show.current())  # type: ignore
+        return self.note_set.for_show_or_none(Show.current())
 
     @memoize
     def public_notes(self) -> models.QuerySet[Note]:
         return self.notes().filter(public=True)
 
-    def play(self, tweet: bool = True) -> Play:
+    def play_tweet_content(self) -> str:
+        # here we add a zwsp after every . to prevent twitter from turning
+        # things into links
+        delinked_name = str(self).replace('.', '.\u200b')
+
+        status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
+
+        if len(status) > settings.TWEET_LENGTH:
+            # twitter counts ellipses as two characters for some reason, so we get rid of two:
+            status = status[: settings.TWEET_LENGTH - 2].strip() + '…'
+
+        return status
+
+    def play_tweet_intent_url(self) -> str:
+        return 'https://twitter.com/intent/tweet?text={text}'.format(
+            text=quote(self.play_tweet_content())
+        )
+
+    def play(self) -> Play:
         """
         Mark this track as played.
         """
 
-        play = Play(
+        return Play.objects.create(
             track=self,
             date=timezone.now(),
         )
-
-        play.save()
-
-        if tweet:
-            play.tweet()
-
-        return play
 
     play.alters_data = True  # type: ignore
 
@@ -1036,8 +1009,7 @@ class Track(CleanOnSaveMixin, models.Model):
         return slugify(self.title)
 
     def get_absolute_url(self) -> str:
-        return reverse('vote:track', kwargs={'slug': self.slug(),
-                                             'pk': self.pk})
+        return reverse('vote:track', kwargs={'slug': self.slug(), 'pk': self.pk})
 
     def get_public_url(self) -> str:
         return settings.SITE_URL + self.get_absolute_url()
@@ -1047,12 +1019,12 @@ class Track(CleanOnSaveMixin, models.Model):
 
     def get_vote_url(self) -> str:
         """
-        Return the Twitter intent url for voting for this track alone.
+        Return the url for voting for this track alone.
         """
 
-        return vote_tweet_intent_url([self])
+        return vote_url([self])
 
-    def get_lastfm_track(self) -> Dict[str, Any]:
+    def get_lastfm_track(self) -> dict[str, Any]:
         return lastfm(
             method='track.getInfo',
             track=self.title,
@@ -1061,15 +1033,14 @@ class Track(CleanOnSaveMixin, models.Model):
 
     @memoize
     @pk_cached(3600)
-    def musicbrainz_release(self) -> Optional[Dict[str, Any]]:
+    def musicbrainz_release(self) -> Optional[dict[str, Any]]:
         releases = musicbrainzngs.search_releases(
             tracks=self.title,
             release=self.album,
             artist=self.artist,
         ).get('release-list')
 
-        official_releases = [r for r in releases
-                             if r.get('status') == 'Official']
+        official_releases = [r for r in releases if r.get('status') == 'Official']
 
         if official_releases:
             return official_releases[0]
@@ -1078,14 +1049,14 @@ class Track(CleanOnSaveMixin, models.Model):
         else:
             return None
 
-    def _get_lastfm_album_from_album_tag(self) -> Optional[Dict[str, Any]]:
+    def _get_lastfm_album_from_album_tag(self) -> Optional[dict[str, Any]]:
         return lastfm(
             method='album.getInfo',
             artist=self.artist,
             album=self.album,
         ).get('album')
 
-    def _get_lastfm_album_from_musicbrainz_release(self) -> Optional[Dict[str, Any]]:
+    def _get_lastfm_album_from_musicbrainz_release(self) -> Optional[dict[str, Any]]:
         release = self.musicbrainz_release()
 
         if release is not None:
@@ -1097,13 +1068,13 @@ class Track(CleanOnSaveMixin, models.Model):
         else:
             return None
 
-    def _get_lastfm_album_from_track_tag(self) -> Optional[Dict[str, Any]]:
+    def _get_lastfm_album_from_track_tag(self) -> Optional[dict[str, Any]]:
         track = self.get_lastfm_track()
 
         if track is not None:
             return track.get('album')
 
-    def get_lastfm_album(self) -> Optional[Dict[str, Any]]:
+    def get_lastfm_album(self) -> Optional[dict[str, Any]]:
         album = self._get_lastfm_album_from_album_tag()
 
         if album is not None:
@@ -1111,9 +1082,8 @@ class Track(CleanOnSaveMixin, models.Model):
         else:
             return self._get_lastfm_album_from_track_tag()
 
-    def get_lastfm_artist(self) -> Optional[Dict[str, Any]]:
-        return lastfm(method='artist.getInfo', artist=self.artist
-                      ).get('artist')
+    def get_lastfm_artist(self) -> Optional[dict[str, Any]]:
+        return lastfm(method='artist.getInfo', artist=self.artist).get('artist')
 
     def get_biggest_lastfm_image_url(self) -> Optional[str]:
         for getter in [
@@ -1170,10 +1140,9 @@ class Track(CleanOnSaveMixin, models.Model):
 
         temp_file.flush()
 
-        self.background_art.save(image_url.split('/')[-1] + suffix,
-                                 File(temp_file))
+        self.background_art.save(image_url.split('/')[-1] + suffix, File(temp_file))
 
-    def api_dict(self, verbose: bool = False) -> Dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         show_revealed = self.show_revealed()
 
         the_track = {
@@ -1195,24 +1164,21 @@ class Track(CleanOnSaveMixin, models.Model):
             'ineligibility_reason': self.ineligible() or None,
             'length': self.msec,
             'inu desu': self.inudesu,
-            'added_week': show_revealed.showtime.date().strftime('%Y-%m-%d') if show_revealed is not None else None,
+            'added_week': show_revealed.showtime.date().strftime('%Y-%m-%d')
+            if show_revealed is not None
+            else None,
             'added': self.added.isoformat(),
             'url': self.get_public_url(),
-            'background': (
-                self.background_art.url
-                if self.background_art
-                else None
-            ),
+            'background': (self.background_art.url if self.background_art else None),
         }
 
         if verbose:
-            the_track.update({
-                'plays': [p.date for p in self.plays()],
-            })
+            the_track.update({'plays': [p.date for p in self.plays()]})
 
         return the_track
 
 
+#: The kinds of vote that can be imported manually
 MANUAL_VOTE_KINDS = (
     ('email', 'email'),
     ('discord', 'discord'),
@@ -1223,145 +1189,104 @@ MANUAL_VOTE_KINDS = (
 )
 
 
+class VoteKind(Enum):
+    #: A request made using the website's built-in requesting machinery.
+    local = auto()
+
+    #: A historical request, initially derived from a tweet we received via the Twitter API.
+    twitter = auto()
+
+    #: A request manually created by an admin to reflect, for example, an email.
+    manual = auto()
+
+
 class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     # universal
     tracks = models.ManyToManyField(Track, db_index=True)
     date = models.DateTimeField(db_index=True)
     show = models.ForeignKey(Show, related_name='vote_set', on_delete=models.CASCADE)
-    text = models.TextField(blank=True)
+    text = models.TextField(
+        blank=True,
+        max_length=280,
+        help_text='A comment to be shown alongside your request',
+    )
+
+    # local only
+    user = models.ForeignKey(
+        User, blank=True, null=True, db_index=True, on_delete=models.SET_NULL
+    )
 
     # twitter only
-    twitter_user = models.ForeignKey(TwitterUser, blank=True, null=True,
-                                     db_index=True, on_delete=models.SET_NULL)
+    twitter_user = models.ForeignKey(
+        TwitterUser, blank=True, null=True, db_index=True, on_delete=models.SET_NULL
+    )
     tweet_id = models.BigIntegerField(blank=True, null=True)
 
     # manual only
     name = models.CharField(max_length=40, blank=True)
-    kind = models.CharField(max_length=10, choices=MANUAL_VOTE_KINDS,
-                            blank=True)
-
-    @classmethod
-    def handle_tweet(cls, tweet) -> Optional[Vote]:
-        """
-        Take a tweet json object and create, save and return the vote it has
-        come to represent (or None if it's not a valid vote).
-        """
-
-        text = tweet.get('full_text', None) or tweet.get('text', None)
-
-        if text is None:
-            if 'delete' in tweet:
-                Vote.objects.filter(
-                    tweet_id=tweet['delete']['status']['id']
-                ).delete()
-            return None
-
-        if cls.objects.filter(tweet_id=tweet['id']).exists():
-            return None  # we already have this tweet
-
-        created_at = date_parser.parse(tweet['created_at'])
-
-        def mention_is_first_and_for_us(mention):
-            return (
-                mention['indices'][0] == 0 and
-                mention['screen_name'] == READING_USERNAME
-            )
-
-        if not any([mention_is_first_and_for_us(m)
-                    for m in tweet['entities']['user_mentions']]):
-            return None
-
-        show = Show.at(created_at)
-
-        user_qs = TwitterUser.objects.filter(user_id=tweet['user']['id'])
-        try:
-            twitter_user = user_qs.get()
-        except TwitterUser.DoesNotExist:
-            twitter_user = TwitterUser(
-                user_id=tweet['user']['id'],
-            )
-
-        twitter_user.screen_name = tweet['user']['screen_name']
-        twitter_user.name = tweet['user']['name']
-        twitter_user.updated = created_at
-        twitter_user.save()
-
-        tracks = []
-        for url in (
-            tweet.get('extended_entities') or tweet.get('entities', {})
-        ).get('urls', ()):
-            parsed = urlparse(url['expanded_url'])
-
-            try:
-                match = resolve(parsed.path)
-            except Resolver404:
-                continue
-
-            if (
-                match.namespace == 'vote' and
-                match.url_name == 'track'
-            ):
-                track_qs = Track.objects.public().filter(pk=match.kwargs['pk'])
-
-                try:
-                    track = track_qs.get()
-                except Track.DoesNotExist:
-                    continue
-
-                if (track.pk not in (
-                    t.pk for t in twitter_user.tracks_voted_for_for(show)
-                ) and track.eligible()):
-                    tracks.append(track)
-
-        if tracks:
-            vote = cls(
-                tweet_id=tweet['id'],
-                twitter_user=twitter_user,
-                date=created_at,
-                text=text,
-            )
-
-            vote.save()
-
-            for track in tracks:
-                vote.tracks.add(track)
-
-            vote.save()
-            return vote
-        else:
-            return None
+    kind = models.CharField(max_length=10, choices=MANUAL_VOTE_KINDS, blank=True)
 
     def clean(self) -> None:
-        if self.is_manual:
-            if self.tweet_id or self.twitter_user_id:
-                raise ValidationError(
-                    'Twitter attributes present on manual vote')
-            if not (self.name and self.kind):
-                raise ValidationError(
-                    'Attributes missing from manual vote')
+        match self.vote_kind:
+            case VoteKind.manual:
+                if self.tweet_id or self.twitter_user_id:
+                    raise ValidationError('Twitter attributes present on manual vote')
+                if self.user:
+                    raise ValidationError('Local attributes present on manual vote')
+                if not (self.name and self.kind):
+                    raise ValidationError('Attributes missing from manual vote')
+                return
+            case VoteKind.twitter:
+                if self.name or self.kind:
+                    raise ValidationError('Manual attributes present on Twitter vote')
+                if self.user:
+                    raise ValidationError('Local attributes present on Twitter vote')
+                if not (self.tweet_id and self.twitter_user_id):
+                    raise ValidationError(
+                        'Twitter attributes missing from Twitter vote'
+                    )
+                return
+            case VoteKind.local:
+                if self.name or self.kind:
+                    raise ValidationError('Manual attributes present on local vote')
+                if self.tweet_id or self.twitter_user_id:
+                    raise ValidationError('Twitter attributes present on local vote')
+                if not self.user:
+                    raise ValidationError('No user specified for local vote')
+                return
+
+        assert_never(self.vote_kind)
+
+    @property
+    def vote_kind(self) -> VoteKind:
+        if self.tweet_id:
+            return VoteKind.twitter
+        elif self.kind:
+            return VoteKind.manual
         else:
-            if self.name or self.kind:
-                raise ValidationError(
-                    'Manual attributes present on Twitter vote')
-            if not (self.tweet_id and self.twitter_user_id):
-                raise ValidationError(
-                    'Twitter attributes missing from Twitter vote')
+            return VoteKind.local
 
-    def either_name(self) -> str:
-        if self.name:
-            return self.name
-        assert self.twitter_user is not None
-        return '@{0}'.format(self.twitter_user.screen_name)
+    @property
+    def is_twitter(self) -> bool:
+        return self.vote_kind == VoteKind.twitter
 
-    @reify
+    @property
     def is_manual(self) -> bool:
-        return not bool(self.tweet_id)
+        return self.vote_kind == VoteKind.manual
+
+    @property
+    def is_local(self) -> bool:
+        return self.vote_kind == VoteKind.local
 
     def get_image_url(self) -> str:
-        if self.twitter_user:
+        if self.user and self.user.profile:
+            return self.user.profile.get_avatar_url()
+        elif self.twitter_user:
             return self.twitter_user.get_avatar_url()
-        else:
+        elif self.vote_kind == VoteKind.manual:
             return static('i/vote-kinds/{0}.png'.format(self.kind))
+        else:
+            return static('i/noise.png')
 
     def __str__(self) -> str:
         tracks = u', '.join([t.title for t in self.tracks.all()])
@@ -1372,6 +1297,19 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             tracks=tracks,
         )
 
+    @property
+    @memoize
+    def voter(self) -> Optional[Voter]:
+        match self.vote_kind:
+            case VoteKind.manual:
+                return None
+            case VoteKind.twitter:
+                return self.twitter_user
+            case VoteKind.local:
+                return self.user.profile if self.user else None
+
+        assert_never(self.vote_kind)
+
     @memoize
     def content(self) -> str:
         """
@@ -1380,11 +1318,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         content = self.text
 
-        if not self.is_manual:
-            while (
-                content.lower()
-                .startswith('@{}'.format(READING_USERNAME).lower())
-            ):
+        if self.vote_kind == VoteKind.twitter:
+            while content.lower().startswith('@{}'.format(READING_USERNAME).lower()):
                 content = content.split(' ', 1)[1]
 
             content = content.strip('- ')
@@ -1402,15 +1337,15 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     def birthday(self) -> bool:
         content = self.content()
         return bool(
-            content and
-            re.search(r'\b(birthday|b-?day)', content, flags=re.IGNORECASE)
+            content and re.search(r'\b(birthday|b-?day)', content, flags=re.IGNORECASE)
         )
 
     @reify
     def hat(self) -> Optional[UserBadge]:
         """
         Get the most important badge for a given vote, where the most important
-        badge is the last one defined in `BADGES`.
+        badge is the last one defined in :data:`BADGES` that we are currently
+        within the time range of.
         """
 
         badge_order = [b.slug for b in BADGES]
@@ -1420,13 +1355,15 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         for badge in sorted(
             (
-                b for b in self.twitter_user.userbadge_set.all()
+                b
+                for b in self.twitter_user.userbadge_set.all()
                 if (
-                    b.badge_info['start'] is None or
-                    b.badge_info['start'] <= self.show.end
-                ) and (
-                    b.badge_info['finish'] is None or
-                    b.badge_info['finish'] >= self.show.end
+                    b.badge_info['start'] is None
+                    or b.badge_info['start'] <= self.show.end
+                )
+                and (
+                    b.badge_info['finish'] is None
+                    or b.badge_info['finish'] >= self.show.end
                 )
             ),
             key=lambda b: badge_order.index(b.badge),
@@ -1440,8 +1377,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     @pk_cached(indefinitely)
     def success(self) -> Optional[float]:
         """
-        Return how successful this vote is, as a float between 0 and 1, or None
-        if we don't know yet.
+        Return how successful this :class:`Vote` is, as a :class:`float`
+        between 0 and 1, or :data:`None` if we don't know yet.
         """
 
         if not self.show.has_ended():
@@ -1464,9 +1401,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         return float(self.tracks.all().count())
 
-    def api_dict(self, verbose: bool = False) -> Dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         tracks = self.tracks.all()
-        the_vote: Dict[str, Any] = {
+        the_vote: dict[str, Any] = {
             'comment': self.content() if self.content() != '' else None,
             'time': self.date,
             'track_ids': [t.id for t in tracks],
@@ -1474,9 +1411,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         }
 
         if self.twitter_user is not None and self.tweet_id is not None:
-            the_vote.update({
-                'tweet_id': self.tweet_id,
-            })
+            the_vote.update({'tweet_id': self.tweet_id})
             the_vote.update(self.twitter_user.api_dict())
 
         return the_vote
@@ -1505,7 +1440,7 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             if play != self and play.track == self.track:
                 raise ValidationError(
                     '{track} already played during {show}.'.format(
-                        track=self.track, show=self.show,
+                        track=self.track, show=self.show
                     )
                 )
 
@@ -1517,34 +1452,7 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             self.track.revealed = timezone.now()
             self.track.save()
 
-    def get_tweet_text(self) -> str:
-        # here we add a zwsp after every . to prevent twitter from turning
-        # things into links
-        delinked_name = str(self.track).replace('.', '.\u200b')
-
-        status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
-
-        if len(status) > settings.TWEET_LENGTH:
-            # twitter counts ellipses as two characters for some reason, so we get rid of two:
-            status = status[:settings.TWEET_LENGTH-2].strip() + '…'
-
-        return status
-
-    def tweet(self) -> None:
-        """
-        Send out a tweet for this play, set self.tweet_id and save.
-        """
-
-        if self.tweet_id is not None:
-            raise TypeError('This play has already been tweeted')
-
-        tweet = posting_tw_api.update_status(self.get_tweet_text())
-        self.tweet_id = tweet.id
-        self.save()
-
-    tweet.alters_data = True  # type: ignore
-
-    def api_dict(self, verbose: bool = False) -> Dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
         return {
             'time': self.date,
             'track': self.track.api_dict(),
@@ -1603,23 +1511,45 @@ class Discard(CleanOnSaveMixin, models.Model):
 
 class Request(CleanOnSaveMixin, models.Model):
     """
-    A request for a database addition. Stored for the benefit of enjoying
-    hilarious spam.
+    A request for a database addition or modification.
     """
 
+    #: keys of :attr:`blob` that no longer get set, but which may exist on historic :class:`Request`\ s
     METADATA_KEYS = ['trivia', 'trivia_question', 'contact']
 
     created = models.DateTimeField(auto_now_add=True)
-    successful = models.BooleanField()
     blob = models.TextField()
+    submitted_by = models.ForeignKey(
+        User,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='submitted_requests',
+        help_text='the person who submitted this request',
+    )
     filled = models.DateTimeField(blank=True, null=True)
-    filled_by = models.ForeignKey(User, blank=True, null=True,
-                                  on_delete=models.SET_NULL)
+    filled_by = models.ForeignKey(
+        User,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text='the elf who fulfilled this request',
+    )
     claimant = models.ForeignKey(
-        User, blank=True, null=True, related_name='claims',
-        on_delete=models.SET_NULL)
-    track = models.ForeignKey(Track, blank=True, null=True,
-                              on_delete=models.SET_NULL)
+        User,
+        blank=True,
+        null=True,
+        related_name='claims',
+        on_delete=models.SET_NULL,
+        help_text='the elf who is taking care of this request',
+    )
+    track = models.ForeignKey(
+        Track,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text='the track that this request is about, if this is a request for a correction',
+    )
 
     def serialise(self, struct):
         self.blob = json.dumps(struct)
@@ -1629,15 +1559,71 @@ class Request(CleanOnSaveMixin, models.Model):
 
     def non_metadata(self):
         return {
-            k: v for k, v in self.struct().items()
-            if (
-                k not in Request.METADATA_KEYS or
-                k == 'contact'
-            ) and v.strip()
+            k: v
+            for k, v in self.struct().items()
+            if (k not in Request.METADATA_KEYS or k == 'contact') and v.strip()
         }
+
+    @reify
+    def active_shelving(self) -> Optional[ElfShelving]:
+        try:
+            return self.shelvings.get(disabled_at__isnull=True)
+        except ElfShelving.DoesNotExist:
+            return None
+
+    @property
+    def is_shelved(self) -> bool:
+        """
+        >>> from django.utils import timezone
+        >>> user = User.objects.create()
+        >>> request = Request(blob='{}')
+        >>> request.save()
+        >>> request.is_shelved
+        False
+        >>> shelving = ElfShelving.objects.create(request=request, created_by=user)
+        >>> del request.active_shelving  # to make @reify forget the cached response
+        >>> request.is_shelved
+        True
+        >>> shelving.disabled_at = timezone.now()
+        >>> shelving.save()
+        >>> del request.active_shelving
+        >>> request.is_shelved
+        False
+        """
+        return self.active_shelving is not None
 
     class Meta:
         ordering = ['-created']
+
+
+class ElfShelving(CleanOnSaveMixin, models.Model):
+    """
+    An expression by a :ref:`elf <elfs>` that a :class:`Request` cannot be
+    :attr:`~.Request.filled` at the moment.
+    """
+
+    request = models.ForeignKey(
+        Request, on_delete=models.CASCADE, related_name='shelvings'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name='created_shelvings'
+    )
+    reason_created = models.TextField(blank=True)
+
+    disabled_at = models.DateTimeField(blank=True, null=True)
+    disabled_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name='disabled_shelvings',
+        blank=True,
+        null=True,
+    )
+    reason_disabled = models.TextField(blank=True)
+
+
+NoteManager = models.Manager.from_queryset(NoteQuerySet)
 
 
 class Note(CleanOnSaveMixin, models.Model):
@@ -1645,12 +1631,12 @@ class Note(CleanOnSaveMixin, models.Model):
     A note about whatever for a particular track.
     """
 
+    objects = NoteManager()
+
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
     show = models.ForeignKey(Show, blank=True, null=True, on_delete=models.CASCADE)
     public = models.BooleanField(default=False)
     content = models.TextField()
-
-    objects = models.Manager.from_queryset(NoteQuerySet)()
 
     def __str__(self) -> str:
         return self.content
@@ -1666,7 +1652,7 @@ class Badge:
     start: Optional[datetime.datetime]
     finish: Optional[datetime.datetime]
 
-    def info(self, user: TwitterUser) -> Dict[str, Any]:
+    def info(self, user: TwitterUser) -> dict[str, Any]:
         return {
             'slug': self.slug,
             'description': self.description_fmt.format(user=user),
@@ -1678,7 +1664,9 @@ class Badge:
         }
 
 
-BADGES: List[Badge] = [
+#: A list of accolades we can give to users for showing off on user pages and,
+#: during a specified time range, against every :class:`Vote` they make.
+BADGES: list[Badge] = [
     Badge(
         'tblc',
         u'{user.name} bought Take Back Love City for the RSPCA.',
@@ -1722,7 +1710,7 @@ BADGES: List[Badge] = [
         'charity-2019',
         u'{user.name} donated to the Very Scary Scenario charity streams for '
         u'Samaritans in 2019.',
-        'likes of depriving people of sleep, fan of good mental health',
+        'likes depriving people of sleep, fan of good mental health',
         'life-ring',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2019',
         datetime.datetime(2019, 10, 1, tzinfo=get_default_timezone()),
@@ -1730,8 +1718,8 @@ BADGES: List[Badge] = [
     ),
     Badge(
         'charity-2020',
-        u'{user.name} donated to the Very Scary Scenario charity streams '
-        u'in 2020.',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'Cancer Research UK in 2020.',
         'donated to the 2020 Very Scary Scenario charity streams',
         'heartbeat',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2020',
@@ -1740,13 +1728,23 @@ BADGES: List[Badge] = [
     ),
     Badge(
         'charity-2021',
-        u'{user.name} donated to the Very Scary Scenario charity streams '
-        u'in 2021.',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'Mind in 2021.',
         'donated to the 2021 Very Scary Scenario charity streams',
         'brain',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2021',
         datetime.datetime(2021, 10, 9, tzinfo=get_default_timezone()),
         datetime.datetime(2021, 11, 27, tzinfo=get_default_timezone()),
+    ),
+    Badge(
+        'charity-2022',
+        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'akt in 2022.',
+        'donated to the 2022 Very Scary Scenario charity streams',
+        'home',
+        'https://www.justgiving.com/fundraising/very-charity-scenario-2022',
+        datetime.datetime(2022, 10, 9, tzinfo=get_default_timezone()),
+        datetime.datetime(2022, 11, 27, tzinfo=get_default_timezone()),
     ),
 ]
 
@@ -1759,8 +1757,8 @@ class UserBadge(CleanOnSaveMixin, models.Model):
     user = models.ForeignKey(TwitterUser, on_delete=models.CASCADE)
 
     @reify
-    def badge_info(self) -> Dict[str, Any]:
-        badge, = (b for b in BADGES if b.slug == self.badge)
+    def badge_info(self) -> dict[str, Any]:
+        (badge,) = (b for b in BADGES if b.slug == self.badge)
         return badge.info(self.user)
 
     class Meta:

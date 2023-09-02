@@ -1,0 +1,28 @@
+{% extends parent %}
+
+{% block title %}request something{% endblock %}
+
+{% block content %}
+  <h2>Make a request for {% include "include/show_date.html" with show=current_show %}</h2>
+
+  {% if tracks %}
+    <div class="vote-preview">
+      <ul class="tracks">
+        {% for track in tracks %}
+          {% include "include/nanotrack.html" with tiny=True %}
+        {% endfor %}
+      </ul>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input class="button" type="submit" value="make request">
+    </form>
+  {% else %}
+    <div class="markdown">
+      <p>you are not eligible to request any of the tracks you have selected at the moment</p>
+      <p>were you doing anything weird to end up in this situation? if you think you might have found a bug, please consider <a href="https://github.com/very-scary-scenario/nkd.su/issues/new">reporting it</a><p>
+    </div>
+  {% endif %}
+{% endblock %}

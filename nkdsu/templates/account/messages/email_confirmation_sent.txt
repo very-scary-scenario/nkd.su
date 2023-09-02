@@ -1,0 +1,1 @@
+a confirmation email has been sent to {{ email }}. with some email providers (like gmail), it can take about five minutes to arrive. it also may end up in your junk folder

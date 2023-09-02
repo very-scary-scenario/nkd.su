@@ -1,45 +1,33 @@
 import re
 from random import choice
-from typing import Any, Dict
+from typing import Any, Optional
 
 from django import forms
-from django.core.validators import validate_email
 from django.utils.safestring import mark_safe
-import tweepy
 
-from .models import Note, Request
-from .utils import reading_tw_api
+from .models import Note, Track, Vote
 from ..vote import trivia
 
 _disable_autocorrect = {
     "autocomplete": "off",
     "autocorrect": "off",
-    "spellcheck": "false"
+    "spellcheck": "false",
 }
 
-_proper_noun_textinput = forms.TextInput(attrs=dict(_disable_autocorrect,
-                                                    autocapitalize="words"))
+_proper_noun_textinput = forms.TextInput(
+    attrs=dict(_disable_autocorrect, autocapitalize="words")
+)
 
 
-def email_or_twitter(address: str) -> None:
-    try:
-        validate_email(address)
-    except forms.ValidationError:
-        try:
-            reading_tw_api.get_user(screen_name=address.lstrip('@'))
-        except tweepy.TweepError:
-            raise forms.ValidationError(
-                'Enter a valid email address or twitter username')
+class ClearableFileInput(forms.widgets.ClearableFileInput):
+    """
+    The stock clearable file widget generates HTML that cannot be easily laid
+    out in a reasonable way with CSS. In particular, the way the 'clear'
+    checkbox is not put in any kind of elements makes intentional layout
+    basically impossible. Here, we aim to fix that.
+    """
 
-
-class EmailOrTwitterField(forms.EmailField):
-    widget = forms.TextInput(
-        attrs=dict(_disable_autocorrect, autocapitalize="off")
-    )
-    default_error_messages = {
-        'invalid': u'Enter a valid email address or Twitter username',
-    }
-    default_validators = [email_or_twitter]
+    template_name = 'widgets/clearable_file_input.html'
 
 
 class SearchForm(forms.Form):
@@ -53,13 +41,10 @@ class TriviaForm(forms.Form):
 
     trivia_question = forms.CharField(widget=forms.HiddenInput)
     trivia = forms.CharField(required=False)
-    track = None
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.order_fields([
-            k for k in self.fields.keys() if k != 'trivia'
-        ] + ['trivia'])
+        self.order_fields([k for k in self.fields.keys() if k != 'trivia'] + ['trivia'])
         self.fields['trivia_question'].initial = self.new_question()
 
     def new_question(self) -> str:
@@ -73,14 +58,9 @@ class TriviaForm(forms.Form):
         if 'trivia' in self.cleaned_data:
             human = re.match(
                 trivia.questions[self.cleaned_data['trivia_question']] + '$',
-                self.cleaned_data['trivia'], re.I)
-
-        request = Request()
-        request.successful = bool(human)
-        if self.track:
-            request.track_id = self.track.pk
-        request.serialise(self.cleaned_data)
-        request.save()
+                self.cleaned_data['trivia'],
+                re.I,
+            )
 
         if not human:
             hint = (
@@ -97,44 +77,60 @@ class TriviaForm(forms.Form):
         return self.cleaned_data['trivia']
 
 
-class BadMetadataForm(TriviaForm):
-    details = forms.CharField(widget=forms.Textarea,
-                              label="What needs fixing?", required=False)
-    contact = EmailOrTwitterField(label="Email/Twitter (not required)",
-                                  required=False)
+class BadMetadataForm(forms.Form):
+    details = forms.CharField(
+        widget=forms.Textarea, label="What needs fixing?", required=False
+    )
+    track: Track
 
-    def __init__(self, *args, **kwargs) -> None:
-        self.track = kwargs.pop('track')
+    def __init__(self, *args, track: Track, **kwargs) -> None:
+        self.track = track
         super().__init__(*args, **kwargs)
 
 
-class RequestForm(TriviaForm):
+class RequestForm(forms.Form):
+    """
+    A form for requesting that a track be added to the library.
+    """
+
     title = forms.CharField(widget=_proper_noun_textinput, required=False)
     artist = forms.CharField(widget=_proper_noun_textinput, required=False)
-    show = forms.CharField(label="Source Anime", required=False,
-                           widget=_proper_noun_textinput)
-    role = forms.CharField(label="Role (OP/ED/Insert/Character/etc.)",
-                           required=False)
+    show = forms.CharField(
+        label="Source Anime", required=False, widget=_proper_noun_textinput
+    )
+    role = forms.CharField(label="Role (OP/ED/Insert/Character/etc.)", required=False)
     details = forms.CharField(
         widget=forms.Textarea(attrs=_disable_autocorrect),
-        label="Additional Details", required=False,
+        label="Additional Details",
+        required=False,
     )
-    contact = EmailOrTwitterField(label="Email Address/Twitter name",
-                                  required=True)
 
-    def clean(self) -> Dict[str, Any]:
+    def clean(self) -> Optional[dict[str, Any]]:
         cleaned_data = super().clean()
+        if cleaned_data is None:
+            return None
 
-        compulsory = Request.METADATA_KEYS
+        filled = [cleaned_data[f] for f in cleaned_data if cleaned_data[f]]
 
-        filled = [cleaned_data[f] for f in cleaned_data
-                  if f not in compulsory and cleaned_data[f]]
-
-        if len(filled) < 2:
+        if len(filled) < 1:
             raise forms.ValidationError(
-                "I'm sure you can give us more information than that.")
+                'please provide at least some information to work with'
+            )
 
         return cleaned_data
+
+
+class VoteForm(forms.ModelForm):
+    """
+    A form for creating a :class:`.models.Vote`.
+    """
+
+    class Meta:
+        model = Vote
+        fields = ['text']
+        widgets = {
+            'text': forms.TextInput(),
+        }
 
 
 class CheckMetadataForm(forms.Form):
@@ -149,6 +145,10 @@ class LibraryUploadForm(forms.Form):
     inudesu = forms.BooleanField(label='Inu Desu', required=False)
 
 
+class MyriadExportUploadForm(forms.Form):
+    myriad_csv = forms.FileField(label='Myriad library export CSV')
+
+
 class NoteForm(forms.ModelForm):
     just_for_current_show = forms.BooleanField(required=False)
 
@@ -158,8 +158,10 @@ class NoteForm(forms.ModelForm):
 
 
 class DarkModeForm(forms.Form):
-    mode = forms.ChoiceField(choices=[
-        ('light', 'light'),
-        ('dark', 'dark'),
-        ('system', 'system'),
-    ])
+    mode = forms.ChoiceField(
+        choices=[
+            ('light', 'light'),
+            ('dark', 'dark'),
+            ('system', 'system'),
+        ]
+    )

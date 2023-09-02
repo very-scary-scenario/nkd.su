@@ -15,10 +15,6 @@
     <title>
       {% block title %}a neko desu request robot{% endblock %} | nkd.su
     </title>
-
-    {% block twitter_card %}{% endblock %}
-    <meta name="twitter:domain" content="nkd.su">
-
   </head>
   <body
     class="
@@ -45,22 +41,6 @@
     <p id="loading"></p>
     <div id="everything">
       {% include "include/pre_content.html" %}
-
-      {% if breadcrumbs %}
-        <div id="breadcrumbs">
-          <ul>
-            {% for link, name in breadcrumbs %}
-              <li>
-                {% if link %}
-                  <a href="{{ link }}">{{ name }}</a>
-                {% else %}
-                  {{ name }}
-                {% endif %}
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      {% endif %}
 
       <main class="{% block main_classes %}{% endblock %}">
         {% block content %}{% endblock %}

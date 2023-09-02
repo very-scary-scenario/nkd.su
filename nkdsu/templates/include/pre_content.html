@@ -1,5 +1,7 @@
+{% load humanize vote_tags %}
+
 {% if messages %}
-  <ul class="messages">
+  <ul class="messages dismissable">
     {% for message in messages %}
       <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
     {% endfor %}
@@ -10,21 +12,94 @@
   <div id="header-content">
     <div id="titles">
       <h1><a href="{% url "vote:index" %}">nkd.su</a></h1>
+      <p class="subtitle">a request robot for <a href="https://nekodesu.radio/">neko desu</a>: anime music with a human presenter</p>
+
       {% if current_show.broadcasting %}
-        <p class="subtitle">on air! listen live at <a target="_blank" href="https://thisisthecat.com">the&nbsp;cat</a>
+        <p class="subtitle">on air! listen live at <a target="_blank" href="https://thecat.radio">the&nbsp;cat</a>
       {% elif current_show %}
-        <p class="subtitle">next <a href="https://nekodesu.radio/">neko desu</a>: {{ current_show.showtime|date:"F"|lower }}&nbsp;{{ current_show.showtime|date:"jS" }}</p>
-      {% else %}
-        <p class="subtitle">a neko desu request robot</p>
+        <p class="subtitle" title="{{ show.showtime|naturaltime }}">
+          next live broadcast:
+          {% include "include/show_date.html" with show=current_show %} at
+          {% include "include/show_time.html" with show=current_show %}
+        </p>
       {% endif %}
     </div>
+
     <div id="search">
       <form name="search" action="{% url "vote:search" %}" method="get">
-        <input placeholder="search" id="query" type="text" name="q" value="{{ query }}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <input placeholder="search for anime music" id="query" type="text" name="q" value="{{ query }}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       </form>
     </div>
   </div>
+
+  <div id="user-menu-container">
+    <details id="user-menu">
+      <summary
+        {% if pending_requests %}
+          class="pending-requests"
+        {% endif %}
+      >
+        {% if user.is_authenticated %}
+          <img class="user-menu-icon" src="{{ user.profile.get_avatar_url }}" alt="{{ user }}"/>
+        {% else %}
+          <i class="user-menu-icon fa fa-bars"></i>
+        {% endif %}
+      </summary>
+
+      <ul>
+        {% if user.is_authenticated %}
+          <li>
+            <a href="{% url "vote:profiles:profile" username=user.username %}">@{{ user.username }}</a>
+          </li>
+          <li>
+            <a href="{% url "vote:profiles:edit-profile" %}">edit profile</a>
+          </li>
+        {% endif %}
+
+        <li>
+          <form id="dark-mode-settings" method="post" action="{% url "vote:set-dark-mode" %}">
+            {% csrf_token %}
+            <span><button class="link mono" name="mode" value="light">light</button></span>
+            <span><button class="link mono" name="mode" value="dark">dark</button></span>
+            <span><button class="link mono" name="mode" value="system">system</button></span>
+          </form>
+        </li>
+
+        {% if user.is_authenticated %}
+          {% if user|is_elf %}
+            <li><a href="{% url "vote:browse_roles" %}">all roles</a></li>
+            <li>
+              <a
+                href="{% url "vote:admin:requests" %}"
+                {% if pending_requests %}class="alert"{% endif %}
+              >
+                requests
+                {% if pending_requests %}
+                  ({{ pending_requests.count }} pending)
+                {% endif %}
+              </a>
+            </li>
+            <li><a href="{% url "vote:admin:check_metadata" %}">check metadata</a></li>
+          {% endif %}
+
+          {% if user.has_usable_password %}
+            <li><a href="{% url "password_change" %}">change password</a></li>
+          {% else %}
+            <li><a href="{% url "password_set" %}">set password</a></li>
+          {% endif %}
+          <li>
+            <a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a>
+          </li>
+        {% else %}
+          <li>
+            <a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a>
+          </li>
+        {% endif %}
+      </ul>
+    </details>
+  </div>
 </header>
+
 <ul id="nav">
   {% for s in sections %}
   <li id="{{ s.name|slugify }}-header-link" class="
@@ -35,3 +110,25 @@
     </li>
   {% endfor %}
 </ul>
+
+{% if user.is_authenticated and not user|has_verified_email %}
+  <ul class="messages">
+    <li class="warning">you do not have a verified email address. please <a href="{% url "account_email" %}">add one and verify it</a> so that you're able to reset your password if you lose it</li>
+  </ul>
+{% endif %}
+
+{% if breadcrumbs %}
+  <div id="breadcrumbs">
+    <ul>
+      {% for link, name in breadcrumbs %}
+        <li>
+          {% if link %}
+            <a href="{{ link }}">{{ name }}</a>
+          {% else %}
+            {{ name }}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}

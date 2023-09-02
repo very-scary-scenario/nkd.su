@@ -14,11 +14,29 @@
               mine
             {% endif %}
           {% endif %}
+          {% if object.is_shelved %}
+            shelved
+          {% endif %}
         ">
           <h3>{{ object.created }}</h3>
 
+          {% if object.submitted_by %}
+            <p class="claimant">
+              submitted by <a href="{{ object.submitted_by.profile.get_absolute_url }}">@{{ object.submitted_by.username }}</a>
+            </p>
+          {% endif %}
+
           {% if object.claimant %}
-            <p class="claimant">claimed by <strong>{{ object.claimant.username }}</strong></p>
+            <p class="claimant">
+              claimed by <a href="{{ object.claimant.profile.get_absolute_url }}">@{{ object.claimant.username }}</a>
+            </p>
+          {% endif %}
+
+          {% if object.active_shelving %}
+            <p class="shelving">
+              shelved by <a href="{{ object.active_shelving.created_by.get_absolute_url }}">@{{ object.active_shelving.created_by.username }}</a>, because:
+              <em>{{ object.active_shelving.reason_created }}</em>
+            </p>
           {% endif %}
 
           <dl>
@@ -32,20 +50,38 @@
             {% endfor %}
           </dl>
 
-          <form action="{% url "vote:admin:claim_request" pk=object.pk %}" method="post">
-            {% csrf_token %}
+          <div class="request-actions">
+            <form action="{% url "vote:admin:claim_request" pk=object.pk %}" method="post">
+              {% csrf_token %}
 
-            {% if not object.claimant %}
-              <input type="submit" name="claim" value="Claim">
-            {% elif object.claimant == request.user %}
-              <input type="submit" name="unclaim" value="Unclaim">
-            {% endif %}
-          </form>
+              {% if not object.claimant %}
+                <input class="button" type="submit" name="claim" value="Claim">
+              {% elif object.claimant == request.user %}
+                <input class="button" type="submit" name="unclaim" value="Unclaim">
+              {% endif %}
+            </form>
 
-          <form action="{% url "vote:admin:fill_request" pk=object.pk %}" method="post">
-            {% csrf_token %}
-            <input type="submit" value="Mark as filled">
-          </form>
+            <form action="{% url "vote:admin:fill_request" pk=object.pk %}" method="post">
+              {% csrf_token %}
+              <input class="button" type="submit" value="Mark as filled">
+            </form>
+
+            <form action="{% url "vote:admin:shelf_request" pk=object.pk %}" method="post">
+              {% csrf_token %}
+              <input name="reason" type="text" required="required"
+                {% if not object.is_shelved %}
+                  placeholder="why can't this be filled?"
+                {% else %}
+                  placeholder="what made this fillable?"
+                {% endif %}
+              >
+              {% if not object.is_shelved %}
+                <input name="shelf" class="button" type="submit" value="Shelf">
+              {% else %}
+                <input name="unshelf" class="button" type="submit" value="Unshelf">
+              {% endif %}
+            </form>
+          </div>
         </li>
       {% endfor %}
     </ul>

@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import datetime
+from abc import abstractmethod
+from itertools import chain
 from random import sample
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union, cast
+from typing import Any, Iterable, Optional, Sequence, cast
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
 from django.db.models import Count, DurationField, F, QuerySet
@@ -16,20 +20,22 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_duration
-from django.views.generic import DetailView, FormView, ListView, TemplateView
-import tweepy
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+)
 
-from ..forms import BadMetadataForm, DarkModeForm, RequestForm
-from ..models import Show, Track, TwitterUser
+from nkdsu.mixins import MarkdownView
+from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
+from ..models import Profile, Request, Show, Track, TrackQuerySet, TwitterUser, Vote
+from ..templatetags.vote_tags import eligible_for
 from ..utils import BrowsableItem, BrowsableYear, reify
+from ..voter import Voter
 from ...vote import mixins
 
-
-post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
-                                   settings.CONSUMER_SECRET)
-post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
-                              settings.POSTING_ACCESS_TOKEN_SECRET)
-tw_api = tweepy.API(post_tw_auth)
 
 PRO_ROULETTE = 'pro-roulette-{}'
 
@@ -38,15 +44,12 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
     section = 'home'
     template_name = 'index.html'
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         show = context['show']
 
         def track_should_be_in_main_list(track: Track) -> bool:
-            if (
-                self.request.user.is_authenticated and
-                self.request.user.is_staff
-            ):
+            if self.request.user.is_authenticated and self.request.user.is_staff:
                 if track in show.shortlisted() or track in show.discarded():
                     return False
 
@@ -55,8 +58,9 @@ class IndexView(mixins.CurrentShowMixin, TemplateView):
 
             return True
 
-        context['tracks'] = filter(track_should_be_in_main_list,
-                                   show.tracks_sorted_by_votes())
+        context['tracks'] = filter(
+            track_should_be_in_main_list, show.tracks_sorted_by_votes()
+        )
 
         return context
 
@@ -72,7 +76,9 @@ class BrowseAnime(mixins.BrowseCategory):
 
     def get_categories(self) -> Iterable[BrowsableItem]:
         for title in Track.all_anime_titles():
-            yield BrowsableItem(url=reverse("vote:anime", kwargs={"anime": title}), name=title)
+            yield BrowsableItem(
+                url=reverse("vote:anime", kwargs={"anime": title}), name=title
+            )
 
 
 class BrowseArtists(mixins.BrowseCategory):
@@ -81,7 +87,9 @@ class BrowseArtists(mixins.BrowseCategory):
 
     def get_categories(self) -> Iterable[BrowsableItem]:
         for artist in Track.all_artists():
-            yield BrowsableItem(url=reverse("vote:artist", kwargs={"artist": artist}), name=artist)
+            yield BrowsableItem(
+                url=reverse("vote:artist", kwargs={"artist": artist}), name=artist
+            )
 
 
 class BrowseComposers(mixins.BrowseCategory):
@@ -90,7 +98,10 @@ class BrowseComposers(mixins.BrowseCategory):
 
     def get_categories(self) -> Iterable[BrowsableItem]:
         for composer in Track.all_composers():
-            yield BrowsableItem(url=reverse("vote:composer", kwargs={"composer": composer}), name=composer)
+            yield BrowsableItem(
+                url=reverse("vote:composer", kwargs={"composer": composer}),
+                name=composer,
+            )
 
 
 class BrowseYears(mixins.BrowseCategory):
@@ -123,12 +134,22 @@ class Archive(mixins.BreadcrumbMixin, mixins.ArchiveList):
     breadcrumbs = mixins.BrowseCategory.breadcrumbs
 
     def get_queryset(self) -> QuerySet[Show]:
-        return super().get_queryset().filter(end__lt=timezone.now()).prefetch_related('play_set', 'vote_set')
+        return (
+            super()
+            .get_queryset()
+            .filter(end__lt=timezone.now())
+            .prefetch_related('play_set', 'vote_set')
+        )
 
 
-class ShowDetail(mixins.ShowDetail):
+class ShowDetail(mixins.BreadcrumbMixin, mixins.ShowDetail):
     section = 'browse'
     template_name = 'show_detail.html'
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [
+        (reverse_lazy('vote:archive'), 'past shows')
+    ]
+    model = Show
+    object: Show
 
 
 class ListenRedirect(mixins.ShowDetail):
@@ -137,15 +158,14 @@ class ListenRedirect(mixins.ShowDetail):
 
     def get(self, *a, **k) -> HttpResponse:
         super().get(*a, **k)
-        cloudcasts = cast(Show, self.object).cloudcasts()
+        cloudcasts = self.object.cloudcasts()
         if len(cloudcasts) == 1:
             return redirect(cloudcasts[0]['url'])
         elif len(cloudcasts) > 1:
             messages.warning(
                 self.request,
                 "There's more than one Mixcloud upload for this show. "
-                "Please pick one of the {} listed below."
-                .format(len(cloudcasts)),
+                "Please pick one of the {} listed below.".format(len(cloudcasts)),
             )
         else:
             messages.error(
@@ -174,20 +194,17 @@ class Roulette(ListView):
     ]
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
-        if (
-            kwargs.get('mode') != 'pro' and
-            self.request.session.get(self.pro_roulette_session_key())
+        if kwargs.get('mode') != 'pro' and self.request.session.get(
+            self.pro_roulette_session_key()
         ):
-            return redirect(reverse('vote:roulette',
-                                    kwargs={'mode': 'pro'}))
+            return redirect(reverse('vote:roulette', kwargs={'mode': 'pro'}))
 
         elif kwargs.get('mode') is None:
             if request.user.is_staff:
                 mode = 'short'
             else:
                 mode = 'hipster'
-            return redirect(reverse('vote:roulette',
-                                    kwargs={'mode': mode}))
+            return redirect(reverse('vote:roulette', kwargs={'mode': mode}))
 
         else:
             return super().get(request, *args, **kwargs)
@@ -220,7 +237,7 @@ class Roulette(ListView):
     def get_base_queryset(self):
         return self.model.objects.public()
 
-    def get_tracks(self) -> Tuple[Iterable[Track], int]:
+    def get_tracks(self) -> tuple[Iterable[Track], int]:
         qs = self.get_base_queryset()
 
         if self.kwargs.get('mode') == 'pro':
@@ -229,8 +246,7 @@ class Roulette(ListView):
             qs = qs.filter(play=None)
         elif self.kwargs.get('mode') == 'almost-100':
             qs = qs.exclude(
-                play__date__gt=Show.current().end -
-                datetime.timedelta(days=(7 * 80)),
+                play__date__gt=Show.current().end - datetime.timedelta(days=(7 * 80)),
             ).exclude(play=None)
         elif self.kwargs.get('mode') == 'decade':
             qs = qs.for_decade(int(self.kwargs.get('decade', self.default_decade)))
@@ -244,39 +260,41 @@ class Roulette(ListView):
                 .annotate(
                     time_per_play=Cast(
                         ((Now() - F('revealed')) / F('plays')),
-                        output_field=DurationField()
+                        output_field=DurationField(),
                     )
-                ).filter(time_per_play__lt=parse_duration('365 days'))
+                )
+                .filter(time_per_play__lt=parse_duration('365 days'))
             )
             # order_by('?') fails when annotate() has been used
             return (sample(list(qs), 5), qs.count())
         elif self.kwargs.get('mode') == 'short':
-            length_msec = int(
-                self.kwargs.get('minutes', self.default_minutes_count)
-            ) * 60 * 1000
-            qs = qs.filter(msec__gt=length_msec - 60_000,
-                           msec__lte=length_msec)
+            length_msec = (
+                int(self.kwargs.get('minutes', self.default_minutes_count)) * 60 * 1000
+            )
+            qs = qs.filter(msec__gt=length_msec - 60_000, msec__lte=length_msec)
 
         return (qs.order_by('?')[:5], qs.count())
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         mode = self.kwargs['mode']
         decade_str = self.kwargs.get('decade', str(self.default_decade))
         minutes_str = self.kwargs.get('minutes', str(self.default_minutes_count))
         tracks, option_count = self.get_tracks()
 
-        context.update({
-            'decades': Track.all_decades(),
-            'decade': int(decade_str) if decade_str else None,
-            'minutes': int(minutes_str) if minutes_str else None,
-            'allowed_minutes': (1, 2, 3),
-            'mode': mode,
-            'mode_name': dict(self.modes)[mode],
-            'modes': self.modes,
-            'tracks': tracks,
-            'option_count': option_count,
-        })
+        context.update(
+            {
+                'decades': Track.all_decades(),
+                'decade': int(decade_str) if decade_str else None,
+                'minutes': int(minutes_str) if minutes_str else None,
+                'allowed_minutes': (1, 2, 3),
+                'mode': mode,
+                'mode_name': dict(self.modes)[mode],
+                'modes': self.modes,
+                'tracks': tracks,
+                'option_count': option_count,
+            }
+        )
 
         return context
 
@@ -290,14 +308,19 @@ class Search(ListView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         resp = super().get(request, *args, **kwargs)
         qs = self.get_queryset()
-        animes = set((
-            role_detail.anime for t in qs for role_detail in t.role_details
-        ))
+        animes = set(
+            (
+                role_detail.anime
+                for t in qs
+                for role_detail in t.role_details
+                if role_detail.anime is not None
+            )
+        )
 
         # if our search results are identical to an anime detail page, take us
         # there instead
         if len(animes) == 1:
-            anime, = animes
+            (anime,) = animes
             anime_qs = self.model.objects.by_anime(anime)
 
             if anime is not None and (
@@ -308,19 +331,18 @@ class Search(ListView):
         return resp
 
     @reify
-    def _queryset(self) -> QuerySet[Track]:
+    def _queryset(self) -> TrackQuerySet:
         return self.model.objects.search(
             self.request.GET.get('q', ''),
             show_secret_tracks=(
-                self.request.user.is_authenticated and
-                self.request.user.is_staff
+                self.request.user.is_authenticated and self.request.user.is_staff
             ),
         )
 
     def get_queryset(self) -> QuerySet[Track]:
         return self._queryset
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['query'] = self.request.GET.get('q', '')
         return context
@@ -339,16 +361,17 @@ class TrackDetail(DetailView):
             return super().get(request, *args, **kwargs)
 
 
-class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
-    template_name = 'twitter_user_detail.html'
-    context_object_name = 'voter'
+class VoterDetail(DetailView):
     paginate_by = 100
-    model = TwitterUser
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    @abstractmethod
+    def get_voter(self) -> Voter:
+        ...
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
-        votes = cast(TwitterUser, self.get_object()).votes_with_liberal_preselection()
+        votes = cast(Voter, self.get_voter()).votes_with_liberal_preselection()
         paginator = Paginator(votes, self.paginate_by)
 
         try:
@@ -356,43 +379,62 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, DetailView):
         except InvalidPage:
             raise Http404('Not a page')
 
-        context.update({
-            'votes': vote_page,
-            'page_obj': vote_page,
-        })
+        context.update(
+            {
+                'votes': vote_page,
+                'page_obj': vote_page,
+            }
+        )
 
         return context
 
 
-class TwitterAvatarView(mixins.TwitterUserDetailMixin, DetailView):
+class TwitterUserDetail(mixins.TwitterUserDetailMixin, VoterDetail):
+    template_name = 'twitter_user_detail.html'
+    context_object_name = 'voter'
     model = TwitterUser
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        image: Union[bytes, str]
-        content_type, image = cast(TwitterUser, self.get_object()).get_avatar(
-            size='original' if request.GET.get('size') == 'original' else None)
-        return HttpResponse(image, content_type=content_type)
+        twu = self.get_object()
+        if hasattr(twu, 'profile'):
+            return redirect(twu.profile.get_absolute_url())
+        else:
+            return super().get(request, *args, **kwargs)
+
+    def get_voter(self) -> TwitterUser:
+        return self.get_object()
 
 
-class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
+class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
     section = 'browse'
-    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_years'), 'years')]
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [
+        (reverse_lazy('vote:browse_years'), 'years')
+    ]
     template_name = 'year.html'
 
-    def get_track_queryset(self) -> QuerySet[Track]:
-        return Track.objects.filter(year=int(self.kwargs['year']))
+    def get_track_queryset(self) -> TrackQuerySet:
+        return Track.objects.public().filter(year=int(self.kwargs['year']))
 
     def get_context_data(self):
+        year = int(self.kwargs['year'])
+
+        def year_if_tracks_exist(year: int) -> Optional[int]:
+            return year if Track.objects.public().filter(year=year) else None
+
         return {
             **super().get_context_data(),
-            'year': self.kwargs['year'],
+            'year': year,
+            'previous_year': year_if_tracks_exist(year - 1),
+            'next_year': year_if_tracks_exist(year + 1),
         }
 
 
-class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
+class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
     template_name = 'artist_detail.html'
     section = 'browse'
-    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_artists'), 'artists')]
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [
+        (reverse_lazy('vote:browse_artists'), 'artists')
+    ]
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         response = super().get(request, *args, **kwargs)
@@ -402,42 +444,48 @@ class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView
 
         return response
 
-    def get_track_queryset(self) -> QuerySet[Track]:
+    def get_track_queryset(self) -> Sequence[Track]:
         return Track.objects.by_artist(
-            self.kwargs['artist'], show_secret_tracks=(
-                self.request.user.is_authenticated and
-                self.request.user.is_staff
-            )
+            self.kwargs['artist'],
+            show_secret_tracks=(
+                self.request.user.is_authenticated and self.request.user.is_staff
+            ),
         )
 
-    def artist_suggestions(self) -> Set[str]:
+    def artist_suggestions(self) -> set[str]:
         return Track.suggest_artists(self.kwargs['artist'])
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         self.tracks = context['tracks']
-        context.update({
-            'artist': self.kwargs['artist'],
-            'played': [t for t in context['tracks'] if t.last_play()],
-            'artist_suggestions': self.artist_suggestions,
-            'tracks_as_composer': len(Track.objects.by_composer(self.kwargs['artist'])),
-        })
+        context.update(
+            {
+                'artist': self.kwargs['artist'],
+                'played': [t for t in context['tracks'] if t.last_play()],
+                'artist_suggestions': self.artist_suggestions,
+                'tracks_as_composer': len(
+                    Track.objects.by_composer(self.kwargs['artist'])
+                ),
+            }
+        )
         return context
 
 
 class Anime(mixins.BreadcrumbMixin, ListView):
     section = 'browse'
-    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_anime'), 'anime')]
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [
+        (reverse_lazy('vote:browse_anime'), 'anime')
+    ]
     model = Track
     template_name = 'anime_detail.html'
     context_object_name = 'tracks'
 
-    def get_queryset(self) -> List[Track]:  # type: ignore
+    def get_queryset(self) -> list[Track]:
         tracks = self.model.objects.by_anime(
-            self.kwargs['anime'], show_secret_tracks=(
-                self.request.user.is_authenticated and
-                self.request.user.is_staff
-            )
+            self.kwargs['anime'],
+            show_secret_tracks=(
+                self.request.user.is_authenticated and self.request.user.is_staff
+            ),
         )
 
         if len(tracks) == 0:
@@ -445,27 +493,32 @@ class Anime(mixins.BreadcrumbMixin, ListView):
         else:
             return sorted(
                 tracks,
-                key=lambda t: t.role_detail_for_anime(self.kwargs['anime'])
+                key=lambda t: t.role_detail_for_anime(self.kwargs['anime']),
             )
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update({
-            'anime': self.kwargs['anime'],
-            'related_anime': (
-                context['tracks'][0]
-                .role_detail_for_anime(self.kwargs['anime']).related_anime
-            )
-        })
+        context.update(
+            {
+                'anime': self.kwargs['anime'],
+                'related_anime': (
+                    context['tracks'][0]
+                    .role_detail_for_anime(self.kwargs['anime'])
+                    .related_anime
+                ),
+            }
+        )
         return context
 
 
-class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListView):
+class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
     section = 'browse'
     template_name = 'composer_detail.html'
-    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [(reverse_lazy('vote:browse_composers'), 'composers')]
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [
+        (reverse_lazy('vote:browse_composers'), 'composers')
+    ]
 
-    def get_track_queryset(self) -> QuerySet[Track]:
+    def get_track_queryset(self) -> Sequence[Track]:
         if self.request.user.is_authenticated and self.request.user.is_staff:
             qs = Track.objects.all()
         else:
@@ -473,24 +526,34 @@ class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, ListVi
 
         return qs.by_composer(self.kwargs['composer'])
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update({
-            'composer': self.kwargs['composer'],
-            'tracks_as_artist': len(Track.objects.by_artist(self.kwargs['composer'])),
-        })
+        context.update(
+            {
+                'composer': self.kwargs['composer'],
+                'tracks_as_artist': len(
+                    Track.objects.by_artist(self.kwargs['composer'])
+                ),
+            }
+        )
         return context
 
 
-class Added(mixins.TrackListWithAnimeGrouping, mixins.ShowDetail):
+class Added(
+    mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGrouping, mixins.ShowDetail
+):
     default_to_current = True
     section = 'new tracks'
     template_name = 'added.html'
     paginate_by = 50
+    breadcrumbs = mixins.BrowseCategory.breadcrumbs + [
+        (reverse_lazy('vote:archive'), 'past shows')
+    ]
     model = Show
+    object: Show
 
-    def get_track_queryset(self) -> QuerySet[Track]:
-        return cast(Show, self.get_object()).revealed()
+    def get_track_queryset(self) -> TrackQuerySet:
+        return self.get_object().revealed()
 
 
 class Stats(TemplateView):
@@ -498,39 +561,55 @@ class Stats(TemplateView):
     template_name = 'stats.html'
     cache_key = 'stats:context'
 
-    def streaks(self) -> List[TwitterUser]:
+    def unique_voters(
+        self, profiles: QuerySet[Profile], twitter_users: QuerySet[TwitterUser]
+    ) -> list[Voter]:
+        seen_ids: set[tuple[Optional[int], Optional[int]]] = set()
+        voters: list[Voter] = []
+
+        for voter in chain(profiles, twitter_users):
+            vid = voter.voter_id
+            if vid not in seen_ids:
+                voters.append(voter)
+                seen_ids.add(voter.voter_id)
+
+        return voters
+
+    def streaks(self) -> list[Voter]:
         last_votable_show = Show.current().prev()
-        while (
-            last_votable_show is not None and
-            not last_votable_show.voting_allowed
-        ):
+        while last_votable_show is not None and not last_votable_show.voting_allowed:
             last_votable_show = last_votable_show.prev()
 
         return sorted(
-            TwitterUser.objects.filter(
-                vote__show=last_votable_show,
-            ).distinct(),
+            self.unique_voters(
+                Profile.objects.filter(user__vote__show=last_votable_show),
+                TwitterUser.objects.filter(vote__show=last_votable_show),
+            ),
             key=lambda u: u.streak(),
-            reverse=True
+            reverse=True,
         )
 
-    def batting_averages(self) -> List[TwitterUser]:
+    def batting_averages(self) -> list[Voter]:
         users = []
         minimum_weight = 4
 
-        cutoff = Show.at(timezone.now() -
-                         datetime.timedelta(days=7*5)).end
+        cutoff = Show.at(timezone.now() - datetime.timedelta(days=7 * 5)).end
 
-        for user in set(TwitterUser.objects.filter(vote__date__gt=cutoff)):
+        for user in self.unique_voters(
+            Profile.objects.filter(user__vote__date__gt=cutoff),
+            TwitterUser.objects.filter(vote__date__gt=cutoff),
+        ):
             if user.batting_average(minimum_weight=minimum_weight):
                 users.append(user)
 
-        return sorted(users, key=lambda u: u.batting_average(
-            minimum_weight=minimum_weight
-        ) or 0, reverse=True)
+        return sorted(
+            users,
+            key=lambda u: u.batting_average(minimum_weight=minimum_weight) or 0,
+            reverse=True,
+        )
 
-    def popular_tracks(self) -> List[Tuple[Track, int]]:
-        cutoff = Show.at(timezone.now() - datetime.timedelta(days=31*6)).end
+    def popular_tracks(self) -> list[tuple[Track, int]]:
+        cutoff = Show.at(timezone.now() - datetime.timedelta(days=31 * 6)).end
         tracks = []
 
         for track in Track.objects.public():
@@ -538,49 +617,51 @@ class Stats(TemplateView):
 
         return sorted(tracks, key=lambda t: t[1], reverse=True)
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update({
-            'streaks': self.streaks,
-            'batting_averages': self.batting_averages,
-            'popular_tracks': self.popular_tracks,
-        })
+        context.update(
+            {
+                'streaks': self.streaks,
+                'batting_averages': self.batting_averages,
+                'popular_tracks': self.popular_tracks,
+            }
+        )
         return context
 
 
-class Info(mixins.MarkdownView):
+class Info(MarkdownView):
     title = 'what?'
     filename = 'README.md'
 
 
-class APIDocs(mixins.MarkdownView):
+class APIDocs(MarkdownView):
     title = 'api'
     filename = 'API.md'
 
 
-class Privacy(mixins.MarkdownView):
+class Privacy(MarkdownView):
     title = 'privacy'
     filename = 'PRIVACY.md'
 
 
-class TermsOfService(mixins.MarkdownView):
+class TermsOfService(MarkdownView):
     title = 'tos'
     filename = 'TOS.md'
 
 
-class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
+class ReportBadMetadata(LoginRequiredMixin, mixins.BreadcrumbMixin, FormView):
     form_class = BadMetadataForm
     template_name = 'report.html'
 
     def get_track(self) -> Track:
         return get_object_or_404(Track, pk=self.kwargs['pk'])
 
-    def get_context_data(self, *args, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, *args, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(*args, **kwargs)
         context['track'] = self.get_track()
         return context
 
-    def get_form_kwargs(self) -> Dict[str, Any]:
+    def get_form_kwargs(self) -> dict[str, Any]:
         kwargs = super().get_form_kwargs()
         kwargs['track'] = self.get_track()
         return kwargs
@@ -589,13 +670,17 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         return self.get_track().get_absolute_url()
 
     def form_valid(self, form: BaseForm) -> HttpResponse:
-        f = form.cleaned_data
-
         track = Track.objects.get(pk=self.kwargs['pk'])
 
+        assert self.request.user.is_authenticated  # guaranteed by LoginRequiredMixin
+
+        request = Request(submitted_by=self.request.user, track=track)
+        request.serialise(form.cleaned_data)
+        request.save()
+
+        f = form.cleaned_data
         fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
         fields.append(track.get_public_url())
-
         send_mail(
             '[nkd.su report] %s' % track.get_absolute_url(),
             '\n\n'.join(fields),
@@ -607,12 +692,12 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
             self.request,
             'Your disclosure is appreciated. '
             'The metadata youkai has been dispatched to address your concerns.'
-            ' None will know of its passing.'
+            ' None will know of its passing.',
         )
 
         return super().form_valid(form)
 
-    def get_breadcrumbs(self) -> List[Tuple[Optional[str], str]]:
+    def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
         track = self.get_track()
 
         return [
@@ -620,24 +705,27 @@ class ReportBadMetadata(mixins.BreadcrumbMixin, FormView):
         ]
 
 
-class RequestAddition(mixins.MarkdownView, FormView):
+class RequestAddition(LoginRequiredMixin, MarkdownView, FormView):
     form_class = RequestForm
     template_name = 'request.html'
     success_url = reverse_lazy('vote:index')
     filename = 'ELIGIBILITY.md'
     title = 'Request an addition to the library'
 
-    def get_initial(self) -> Dict[str, Any]:
+    def get_initial(self) -> dict[str, Any]:
         return {
             **super().get_initial(),
             **{k: v for (k, v) in self.request.GET.items()},
         }
 
     def form_valid(self, form: BaseForm) -> HttpResponse:
+        assert self.request.user.is_authenticated  # guaranteed by LoginRequiredMixin
+        request = Request(submitted_by=self.request.user)
+        request.serialise(form.cleaned_data)
+        request.save()
+
         f = form.cleaned_data
-
         fields = ['%s:\n%s' % (r, f[r]) for r in f if f[r]]
-
         send_mail(
             '[nkd.su] %s' % f['title'],
             '\n\n'.join(fields),
@@ -649,10 +737,66 @@ class RequestAddition(mixins.MarkdownView, FormView):
             self.request,
             'Your request has been dispatched. '
             'May it glide strong and true through spam filters and '
-            'indifference.'
+            'indifference.',
         )
 
         return super().form_valid(form)
+
+
+class VoteView(LoginRequiredMixin, CreateView):
+    form_class = VoteForm
+    template_name = 'vote.html'
+    success_url = reverse_lazy('vote:index')
+
+    def get_track_pks(self) -> list[str]:
+        track_pks_raw = self.request.GET.get('t')
+
+        if track_pks_raw is None:
+            return []
+
+        track_pks = track_pks_raw.split(',')
+
+        if len(track_pks) > settings.MAX_REQUEST_TRACKS:
+            raise Http404('too many tracks')
+
+        return track_pks
+
+    def get_tracks(self) -> list[Track]:
+        def track_should_be_allowed_for_this_user(track: Track) -> bool:
+            return eligible_for(track, self.request.user)
+
+        return list(
+            filter(
+                track_should_be_allowed_for_this_user,
+                (
+                    get_object_or_404(Track.objects.public(), pk=pk)
+                    for pk in self.get_track_pks()
+                ),
+            )
+        )
+
+    def get_form_kwargs(self) -> dict[str, Any]:
+        self.get_track_pks()  # to make sure we throw a 404 before doing anything with too many tracks
+
+        assert not isinstance(self.request.user, AnonymousUser)
+        instance = Vote(user=self.request.user, date=timezone.now())
+        return {
+            **super().get_form_kwargs(),
+            'instance': instance,
+        }
+
+    def form_valid(self, form: VoteForm) -> HttpResponse:
+        resp = super().form_valid(form)
+        form.instance.tracks.set(self.get_tracks())
+        self.request.session['selection'] = []
+        return resp
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        tracks = self.get_tracks()
+        return {
+            **super().get_context_data(**kwargs),
+            'tracks': tracks,
+        }
 
 
 class SetDarkModeView(FormView):

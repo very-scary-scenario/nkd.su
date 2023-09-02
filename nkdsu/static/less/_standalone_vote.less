@@ -1,6 +1,6 @@
 @standalone-vote-border-radius: .4em;
 
-.standalone-vote {
+.standalone-vote, .vote-preview {
   display: inline-block;
   vertical-align: top;
   margin-bottom: 1em;
@@ -48,5 +48,11 @@
       font-size: .8em;
       padding-left: .5em;
     }
+  }
+}
+
+.vote-preview {
+  @media (min-width: @breakpoint) {
+    margin-left: 25%;
   }
 }

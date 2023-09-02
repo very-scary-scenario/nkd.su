@@ -1,0 +1,84 @@
+{% extends parent %}
+
+{% block title %}email addresses{% endblock %}
+
+{% block content %}
+  {% if user.emailaddress_set.all %}
+    <h2 class="aligned">email addresses</h2>
+
+    <p class="subheading">
+      any email address here can be used to reset your password
+    </p>
+
+    <p class="subheading">
+      which one is set as primary will only matter if we need to message you proactively, which we don't plan to do often, if ever
+    </p>
+
+    <form method="post" class="email-addresses">
+      {% csrf_token %}
+      {% for emailaddress in user.emailaddress_set.all %}
+        <p>
+          <label for="email_radio_{{forloop.counter}}" class="{% if emailaddress.primary %}primary_email{%endif%}">
+
+            <input
+              id="email_radio_{{forloop.counter}}"
+              type="radio"
+              name="email"
+              value="{{emailaddress.email}}"
+              {% if emailaddress.primary or user.emailaddress_set.count == 1 %}
+                checked="checked"
+              {%endif %}
+            />
+
+            {{ emailaddress.email }}
+
+            {% if emailaddress.verified %}
+              <span class="tag verified">verified</span>
+            {% else %}
+              <span class="tag unverified">unverified</span>
+            {% endif %}
+            {% if emailaddress.primary %}
+              <span class="tag primary">primary</span>
+            {% endif %}
+          </label>
+        </p>
+      {% endfor %}
+
+      <p>
+        <button class="button" type="submit" name="action_primary">make primary</button>
+        <button class="button" type="submit" name="action_send">resend verification</button>
+        <button class="button" type="submit" name="action_remove">remove</button>
+      </p>
+    </form>
+  {% endif %}
+
+  {% if can_add_email %}
+    <h2>add an email address</h2>
+
+    <p class="subheading">
+      you may find it reassuring to look at nkd.su's <a href="{% url "vote:privacy" %}">privacy policy</a> before giving us an email address
+    </p>
+
+    <form method="post" class="add_email">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="button" name="action_add" type="submit">add address</button>
+    </form>
+  {% endif %}
+{% endblock %}
+
+{% block footer_scripts %}
+  <script type="text/javascript">
+    (function() {
+      var message = "are you sure you want to remove the selected e-mail address?";
+      var actions = document.getElementsByName('action_remove');
+      if (actions.length) {
+        actions[0].addEventListener("click", function(e) {
+          if (!confirm(message)) {
+            e.preventDefault();
+          }
+        });
+      }
+    })();
+  </script>
+{% endblock %}

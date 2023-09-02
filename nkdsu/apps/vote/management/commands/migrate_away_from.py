@@ -9,11 +9,11 @@ class Command(BaseCommand):
         'the first'
     )
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         parser.add_argument('to_remove_id', type=str)
         parser.add_argument('target_id', type=str)
 
-    def handle(self, to_remove_id, target_id, *args, **options):
+    def handle(self, to_remove_id, target_id, *args, **options) -> None:
         to_remove = Track.objects.get(id=to_remove_id)
         target = Track.objects.get(id=target_id)
 
@@ -28,6 +28,8 @@ class Command(BaseCommand):
 
         target.revealed = to_remove.revealed
         target.hidden = False
+        target.media_id = to_remove.media_id
+        target.has_hook = to_remove.has_hook
         target.save()
 
         to_remove.delete()

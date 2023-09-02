@@ -8,12 +8,12 @@ cool if the site could continue to work.
 Here, then, are some instructions that I'm pretty sure should be all you need
 to do to get the site up and running on your own server. A passing familiarity
 with Django will help greatly. I'm assuming you have a server of some kind that
-has Python 3.8 and Apache or nginx or some httpd capable of hosting WSGI apps
+has Python 3.11 and Apache or nginx or some httpd capable of hosting WSGI apps
 installed.
 
 - Talk to Peter. They have some passwords and keys and other things that you'll
   want if you're going to set up a replacement instance.
-- Make sure you have Python 3.8 or newer and some kind of recent version of
+- Make sure you have Python 3.11 or newer and some kind of recent version of
   npm.
 - Make and activate a [virtualenv][venv].
     - I use [virtualenvwrapper][vew], but it's up to you how to set this up.
@@ -23,16 +23,9 @@ installed.
 - Run `npm install` from the repository root to install the node tools used for
   static file preprocessing and linting.
 - Create a `nkdsu/settings_local.py`
-    - Add Twitter API keys as `CONSUMER_KEY`, `CONSUMER_SECRET`,
-      `READING_ACCESS_TOKEN`, `READING_ACCESS_TOKEN_SECRET`,
-      `POSTING_ACCESS_TOKEN` and `POSTING_ACCESS_TOKEN_SECRET`.
-        - `READING_` is for @nkdsu, `POSTING_` is for @NekoDesuRadio. Peter has
-          keys for all of these already, but you should be able to create a new
-          app and get them to reauthenticate them if you want to use your own
-          app keys.
-        - If you're setting up an instance for local development and testing,
-          you probably want to create a testing Twitter account and use that
-          instead, for both `READING_` and `POSTING_`.
+    - Add Twitter API keys as `SOCIAL_AUTH_TWITTER_KEY` and
+      `SOCIAL_AUTH_TWITTER_SECRET` It does not matter what account you use for
+      this.
     - [Make some last.fm API keys][lastfmapikeys] and add them as
       `LASTFM_API_KEY` and `LASTFM_API_SECRET`.
 - Set up a database and add the [settings][db] for it to your
@@ -73,7 +66,7 @@ to accept votes and generally be responsible, though:
 - Make Peter an account with staff and admin permissions.
     - You can do this from the admin interface at /admin. Make them a super
       user.
-- Make non-staff accounts for the elves who gather tracks, so that they can get
+- Make non-staff accounts for the elfs who gather tracks, so that they can get
   to the request list
 
 ----
@@ -84,6 +77,6 @@ do that too.
 
 [lastfmapikeys]: http://www.last.fm/api/account/create
 [db]: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-[venv]: https://docs.python.org/3.8/tutorial/venv.html#tut-venv
-[vew]: http://virtualenvwrapper.readthedocs.org/
-[pl]: http://django-pipeline.readthedocs.org/
+[venv]: https://docs.python.org/3.11/tutorial/venv.html#tut-venv
+[vew]: https://virtualenvwrapper.readthedocs.io/
+[pl]: https://django-pipeline.readthedocs.io/

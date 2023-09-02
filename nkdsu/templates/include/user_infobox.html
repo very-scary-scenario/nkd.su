@@ -1,0 +1,70 @@
+{% load vote_tags %}
+
+<div class="self-infobox">
+  <p>
+    {% if user.email %}
+      {% if user|has_verified_email %}
+        your primary email address is <strong>{{ user.email }}</strong>. <a href="{% url "account_email" %}">change it here</a>
+      {% else %}
+        your primary email address is <strong>{{ user.email }}</strong>, but it has not been verified. please <a href="{% url "account_email" %}">verify it</a> so you can be confident it works
+      {% endif %}
+    {% else %}
+      <a href="{% url "account_email" %}">please set an email address</a>. without one, you will not be able to reset your password if you lose it
+    {% endif %}
+  </p>
+
+  {% if user.profile.twitter_user %}
+    <p>
+      your account has adopted historical requests and statistics from twitter user @<strong>{{ user.profile.twitter_user.screen_name }}</strong>
+    </p>
+  {% endif %}
+
+  {% if user|is_elf %}
+    <p>you are one of the elfs</p>
+  {% endif %}
+
+  {% if user.social_auth.all %}
+    <section>
+      {% for social_auth in user.social_auth.all %}
+        <p>
+          your account currently allows authentication via a
+          <code>{{ social_auth.provider }}</code> user named
+          <strong>{{ social_auth.extra_data.access_token.screen_name }}</strong>
+        </p>
+        {% if social_auth.provider == "twitter" %}
+          <form method="post" action="{% url "social:disconnect" backend="twitter" %}">
+            {% csrf_token %}
+
+            <p>
+              {% if user.has_usable_password %}
+                we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_change" %}">make sure you know your nkd.su password</a> and then <button class="link">disconnect your account from twitter</button>
+              {% else %}
+                we'd prefer not to trust twitter any more than we have to, so please <a href="{% url "password_set" %}">set a password for your account</a> so that you can disconnect it from twitter
+              {% endif %}
+            </p>
+          </form>
+          {% if user.profile.twitter_user %}
+            <p>
+              disconnecting your account like this will not remove your adopted requests from @{{ user.profile.twitter_user.screen_name }}
+            </p>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </section>
+  {% else %}
+    <section>
+      <p>
+        {% if user.has_usable_password %}
+          you have a password set. you can <a href="{% url "password_change" %}">change it</a>, if you like
+        {% else %}
+          {# this shouldn't be possible, but i don't want to lie #}
+          you do not have a password set. you should <a href="{% url "password_set" %}">set one</a>
+        {% endif %}
+      </p>
+    </section>
+  {% endif %}
+
+  {% if not hide_edit_button %}
+    <p><a class="button" href="{% url "vote:profiles:edit-profile" %}">edit your profile</a></p>
+  {% endif %}
+</div>

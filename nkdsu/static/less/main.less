@@ -8,6 +8,7 @@
 
 @import "_archive.less";
 @import "_browse.less";
+@import "_email_form.less";
 @import "_selection.less";
 @import "_track.less";
 @import "_nanotrack.less";
@@ -18,9 +19,9 @@ html {
 }
 
 body {
-  font-family: "Bitter", "Calibri", sans-serif;
-  background-color: @bg;
+  .nkdsu-font();
   .noise();
+  background-color: @bg;
   color: @fg;
   text-shadow: @basic-shadow 0 .1em 0;
   height: 100%;
@@ -96,7 +97,8 @@ body {
         &#new-tracks-header-link i::before { content: @fa-var-concierge-bell; }
         &#roulette-header-link i::before { content: @fa-var-dice; }
         &#stats-header-link i::before { content: @fa-var-chart-bar; }
-        &#donate-header-link i::before { content: @fa-var-donate; }
+        &#donate-header-link i::before { .fab(); content: @fa-var-patreon; }
+        &#discord-header-link i::before { .fab(); content: @fa-var-discord; }
         &#etc-header-link i::before { content: @fa-var-ellipsis-h; }
 
         &.active a {
@@ -193,6 +195,8 @@ body {
       padding-bottom: 13em;
 
       .markdown {
+        padding-bottom: 1em;
+
         h1 {
           text-align: center;
         }
@@ -268,14 +272,14 @@ body {
       }
 
       div.user {
-        .avatar img {
+        img.avatar {
           width: 6em;
           height: 6em;
           margin-top: .5em;
           border-radius: .4em;
         }
 
-        &.abuser .avatar img {
+        &.abuser img.avatar {
           .transform(rotate(180deg));
         }
 
@@ -293,11 +297,15 @@ body {
         }
 
         .badges {
-          text-align: center;
+          display: flex;
           margin: .5em 0;
+          flex-flow: row wrap;
+          justify-content: center;
 
           li {
-            padding: .5em 0;
+            max-width: 15rem;
+            padding: .5em;
+            text-align: center;
 
             i, p {
               margin-bottom: .3em;
@@ -306,6 +314,32 @@ body {
             i.fa {
               color: @badge-colour;
               font-size: 1.5em;
+            }
+
+            .badge-detail {
+              display: none;
+              position: absolute;
+              right: 0;
+              width: 100%;
+
+              > .badge-detail-content {
+                margin: 0 auto;
+                padding: .5em;
+                max-width: 20rem;
+                border: 1px solid @border;
+                border-radius: 1rem;
+                .invert();
+                .noise();
+
+                // be above the "played" overlay
+                position: relative;
+                z-index: 2;
+              }
+            }
+
+            &:hover, &:focus {
+              i.fa { color: inherit; }
+              .badge-detail { display: block; }
             }
           }
         }
@@ -526,9 +560,13 @@ body[data-dark-mode=system] [value=system] {
   }
 }
 
+.dark({
+  // make breadcrumbs not break border symmetry around the message that pesters about verifying an email address
+  .messages { margin-bottom: 3px; }
+});
+
 .messages {
   text-align: center;
-  cursor: pointer;
   .noise();
   background-color: @inv_bg;
   color: @fg;
@@ -550,76 +588,165 @@ body[data-dark-mode=system] [value=system] {
     &.info {background-color: @blue}
   }
 
-  &::before {
-    content: 'okay cool i get it';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    transition: opacity .2s;
-    opacity: 0;
-    width: 100%;
-    padding-top: 100%;
-    margin-top: -100%;
-  }
+  &.dismissable {
+    cursor: pointer;
 
-  &:hover {
     &::before {
-      opacity: 1;
+      content: 'okay cool i get it';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      transition: opacity .2s;
+      opacity: 0;
+      width: 100%;
+      padding-top: 100%;
+      margin-top: -100%;
     }
-  }
 
-  &.dismissed {
-    cursor: default;
-
-    li {
-      &:last-child {
-        margin-bottom: -100%;  // it'd be cool if this were derived from the height of .messages, but alas it is not.
+    &:hover {
+      &::before {
+        opacity: 1;
       }
     }
 
-    &::before {
-      opacity: 1;
+    &.dismissed {
+      cursor: default;
+
+      li {
+        &:last-child {
+          margin-bottom: -100%;  // it'd be cool if this were derived from the height of .messages, but alas it is not.
+        }
+      }
+
+      &::before {
+        opacity: 1;
+      }
     }
   }
 }
 
 header {
-  width: 100%;
   .invert();
   .noise();
-  overflow: hidden;
-  text-align: center;
-  padding: .2em 0 .4em;
+
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0 .5em .5em;
 
   #header-content {
-    margin: 0 auto;
-    max-width: 50em;
-    display: table;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
 
-    @media (max-width: @breakpoint) {
-      display: block !important;
+    #titles {
+      text-align: center;
 
-      > div {
-        display: block !important;
+      .subtitle {
+        font-size: .8em;
+        margin: 0 auto .3em;
+        padding: 0 .5em;
       }
     }
 
-    > div {
-      display: table-cell;
-      vertical-align: middle;
-    }
-
-    .subtitle {
-      font-size: .8em;
-      width: 11em;
-      margin: 0 auto .4em;
-    }
-
     #search {
-      padding: .2em 1em;
-
       input {
+        margin: 0 .5em;
         .search-field();
+      }
+    }
+  }
+
+  #user-menu-container {
+    details#user-menu {
+      position: relative;
+      padding: 0 .5em;
+
+      > summary {
+        cursor: pointer;
+
+        list-style: none;
+        &::-webkit-details-marker { display: none }
+        &::before { display: none }  // for when details-polyfill is applied on firefox 43
+
+        &.pending-requests::before {
+          content: ' ';
+          display: block;
+          position: absolute;
+          top: -.2em;
+          right: .3em;
+          width: .6em;
+          height: .6em;
+          background-color: @pink;
+          border: 1px solid fade(@inv_bg, 50%);
+          border-radius: 50%;
+          background-clip: padding-box;
+        }
+
+        .user-menu-icon {
+          display: inline-block;
+          vertical-align: middle;
+          pointer-events: none;  // lets details-polyfill catch clicks properly
+        }
+
+        i {
+          font-size: 2em;
+          transform: scale(0.75);
+          color: @hl;
+        }
+        &:hover i { color: @inv_fg }
+
+        img.user-menu-icon {
+          width: 2em;
+          height: 2em;
+          border-radius: .3em;
+          background-color: fade(@light, 50%);
+          border: 1px solid fade(@light, 50%);
+        }
+        &:hover img { border-color: @hl }
+      }
+
+      > ul {
+        position: absolute;
+
+        right: 0.5em;
+        top: 2.3em;
+        z-index: 10;
+        width: 13em;
+
+        .noise();
+        background-color: @inv_bg;
+        border: 1px solid @light;
+        box-shadow: 0 0 0 1px @fg;
+        border-radius: .2em;
+
+        > li {
+          text-align: left;
+          border-bottom: 1px solid fade(@light, 20%);
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          > form, > a {
+            width: 100%;
+            display: block;
+            padding: .5em;
+
+            &.alert::before {
+              content: '●';
+              color: @pink;
+            }
+          }
+
+          form#dark-mode-settings {
+            .child-iter();
+            text-align: inherit;
+            margin: 0;
+          }
+        }
       }
     }
   }
@@ -643,35 +770,86 @@ p.new_tracks {
   margin-left: 37.5%;
 }
 
-/* login form */
-form.login tr {
-  clear: both;
-}
-
+/* forms */
 form {
   text-align: center;
   margin: .5em 0;
+
+  p {
+    text-align: left;
+    margin: .5em 0;
+    clear: both;
+
+    &.submit {
+      text-align: center;
+    }
+
+    input, textarea {
+      text-align: left;
+    }
+
+    .helptext {
+      font-size: .9em;
+      margin-top: .25em;
+      display: block;
+    }
+
+    .clear-file {
+      display: block;
+    }
+  }
+
+  ul.errorlist li {
+    list-style: none;
+    font-size: .9em;
+    color: @light;
+  }
+
+  &.login tr {
+    clear: both;
+  }
 }
 
-form p {
-  text-align: left;
-  margin: .5em 0;
+main.login {
+  max-width: 1.5 * @max-width !important;
+
+  #login-methods {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+
+    > section {
+      padding: 0 1em;
+      max-width: 30rem;
+
+      p {
+        margin-bottom: .5em;
+      }
+    }
+  }
 }
 
-form p input {
-  text-align: left;
-}
+.self-infobox {
+  padding: .6em 0;
+  background-color: fade(@light, 20%);
+  border-radius: .5em;
 
-form p textarea {
-  text-align: left;
-}
+  p {
+    margin: .5em 1em;
+  }
 
-form ul.errorlist li {
-  list-style: none;
-  font-size: .7em;
-  color: @light;
-  position: relative;
-  top: .6em;
+  > p {
+    &:first-child { margin-top: 0 }
+    &:last-child { margin-bottom: 0 }
+  }
+
+  section {
+    border: .3em solid fade(@light, 30%);
+    border-width: .3em 0;
+
+    &:first-child { border-top-width: 0; > p:first-child { margin-top: 0; } }
+    &:last-child { border-bottom-width: 0; > p:last-child { margin-bottom: 0; } }
+  }
 }
 
 /* common to library updates and parsing checker */
@@ -815,6 +993,11 @@ dl.metadata-check {
 #requests {
   > li {
     margin: 1em 0 2em;
+
+    &.shelved {
+      opacity: .5;
+    }
+
     &.claimed {
       opacity: .5;
 
@@ -845,19 +1028,31 @@ dl.metadata-check {
       }
     }
 
-    > form {
-      display: inline-block;
+    .request-actions {
+      > form {
+        display: inline-block;
+        margin-right: 1em;
+      }
     }
   }
 }
 
 @media (min-width:551px) {
-  form p label {
-    clear: both;
-    float: left;
-    width: 42%;
-    text-align: right;
-    padding-right: .5em;
+  form {
+    p {
+      > label {
+        clear: both;
+        float: left;
+        width: 42%;
+        text-align: right;
+        padding-right: .5em;
+      }
+    }
+
+    .helptext, .clear-file, .replacement-file-input {
+      margin-left: 42%;
+      padding-left: .5em;
+    }
   }
 
   /* hover effects are desktop only */

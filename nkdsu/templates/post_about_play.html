@@ -1,0 +1,14 @@
+{% extends parent %}
+
+{% block title %}post about this play{% endblock %}
+{% block content %}
+
+<h2>you played {{ track }}</h2>
+
+<div class="markdown">
+  <p><code>{{ track.play_tweet_content }}</code></p>
+  <p><a target="_blank" href="{{ track.play_tweet_intent_url }}" class="button">post this tweet</a></p>
+  <p><a href="{% url "vote:index" %}">return home</a></p>
+</div>
+
+{% endblock %}

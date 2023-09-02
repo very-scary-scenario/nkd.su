@@ -1,41 +1,45 @@
 from __future__ import annotations
 
 import logging
-import re
 import string
 from dataclasses import dataclass
 from functools import partial
-from typing import Any, Callable, Iterable, Optional, TYPE_CHECKING, Tuple, TypeVar, cast
-from urllib.parse import quote
+from os import environ
+from typing import (
+    Any,
+    Callable,
+    Generic,
+    Iterable,
+    NoReturn,
+    Optional,
+    TYPE_CHECKING,
+    TypeVar,
+    cast,
+)
+from urllib.parse import urlencode
 
 from classtools import reify as ct_reify
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse
 import musicbrainzngs
+from mypy_extensions import KwArg, VarArg
 import requests
-import tweepy
 
 if TYPE_CHECKING:
-    from .models import Track
+    from .models import Profile, Track
 
+
+BUILDING_DOCS = bool(environ.get('BUILDING_DOCS'))
 
 logger = logging.getLogger(__name__)
 
 
-_read_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
-                                    settings.CONSUMER_SECRET)
-_read_tw_auth.set_access_token(settings.READING_ACCESS_TOKEN,
-                               settings.READING_ACCESS_TOKEN_SECRET)
-reading_tw_api = tweepy.API(_read_tw_auth)
-
-_post_tw_auth = tweepy.OAuthHandler(settings.CONSUMER_KEY,
-                                    settings.CONSUMER_SECRET)
-_post_tw_auth.set_access_token(settings.POSTING_ACCESS_TOKEN,
-                               settings.POSTING_ACCESS_TOKEN_SECRET)
-posting_tw_api = tweepy.API(_post_tw_auth)
-
-
-indefinitely: int = (60*60*24*7) + (60*60) + 60  # one week, one hour and one minute
+indefinitely: int = (
+    (60 * 60 * 24 * 7) + (60 * 60) + 60
+)  # one week, one hour and one minute
 
 
 @dataclass
@@ -44,7 +48,7 @@ class BrowsableItem:
     name: str
     visible: bool = True
 
-    def group(self) -> Tuple[int, str]:
+    def group(self) -> tuple[int, str]:
         """
         Return a sort order and a user-facing name for the group to put this
         item in. By default, an initial letter.
@@ -65,57 +69,33 @@ class BrowsableItem:
 
 @dataclass
 class BrowsableYear(BrowsableItem):
-    def group(self) -> Tuple[int, str]:
+    def group(self) -> tuple[int, str]:
         decade = (int(self.name) // 10) * 10
         return (decade, f"{decade}s")
 
 
-def _get_short_url_length() -> int:
-    cache_key = 'tw-short-url-length'
-    length = cache.get(cache_key)
-    if length is not None:
-        return length
-    try:
-        length = reading_tw_api.configuration()['short_url_length_https']
-    except tweepy.error.TweepError as e:
-        logger.critical(
-            "could not read twitter configuration to determine short URL length:\n{}".format(e)
-        )
-        length = 22
-
-    cache.set(cache_key, length)
-    return length
-
-
-def _get_reading_username() -> str:
-    cache_key = 'tw-reading-username:{}'.format(settings.READING_ACCESS_TOKEN)
-    username = cache.get(cache_key)
-    if username is not None:
-        return username
-
-    try:
-        username = reading_tw_api.auth.get_username()
-    except tweepy.error.TweepError as e:
-        logger.critical(
-            "could not read reading account's username:\n{}".format(e)
-        )
-        return 'nkdsu'
-    else:
-        cache.set(cache_key, username)
-        return username
-
-
-SHORT_URL_LENGTH: int = _get_short_url_length()
-READING_USERNAME: str = _get_reading_username()
+SHORT_URL_LENGTH: int = 20
+READING_USERNAME: str = 'nkdsu'
 
 
 def length_str(msec: float) -> str:
     """
     Convert a number of milliseconds into a human-readable representation of
     the length of a track.
+
+    >>> length_str(999)
+    '0:00'
+    >>> length_str(1000)
+    '0:01'
+    >>> length_str(1000 * (60 + 15))
+    '1:15'
+    >>> length_str(1000 * (60 + 15))
+    '1:15'
+    >>> length_str((60 * 60 * 1000) + (1000 * (60 + 15)))
+    '1:01:15'
     """
 
-    seconds = (msec or 0)/1000
+    seconds = (msec or 0) / 1000
     remainder_seconds = seconds % 60
     minutes = (seconds - remainder_seconds) / 60
 
@@ -127,47 +107,41 @@ def length_str(msec: float) -> str:
         return '%i:%02d' % (minutes, remainder_seconds)
 
 
-def tweet_url(tweet: str) -> str:
-    return (
-        'https://twitter.com/intent/tweet?in_reply_to={reply_id}&text={text}'
-        .format(reply_id='744237593164980224', text=quote(tweet))
-    )
-
-
 def vote_url(tracks: Iterable[Track]) -> str:
-    return tweet_url(vote_tweet(tracks))
+    base = reverse('vote:vote')
+    query = {'t': ','.join(t.id for t in tracks)}
+    return f'{base}?{urlencode(query)}'
 
 
-def vote_tweet(tracks: Iterable[Track]) -> str:
+def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:
     """
-    Return what a person should tweet to request `tracks`.
-    """
+    Take a 'Title (role)'-style ID3 title and return ``(title, role)``.
 
-    return ' '.join([t.get_public_url() for t in tracks])
+    >>> split_id3_title('title')
+    ('title', None)
+    >>> split_id3_title('title (role)')
+    ('title', 'role')
 
+    The role will be populated if we're able to find a set of matching brackets
+    starting with the final character:
 
-def vote_tweet_intent_url(tracks: Iterable[Track]) -> str:
-    tweet = vote_tweet(tracks)
-    return tweet_url(tweet)
+    >>> split_id3_title('title ((role)')
+    ('title (', 'role')
+    >>> split_id3_title('title ((r(o)(l)e)')
+    ('title (', 'r(o)(l)e')
 
+    But no role will be returned if the brackets close more than they open, or
+    if the final character is not a ``)``:
 
-def tweet_len(tweet: str) -> int:
-    placeholder_url = ''
-    while len(placeholder_url) < SHORT_URL_LENGTH:
-        placeholder_url = placeholder_url + 'x'
-
-    shortened = re.sub(r'https?://[^\s]+', placeholder_url, tweet)
-    return len(shortened)
-
-
-def split_id3_title(id3_title: str) -> Tuple[str, Optional[str]]:
-    """
-    Take a 'Title (role)'-style ID3 title and return (title, role)
+    >>> split_id3_title('title (role) ')
+    ('title (role) ', None)
+    >>> split_id3_title('title (role))')
+    ('title (role))', None)
     """
     role = None
 
     bracket_depth = 0
-    for i in range(1, len(id3_title)+1):
+    for i in range(1, len(id3_title) + 1):
         char = id3_title[-i]
         if char == ')':
             bracket_depth += 1
@@ -176,7 +150,7 @@ def split_id3_title(id3_title: str) -> Tuple[str, Optional[str]]:
 
         if bracket_depth == 0:
             if i != 1:
-                role = id3_title[len(id3_title)-i:]
+                role = id3_title[len(id3_title) - i :]
             break
 
     if role:
@@ -189,10 +163,16 @@ def split_id3_title(id3_title: str) -> Tuple[str, Optional[str]]:
 
 
 # http://zeth.net/post/327/
-def split_query_into_keywords(query):
-    """Split the query into keywords,
-    where keywords are double quoted together,
-    use as one keyword."""
+def split_query_into_keywords(query: str) -> list[str]:
+    """
+    Split the query into keywords. Where keywords are double quoted together,
+    use as one keyword.
+
+    >>> split_query_into_keywords('hello there, how are you doing')
+    ['hello', 'there,', 'how', 'are', 'you', 'doing']
+    >>> split_query_into_keywords('hello there, "how are you doing"')
+    ['how are you doing', 'hello', 'there,']
+    """
     keywords = []
     # Deal with quoted keywords
     while '"' in query:
@@ -200,7 +180,7 @@ def split_query_into_keywords(query):
         second_quote = query.find('"', first_quote + 1)
         if second_quote == -1:
             break
-        quoted_keywords = query[first_quote:second_quote + 1]
+        quoted_keywords = query[first_quote : second_quote + 1]
         keywords.append(quoted_keywords.strip('"'))
         query = query.replace(quoted_keywords, ' ')
     # Split the rest by spaces
@@ -211,7 +191,7 @@ def split_query_into_keywords(query):
 T = TypeVar('T')
 
 
-class Memoize:
+class Memoize(Generic[T]):
     """
     Cache the return value of a method on the object itself.
 
@@ -222,15 +202,21 @@ class Memoize:
 
     If a memoized method is invoked directly on its class the result will not
     be cached. Instead the method will be invoked like a static method:
-    class Obj(object):
-        @memoize
-        def add_to(self, arg):
-            return self + arg
-    Obj.add_to(1) # not enough arguments
-    Obj.add_to(1, 2) # returns 3, result is not cached
+
+    >>> class Obj(object):
+    ...     @memoize
+    ...     def add_to(self, arg):
+    ...         return self + arg
+
+    >>> Obj.add_to(1)
+    Traceback (most recent call last):
+      ...
+    TypeError: Obj.add_to() missing 1 required positional argument: 'arg'
+    >>> Obj.add_to(1, 2) # result is not cached
+    3
     """
 
-    def __init__(self, func):
+    def __init__(self, func: Callable[..., T]) -> None:
         self.func = func
 
     def __get__(self, obj, objtype=None):
@@ -252,12 +238,47 @@ class Memoize:
         return res
 
 
-def memoize(func: T) -> T:
-    return cast(T, Memoize(func))
+def memoize(func: Callable[..., T]) -> Callable[..., T]:
+    return Memoize(func)
 
 
-def reify(func: Callable[..., T]) -> T:
-    return cast(T, ct_reify(func))
+def reify(func: Callable[[Any], T]) -> T:
+    wrapped = ct_reify(func)
+
+    # make doctests discoverable by pytest:
+    wrapped.__module__ = func.__module__
+
+    # pytest needs us to tell it where the wrapped function came from so that
+    # it can show errors in context. sphinx gets upset about callables if we
+    # set __wrapped__ as a method but surface something static. so, to placate
+    # both at once:
+    if not BUILDING_DOCS:
+        wrapped.__wrapped__ = func
+
+    return cast(T, wrapped)
+
+
+C = TypeVar('C', bound=Callable[[VarArg(Any), KwArg(Any)], Any])
+
+
+def cached(seconds: int, cache_key: str) -> Callable[[C], C]:
+    def wrapper(func: C) -> C:
+        def wrapped(*a, **k) -> Any:
+            def do_thing(func, *a, **k) -> Any:
+                hit = cache.get(cache_key)
+
+                if hit is not None:
+                    return hit
+
+                rv = func(*a, **k)
+                cache.set(cache_key, rv, seconds)
+                return rv
+
+            return do_thing(func, *a, **k)
+
+        return cast(C, wrapped)
+
+    return wrapper
 
 
 def pk_cached(seconds: int) -> Callable[[T], T]:
@@ -275,14 +296,29 @@ def pk_cached(seconds: int) -> Callable[[T], T]:
 
 
 def lastfm(**kwargs):
-    params = {'api_key': settings.LASTFM_API_KEY,
-              'api_secret': settings.LASTFM_API_SECRET,
-              'format': 'json'}
+    params = {
+        'api_key': settings.LASTFM_API_KEY,
+        'api_secret': settings.LASTFM_API_SECRET,
+        'format': 'json',
+    }
 
     params.update(kwargs)
 
     resp = requests.get('http://ws.audioscrobbler.com/2.0/', params=params)
     return resp.json()
+
+
+def assert_never(value: NoReturn) -> NoReturn:
+    assert False, f'this code should not have been reached; got {value!r}'
+
+
+def get_profile_for(user: User) -> Profile:
+    try:
+        return user.profile
+    except ObjectDoesNotExist:
+        from .models import Profile
+
+        return Profile.objects.create(user=user)
 
 
 musicbrainzngs.set_useragent('nkd.su', '0', 'http://nkd.su/')

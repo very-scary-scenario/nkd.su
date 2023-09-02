@@ -1,19 +1,50 @@
 {% extends parent %}
 
-{% block title %}log in{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block main_classes %}
+  login
+{% endblock %}
 
 {% block content %}
-<h2 class=message>log in</h2>
+  <h2>log in:</h2>
 
-{% if form.errors %}
-<p class="aside problems">wrong username/password, sorry</p>
-{% endif %}
+  <form class="login" method="post" action="{% url "login" %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="next" value="{{ next }}" />
 
-<form class="login" method="post" action="{% url "login" %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="login">
-  <input type="hidden" name="next" value="{{ next }}" />
-</form>
+    <p class="submit">
+      <input type="submit" value="log in" class="button">
+    </p>
+
+    <p class="aside">
+      you can <a href="{% url "account_reset_password" %}">reset your password</a> if you forgot it
+    </p>
+  </form>
+
+  <h2>or:</h2>
+
+  <div id="login-methods">
+    <section>
+      <h3>create an account</h3>
+      <p>create a fresh nkd.su account with a username and password</p>
+
+      <form class="login" method="post" action="{% url "register" %}">
+        {% csrf_token %}
+        {{ registration_form.as_p }}
+        <p class="submit">
+          <input type="submit" value="register" class="button">
+        </p>
+      </form>
+    </section>
+  </div>
+
+  {% if is_vote %}
+    <h2>log in? what?</h2>
+    <div class="markdown">
+      {{ words|safe }}
+    </div>
+  {% endif %}
 
 {% endblock %}

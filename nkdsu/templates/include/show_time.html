@@ -1,0 +1,1 @@
+{{ show.showtime|date:"g"|lower }}{% if show.showtime.minute != 0 %}:{{ show.showtime|date:"i" }}{% endif %}{{ show.showtime|date:"A"|lower }}&nbsp;{{ show.showtime|date:"T" }}

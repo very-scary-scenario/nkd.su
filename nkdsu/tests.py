@@ -1,17 +1,27 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.test import TestCase
 
 from instant_coverage import InstantCoverageMixin, optional
 
+from .apps.vote.elfs import ELFS_NAME, is_elf
+
+
+User = get_user_model()
+
 
 class EverythingTest(
-    optional.ExternalLinks, optional.ValidHTML5, optional.ValidJSON,
-    InstantCoverageMixin, TestCase
+    optional.ExternalLinks,
+    optional.ValidHTML5,
+    optional.ValidJSON,
+    InstantCoverageMixin,
+    TestCase,
 ):
     fixtures = ['vote.json']
 
     covered_urls = [
-        '/vote-admin/abuse/46162630/',
+        '/vote-admin/tw-abuse/46162630/',
+        '/vote-admin/local-abuse/45/',
         '/vote-admin/block/0007C3F2760E0541/',
         '/vote-admin/block/0007C3F2760E0541/reason?reason=announced',
         '/vote-admin/unblock/0007C3F2760E0541/',
@@ -23,29 +33,27 @@ class EverythingTest(
         '/vote-admin/discard/0007C3F2760E0541/',
         '/vote-admin/reset/0007C3F2760E0541/',
         '/vote-admin/make-note/0007C3F2760E0541/',
+        '/vote-admin/post-about-play/0007C3F2760E0541/',
         '/vote-admin/remove-note/2/',
         '/vote-admin/hidden/',
         '/vote-admin/inudesu/',
         '/vote-admin/artless/',
         '/vote-admin/add-manual-vote/0007C3F2760E0541/',
         '/vote-admin/upload/',
+        '/vote-admin/upload-myriad/',
         '/vote-admin/requests/',
-        '/vote-admin/trivia/',
         '/vote-admin/check-metadata/',
         '/vote-admin/play/0007C3F2760E0541/',
-
         '/js/deselect/',
         '/js/select/',
         '/js/selection/',
         '/js/clear_selection/',
-
         '/api/',
         '/api/week/',
         '/api/week/2014-02-05/',
         '/api/track/0007C3F2760E0541/',
         '/api/search/?q=Canpeki',
         '/api/user/EuricaeriS/',
-
         '/',
         '/browse/',
         '/anime/',
@@ -57,7 +65,10 @@ class EverythingTest(
         '/info/api/',
         '/info/privacy/',
         '/info/tos/',
+        '/profile/',
         '/request/',
+        '/request/?t=0007C3F2760E0541',
+        '/request-addition/',
         '/roulette/',
         '/roulette/hipster/',
         '/roulette/indiscriminate/',
@@ -83,15 +94,26 @@ class EverythingTest(
         '/added/',
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
-        '/folks/what/',
-
+        '/@what/',
+        '/profile/email/',
+        '/profile/',
+        '/confirm-email/',
+        '/confirm-email/abc/',
+        '/request/',
         '/login/',
-        '/cpw/',
-        '/cpw-done/',
-
+        '/account/login/',
+        '/register/',
+        '/account/register/',
+        '/change-password/',
+        '/change-password/done/',
+        '/reset-password/',
+        '/reset-password/done/',
+        '/reset-password/key/abc-def/',
+        '/reset-password/key/done/',
         # it's important that logout be last since we have a sublcass of this
         # test that logs in at the start, and we want it to stay logged in
         '/logout/',
+        '/account/logout/',
     ]
 
     uncovered_urls = [
@@ -102,17 +124,16 @@ class EverythingTest(
         '/vote-admin/hide-selection/',
         '/vote-admin/unhide-selection/',
         '/vote-admin/reset-shortlist-discard-selection/',
-
         # only accepts POST
         '/vote-admin/shortlist-order/',
         '/vote-admin/requests/fill/1/',
         '/vote-admin/requests/claim/1/',
+        '/vote-admin/requests/shelf/1/',
         '/set-dark-mode/',
-
-        # would require me to put twitter credentials in the public settings
-        # file
-        '/twitter-avatar/46162630/',
-        '/twitter-avatar/46162630/?size=original',
+        # can only be accessed if you are logged in with an unusable password
+        '/set-password/',
+        # is intentionally broken
+        '/vote-admin/throw-500/',
     ]
 
     uncovered_includes = [
@@ -124,11 +145,7 @@ class EverythingTest(
 
     def setUp(self) -> None:
         super().setUp()
-        user = get_user_model()(
-            username='what',
-            is_staff=True,
-            is_superuser=True,
-        )
+        user = User(username='what')
         user.set_password('what')
         user.save()
 
@@ -136,10 +153,35 @@ class EverythingTest(
         # linode has robot protection that makes automated testing of links to their site impossible, so:
         del urls['https://www.linode.com/legal-privacy/']
 
+        # the cat's website returns HTTP 429 when crawled in these tests
+        del urls['https://thecat.radio']
+
         return super().ensure_all_urls_resolve(urls)
 
 
 class LoggedInEverythingTest(EverythingTest):
     def setUp(self) -> None:
         super().setUp()
+        self.assertTrue(self.client.login(username='what', password='what'))
+
+
+class ElfEverythingTest(EverythingTest):
+    def setUp(self) -> None:
+        super().setUp()
+        us = User.objects.get(username='what')
+        self.assertFalse(is_elf(us))
+        elfs, _ = Group.objects.get_or_create(name=ELFS_NAME)
+        us.groups.add(elfs)
+        us.save()
+        self.assertTrue(is_elf(us))
+        self.assertTrue(self.client.login(username='what', password='what'))
+
+
+class StaffEverythingTest(EverythingTest):
+    def setUp(self) -> None:
+        super().setUp()
+        us = User.objects.get(username='what')
+        self.assertFalse(us.is_staff)
+        us.is_staff = True
+        us.save()
         self.assertTrue(self.client.login(username='what', password='what'))

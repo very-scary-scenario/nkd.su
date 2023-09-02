@@ -1,5 +1,0 @@
-[flake8]
-application-import-names=nkdsu
-extend-exclude=migrations
-extend-ignore=I201
-max-line-length=120

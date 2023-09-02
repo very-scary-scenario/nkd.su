@@ -1,26 +1,35 @@
 import os
 import plistlib
-from typing import Any, Dict, List
+from codecs import getreader
+from typing import Any, Optional
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
-from django.forms import Form
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, View
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+    View,
+)
 from django.views.generic.base import TemplateResponseMixin
 
 from .js import JSApiMixin
-from ..forms import CheckMetadataForm, LibraryUploadForm, NoteForm
-from ..models import Block, Note, Request, Show, Track, TwitterUser, Vote
-from ..update_library import metadata_consistency_checks, update_library
+from ..forms import LibraryUploadForm, MyriadExportUploadForm, NoteForm
+from ..models import Block, Note, Profile, Show, Track, TwitterUser, Vote
+from ..myriad_export import entries_for_file
+from ..update_library import update_library
 
 
-class AdminMixin:
+class AdminMixin(LoginRequiredMixin):
     """
     A mixin we should apply to all admin views.
     """
@@ -34,15 +43,7 @@ class AdminMixin:
 
     @classmethod
     def as_view(cls, **kw):
-        return user_passes_test(
-            lambda u: u.is_authenticated and u.is_staff,
-        )(super().as_view(**kw))
-
-
-class AnyLoggedInUserMixin:
-    @classmethod
-    def as_view(cls, **kw):
-        return login_required(super().as_view(**kw))
+        return user_passes_test(lambda u: u.is_staff)(super().as_view(**kw))
 
 
 class TrackSpecificAdminMixin(AdminMixin):
@@ -69,15 +70,24 @@ class AdminActionMixin(AdminMixin):
 
         return self.url
 
+    def get_context_data(self, *args, **kwargs):
+        return {
+            **super().get_context_data(*args, **kwargs),
+            'next': self.get_redirect_url(),
+        }
+
     def get_ajax_success_message(self):
         self.object = self.get_object()
         context = self.get_context_data()
-        context.update({
-            'track': self.object,
-            'cache_invalidator': os.urandom(16),
-        })
+        context.update(
+            {
+                'track': self.object,
+                'cache_invalidator': os.urandom(16),
+            }
+        )
         return TemplateResponse(
-            self.request, 'include/track.html',
+            self.request,
+            'include/track.html',
             context,
         )
 
@@ -107,25 +117,30 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
     """
 
     template_name = 'confirm.html'
-    deets = None
+    deets: Optional[str] = None
 
-    def get_deets(self):
+    def get_deets(self) -> Optional[str]:
         return self.deets
+
+    def get_cancel_url(self):
+        referer = self.request.META.get('HTTP_REFERER')
+        if referer:
+            cancel_url = referer
+        else:
+            cancel_url = reverse('vote:index')
+
+        return cancel_url
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        referer = self.request.META.get('HTTP_REFERER')
-        if referer:
-            next_path = referer
-        else:
-            next_path = reverse('vote:index')
-
-        context.update({
-            'deets': self.get_deets(),
-            'action': self.__doc__.strip('\n .'),
-            'next': next_path,
-        })
+        context.update(
+            {
+                'deets': self.get_deets(),
+                'action': self.__doc__.strip('\n .'),
+                'cancel_url': self.get_cancel_url(),
+            }
+        )
         return context
 
     def get(self, request, *args, **kwargs):
@@ -154,9 +169,7 @@ class SelectionAdminAction(AdminAction, View):
         resp = super().do_thing_and_redirect()
 
         count = self.get_queryset().count()
-        tracks = (
-            u'{} track' if count == 1 else u'{} tracks'
-        ).format(count)
+        tracks = (u'{} track' if count == 1 else u'{} tracks').format(count)
         messages.success(self.request, self.fmt.format(tracks))
 
         self.request.session['selection'] = []
@@ -170,11 +183,20 @@ class Play(DestructiveAdminAction, DetailView):
 
     model = Track
 
-    def get_deets(self):
+    def get_deets(self) -> str:
         return str(self.get_object())
 
-    def do_thing(self):
+    def do_thing(self) -> None:
         self.get_object().play()
+
+    def get_redirect_url(self) -> str:
+        return reverse(
+            'vote:admin:post_about_play', kwargs={'pk': self.get_object().pk}
+        )
+
+
+class PostAboutPlay(TrackSpecificAdminMixin, TemplateView):
+    template_name = 'post_about_play.html'
 
 
 class Hide(AdminAction, DetailView):
@@ -182,8 +204,7 @@ class Hide(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().hide()
-        messages.success(self.request,
-                         u"'{}' hidden".format(self.get_object().title))
+        messages.success(self.request, u"'{}' hidden".format(self.get_object().title))
 
 
 class Unhide(AdminAction, DetailView):
@@ -191,8 +212,7 @@ class Unhide(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().unhide()
-        messages.success(self.request,
-                         u"'{}' unhidden".format(self.get_object().title))
+        messages.success(self.request, u"'{}' unhidden".format(self.get_object().title))
 
 
 class LockMetadata(AdminAction, DetailView):
@@ -202,8 +222,9 @@ class LockMetadata(AdminAction, DetailView):
         self.get_object().lock_metadata()
         messages.success(
             self.request,
-            "'{}' will no longer have its metadata updated in library updates"
-            .format(self.get_object().title)
+            "'{}' will no longer have its metadata updated in library updates".format(
+                self.get_object().title
+            ),
         )
 
 
@@ -214,8 +235,7 @@ class UnlockMetadata(AdminAction, DetailView):
         self.get_object().unlock_metadata()
         messages.success(
             self.request,
-            "Library updates will affect '{}' again"
-            .format(self.get_object().title)
+            "Library updates will affect '{}' again".format(self.get_object().title),
         )
 
 
@@ -254,8 +274,7 @@ class MakeBlock(TrackSpecificAdminMixin, CreateView):
         except ValidationError as e:
             return self.handle_validation_error(e)
 
-        messages.success(self.request,
-                         u"'{}' blocked".format(self.get_object().title))
+        messages.success(self.request, u"'{}' blocked".format(self.get_object().title))
 
         return redirect(reverse('vote:index'))
 
@@ -264,10 +283,10 @@ class Unblock(AdminAction, DetailView):
     model = Track
 
     def do_thing(self):
-        block = get_object_or_404(Block, track=self.get_object(),
-                                  show=Show.current())
-        messages.success(self.request,
-                         u"'{}' unblocked".format(self.get_object().title))
+        block = get_object_or_404(Block, track=self.get_object(), show=Show.current())
+        messages.success(
+            self.request, u"'{}' unblocked".format(self.get_object().title)
+        )
         block.delete()
 
 
@@ -284,8 +303,7 @@ class MakeBlockWithReason(AdminAction, DetailView):
             track=self.get_object(),
             show=Show.current(),
         ).save()
-        messages.success(self.request,
-                         u"'{}' blocked".format(self.get_object().title))
+        messages.success(self.request, u"'{}' blocked".format(self.get_object().title))
 
 
 class MakeShortlist(AdminAction, DetailView):
@@ -297,8 +315,9 @@ class MakeShortlist(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().shortlist()
-        messages.success(self.request,
-                         u"'{}' shortlisted".format(self.get_object().title))
+        messages.success(
+            self.request, u"'{}' shortlisted".format(self.get_object().title)
+        )
 
 
 class MakeDiscard(AdminAction, DetailView):
@@ -310,8 +329,9 @@ class MakeDiscard(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().discard()
-        messages.success(self.request,
-                         u"'{}' discarded".format(self.get_object().title))
+        messages.success(
+            self.request, u"'{}' discarded".format(self.get_object().title)
+        )
 
 
 class OrderShortlist(AdminMixin, JSApiMixin, View):
@@ -321,8 +341,7 @@ class OrderShortlist(AdminMixin, JSApiMixin, View):
         shortlisted = current.shortlisted()
         pks = post.getlist('shortlist[]')
 
-        min_placeholder_index = max([s.index for s in
-                                     indescriminate_shortlist]) + 1
+        min_placeholder_index = max([s.index for s in indescriminate_shortlist]) + 1
 
         if set(pks) != set([t.pk for t in shortlisted]):
             return HttpResponse('reload')
@@ -344,8 +363,7 @@ class ResetShortlistAndDiscard(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().reset_shortlist_discard()
-        messages.success(self.request,
-                         u"'{}' reset".format(self.get_object().title))
+        messages.success(self.request, u"'{}' reset".format(self.get_object().title))
 
 
 class LibraryUploadView(AdminMixin, FormView):
@@ -355,8 +373,7 @@ class LibraryUploadView(AdminMixin, FormView):
     def form_valid(self, form):
         self.request.session['library_update'] = {
             'inudesu': form.cleaned_data['inudesu'],
-            'library_xml':
-            form.cleaned_data['library_xml'].read().decode('utf-8'),
+            'library_xml': form.cleaned_data['library_xml'].read().decode('utf-8'),
         }
 
         return redirect(reverse('vote:admin:confirm_upload'))
@@ -369,7 +386,7 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
 
     template_name = 'library_update.html'
 
-    def update_library(self, dry_run: bool) -> List[Dict[str, Any]]:
+    def update_library(self, dry_run: bool) -> list[dict[str, Any]]:
         library_update = self.request.session['library_update']
         return update_library(
             plistlib.loads(library_update['library_xml'].encode()),
@@ -386,18 +403,53 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
         return changes
 
 
+class MyriadExportUploadView(AdminMixin, FormView):
+    template_name = 'upload_myriad_export.html'
+    form_class = MyriadExportUploadForm
+
+    def form_valid(self, form: MyriadExportUploadForm) -> HttpResponse:
+        matched = 0
+        unmatched = 0
+
+        for entry in entries_for_file(
+            getreader('utf-8')(form.cleaned_data['myriad_csv'])
+        ):
+            if entry.update_matched_track():
+                matched += 1
+            else:
+                unmatched += 1
+
+        messages.success(
+            self.request,
+            (
+                'myriad export imported. '
+                f'{matched} entries matched to tracks; {unmatched} entries unmatched.'
+            ),
+        )
+        return redirect(reverse('vote:index'))
+
+
 class ToggleAbuser(AdminAction, DetailView):
-    model = TwitterUser
-
-    def get_object(self):
-        return self.model.objects.get(user_id=self.kwargs['user_id'])
-
-    def do_thing(self):
+    def do_thing(self) -> None:
         user = self.get_object()
         user.is_abuser = not user.is_abuser
         fmt = u"{} condemned" if user.is_abuser else u"{} redeemed"
         messages.success(self.request, fmt.format(self.get_object()))
         user.save()
+
+
+class ToggleTwitterAbuser(ToggleAbuser):
+    model = TwitterUser
+
+    def get_object(self):
+        return self.model.objects.get(user_id=self.kwargs['user_id'])
+
+
+class ToggleLocalAbuser(ToggleAbuser):
+    model = Profile
+
+    def get_object(self):
+        return self.model.objects.get(pk=self.kwargs['user_id'])
 
 
 class HiddenTracks(AdminMixin, ListView):
@@ -427,15 +479,6 @@ class ArtlessTracks(AdminMixin, ListView):
 
     def get_queryset(self):
         return self.model.objects.filter(background_art='')
-
-
-class BadTrivia(AdminMixin, ListView):
-    model = Request
-    template_name = 'trivia.html'
-    context_object_name = 'requests'
-
-    def get_queryset(self):
-        return self.model.objects.all().order_by('-created')
 
 
 class ShortlistSelection(SelectionAdminAction):
@@ -514,76 +557,6 @@ class RemoveNote(DestructiveAdminAction, DetailView):
         messages.success(self.request, 'note removed')
 
 
-class RequestList(AnyLoggedInUserMixin, ListView):
-    template_name = 'requests.html'
-    model = Request
-
-    def get_queryset(self):
-        return super().get_queryset().filter(successful=True, filled=None)
-
-
-class FillRequest(AnyLoggedInUserMixin, FormView):
-    allowed_methods = ['post']
-    form_class = Form
-
-    def form_valid(self, form):
-        request = get_object_or_404(
-            Request, pk=self.kwargs['pk'],
-            successful=True, filled__isnull=True,
-        )
-
-        request.filled = timezone.now()
-        request.filled_by = self.request.user
-        request.save()
-        messages.success(self.request, u"request marked as filled")
-
-        return redirect(reverse('vote:admin:requests'))
-
-
-class ClaimRequest(AnyLoggedInUserMixin, FormView):
-    allowed_methods = ['post']
-    form_class = Form
-
-    def form_valid(self, form):
-        if 'unclaim' in self.request.POST:
-            request = get_object_or_404(
-                Request, pk=self.kwargs['pk'],
-                filled__isnull=True, claimant=self.request.user,
-            )
-
-            request.claimant = None
-            request.save()
-            messages.success(self.request, u"request unclaimed")
-
-        elif 'claim' in self.request.POST:
-            request = get_object_or_404(
-                Request, pk=self.kwargs['pk'],
-                successful=True, filled__isnull=True, claimant=None,
-            )
-
-            request.claimant = self.request.user
-            request.save()
-            messages.success(self.request, u"request claimed")
-
-        return redirect(reverse('vote:admin:requests'))
-
-
-class CheckMetadata(AnyLoggedInUserMixin, FormView):
-    form_class = CheckMetadataForm
-    template_name = 'check_metadata.html'
-
-    def form_valid(self, form: CheckMetadataForm) -> HttpResponse:
-        context = self.get_context_data()
-        track = Track(
-            id3_title=form.cleaned_data['id3_title'],
-            id3_artist=form.cleaned_data['id3_artist'],
-            composer=form.cleaned_data['composer'],
-            year=form.cleaned_data['year'],
-        )
-        context.update({
-            'track': track,
-            'warnings': metadata_consistency_checks(
-                track, Track.all_anime_titles(), Track.all_artists(), Track.all_composers(),
-            ),
-        })
-        return self.render_to_response(context)
+class Throw500(AdminMixin, DetailView):
+    def dispatch(self, *args, **kwargs):
+        raise RuntimeError('throwing a 500 for you')

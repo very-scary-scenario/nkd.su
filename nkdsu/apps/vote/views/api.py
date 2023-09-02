@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-from typing import Any, Dict, List
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpRequest, HttpResponse
@@ -12,15 +11,19 @@ from ..models import Track
 from ..views import Search
 
 
+JsonEncodable = (
+    None | bool | int | float | str | dict[str, 'JsonEncodable'] | list['JsonEncodable']
+)
+JsonDict = dict[str, JsonEncodable]
+
+
 class APIView(View):
     def get_api_stuff(self):
         return self.get_object().api_dict(verbose=True)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         resp = HttpResponse(
-            json.dumps(self.get_api_stuff(),
-                       cls=DjangoJSONEncoder,
-                       indent=2),
+            json.dumps(self.get_api_stuff(), cls=DjangoJSONEncoder, indent=2),
             content_type='application/json',
         )
         resp['Access-Control-Allow-Origin'] = '*'
@@ -40,7 +43,7 @@ class TrackAPI(SingleObjectMixin, APIView):
 
 
 class SearchAPI(APIView, Search):
-    def get_api_stuff(self, *a, **k) -> List[Dict[str, Any]]:
+    def get_api_stuff(self, *a, **k) -> list[JsonDict]:
         return [t.api_dict() for t in self.get_queryset()]
 
 

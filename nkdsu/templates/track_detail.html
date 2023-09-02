@@ -3,13 +3,6 @@
 
 {% block title %}{{ track.title }}{% endblock %}
 
-{% block twitter_card %}
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="@nkdsu">
-  <meta name="twitter:title" content="{{ track.title }}">
-  <meta name="twitter:description" content="{{ track.role }}.{% if track|votes_for:vote_show %} Requested by {% for vote in track|votes_for:vote_show %}{% if forloop.first %}{% elif forloop.last %} and {% else %}, {% endif %}{{ vote.either_name }}{% endfor %}.{% endif %}">
-{% endblock %}
-
 {% block content %}
 
 <ul class="tracks">
@@ -21,11 +14,24 @@
 <p class="aside">added to the library on <a href="{{ track.show_revealed.get_revealed_url }}">{{ track.revealed|date:"F"|lower }}&nbsp;{{ track.revealed|date:"jS, Y" }}</a></p>
 
 {% if track.plays %}
-  <h3>play history</h3>
+  <h3>
+    {{ track.plays|length }} {{ track.plays|length|pluralize:"play,plays" }} on record:
+  </h3>
   <ul class="plays">
     {% for play in track.plays %}
       <li>
-        <a href="{{ play.show.get_absolute_url }}">{{ play.date|date:"F"|lower }} {{ play.date|date:"jS, Y" }}</a>
+        <a href="{{ play.show.get_absolute_url }}">
+          {{ play.date|date:"F"|lower }} {{ play.date|date:"jS, Y" }}
+        </a>
+        {% with play|weeks_ago as weeks_ago %}
+          {% if weeks_ago == 0 %}
+            (this week)
+          {% elif weeks_ago == 1 %}
+            (last week)
+          {% else %}
+            ({{ weeks_ago }} week{{ weeks_ago|pluralize }} ago)
+          {% endif %}
+        {% endwith %}
       </li>
     {% endfor %}
   </ul>

@@ -3,13 +3,15 @@ from __future__ import annotations
 import datetime
 from typing import Iterable, Optional
 
+from allauth.account.models import EmailAddress
+from django.contrib.auth.models import AnonymousUser, User
 from django.db.models import QuerySet
 from django.template import Library
 from django.utils import timezone
 from django.utils.safestring import SafeText, mark_safe
 from markdown import markdown as md
 
-from ..models import Show, Track
+from ..models import Play, Show, Track
 from ..utils import length_str
 
 register = Library()
@@ -47,6 +49,12 @@ def when(date: datetime.datetime) -> str:
 
 
 @register.filter
+def weeks_ago(play: Play) -> int:
+    show = Show.current()
+    return ((show.end - play.date).days + 1) // 7
+
+
+@register.filter
 def percent(flt: Optional[float]) -> str:
     """
     Convert a float into a percentage string.
@@ -59,6 +67,29 @@ def percent(flt: Optional[float]) -> str:
 
 
 @register.filter
+def format_otp(number: int) -> str:
+    """
+    Put non-breaking spaces into the string representation of a number every three digits (from the right).
+
+    >>> format_otp(123)
+    '123'
+    >>> format_otp(123456)
+    '123\u202f456'
+    >>> format_otp(1234567)
+    '1\u202f234\u202f567'
+    """
+
+    string = f'{number:d}'
+    segments: list[str] = []
+
+    while string:
+        segments.append(string[-3:])
+        string = string[:-3]
+
+    return '\N{NARROW NO-BREAK SPACE}'.join(segments[::-1])
+
+
+@register.filter
 def total_length(tracks: Iterable[Track]):
     return length_str(sum([t.msec for t in tracks if t.msec is not None]))
 
@@ -66,3 +97,27 @@ def total_length(tracks: Iterable[Track]):
 @register.filter
 def markdown(text: str) -> SafeText:
     return mark_safe(md(text))
+
+
+@register.filter
+def is_elf(user: User) -> bool:
+    from ..elfs import is_elf
+
+    return is_elf(user)
+
+
+@register.filter
+def has_verified_email(user: User) -> bool:
+    return EmailAddress.objects.filter(user=user, verified=True).exists()
+
+
+@register.filter
+def eligible_for(track: Track, user: User | AnonymousUser) -> bool:
+    return (
+        (user.is_authenticated)
+        and (
+            track.pk
+            not in (t.pk for t in user.profile.tracks_voted_for_for(Show.current()))
+        )
+        and track.eligible()
+    )

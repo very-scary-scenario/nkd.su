@@ -38,7 +38,11 @@
     {% endif %}
 
     {% if show.tracks_sorted_by_votes %}
-      <h2>current requests</h2>
+      {% if current_show.broadcasting %}
+        <h2>current requests for tonight's show</h2>
+      {% elif current_show %}
+        <h2>current requests for {% include "include/show_date.html" with show=current_show %}</h2>
+      {% endif %}
       <ul class="tracks">
         {% include "include/tracklist.html" %}
       </ul>

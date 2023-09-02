@@ -1,0 +1,73 @@
+{% load vote_tags %}
+
+<div class="user_meta">
+  <h2>
+    {% if voter.is_twitteruser %}
+      {{ voter.name }}
+    {% else %}
+      {{ voter.name }}
+    {% endif %}
+  </h2>
+
+  <p class="subheading">
+    {% if voter.is_twitteruser %}
+      <a href="{{ voter.twitter_url }}">
+        @{{ voter.screen_name }}
+      </a>
+    {% elif voter.display_name %}
+      @{{ voter.user.username }}
+    {% endif %}
+  </p>
+
+  <p class="subheading">
+    <img class="avatar" src="{{ voter.get_avatar_url }}" alt="{{ voter.name }}">
+  </p>
+
+  {% if voter.batting_average != None %}
+    <p class="subheading">batting at <strong>{{ voter.batting_average|percent }}</strong> over the last six months</p>
+  {% endif %}
+
+  {% if voter.streak > 1 %}
+    <p class="subheading">voted for the last <strong>{{ voter.streak }}</strong> consecutive shows</p>
+  {% endif %}
+
+  {% if user.is_staff %}
+    <p class="subheading"><a href="{{ voter.get_toggle_abuser_url }}">
+      {% if voter.is_abuser %}
+        redeem {{ voter }}
+      {% else %}
+        condemn {{ voter }}
+      {% endif %}
+    </a></p>
+  {% endif %}
+
+  {% if voter.is_abuser %}
+    <p class="subheading"><strong>{{ voter.name }} is condemned until further notice.</strong></p>
+    <p class="subheading">requests will still appear on tracks, but will not influence their position on the front page.</p>
+  {% endif %}
+
+  {% if voter.is_patron %}
+    <p class="patron">{{ voter.name }} supports Neko Desu on <a href="https://www.patreon.com/NekoDesu">Patreon</a>!</p>
+  {% endif %}
+
+  {% if voter.badges %}
+    <ul class="badges">
+      {% for badge in voter.badges %}
+        <li>
+          <i class="fa fa-{{ badge.badge_info.icon }}"></i>
+
+          <div class="badge-detail">
+            <div class="badge-detail-content">
+              <p>{{ badge.badge_info.description }}</p>
+
+              {% if badge.badge_info.url %}
+                <p><a href="{{ badge.badge_info.url }}">More info&hellip;</a></p>
+              {% endif %}
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+

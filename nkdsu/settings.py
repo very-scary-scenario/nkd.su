@@ -31,6 +31,9 @@ BROKER_URL = "amqp://guest:guest@127.0.0.1:5672//"
 # EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # stuff about when the show is
 SHOWTIME = relativedelta(
     weekday=SA,
@@ -54,18 +57,10 @@ REQUEST_CURATOR = 'peter@nekodesu.radio'
 
 TWEET_LENGTH = 280
 
+#: The maximum number of tracks that can be associated with a single Vote object
+MAX_REQUEST_TRACKS = 6
+
 OPTIONS = {'timeout': 20}
-
-CONSUMER_KEY = ''  # secret
-CONSUMER_SECRET = ''  # secret
-
-# @nkdsu
-READING_ACCESS_TOKEN = ''  # secret
-READING_ACCESS_TOKEN_SECRET = ''  # secret
-
-# @nekodesuradio
-POSTING_ACCESS_TOKEN = ''  # secret
-POSTING_ACCESS_TOKEN_SECRET = ''  # secret
 
 # social-auth
 SOCIAL_AUTH_TWITTER_KEY = ''  # secret
@@ -102,10 +97,11 @@ TEMPLATES = [
     },
 ]
 
-ADMINS = ('colons', 'nkdsu@colons.co'),
+ADMINS = (('colons', 'nkdsu@colons.co'),)
 
 MANAGERS = ADMINS
 
+ATOMIC_REQUESTS = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -135,9 +131,7 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_DIR, 'static'),
-)
+STATICFILES_DIRS = (os.path.join(PROJECT_DIR, 'static'),)
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -155,7 +149,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'nkdsu.middleware.SocialAuthBetaMiddleware'
+    'nkdsu.middleware.SocialAuthHandlingMiddleware',
 ]
 
 ROOT_URLCONF = 'nkdsu.urls'
@@ -167,51 +161,44 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.postgres',
-
     'django_extensions',
-    'django_nose',
     'pipeline',
     'social_django',
-
     'django_otp',
     'django_otp.plugins.otp_totp',
     'django_otp.plugins.otp_static',
-
+    'allauth',
+    'allauth.account',
     'nkdsu.apps.vote',
 ]
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
 
 AUTHENTICATION_BACKENDS = [
     'nkdsu.apps.vote.twitter_auth.NkdsuTwitterAuth',
     'django.contrib.auth.backends.ModelBackend',
+]
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 10,
+        },
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
 LOGIN_URL = 'login'
@@ -231,7 +218,6 @@ PIPELINE = {
     'COMPILERS': ['pipeline.compilers.less.LessCompiler'],
     'LESS_BINARY': '/usr/bin/env npx lessc',
     'DISABLE_WRAPPER': True,
-
     'STYLESHEETS': {
         'main': {
             'source_filenames': [
@@ -243,18 +229,16 @@ PIPELINE = {
     'JAVASCRIPT': {
         'base': {
             'source_filenames': [
-                'js/libs/jquery.js',
-                'js/libs/jquery.cookie.js',
+                'js/libs/details-polyfill.js',
                 'js/libs/Sortable.js',
-
                 'js/csrf.js',
-
                 'js/collapse-toggle.js',
                 'js/select.js',
                 'js/messages.js',
                 'js/ajax-actions.js',
                 'js/roulette.js',
                 'js/shortlist-sorting.js',
+                'js/menu.js',
                 'js/dark.js',
                 'js/browse.js',
                 'js/toggle-group-folds.js',
@@ -270,8 +254,6 @@ PIPELINE = {
         },
     },
 }
-
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 try:
     from nkdsu.settings_local import *  # noqa

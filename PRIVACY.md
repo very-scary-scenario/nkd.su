@@ -9,7 +9,7 @@ You can look at [the history of changes to this document][history] if you want.
 The **admins**, who control the website and the server it runs on; we are
 colons and Peter Shillito.
 
-The **elves**, who deal with getting new music for the library and correcting
+The **elfs**, who deal with getting new music for the library and correcting
 metadata issues.
 
 The **host**, Peter Shillito, who runs the show.
@@ -50,7 +50,7 @@ They will be used to:
 
 - improve the library
 
-The website only shows these to elves and admins, but they are emailed in plain text and will be shared among the elves.
+The website only shows these to elfs and admins, but they are emailed in plain text and will be shared among the elfs.
 
 ### account information
 
@@ -61,6 +61,7 @@ This can include:
 - a [hashed][django-password-storage] password
 - a screen name and a display name
 - an avatar
+- an email address
 
 [django-password-storage]: https://docs.djangoproject.com/en/3.2/topics/auth/passwords/#how-django-stores-passwords "how Django stores passwords"
 
@@ -69,9 +70,16 @@ These will be used to:
 - authenticate you
 - represent you to other users
 
+Email addresses will be used to issue password reset requests. We may also use
+them to notify you about security issues or other things that may require
+action from you. We'll never send promotional material or share addresses with
+anyone, for any reason, except with our hosting provider, as outlined above.
+
 You can change your names or avatar at any time. Please contact an admin if you
 would like to have this information modified or deleted in a way that the
-website doesn't give you controls for.
+website doesn't give you controls for. Early in the migration away from
+Twitter, less of this will be user-modifiable than we would like, but we'll be
+working to sort that quickly.
 
 ### sessions
 

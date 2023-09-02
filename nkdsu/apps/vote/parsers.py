@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Iterable, List, Optional, Tuple
+from typing import Iterable, Optional
 
 from django.conf import settings
 from django.urls import reverse
@@ -17,22 +17,20 @@ class ArtistChunk:
     def url(self) -> Optional[str]:
         return (
             reverse('vote:artist', kwargs={'artist': self.text})
-            if self.is_artist else None
+            if self.is_artist
+            else None
         )
 
     @property
     def worth_linking_to(self) -> bool:
         from .models import Track
 
-        return bool(
-            self.is_artist and
-            Track.objects.by_artist(self.text)
-        )
+        return bool(self.is_artist and Track.objects.by_artist(self.text))
 
 
 @dataclass(frozen=True)
 class ParsedArtist:
-    chunks: List[ArtistChunk]
+    chunks: list[ArtistChunk]
     should_collapse: bool
 
     def __iter__(self) -> Iterable[ArtistChunk]:
@@ -41,15 +39,17 @@ class ParsedArtist:
 
 class ArtistLexer(Lexer):
     tokens = {
-        SPECIAL_CASE, ARTIST_COMPONENT, SPACE, COMMA, VIA, LPAREN, RPAREN, CV,  # type: ignore  # noqa
+        SPECIAL_CASE,  # type: ignore  # noqa
+        ARTIST_COMPONENT,  # type: ignore  # noqa
+        SPACE,  # type: ignore  # noqa
+        COMMA,  # type: ignore  # noqa
+        VIA,  # type: ignore  # noqa
+        LPAREN,  # type: ignore  # noqa
+        RPAREN,  # type: ignore  # noqa
+        CV,  # type: ignore  # noqa
     }
 
-    SPECIAL_CASE = (
-        r'^('
-        r'FLOWxGRANRODEO|'
-        r'SawanoHiroyuki\[nZk\]:.*'
-        r')$'
-    )
+    SPECIAL_CASE = r'^(' r'FLOWxGRANRODEO|' r'SawanoHiroyuki\[nZk\]:.*' r')$'
     VIA = (
         r'\s+('
         r'from|'
@@ -58,6 +58,7 @@ class ArtistLexer(Lexer):
         r'[Ss]tarring|'
         r'and|'
         r'with|'
+        r'meets|'
         r'adding|'
         r'a\.k\.a|'
         r'x|'
@@ -106,6 +107,7 @@ class ArtistLexer(Lexer):
         r'Kevin & Cherry|'
         r'King & Queen|'
         r'Kisida Kyodan & The Akebosi Rockets|'
+        r'Konya, Anomachikara|'
         r'MYTH\s&\sROID|'
         r'OLIVIA inspi\' REIRA\(TRAPNEST\)|'
         r'Oranges\s(and|&)\sLemons|'
@@ -167,8 +169,8 @@ def check_for_group(full_string: str, maybe_group_name: str) -> bool:
 
 def chunk_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChunk]:
     """
-    Return a bunch of `ArtistChunk`s which, when combined, reform the string
-    handed in.
+    Return a bunch of :class:`ArtistChunk`\\ s which, when combined, reform the
+    string handed in.
     """
 
     # look i don't understand how sly works, and i think i might need to spend
@@ -189,28 +191,26 @@ def chunk_artist(string: str, fail_silently: bool = True) -> Iterable[ArtistChun
 
     artist_parts = ('ARTIST_COMPONENT', 'SPACE')
 
-    fragment: Optional[Tuple[bool, str]] = None
+    fragment: Optional[tuple[bool, str]] = None
 
     for ti, token in enumerate(tokens):
         if token.type == 'SPECIAL_CASE':
             yield from handle_special_case(token)
             continue
 
-        is_part_of_artist_name = (
-            (token.type in artist_parts) and
-            (
-                (token.type != 'SPACE') or
+        is_part_of_artist_name = (token.type in artist_parts) and (
+            (token.type != 'SPACE')
+            or (
+                # if this is a space, then:
                 (
-                    # if this is a space, then:
-                    (
-                        # be false if the next token isn't an artist component
-                        (ti+1 < len(tokens)) and
-                        (tokens[ti+1].type == 'ARTIST_COMPONENT')
-                    ) and (
-                        # or if the previous one wasn't, either
-                        (ti > 0) and
-                        (tokens[ti-1].type == 'ARTIST_COMPONENT')
-                    )
+                    # be false if the next token isn't an artist component
+                    (ti + 1 < len(tokens))
+                    and (tokens[ti + 1].type == 'ARTIST_COMPONENT')
+                )
+                and (
+                    # or if the previous one wasn't, either
+                    (ti > 0)
+                    and (tokens[ti - 1].type == 'ARTIST_COMPONENT')
                 )
             )
         )
@@ -234,6 +234,8 @@ def parse_artist(string: str, fail_silently: bool = True) -> ParsedArtist:
 
     chunks = list(chunk_artist(string, fail_silently=fail_silently))
     naive_is_group = check_for_group(string, chunks[0].text)
-    return ParsedArtist(chunks=chunks, should_collapse=naive_is_group and len([
-        chunk for chunk in chunks if chunk.is_artist
-    ]) > 2)
+    return ParsedArtist(
+        chunks=chunks,
+        should_collapse=naive_is_group
+        and len([chunk for chunk in chunks if chunk.is_artist]) > 2,
+    )

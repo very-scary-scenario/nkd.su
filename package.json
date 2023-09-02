@@ -2,10 +2,13 @@
   "name": "nkd.su",
   "version": "0.0.0",
   "scripts": {
+    "check-migrations": "python manage.py makemigrations --dry-run --check",
+    "lint-black": "black --check --diff .",
     "lint-flake8": "flake8 .",
     "lint-js": "eslint nkdsu/static/js",
-    "lint-mypy": "mypy --config-file mypy.ini",
-    "test": "python manage.py test --settings=nkdsu.settings_testing"
+    "lint-mypy": "mypy --pretty --show-error-context",
+    "manage": "python manage.py",
+    "test": "pytest"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
@@ -19,6 +22,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "details-polyfill": "^1.2.0",
     "jsmediatags": "^3.9.7",
     "sortablejs": "^1.14.0"
   }

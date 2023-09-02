@@ -5,7 +5,8 @@ from django.http import HttpResponse
 from django.views.generic import TemplateView
 
 from ..models import Track
-from ..utils import tweet_len, tweet_url, vote_tweet
+from ..templatetags.vote_tags import eligible_for
+from ..utils import vote_url
 
 
 class JSApiMixin(object):
@@ -24,7 +25,8 @@ class SelectionView(JSApiMixin, TemplateView):
 
     def get_queryset(self):
         return self.model.objects.filter(
-            pk__in=self.request.session.get('selection', set()))
+            pk__in=self.request.session.get('selection', set())
+        )
 
     def post(self, request, *args, **kwargs):
         self.request = request
@@ -35,9 +37,8 @@ class SelectionView(JSApiMixin, TemplateView):
         selection = self.get_queryset()
         context['selection'] = selection
 
-        tweet = vote_tweet(selection)
-        if tweet_len(tweet) <= settings.TWEET_LENGTH:
-            context['vote_url'] = tweet_url(tweet)
+        if len(selection) <= settings.MAX_REQUEST_TRACKS:
+            context['vote_url'] = vote_url(selection)
 
         return self.render_to_response(context)
 
@@ -49,13 +50,11 @@ class GetSelection(SelectionView):
 
 class Select(SelectionView):
     def do_thing(self) -> None:
-        new_pks = self.request.POST.getlist('track_pk[]', [])
+        new_pks: list[str] = self.request.POST.getlist('track_pk[]', [])
         selection = set(self.request.session.get('selection', []))
 
         for new_pk in new_pks:
-            if (
-                self.request.user.is_authenticated
-            ):
+            if self.request.user.is_authenticated:
                 base_qs = Track.objects.all()
             else:
                 base_qs = Track.objects.public()
@@ -64,9 +63,8 @@ class Select(SelectionView):
             if qs.exists():
                 track = qs[0]
                 if (
-                    self.request.user.is_authenticated and
-                    self.request.user.is_staff
-                ) or track.eligible():
+                    self.request.user.is_authenticated and self.request.user.is_staff
+                ) or eligible_for(track, self.request.user):
                     selection.add(new_pk)
 
         self.request.session['selection'] = sorted(selection)
@@ -74,7 +72,7 @@ class Select(SelectionView):
 
 class Deselect(SelectionView):
     def do_thing(self) -> None:
-        unwanted_pks = self.request.POST.getlist('track_pk[]', [])
+        unwanted_pks: list[str] = self.request.POST.getlist('track_pk[]', [])
         selection = set(self.request.session.get('selection', []))
 
         for unwanted_pk in unwanted_pks:

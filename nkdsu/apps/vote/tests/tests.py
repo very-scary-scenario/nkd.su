@@ -9,8 +9,7 @@ from ..models import Play, Show, Track
 
 
 def mkutc(*args, **kwargs) -> datetime.datetime:
-    return timezone.make_aware(datetime.datetime(*args, **kwargs),
-                               timezone.utc)
+    return timezone.make_aware(datetime.datetime(*args, **kwargs), timezone.utc)
 
 
 class ShowTest(TestCase):
@@ -26,27 +25,23 @@ class ShowTest(TestCase):
     def test_make_show(self, wipe: bool = True) -> None:
         # this may seem overly thorough, but it has already found bugs that
         # would otherwise have been missed:
-        for hours in range(366*24, 0, -1):
+        for hours in range(366 * 24, 0, -1):
             if wipe:
                 Show.objects.all().delete()
 
-            starter = (
-                timezone.now()
-                .astimezone(timezone.get_current_timezone()) -
-                datetime.timedelta(hours=hours)
-            )
+            starter = timezone.now().astimezone(
+                timezone.get_current_timezone()
+            ) - datetime.timedelta(hours=hours)
 
             show = Show.at(starter)
-            showtime = show.showtime.astimezone(
-                timezone.get_current_timezone())
+            showtime = show.showtime.astimezone(timezone.get_current_timezone())
             self.assertEqual(showtime.hour, 21)
             self.assertEqual(showtime.minute, 0)
             self.assertEqual(showtime.second, 0)
             self.assertEqual(showtime.microsecond, 0)
             self.assertEqual(showtime.weekday(), 5)
 
-            self.assertEqual(show.end - show.showtime,
-                             datetime.timedelta(hours=2))
+            self.assertEqual(show.end - show.showtime, datetime.timedelta(hours=2))
 
             self.assertGreater(show.end, starter)
 
@@ -74,8 +69,7 @@ class ShowTest(TestCase):
             self.assertEqual(ours.end.date(), datetime.date(3010, 1, 6))
 
     def test_cannot_make_overlapping_shows(self) -> None:
-        Show(showtime=mkutc(2010, 1, 1),
-             end=mkutc(2011, 1, 1)).save()
+        Show(showtime=mkutc(2010, 1, 1), end=mkutc(2011, 1, 1)).save()
 
         for showtime, end, should_raise in [
             (mkutc(2009, 1, 1), mkutc(2010, 6, 1), True),
@@ -87,6 +81,7 @@ class ShowTest(TestCase):
             # before they begin
             (mkutc(2010, 1, 1), mkutc(2009, 1, 1), True),
         ]:
+
             def func() -> None:
                 show = Show(showtime=showtime, end=end)
                 show.save()
@@ -108,27 +103,6 @@ class TrackTest(TestCase):
     def test_can_delete_tracks(self) -> None:
         Track.objects.all()[0].delete()
 
-
-class PlayTest(TestCase):
-    fixtures = ['vote.json']
-
-    def setUp(self) -> None:
-        Play.objects.all().delete()
-
-    def test_plays_for_already_played_tracks_can_not_be_added(self) -> None:
-        track_1, track_2 = Track.objects.all()[:2]
-        track_1.play(tweet=False)
-        track_2.play(tweet=False)
-
-        self.assertEqual(Play.objects.all().count(), 2)
-        self.assertRaises(ValidationError, lambda: track_2.play(tweet=False))
-        self.assertEqual(Play.objects.all().count(), 2)
-
-    def test_plays_can_be_edited_after_the_fact(self) -> None:
-        play = Track.objects.all()[0].play(tweet=False)
-        play.date = mkutc(2009, 1, 1)
-        play.save()
-
     def test_play_truncates_tweet_properly(self) -> None:
         track = Track.objects.create(
             id="longname",
@@ -143,10 +117,27 @@ class PlayTest(TestCase):
             added=timezone.now(),
             revealed=timezone.now(),
         )
-        tweet_text = Play.objects.create(
-            date=timezone.now(),
-            show=Show.at(timezone.now()),
-            track=track,
-        ).get_tweet_text()
+        tweet_text = track.play_tweet_content()
         self.assertRegex(tweet_text, r'^.{278}…$')
         self.assertEqual(len(tweet_text), 279)
+
+
+class PlayTest(TestCase):
+    fixtures = ['vote.json']
+
+    def setUp(self) -> None:
+        Play.objects.all().delete()
+
+    def test_plays_for_already_played_tracks_can_not_be_added(self) -> None:
+        track_1, track_2 = Track.objects.all()[:2]
+        track_1.play()
+        track_2.play()
+
+        self.assertEqual(Play.objects.all().count(), 2)
+        self.assertRaises(ValidationError, lambda: track_2.play())
+        self.assertEqual(Play.objects.all().count(), 2)
+
+    def test_plays_can_be_edited_after_the_fact(self) -> None:
+        play = Track.objects.all()[0].play()
+        play.date = mkutc(2009, 1, 1)
+        play.save()

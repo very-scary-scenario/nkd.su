@@ -1,0 +1,11 @@
+{% autoescape off %}hi
+
+we've sent this email because someone requested a password reset for your nkd.su account, but there is no nkd.su account associated with the email {{ email }} in the database
+
+if this wasn't you, you can ignore this message
+
+if it was you, you can register for a nkd.su account at {{ signup_url }}
+
+sorry about that,
+the robot elf who powers the nkd.su server
+{% endautoescape %}

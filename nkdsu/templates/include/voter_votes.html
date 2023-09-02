@@ -1,0 +1,18 @@
+{% load cache %}
+
+<h2>requests</h2>
+<div class="user-votes">
+  {% cache 300 voter:votes voter.votes.first.pk voter.user_id page_obj.number %}
+    {% regroup votes by show as votes_by_show %}
+    {% for group in votes_by_show %}
+      <h3><a href="{{ group.grouper.get_absolute_url }}">{{ group.grouper.showtime|date:"F jS Y" }}</a></h3>
+      {% spaceless %}
+        <ul>
+          {% for vote in group.list %}
+            {% include "include/vote.html" with show=group.grouper %}
+          {% endfor %}
+        </ul>
+      {% endspaceless %}
+    {% endfor %}
+  {% endcache %}
+</div>
