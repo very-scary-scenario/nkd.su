@@ -3,6 +3,10 @@
 {% block content %}
   <h2 class="message">Report bad metadata</h2>
 
+  <ul class="tracks">
+    {% include "include/track.html" %}
+  </ul>
+
   <form method="post" enctype="multipart/form-data" action=".">
     {% csrf_token %}
     {{ form.as_p }}
