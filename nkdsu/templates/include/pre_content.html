@@ -17,7 +17,11 @@
       {% if current_show.broadcasting %}
         <p class="subtitle">on air! listen live at <a target="_blank" href="https://thecat.radio">the&nbsp;cat</a>
       {% elif current_show %}
-        <p class="subtitle">next <a href="https://nekodesu.radio/">neko desu</a>: {% include "include/show_date.html" with show=current_show %}</p>
+        <p class="subtitle">
+          next <a href="https://nekodesu.radio/">neko desu</a>:
+          {% include "include/show_date.html" with show=current_show %} at
+          {% include "include/show_time.html" with show=current_show %}
+        </p>
       {% endif %}
     </div>
 
