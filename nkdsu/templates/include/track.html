@@ -36,9 +36,6 @@
         {% include "include/linked_artists.html" with artists=track.artists %}
       </div>
       <p class="title">
-        {% if user.is_staff and track.has_hook %}
-          <i class="fa fa-play-circle" title="has a hook in myriad"></i>
-        {% endif %}
         <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
       </p>
 
@@ -74,8 +71,15 @@
           <span><a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a></span>
         {% endif %}
 
-        {% if user.is_staff %}
-          <span title="myriad media id">{{ track.media_id }}</span>
+        {% if user.is_staff and track.media_id %}
+          <span>
+            {% if track.has_hook %}
+              <i class="fa fa-play-circle" title="has a hook in myriad"></i>
+            {% endif %}
+            <span title="myriad media id">
+              {{ track.media_id }}
+            </span>
+          </span>
         {% endif %}
       </p>
 
