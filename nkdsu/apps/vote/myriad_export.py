@@ -5,7 +5,7 @@ Tools for interacting with CSV exports of the library from Myriad Playout.
 from csv import DictReader
 from dataclasses import dataclass
 from io import TextIOBase
-from typing import Iterable, Optional
+from typing import Callable, Iterable, Optional
 
 from .models import Track
 
@@ -43,7 +43,24 @@ class PlayoutEntry:
         Return the :class:`Track` that matches this entry, if applicable.
         """
 
-        raise NotImplementedError()
+        def pass_if_none_exists(get_track=Callable[[], Track]) -> Optional[Track]:
+            try:
+                return get_track()
+            except Track.DoesNotExist:
+                return None
+
+        return (
+            pass_if_none_exists(lambda: Track.objects.get(media_id=self.media_id))
+            or pass_if_none_exists(
+                lambda: Track.objects.get(
+                    revealed__isnull=False,
+                    hidden=False,
+                    id3_title=self.title,
+                    id3_artist__startswith=self.artists,
+                )
+            )
+            or None
+        )
 
 
 def entries_for_file(file: TextIOBase) -> Iterable[PlayoutEntry]:

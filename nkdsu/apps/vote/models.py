@@ -636,6 +636,12 @@ class Track(CleanOnSaveMixin, models.Model):
     label = models.CharField(max_length=500, blank=True)
     year = models.IntegerField(blank=True, null=True)
 
+    # derived from Myriad
+    media_id = models.IntegerField(blank=True, null=True, unique=True)
+    has_hook = models.NullBooleanField(
+        help_text='Whether this track has a hook in Myriad. Null if not matched against a Myriad export.'
+    )
+
     # nkdsu-specific
     revealed = models.DateTimeField(blank=True, null=True, db_index=True)
     hidden = models.BooleanField()
