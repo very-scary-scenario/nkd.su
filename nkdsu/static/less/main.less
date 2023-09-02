@@ -333,7 +333,10 @@ body {
               }
             }
 
-            &:hover .badge-detail { display: block; }
+            &:hover, &:focus {
+              i.fa { color: inherit; }
+              .badge-detail { display: block; }
+            }
           }
         }
 
