@@ -67,7 +67,7 @@ exit_with_status() {
 
 if [[ ${python_modified} || ${js_modified} || ${yaml_modified} || ${rst_modified} ]]
 then
-    temp_dir=$(mktemp -d)
+    temp_dir="$(mktemp -d)"
     if [ "$?" != 0 ]
     then
 	echo "Unable to create temporary directory, skipping checks that need a clean repo."
@@ -78,15 +78,16 @@ then
 
     # Copy everything and then clean up later
     # More efficient would be to only copy what we need, but that's a harder problem to solve
-    cp -r ${root_dir} ${temp_dir}/
+    cp -R "${root_dir}" "${temp_dir}/"
     if [ "$?" != 0 ]
     then
 	echo "Unable to copy repository into temporary directory, skipping checks that need a clean repo."
-	rm -r ${temp_dir}
+	echo
+	rm -rf "${temp_dir}"
 	exit_with_status
     fi
 
-    cd ${temp_dir}/$(basename ${root_dir})
+    cd "${temp_dir}/$(basename ${root_dir})"
 
     # We need to look just at our staging area
     # Temporarily complete this commit so git can clean up the rest
@@ -94,7 +95,7 @@ then
     git clean -- ':!node_modules' > "${detailed_log}"
 
     cleanup() {
-	rm -r ${temp_dir}
+	rm -r "${temp_dir}"
     }
 
     cleanup_and_exit() {
