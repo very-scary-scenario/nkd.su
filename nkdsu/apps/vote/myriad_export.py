@@ -40,7 +40,7 @@ class PlayoutEntry:
 
     def matched_track(self) -> Optional[Track]:
         """
-        Return the :class:`Track` that matches this entry, if applicable.
+        Return the :class:`.Track` that matches this entry, if applicable.
         """
 
         def pass_if_none_exists(get_track=Callable[[], Track]) -> Optional[Track]:
@@ -61,6 +61,24 @@ class PlayoutEntry:
             )
             or None
         )
+
+    def update_matched_track(self) -> bool:
+        """
+        Update and save the :class:`.Track` we're able to match against this entry.
+
+        :returns: :data:`True` if we matched against something and updated it, otherwise :data:`False`.
+        """
+
+        matched_track = self.matched_track()
+        if matched_track is None:
+            return False
+
+        matched_track.media_id = self.media_id
+        matched_track.has_hook = self.has_hook
+
+        matched_track.save()
+
+        return True
 
 
 def entries_for_file(file: TextIOBase) -> Iterable[PlayoutEntry]:
