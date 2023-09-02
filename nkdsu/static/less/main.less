@@ -297,11 +297,15 @@ body {
         }
 
         .badges {
-          text-align: center;
+          display: flex;
           margin: .5em 0;
+          flex-flow: row wrap;
+          justify-content: center;
 
           li {
-            padding: .5em 0;
+            max-width: 15rem;
+            padding: .5em;
+            text-align: center;
 
             i, p {
               margin-bottom: .3em;
