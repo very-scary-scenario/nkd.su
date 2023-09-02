@@ -411,16 +411,21 @@ class MyriadExportUploadView(AdminMixin, FormView):
         matched = 0
         unmatched = 0
 
-        for entry in entries_for_file(getreader('utf-8')(form.cleaned_data['myriad_csv'])):
+        for entry in entries_for_file(
+            getreader('utf-8')(form.cleaned_data['myriad_csv'])
+        ):
             if entry.update_matched_track():
                 matched += 1
             else:
                 unmatched += 1
 
-        messages.success(self.request, (
-            'myriad export imported. '
-            f'{matched} entries matched to tracks; {unmatched} entries unmatched.'
-        ))
+        messages.success(
+            self.request,
+            (
+                'myriad export imported. '
+                f'{matched} entries matched to tracks; {unmatched} entries unmatched.'
+            ),
+        )
         return redirect(reverse('vote:index'))
 
 

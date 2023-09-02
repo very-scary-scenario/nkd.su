@@ -13,7 +13,11 @@ admin_patterns = [
         admin.LibraryUploadConfirmView.as_view(),
         name='confirm_upload',
     ),
-    url(r'^upload-myriad/$', admin.MyriadExportUploadView.as_view(), name='upload_myriad_export'),
+    url(
+        r'^upload-myriad/$',
+        admin.MyriadExportUploadView.as_view(),
+        name='upload_myriad_export',
+    ),
     url(r'^play/(?P<pk>.+)/$', admin.Play.as_view(), name='play'),
     url(
         r'^post-about-play/(?P<pk>.+)/$',
