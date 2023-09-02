@@ -34,21 +34,21 @@ then
 fi
 
 
-if git diff-index --cached ${against} -- | grep '\.py$' > "${detailed_log}"
+if git diff-index --cached ${against} -- | grep '\.py$' >> "${detailed_log}"
 then
     python_modified=1
 else
     python_modified=
 fi
 
-if git diff-index --cached ${against} -- | grep '\.js$' > "${detailed_log}"
+if git diff-index --cached ${against} -- | grep '\.js$' >> "${detailed_log}"
 then
     js_modified=1
 else
     js_modified=
 fi
 
-if git diff-index --cached ${against} -- | grep '\.rst$' > "${detailed_log}"
+if git diff-index --cached ${against} -- | grep '\.rst$' >> "${detailed_log}"
 then
     rst_modified=1
 else
@@ -73,6 +73,8 @@ then
 	echo "Unable to create temporary directory, skipping checks that need a clean repo."
 	exit_with_status
     fi
+
+    echo "Temporary directory created at ${temp_dir}" >> "${detailed_log}"
 
     # Copy everything and then clean up later
     # More efficient would be to only copy what we need, but that's a harder problem to solve
