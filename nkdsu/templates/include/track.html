@@ -36,6 +36,9 @@
         {% include "include/linked_artists.html" with artists=track.artists %}
       </div>
       <p class="title">
+        {% if user.is_staff and track.has_hook %}
+          <i class="fa fa-play-circle" title="has a hook in myriad"></i>
+        {% endif %}
         <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
       </p>
 
