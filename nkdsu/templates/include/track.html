@@ -68,7 +68,11 @@
         {% endif %}
 
         {% if track.year %}
-          <a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a>
+          <span><a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a></span>
+        {% endif %}
+
+        {% if user.is_staff %}
+          <span title="myriad media id">{{ track.media_id }}</span>
         {% endif %}
       </p>
 
