@@ -1,4 +1,4 @@
-{% load vote_tags %}
+{% load humanize vote_tags %}
 
 {% if messages %}
   <ul class="messages dismissable">
@@ -17,7 +17,7 @@
       {% if current_show.broadcasting %}
         <p class="subtitle">on air! listen live at <a target="_blank" href="https://thecat.radio">the&nbsp;cat</a>
       {% elif current_show %}
-        <p class="subtitle">
+        <p class="subtitle" title="{{ show.showtime|naturaltime }}">
           next live broadcast:
           {% include "include/show_date.html" with show=current_show %} at
           {% include "include/show_time.html" with show=current_show %}
