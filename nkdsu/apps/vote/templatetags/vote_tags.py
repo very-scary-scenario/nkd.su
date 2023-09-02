@@ -74,9 +74,9 @@ def format_otp(number: int) -> str:
     >>> format_otp(123)
     '123'
     >>> format_otp(123456)
-    '123\xa0456'
+    '123\u202f456'
     >>> format_otp(1234567)
-    '1\xa0234\xa0567'
+    '1\u202f234\u202f567'
     """
 
     string = f'{number:d}'
@@ -86,7 +86,7 @@ def format_otp(number: int) -> str:
         segments.append(string[-3:])
         string = string[:-3]
 
-    return '\N{NO-BREAK SPACE}'.join(segments[::-1])
+    return '\N{NARROW NO-BREAK SPACE}'.join(segments[::-1])
 
 
 @register.filter
