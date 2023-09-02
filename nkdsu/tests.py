@@ -36,6 +36,7 @@ class EverythingTest(
         '/vote-admin/post-about-play/0007C3F2760E0541/',
         '/vote-admin/remove-note/2/',
         '/vote-admin/hidden/',
+        '/vote-admin/no-media-id/',
         '/vote-admin/inudesu/',
         '/vote-admin/artless/',
         '/vote-admin/add-manual-vote/0007C3F2760E0541/',

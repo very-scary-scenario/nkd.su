@@ -37,6 +37,7 @@ admin_patterns = [
     url(r'^block/(?P<pk>[^/]+)/$', admin.MakeBlock.as_view(), name='block'),
     url(r'^unblock/(?P<pk>[^/]+)/$', admin.Unblock.as_view(), name='unblock'),
     url(r'^hidden/$', admin.HiddenTracks.as_view(), name='hidden'),
+    url(r'^no-media-id/$', admin.TracksWithNoMediaId.as_view(), name='no_media_id'),
     url(r'^hide/(?P<pk>.+)/$', admin.Hide.as_view(), name='hide'),
     url(r'^unhide/(?P<pk>.+)/$', admin.Unhide.as_view(), name='unhide'),
     url(r'^lm/(?P<pk>.+)/$', admin.LockMetadata.as_view(), name='lock_metadata'),

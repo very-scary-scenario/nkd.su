@@ -1,0 +1,9 @@
+{% extends parent %}
+
+{% block content %}
+  <h2>tracks without a myriad media id</h2>
+  <p class="subheading">excluding hidden, unrevealed, and inu desu tracks</p>
+  <ul class="tracks">
+    {% include "include/tracklist.html" %}
+  </ul>
+{% endblock %}
