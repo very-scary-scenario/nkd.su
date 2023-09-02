@@ -315,6 +315,25 @@ body {
               color: @badge-colour;
               font-size: 1.5em;
             }
+
+            .badge-detail {
+              display: none;
+              position: absolute;
+              right: 0;
+              width: 100%;
+
+              > .badge-detail-content {
+                margin: 0 auto;
+                padding: .5em;
+                max-width: 20rem;
+                border: 1px solid @border;
+                border-radius: 1rem;
+                .invert();
+                .noise();
+              }
+            }
+
+            &:hover .badge-detail { display: block; }
           }
         }
 

@@ -56,11 +56,15 @@
         <li>
           <i class="fa fa-{{ badge.badge_info.icon }}"></i>
 
-          <p>{{ badge.badge_info.description }}</p>
+          <div class="badge-detail">
+            <div class="badge-detail-content">
+              <p>{{ badge.badge_info.description }}</p>
 
-          {% if badge.badge_info.url %}
-            <p><a href="{{ badge.badge_info.url }}">More info&hellip;</a></p>
-          {% endif %}
+              {% if badge.badge_info.url %}
+                <p><a href="{{ badge.badge_info.url }}">More info&hellip;</a></p>
+              {% endif %}
+            </div>
+          </div>
         </li>
       {% endfor %}
     </ul>
