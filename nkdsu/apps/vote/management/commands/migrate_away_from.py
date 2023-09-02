@@ -29,6 +29,7 @@ class Command(BaseCommand):
         target.revealed = to_remove.revealed
         target.hidden = False
         target.media_id = to_remove.media_id
+        target.has_hook = to_remove.has_hook
         target.save()
 
         to_remove.delete()
