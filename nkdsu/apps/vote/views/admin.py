@@ -1,5 +1,6 @@
 import os
 import plistlib
+from codecs import getreader
 from typing import Any, Optional
 
 from django.contrib import messages
@@ -22,8 +23,9 @@ from django.views.generic import (
 from django.views.generic.base import TemplateResponseMixin
 
 from .js import JSApiMixin
-from ..forms import LibraryUploadForm, NoteForm
+from ..forms import LibraryUploadForm, MyriadExportUploadForm, NoteForm
 from ..models import Block, Note, Profile, Show, Track, TwitterUser, Vote
+from ..myriad_export import entries_for_file
 from ..update_library import update_library
 
 
@@ -399,6 +401,27 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
         changes = self.update_library(dry_run=False)
         messages.success(self.request, 'library updated')
         return changes
+
+
+class MyriadExportUploadView(AdminMixin, FormView):
+    template_name = 'upload_myriad_export.html'
+    form_class = MyriadExportUploadForm
+
+    def form_valid(self, form: MyriadExportUploadForm) -> HttpResponse:
+        matched = 0
+        unmatched = 0
+
+        for entry in entries_for_file(getreader('utf-8')(form.cleaned_data['myriad_csv'])):
+            if entry.update_matched_track():
+                matched += 1
+            else:
+                unmatched += 1
+
+        messages.success(self.request, (
+            'myriad export imported. '
+            f'{matched} entries matched to tracks; {unmatched} entries unmatched.'
+        ))
+        return redirect(reverse('vote:index'))
 
 
 class ToggleAbuser(AdminAction, DetailView):

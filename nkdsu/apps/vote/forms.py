@@ -145,6 +145,10 @@ class LibraryUploadForm(forms.Form):
     inudesu = forms.BooleanField(label='Inu Desu', required=False)
 
 
+class MyriadExportUploadForm(forms.Form):
+    myriad_csv = forms.FileField(label='Myriad library export CSV')
+
+
 class NoteForm(forms.ModelForm):
     just_for_current_show = forms.BooleanField(required=False)
 

@@ -1,0 +1,11 @@
+{% extends parent %}
+
+{% block content %}
+  <h2 class="message">Upload a Myriad export</h2>
+
+  <form class="upload" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="upload" class="button">
+  </form>
+{% endblock %}

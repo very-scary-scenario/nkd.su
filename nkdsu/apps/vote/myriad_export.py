@@ -81,7 +81,7 @@ class PlayoutEntry:
         return True
 
 
-def entries_for_file(file: TextIOBase) -> Iterable[PlayoutEntry]:
+def entries_for_file(file: Iterable[str]) -> Iterable[PlayoutEntry]:
     reader = DictReader(file)
     for csv_entry in reader:
         yield PlayoutEntry.from_csv(csv_entry)
