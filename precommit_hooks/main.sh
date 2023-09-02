@@ -91,8 +91,13 @@ then
 
     # We need to look just at our staging area
     # Temporarily complete this commit so git can clean up the rest
-    git commit --no-verify -m "temporary commit" > "${detailed_log}"
-    git clean -- ':!node_modules' > "${detailed_log}"
+    git commit --no-verify -m "temporary commit" >> "${detailed_log}"
+
+    # Purge any changes to tracked files not in the commit
+    git checkout HEAD -- .
+
+    # Remove any untracked files (but keep node modules)
+    git clean -- ':!node_modules' >> "${detailed_log}"
 
     cleanup() {
 	rm -r "${temp_dir}"
