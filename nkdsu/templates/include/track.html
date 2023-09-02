@@ -143,6 +143,7 @@
             <span><a title="prevent library updates from affecting this track" href="{% url "vote:admin:lock_metadata" pk=track.pk %}">lock</a></span>
           {% endif %}
           <span><a href="{% url "vote:admin:make_note" pk=track.pk %}">add note</a></span>
+          <span><a href="{% url "admin:vote_track_change" object_id=track.pk %}">edit</a></span>
         </p>
       {% endif %}
     </div>
