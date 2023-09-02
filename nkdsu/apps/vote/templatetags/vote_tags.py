@@ -67,6 +67,29 @@ def percent(flt: Optional[float]) -> str:
 
 
 @register.filter
+def format_otp(number: int) -> str:
+    """
+    Put non-breaking spaces into the string representation of a number every three digits (from the right).
+
+    >>> format_otp(123)
+    '123'
+    >>> format_otp(123456)
+    '123\xa0456'
+    >>> format_otp(1234567)
+    '1\xa0234\xa0567'
+    """
+
+    string = f'{number:d}'
+    segments: list[str] = []
+
+    while string:
+        segments.append(string[-3:])
+        string = string[:-3]
+
+    return '\N{NO-BREAK SPACE}'.join(segments[::-1])
+
+
+@register.filter
 def total_length(tracks: Iterable[Track]):
     return length_str(sum([t.msec for t in tracks if t.msec is not None]))
 
