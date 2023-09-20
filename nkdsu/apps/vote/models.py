@@ -531,13 +531,15 @@ class Role:
     def __init__(self, full_tag: str):
         self.full_tag = full_tag
 
+        ep = r' ?(ep\d+(-\d+)?\b.*)?'
+
         result = re.match(
             r'^(?P<anime>.*?) ?\b('
             r'(?P<caveat>rebroadcast )?\b(?P<role>'
-            r'((ED|OP)\d*\b\W*\w*)|'
+            r'((ED|OP)\d*\b\W*\w*' + ep + ')|'
             r'((character|image) song\b.*)|'
-            r'(ep\d+\b.*)|'
-            r'(insert (track|song)\b.*)|'
+            r'(' + ep + r')|'
+            r'(insert (track|song)\b)|'
             r'(ins)|'
             r'((main )?theme ?\d*)|'
             r'(bgm\b.*)|'
