@@ -539,7 +539,7 @@ class Role:
             r'((ED|OP)\d*\b\W*\w*' + ep + ')|'
             r'((character|image) song\b.*)|'
             r'(' + ep + r')|'
-            r'(insert (track|song)\b)|'
+            r'(insert (track|song)\b)' + ep + r'|'
             r'(ins)|'
             r'((main )?theme ?\d*)|'
             r'(bgm\b.*)|'
