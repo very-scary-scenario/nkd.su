@@ -48,8 +48,8 @@ class TwitterUserAdmin(admin.ModelAdmin):
 
 
 class UserBadgeAdmin(admin.ModelAdmin):
-    list_display = ('user', 'badge')
-    list_filter = ('user', 'badge')
+    list_display = ('user', 'twitter_user', 'badge')
+    list_filter = ('user', 'twitter_user', 'badge')
 
 
 class VoteAdmin(admin.ModelAdmin):

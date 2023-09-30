@@ -15,12 +15,14 @@ from Levenshtein import ratio
 from PIL import Image, ImageFilter
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from django.db.models import Q
+from django.db.models.constraints import CheckConstraint
 from django.template.defaultfilters import slugify
 from django.templatetags.static import static
 from django.urls import reverse
@@ -1654,7 +1656,7 @@ class Badge:
     start: Optional[datetime.datetime]
     finish: Optional[datetime.datetime]
 
-    def info(self, user: TwitterUser) -> dict[str, Any]:
+    def info(self, user: TwitterUser | AbstractUser) -> dict[str, Any]:
         return {
             'slug': self.slug,
             'description': self.description_fmt.format(user=user),
@@ -1766,12 +1768,24 @@ class UserBadge(CleanOnSaveMixin, models.Model):
         choices=[(b.slug, b.description_fmt) for b in BADGES],
         max_length=max((len(b.slug) for b in BADGES)),
     )
-    user = models.ForeignKey(TwitterUser, on_delete=models.CASCADE)
+    twitter_user = models.ForeignKey(TwitterUser, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
     @reify
     def badge_info(self) -> dict[str, Any]:
         (badge,) = (b for b in BADGES if b.slug == self.badge)
-        return badge.info(self.user)
+
+        u = self.user or self.twitter_user
+        if u is None:
+            raise RuntimeError(f'badge {self.pk} has no user and no twitter user')
+
+        return badge.info(u)
 
     class Meta:
-        unique_together = [['badge', 'user']]
+        constraints = [
+            CheckConstraint(
+                check=Q(user__isnull=True, twitter_user__isnull=False)
+                | Q(user__isnull=False, twitter_user__isnull=True),
+                name='badge_must_have_user',
+            ),
+        ]
