@@ -92,6 +92,7 @@ class Migration(migrations.Migration):
                     _connector='OR',
                 ),
                 name='badge_must_have_user',
+                violation_error_message='Badges must be associated with either a profile or twitter user',
             ),
         ),
     ]
