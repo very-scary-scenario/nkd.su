@@ -1796,7 +1796,7 @@ class UserBadge(CleanOnSaveMixin, models.Model):
                 check=Q(profile__isnull=True, twitter_user__isnull=False)
                 | Q(profile__isnull=False, twitter_user__isnull=True),
                 name='badge_must_have_user',
-                violation_error_message='Badges must be associated with either a profile or twitter user'
+                violation_error_message='Badges must be associated with either a profile or twitter user',
             ),
             # until we handle this when creating profile objects, this check should not be enforced in the database:
             # CheckConstraint(
