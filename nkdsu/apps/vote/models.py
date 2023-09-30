@@ -1342,13 +1342,13 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         badge_order = [b.slug for b in BADGES]
 
-        if not self.twitter_user:
+        if not self.voter:
             return None
 
         for badge in sorted(
             (
                 b
-                for b in self.twitter_user.userbadge_set.all()
+                for b in UserBadge.for_voter(self.voter)
                 if (
                     b.badge_info['start'] is None
                     or b.badge_info['start'] <= self.show.end
@@ -1745,8 +1745,8 @@ BADGES: list[Badge] = [
         'donated to the 2023 Very Scary Scenario charity streams',
         'infinity',
         'https://www.justgiving.com/page/very-charity-scenario-2023',
-        datetime.datetime(2022, 9, 9, tzinfo=get_default_timezone()),
-        datetime.datetime(2022, 12, 2, tzinfo=get_default_timezone()),
+        datetime.datetime(2023, 9, 9, tzinfo=get_default_timezone()),
+        datetime.datetime(2023, 12, 2, tzinfo=get_default_timezone()),
     ),
 ]
 
