@@ -413,11 +413,6 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
             'user_id': self.user_id,
         }
 
-    @property
-    @memoize
-    def badges(self) -> models.QuerySet[UserBadge]:
-        return self.userbadge_set.all()
-
 
 def avatar_upload_path(instance: Profile, filename: str) -> str:
     return f"avatars/{instance.user.username}/{uuid4()}.png"
@@ -491,14 +486,6 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
 
     def get_toggle_abuser_url(self) -> str:
         return reverse('vote:admin:toggle_local_abuser', kwargs={'user_id': self.pk})
-
-    @property
-    @memoize
-    def badges(self) -> models.QuerySet[UserBadge]:
-        if self.twitter_user:
-            return self.twitter_user.userbadge_set.all()
-        else:
-            return UserBadge.objects.none()  # to be properly handled in issue #245
 
 
 def art_path(i: Track, f: str) -> str:
@@ -1659,7 +1646,9 @@ class Badge:
     def info(self, user: TwitterUser | AbstractUser) -> dict[str, Any]:
         return {
             'slug': self.slug,
-            'description': self.description_fmt.format(user=user),
+            'description': self.description_fmt.format(
+                name=user.name if isinstance(user, TwitterUser) else user.profile.name
+            ),
             'summary': self.summary,
             'icon': self.icon,
             'url': self.url,
@@ -1673,7 +1662,7 @@ class Badge:
 BADGES: list[Badge] = [
     Badge(
         'tblc',
-        u'{user.name} bought Take Back Love City for the RSPCA.',
+        u'{name} bought Take Back Love City for the RSPCA.',
         'put up with bad music for animals',
         'headphones',
         'https://desus.bandcamp.com/album/take-back-love-city',
@@ -1682,7 +1671,7 @@ BADGES: list[Badge] = [
     ),
     Badge(
         'charity-2016',
-        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'{name} donated to the Very Scary Scenario charity streams for '
         u'Special Effect in 2016.',
         'likes fun, hates exclusion',
         'heart',
@@ -1692,7 +1681,7 @@ BADGES: list[Badge] = [
     ),
     Badge(
         'charity-2017',
-        u'{user.name} donated to the Very Scary Scenario charity streams and '
+        u'{name} donated to the Very Scary Scenario charity streams and '
         u'Neko Desu All-Nighter for Cancer Research UK in 2017.',
         'likes depriving people of sleep, hates cancer',
         'heart',
@@ -1702,7 +1691,7 @@ BADGES: list[Badge] = [
     ),
     Badge(
         'charity-2018',
-        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'{name} donated to the Very Scary Scenario charity streams for '
         u'Cancer Research UK in 2018.',
         'likes depriving people of sleep, hates cancer',
         'medkit',
@@ -1712,7 +1701,7 @@ BADGES: list[Badge] = [
     ),
     Badge(
         'charity-2019',
-        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'{name} donated to the Very Scary Scenario charity streams for '
         u'Samaritans in 2019.',
         'likes depriving people of sleep, fan of good mental health',
         'life-ring',
@@ -1722,7 +1711,7 @@ BADGES: list[Badge] = [
     ),
     Badge(
         'charity-2020',
-        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'{name} donated to the Very Scary Scenario charity streams for '
         u'Cancer Research UK in 2020.',
         'donated to the 2020 Very Scary Scenario charity streams',
         'heartbeat',
@@ -1732,7 +1721,7 @@ BADGES: list[Badge] = [
     ),
     Badge(
         'charity-2021',
-        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'{name} donated to the Very Scary Scenario charity streams for '
         u'Mind in 2021.',
         'donated to the 2021 Very Scary Scenario charity streams',
         'brain',
@@ -1742,7 +1731,7 @@ BADGES: list[Badge] = [
     ),
     Badge(
         'charity-2022',
-        u'{user.name} donated to the Very Scary Scenario charity streams for '
+        u'{name} donated to the Very Scary Scenario charity streams for '
         u'akt in 2022.',
         'donated to the 2022 Very Scary Scenario charity streams',
         'home',
@@ -1752,7 +1741,7 @@ BADGES: list[Badge] = [
     ),
     Badge(
         'charity-2023',
-        '{user.name} donated to the Very Scary Scenario charity streams and '
+        '{name} donated to the Very Scary Scenario charity streams and '
         'Neko Desu All-Nighter for the National Autistic Society in 2023.',
         'donated to the 2023 Very Scary Scenario charity streams',
         'infinity',
@@ -1772,6 +1761,13 @@ class UserBadge(CleanOnSaveMixin, models.Model):
         TwitterUser, on_delete=models.CASCADE, blank=True, null=True
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+
+    @classmethod
+    def for_voter(cls, voter: Voter) -> models.QuerySet[UserBadge]:
+        twu: Optional[TwitterUser]
+        prf: Optional[Profile]
+        twu, prf = voter._twitter_user_and_profile()
+        return cls.objects.filter(Q(user__profile=prf) | Q(twitter_user=twu))
 
     def clean(self) -> None:
         # this can be removed once we're on a django version that checks constraints as part of validation (>=4.1)

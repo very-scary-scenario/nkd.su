@@ -46,8 +46,11 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
         return (None if twu is None else twu.pk, None if pr is None else pr.pk)
 
     @property
+    @memoize
     def badges(self) -> QuerySet[UserBadge]:
-        ...
+        from .models import UserBadge
+
+        return UserBadge.for_voter(self)
 
     def unordered_votes(self) -> QuerySet[Vote]:
         ...
