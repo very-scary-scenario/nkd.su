@@ -1643,12 +1643,10 @@ class Badge:
     start: Optional[datetime.datetime]
     finish: Optional[datetime.datetime]
 
-    def info(self, user: TwitterUser | AbstractUser) -> dict[str, Any]:
+    def info(self, user: TwitterUser | Profile) -> dict[str, Any]:
         return {
             'slug': self.slug,
-            'description': self.description_fmt.format(
-                name=user.name if isinstance(user, TwitterUser) else user.profile.name
-            ),
+            'description': self.description_fmt.format(name=user.name),
             'summary': self.summary,
             'icon': self.icon,
             'url': self.url,
@@ -1760,39 +1758,41 @@ class UserBadge(CleanOnSaveMixin, models.Model):
     twitter_user = models.ForeignKey(
         TwitterUser, on_delete=models.CASCADE, blank=True, null=True
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    profile = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, blank=True, null=True
+    )
 
     @classmethod
     def for_voter(cls, voter: Voter) -> models.QuerySet[UserBadge]:
         twu: Optional[TwitterUser]
         prf: Optional[Profile]
         twu, prf = voter._twitter_user_and_profile()
-        return cls.objects.filter(Q(user__profile=prf) | Q(twitter_user=twu))
+        return cls.objects.filter(Q(profile=prf) | Q(twitter_user=twu))
 
     def clean(self) -> None:
         # this can be removed once we're on a django version that checks constraints as part of validation (>=4.1)
-        if (self.twitter_user is None and self.user is None) or (
-            self.twitter_user is not None and self.user is not None
+        if (self.twitter_user is None and self.profile is None) or (
+            self.twitter_user is not None and self.profile is not None
         ):
             raise ValidationError(
-                'Badges must be associated with either a user or twitter user'
+                'Badges must be associated with either a profile or twitter user'
             )
 
     @reify
     def badge_info(self) -> dict[str, Any]:
         (badge,) = (b for b in BADGES if b.slug == self.badge)
 
-        u = self.user or self.twitter_user
+        u = self.profile or self.twitter_user
         if u is None:
-            raise RuntimeError(f'badge {self.pk} has no user and no twitter user')
+            raise RuntimeError(f'badge {self.pk} has no profile and no twitter user')
 
         return badge.info(u)
 
     class Meta:
         constraints = [
             CheckConstraint(
-                check=Q(user__isnull=True, twitter_user__isnull=False)
-                | Q(user__isnull=False, twitter_user__isnull=True),
+                check=Q(profile__isnull=True, twitter_user__isnull=False)
+                | Q(profile__isnull=False, twitter_user__isnull=True),
                 name='badge_must_have_user',
             ),
         ]
