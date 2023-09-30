@@ -1779,15 +1779,20 @@ class UserBadge(CleanOnSaveMixin, models.Model):
                 'Badges must be associated with either a profile or twitter user'
             )
 
-        if self.twitter_user is not None and self.twitter_user.profile:
-            raise ValidationError(
-                {
-                    'twitter_user': (
-                        'This Twitter user has a profile you should use instead. '
-                        f'"{self.twitter_user}" has a profile called "{self.twitter_user.profile}"'
-                    )
-                }
-            )
+        if self.twitter_user is not None:
+            try:
+                profile = self.twitter_user.profile
+            except Profile.DoesNotExist:
+                pass
+            else:
+                raise ValidationError(
+                    {
+                        'twitter_user': (
+                            'This Twitter user has a profile you should use instead. '
+                            f'"{self.twitter_user}" has a profile called "{profile}"'
+                        )
+                    }
+                )
 
     @reify
     def badge_info(self) -> dict[str, Any]:
