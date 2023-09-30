@@ -1777,6 +1777,12 @@ class UserBadge(CleanOnSaveMixin, models.Model):
                 'Badges must be associated with either a profile or twitter user'
             )
 
+        if self.twitter_user is not None and self.twitter_user.profile:
+            raise ValidationError({'twitter_user': (
+                'This Twitter user has a profile you should use instead. '
+                f'"{self.twitter_user}" has a profile called "{self.twitter_user.profile}"'
+            )})
+
     @reify
     def badge_info(self) -> dict[str, Any]:
         (badge,) = (b for b in BADGES if b.slug == self.badge)
@@ -1794,4 +1800,9 @@ class UserBadge(CleanOnSaveMixin, models.Model):
                 | Q(profile__isnull=False, twitter_user__isnull=True),
                 name='badge_must_have_user',
             ),
+            # until we handle this when creating profile objects, this check should not be enforced in the database:
+            # CheckConstraint(
+            #     check=Q(twitter_user__isnull=False, twitter_user__profile__isnull=True),
+            #     name='badge_must_use_profile_if_available',
+            # ),
         ]
