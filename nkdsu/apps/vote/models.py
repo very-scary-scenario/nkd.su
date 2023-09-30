@@ -609,11 +609,8 @@ class Role:
         ]
 
 
-TrackManager = models.Manager.from_queryset(TrackQuerySet)
-
-
 class Track(CleanOnSaveMixin, models.Model):
-    objects = TrackManager()
+    objects = TrackQuerySet.as_manager()
 
     # derived from iTunes
     id = models.CharField(max_length=16, primary_key=True)
@@ -1615,15 +1612,12 @@ class ElfShelving(CleanOnSaveMixin, models.Model):
     reason_disabled = models.TextField(blank=True)
 
 
-NoteManager = models.Manager.from_queryset(NoteQuerySet)
-
-
 class Note(CleanOnSaveMixin, models.Model):
     """
     A note about whatever for a particular track.
     """
 
-    objects = NoteManager()
+    objects = NoteQuerySet.as_manager()
 
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
     show = models.ForeignKey(Show, blank=True, null=True, on_delete=models.CASCADE)
