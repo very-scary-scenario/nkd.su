@@ -1748,6 +1748,16 @@ BADGES: list[Badge] = [
         datetime.datetime(2022, 10, 9, tzinfo=get_default_timezone()),
         datetime.datetime(2022, 11, 27, tzinfo=get_default_timezone()),
     ),
+    Badge(
+        'charity-2023',
+        '{user.name} donated to the Very Scary Scenario charity streams and '
+        'Neko Desu All-Nighter for the National Autistic Society in 2023.',
+        'donated to the 2023 Very Scary Scenario charity streams',
+        'infinity',
+        'https://www.justgiving.com/page/very-charity-scenario-2023',
+        datetime.datetime(2022, 9, 9, tzinfo=get_default_timezone()),
+        datetime.datetime(2022, 12, 2, tzinfo=get_default_timezone()),
+    ),
 ]
 
 
