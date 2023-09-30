@@ -2,7 +2,7 @@
   "name": "nkd.su",
   "version": "0.0.0",
   "scripts": {
-    "check-migrations": "python manage.py makemigrations --dry-run --check",
+    "check-migrations": "python manage.py makemigrations --check",
     "lint-black": "black --check --diff .",
     "lint-flake8": "flake8 .",
     "lint-js": "eslint nkdsu/static/js",
