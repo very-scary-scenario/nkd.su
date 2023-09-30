@@ -1768,7 +1768,10 @@ class UserBadge(CleanOnSaveMixin, models.Model):
         twu: Optional[TwitterUser]
         prf: Optional[Profile]
         twu, prf = voter._twitter_user_and_profile()
-        return cls.objects.filter(Q(profile=prf) | Q(twitter_user=twu)).order_by('pk')
+        return cls.objects.filter(
+            Q(profile=prf, profile__isnull=False)
+            | Q(twitter_user=twu, twitter_user__isnull=False)
+        ).order_by('pk')
 
     def clean(self) -> None:
         # this can be removed once we're on a django version that checks constraints as part of validation (>=4.1)
