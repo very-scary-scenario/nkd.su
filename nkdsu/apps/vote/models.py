@@ -1778,10 +1778,14 @@ class UserBadge(CleanOnSaveMixin, models.Model):
             )
 
         if self.twitter_user is not None and self.twitter_user.profile:
-            raise ValidationError({'twitter_user': (
-                'This Twitter user has a profile you should use instead. '
-                f'"{self.twitter_user}" has a profile called "{self.twitter_user.profile}"'
-            )})
+            raise ValidationError(
+                {
+                    'twitter_user': (
+                        'This Twitter user has a profile you should use instead. '
+                        f'"{self.twitter_user}" has a profile called "{self.twitter_user.profile}"'
+                    )
+                }
+            )
 
     @reify
     def badge_info(self) -> dict[str, Any]:
