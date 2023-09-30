@@ -1768,8 +1768,19 @@ class UserBadge(CleanOnSaveMixin, models.Model):
         choices=[(b.slug, b.description_fmt) for b in BADGES],
         max_length=max((len(b.slug) for b in BADGES)),
     )
-    twitter_user = models.ForeignKey(TwitterUser, on_delete=models.CASCADE, blank=True, null=True)
+    twitter_user = models.ForeignKey(
+        TwitterUser, on_delete=models.CASCADE, blank=True, null=True
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+
+    def clean(self) -> None:
+        # this can be removed once we're on a django version that checks constraints as part of validation (>=4.1)
+        if (self.twitter_user is None and self.user is None) or (
+            self.twitter_user is not None and self.user is not None
+        ):
+            raise ValidationError(
+                'Badges must be associated with either a user or twitter user'
+            )
 
     @reify
     def badge_info(self) -> dict[str, Any]:
