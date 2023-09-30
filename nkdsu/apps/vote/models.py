@@ -15,7 +15,6 @@ from Levenshtein import ratio
 from PIL import Image, ImageFilter
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AbstractUser
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files import File
