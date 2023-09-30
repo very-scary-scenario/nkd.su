@@ -628,8 +628,10 @@ class Track(CleanOnSaveMixin, models.Model):
 
     # derived from Myriad
     media_id = models.IntegerField(blank=True, null=True, unique=True)
-    has_hook = models.NullBooleanField(
-        help_text='Whether this track has a hook in Myriad. Null if not matched against a Myriad export.'
+    has_hook = models.BooleanField(
+        help_text='Whether this track has a hook in Myriad. Null if not matched against a Myriad export.',
+        blank=True,
+        null=True,
     )
 
     # nkdsu-specific
