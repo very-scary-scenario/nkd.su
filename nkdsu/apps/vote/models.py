@@ -1765,14 +1765,6 @@ class UserBadge(CleanOnSaveMixin, models.Model):
         return cls.objects.filter(Q(profile=prf) | Q(twitter_user=twu)).order_by('pk')
 
     def clean(self) -> None:
-        # this can be removed once we're on a django version that checks constraints as part of validation (>=4.1)
-        if (self.twitter_user is None and self.profile is None) or (
-            self.twitter_user is not None and self.profile is not None
-        ):
-            raise ValidationError(
-                'Badges must be associated with either a profile or twitter user'
-            )
-
         if self.twitter_user is not None and self.twitter_user.profile:
             raise ValidationError(
                 {
@@ -1799,6 +1791,7 @@ class UserBadge(CleanOnSaveMixin, models.Model):
                 check=Q(profile__isnull=True, twitter_user__isnull=False)
                 | Q(profile__isnull=False, twitter_user__isnull=True),
                 name='badge_must_have_user',
+                violation_error_message='Badges must be associated with either a profile or twitter user'
             ),
             # until we handle this when creating profile objects, this check should not be enforced in the database:
             # CheckConstraint(
