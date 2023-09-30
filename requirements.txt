@@ -7,12 +7,12 @@ django-extensions==3.1.5
 django-instant-coverage==1.2.1
 django-pipeline==2.0.8
 django-resized==1.0.2
-django-stubs>=1.13.0,<1.14
-django>=3.2.14,<3.3
+django-stubs==4.2.3
+django>=4.2.5<4.3
 flake8-import-order<2
 flake8>=3.8
 musicbrainzngs==0.5
-mypy>=0.990,<1
+mypy>=1.4<1.5
 ndg-httpsclient
 psycopg2
 pyasn1
