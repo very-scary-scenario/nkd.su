@@ -903,6 +903,9 @@ class Track(CleanOnSaveMixin, models.Model):
         if self.hidden:
             return 'hidden'
 
+        if self.archived:
+            return 'archived'
+
         current_show = Show.current()
 
         if not current_show.voting_allowed:
