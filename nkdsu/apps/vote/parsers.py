@@ -60,6 +60,8 @@ class ArtistLexer(Lexer):
         r'with|'
         r'meets|'
         r'adding|'
+        r'hugs|'
+        r'inspi\'|'
         r'a\.k\.a|'
         r'x|'
         r'×|'
