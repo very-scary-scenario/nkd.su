@@ -26,7 +26,7 @@ class TrackQuerySet(models.QuerySet["Track"]):
         return self.filter(year__gte=start_year, year__lt=start_year + 10)
 
     def public(self) -> TrackQuerySet:
-        return self.filter(hidden=False, inudesu=False)
+        return self.filter(hidden=False, inudesu=False, archived=False)
 
     def by_artist(self, artist: str, show_secret_tracks: bool = False) -> list[Track]:
         """
