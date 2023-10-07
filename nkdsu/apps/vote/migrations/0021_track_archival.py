@@ -31,4 +31,17 @@ class Migration(migrations.Migration):
                 name='track_cannot_be_both_hidden_and_archived',
             ),
         ),
+        migrations.AddConstraint(
+            model_name='track',
+            constraint=models.CheckConstraint(
+                check=models.Q(
+                    ('archived', False),
+                    ('hidden', False),
+                    ('inudesu', False),
+                    ('revealed__isnull', True),
+                    _negated=True,
+                ),
+                name='track_must_have_revealed_date_when_visible',
+            ),
+        ),
     ]

@@ -619,6 +619,12 @@ class Track(CleanOnSaveMixin, models.Model):
                 check=~Q(archived=True, hidden=True),
                 name='track_cannot_be_both_hidden_and_archived',
             ),
+            CheckConstraint(
+                check=~Q(
+                    hidden=False, archived=False, inudesu=False, revealed__isnull=True
+                ),
+                name='track_must_have_revealed_date_when_visible',
+            ),
         ]
 
     objects = TrackManager()
