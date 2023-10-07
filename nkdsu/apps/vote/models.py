@@ -660,7 +660,7 @@ class Track(CleanOnSaveMixin, models.Model):
     def clean(self) -> None:
         if (not self.inudesu) and (not self.hidden) and (not self.revealed):
             raise ValidationError(
-                '{track} is not hidden but has no revealed ' 'date'.format(track=self)
+                '{track} is not hidden but has no revealed date'.format(track=self)
             )
 
     @classmethod
