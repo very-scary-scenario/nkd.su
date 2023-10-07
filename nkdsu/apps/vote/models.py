@@ -639,7 +639,8 @@ class Track(CleanOnSaveMixin, models.Model):
     archived = models.BooleanField(
         help_text=(
             'This will never be played again, but cannot be removed from the database for historical reasons.'
-        )
+        ),
+        default=False,
     )
     hidden = models.BooleanField(
         help_text='This track has not been revealed, or is pending migration.'
