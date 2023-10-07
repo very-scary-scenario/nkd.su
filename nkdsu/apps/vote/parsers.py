@@ -98,6 +98,7 @@ class ArtistLexer(Lexer):
         r'Dejo & Bon|'
         r'Digz, Inc. Group|'
         r'Dimitri From Paris|'
+        r'Eunsol\(1008\)|'
         r'Fear,\sand\sLoathing\sin\sLas\sVegas|'
         r'GENERATIONS from EXILE TRIBE|'
         r'HIGH and MIGHTY COLOR|'
