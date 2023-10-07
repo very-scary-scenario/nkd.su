@@ -613,6 +613,14 @@ TrackManager = models.Manager.from_queryset(TrackQuerySet)
 
 
 class Track(CleanOnSaveMixin, models.Model):
+    class Meta:
+        constraints = [
+            CheckConstraint(
+                check=~Q(archived=True, hidden=True),
+                name='track_cannot_be_both_hidden_and_archived',
+            ),
+        ]
+
     objects = TrackManager()
 
     # derived from iTunes

@@ -24,4 +24,11 @@ class Migration(migrations.Migration):
                 help_text='This track has not been revealed, or is pending migration.'
             ),
         ),
+        migrations.AddConstraint(
+            model_name='track',
+            constraint=models.CheckConstraint(
+                check=models.Q(('archived', True), ('hidden', True), _negated=True),
+                name='track_cannot_be_both_hidden_and_archived',
+            ),
+        ),
     ]
