@@ -680,10 +680,14 @@ class Track(CleanOnSaveMixin, models.Model):
         return hash(self.id)
 
     def clean(self) -> None:
-        if (not self.inudesu) and (not self.hidden) and (not self.revealed):
+        # these checks can be deleted once we're on django 4.2, since they're enforced in a constraint
+        # (be sure to preserve the nice error messages, though)
+        if (not self.inudesu) and (not self.hidden) and (not self.archived) and (not self.revealed):
             raise ValidationError(
-                '{track} is not hidden but has no revealed date'.format(track=self)
+                '{track} is visible but has no revealed date'.format(track=self)
             )
+        if self.hidden and self.archived:
+            raise ValidationError('Tracks cannot be both archived and hidden')
 
     @classmethod
     def all_anime_titles(cls) -> set[str]:
