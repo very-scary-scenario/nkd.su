@@ -636,10 +636,14 @@ class Track(CleanOnSaveMixin, models.Model):
 
     # nkdsu-specific
     revealed = models.DateTimeField(blank=True, null=True, db_index=True)
-    archived = models.BooleanField(help_text=(
-        'This will never be played again, but cannot be removed from the database for historical reasons.'
-    ))
-    hidden = models.BooleanField(help_text='This track has not been revealed, or is pending migration.')
+    archived = models.BooleanField(
+        help_text=(
+            'This will never be played again, but cannot be removed from the database for historical reasons.'
+        )
+    )
+    hidden = models.BooleanField(
+        help_text='This track has not been revealed, or is pending migration.'
+    )
     inudesu = models.BooleanField()
     background_art = models.ImageField(blank=True, upload_to=art_path)
     metadata_locked = models.BooleanField(default=False)
