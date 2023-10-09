@@ -199,6 +199,22 @@ class PostAboutPlay(TrackSpecificAdminMixin, TemplateView):
     template_name = 'post_about_play.html'
 
 
+class Archive(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        self.get_object().archive()
+        messages.success(self.request, u"'{}' archived".format(self.get_object().title))
+
+
+class Unarchive(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        self.get_object().unarchive()
+        messages.success(self.request, u"'{}' unarchived".format(self.get_object().title))
+
+
 class Hide(AdminAction, DetailView):
     model = Track
 
