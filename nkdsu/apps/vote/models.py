@@ -1003,7 +1003,21 @@ class Track(CleanOnSaveMixin, models.Model):
 
     reset_shortlist_discard.alters_data = True  # type: ignore
 
+    def archive(self) -> None:
+        self.hidden = False
+        self.archived = True
+        self.save()
+
+    archive.alters_data = True  # type: ignore
+
+    def unarchive(self) -> None:
+        self.archived = False
+        self.save()
+
+    unarchive.alters_data = True  # type: ignore
+
     def hide(self) -> None:
+        self.archived = False
         self.hidden = True
         self.save()
 
