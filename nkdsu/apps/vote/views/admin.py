@@ -212,7 +212,9 @@ class Unarchive(AdminAction, DetailView):
 
     def do_thing(self):
         self.get_object().unarchive()
-        messages.success(self.request, u"'{}' unarchived".format(self.get_object().title))
+        messages.success(
+            self.request, u"'{}' unarchived".format(self.get_object().title)
+        )
 
 
 class Hide(AdminAction, DetailView):
