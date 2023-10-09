@@ -511,6 +511,22 @@ class ShortlistSelection(SelectionAdminAction):
             track.shortlist()
 
 
+class ArchiveSelection(SelectionAdminAction):
+    fmt = u'{} archived'
+
+    def do_thing(self) -> None:
+        for track in self.get_queryset():
+            track.archive()
+
+
+class UnarchiveSelection(SelectionAdminAction):
+    fmt = u'{} unarchived'
+
+    def do_thing(self) -> None:
+        for track in self.get_queryset():
+            track.unarchive()
+
+
 class HideSelection(SelectionAdminAction):
     fmt = u'{} hidden'
 
