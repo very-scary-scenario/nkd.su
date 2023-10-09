@@ -462,6 +462,16 @@ class HiddenTracks(AdminMixin, ListView):
         return qs.order_by('-added')
 
 
+class ArchivedTracks(AdminMixin, ListView):
+    model = Track
+    template_name = 'archived.html'
+    context_object_name = 'tracks'
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(archived=True, inudesu=False)
+        return qs.order_by('-added')
+
+
 class TracksWithNoMediaId(AdminMixin, ListView):
     model = Track
     template_name = 'no_media_id.html'
