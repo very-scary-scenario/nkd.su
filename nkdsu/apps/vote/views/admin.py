@@ -497,7 +497,7 @@ class TracksWithNoMediaId(AdminMixin, ListView):
 
     def get_queryset(self):
         qs = self.model.objects.filter(
-            revealed__isnull=False, hidden=False, inudesu=False, media_id=None
+            revealed__isnull=False, hidden=False, inudesu=False, archived=False, media_id=None
         )
         return qs.order_by('added')
 
