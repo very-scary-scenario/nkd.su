@@ -1,7 +1,7 @@
 It's no longer possible for nkd.su to require the use of Twitter, so we've
 migrated to a local account system for making requests.
 
-**If you're new here**, you can make a new nkd.su from scratch.
+**If you're new here**, you can make a new nkd.su account from scratch.
 
 **If you're an existing nkd.su requester**, the username matching your Twitter
 handle is reserved. Make a regular nkd.su account under a different username,
