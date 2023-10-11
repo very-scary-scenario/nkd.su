@@ -264,7 +264,11 @@ def update_library(
 
         tracks_kept.append(db_track)
 
-    for track in [tr for tr in alltracks if tr not in tracks_kept and not tr.hidden]:
+    for track in [
+        tr
+        for tr in alltracks
+        if tr not in tracks_kept and not tr.hidden and not tr.archived
+    ]:
         if not track.metadata_locked:
             changes.append(
                 {

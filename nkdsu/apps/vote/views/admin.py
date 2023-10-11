@@ -199,6 +199,24 @@ class PostAboutPlay(TrackSpecificAdminMixin, TemplateView):
     template_name = 'post_about_play.html'
 
 
+class Archive(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        self.get_object().archive()
+        messages.success(self.request, u"'{}' archived".format(self.get_object().title))
+
+
+class Unarchive(AdminAction, DetailView):
+    model = Track
+
+    def do_thing(self):
+        self.get_object().unarchive()
+        messages.success(
+            self.request, u"'{}' unarchived".format(self.get_object().title)
+        )
+
+
 class Hide(AdminAction, DetailView):
     model = Track
 
@@ -462,6 +480,16 @@ class HiddenTracks(AdminMixin, ListView):
         return qs.order_by('-added')
 
 
+class ArchivedTracks(AdminMixin, ListView):
+    model = Track
+    template_name = 'archived.html'
+    context_object_name = 'tracks'
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(archived=True, inudesu=False)
+        return qs.order_by('-added')
+
+
 class TracksWithNoMediaId(AdminMixin, ListView):
     model = Track
     template_name = 'no_media_id.html'
@@ -469,7 +497,11 @@ class TracksWithNoMediaId(AdminMixin, ListView):
 
     def get_queryset(self):
         qs = self.model.objects.filter(
-            revealed__isnull=False, hidden=False, inudesu=False, media_id=None
+            revealed__isnull=False,
+            hidden=False,
+            inudesu=False,
+            archived=False,
+            media_id=None,
         )
         return qs.order_by('added')
 
@@ -499,6 +531,22 @@ class ShortlistSelection(SelectionAdminAction):
     def do_thing(self) -> None:
         for track in self.get_queryset():
             track.shortlist()
+
+
+class ArchiveSelection(SelectionAdminAction):
+    fmt = u'{} archived'
+
+    def do_thing(self) -> None:
+        for track in self.get_queryset():
+            track.archive()
+
+
+class UnarchiveSelection(SelectionAdminAction):
+    fmt = u'{} unarchived'
+
+    def do_thing(self) -> None:
+        for track in self.get_queryset():
+            track.unarchive()
 
 
 class HideSelection(SelectionAdminAction):

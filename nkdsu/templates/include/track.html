@@ -131,6 +131,11 @@
           {% else %}
             <span><a href="{% url "vote:admin:hide" pk=track.pk %}">hide</a></span>
           {% endif %}
+          {% if track.archived %}
+            <span><a href="{% url "vote:admin:unarchive" pk=track.pk %}">unarchive</a></span>
+          {% else %}
+            <span><a href="{% url "vote:admin:archive" pk=track.pk %}">archive</a></span>
+          {% endif %}
           {% if track in current_show.discarded or track in current_show.shortlisted %}
             <span><a class="ajaxable" href="{% url "vote:admin:reset" pk=track.pk %}">reset shortlist/discard</a></span>
           {% else %}

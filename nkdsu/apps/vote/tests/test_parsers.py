@@ -225,6 +225,16 @@ PART_EXAMPLES: list[tuple[str, list[tuple[bool, str]]]] = [
             (True, '▽▲TRiNITY▲▽'),
         ],
     ),
+    (
+        'Eunsol(1008), NA.ZU.NA, Ookubo Yuki',
+        [
+            (True, 'Eunsol(1008)'),
+            (False, ', '),
+            (True, 'NA.ZU.NA'),
+            (False, ', '),
+            (True, 'Ookubo Yuki'),
+        ],
+    ),
 ]
 
 GROUP_EXAMPLES = [

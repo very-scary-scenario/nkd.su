@@ -97,7 +97,7 @@ body {
         &#new-tracks-header-link i::before { content: @fa-var-concierge-bell; }
         &#roulette-header-link i::before { content: @fa-var-dice; }
         &#stats-header-link i::before { content: @fa-var-chart-bar; }
-        &#donate-header-link i::before { .fab(); content: @fa-var-patreon; }
+        &#donate-header-link i::before { content: @fa-var-donate; }
         &#discord-header-link i::before { .fab(); content: @fa-var-discord; }
         &#etc-header-link i::before { content: @fa-var-ellipsis-h; }
 
@@ -287,11 +287,11 @@ body {
           text-align: center;
 
           &::before {
-            .fab();
+            .fa();
             font-size: 1.5em;
             margin-bottom: .3em;
             color: @patreon-colour;
-            content: @fa-var-patreon;
+            content: @fa-var-donate;
             display: block;
           }
         }

@@ -610,6 +610,20 @@ class Role:
 
 
 class Track(CleanOnSaveMixin, models.Model):
+    class Meta:
+        constraints = [
+            CheckConstraint(
+                check=~Q(archived=True, hidden=True),
+                name='track_cannot_be_both_hidden_and_archived',
+            ),
+            CheckConstraint(
+                check=~Q(
+                    hidden=False, archived=False, inudesu=False, revealed__isnull=True
+                ),
+                name='track_must_have_revealed_date_when_visible',
+            ),
+        ]
+
     objects = TrackQuerySet.as_manager()
 
     # derived from iTunes
@@ -633,7 +647,15 @@ class Track(CleanOnSaveMixin, models.Model):
 
     # nkdsu-specific
     revealed = models.DateTimeField(blank=True, null=True, db_index=True)
-    hidden = models.BooleanField()
+    archived = models.BooleanField(
+        help_text=(
+            'This will never be played again, but cannot be removed from the database for historical reasons.'
+        ),
+        default=False,
+    )
+    hidden = models.BooleanField(
+        help_text='This track has not been revealed, or is pending migration.'
+    )
     inudesu = models.BooleanField()
     background_art = models.ImageField(blank=True, upload_to=art_path)
     metadata_locked = models.BooleanField(default=False)
@@ -655,10 +677,19 @@ class Track(CleanOnSaveMixin, models.Model):
         return hash(self.id)
 
     def clean(self) -> None:
-        if (not self.inudesu) and (not self.hidden) and (not self.revealed):
+        # these checks can be deleted once we're on django 4.2, since they're enforced in a constraint
+        # (be sure to preserve the nice error messages, though)
+        if (
+            (not self.inudesu)
+            and (not self.hidden)
+            and (not self.archived)
+            and (not self.revealed)
+        ):
             raise ValidationError(
-                '{track} is not hidden but has no revealed ' 'date'.format(track=self)
+                '{track} is visible but has no revealed date'.format(track=self)
             )
+        if self.hidden and self.archived:
+            raise ValidationError('Tracks cannot be both archived and hidden')
 
     @classmethod
     def all_anime_titles(cls) -> set[str]:
@@ -869,6 +900,9 @@ class Track(CleanOnSaveMixin, models.Model):
         if self.hidden:
             return 'hidden'
 
+        if self.archived:
+            return 'archived'
+
         current_show = Show.current()
 
         if not current_show.voting_allowed:
@@ -966,7 +1000,21 @@ class Track(CleanOnSaveMixin, models.Model):
 
     reset_shortlist_discard.alters_data = True  # type: ignore
 
+    def archive(self) -> None:
+        self.hidden = False
+        self.archived = True
+        self.save()
+
+    archive.alters_data = True  # type: ignore
+
+    def unarchive(self) -> None:
+        self.archived = False
+        self.save()
+
+    unarchive.alters_data = True  # type: ignore
+
     def hide(self) -> None:
+        self.archived = False
         self.hidden = True
         self.save()
 

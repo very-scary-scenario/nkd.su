@@ -35,6 +35,8 @@
         <p class="actions">
           <span><a href="{% url "vote:admin:hide_selection" %}">hide</a></span>
           <span><a href="{% url "vote:admin:unhide_selection" %}">unhide</a></span>
+          <span><a href="{% url "vote:admin:archive_selection" %}">archive</a></span>
+          <span><a href="{% url "vote:admin:archive_selection" %}">unarchive</a></span>
         </p>
       {% else %}
         {% if vote_url %}
