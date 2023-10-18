@@ -121,12 +121,12 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
     def _batting_average(
         self,
         cutoff: Optional[datetime.datetime] = None,
-        minimum_weight: float = 1.0,
+        minimum_weight: float = 1,
     ) -> Optional[float]:
         from .models import Show
 
         def ba(
-            pk, current_show_pk, cutoff: Optional[datetime.datetime]
+            pk: int, current_show_pk: int, cutoff: Optional[datetime.datetime]
         ) -> tuple[float, float]:
             score: float = 0
             weight: float = 0
