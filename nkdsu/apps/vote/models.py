@@ -1332,8 +1332,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             tracks=tracks,
         )
 
-    @property
-    @memoize
+    @cached_property
     def voter(self) -> Optional[Voter]:
         match self.vote_kind:
             case VoteKind.manual:
