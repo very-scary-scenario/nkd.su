@@ -186,13 +186,10 @@ def split_query_into_keywords(query: str) -> list[str]:
     return keywords
 
 
+memoize = lru_cache
+
+
 T = TypeVar('T')
-
-
-def memoize(func: Callable[..., T]) -> Callable[..., T]:
-    return lru_cache(func)
-
-
 C = TypeVar('C', bound=Callable[[VarArg(Any), KwArg(Any)], Any])
 
 
