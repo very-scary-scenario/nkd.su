@@ -17,7 +17,6 @@ from typing import (
 )
 from urllib.parse import urlencode
 
-from classtools import reify as ct_reify
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -192,22 +191,6 @@ T = TypeVar('T')
 
 def memoize(func: Callable[..., T]) -> Callable[..., T]:
     return lru_cache(func)
-
-
-def reify(func: Callable[[Any], T]) -> T:
-    wrapped = ct_reify(func)
-
-    # make doctests discoverable by pytest:
-    wrapped.__module__ = func.__module__
-
-    # pytest needs us to tell it where the wrapped function came from so that
-    # it can show errors in context. sphinx gets upset about callables if we
-    # set __wrapped__ as a method but surface something static. so, to placate
-    # both at once:
-    if not BUILDING_DOCS:
-        wrapped.__wrapped__ = func
-
-    return cast(T, wrapped)
 
 
 C = TypeVar('C', bound=Callable[[VarArg(Any), KwArg(Any)], Any])

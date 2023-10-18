@@ -5,6 +5,7 @@ import json
 import re
 from dataclasses import asdict, dataclass
 from enum import Enum, auto
+from functools import cached_property
 from io import BytesIO
 from string import ascii_letters
 from typing import Any, Iterable, Optional, cast
@@ -44,7 +45,6 @@ from .utils import (
     memoize,
     musicbrainzngs,
     pk_cached,
-    reify,
     split_id3_title,
     vote_url,
 )
@@ -322,7 +322,7 @@ class Show(CleanOnSaveMixin, models.Model):
             'vote:added', kwargs={'date': self.showtime.date().strftime('%Y-%m-%d')}
         )
 
-    @reify
+    @cached_property
     def start(self) -> Optional[datetime.datetime]:
         prev = self.prev()
 
@@ -816,23 +816,23 @@ class Track(CleanOnSaveMixin, models.Model):
 
         return ((show.end - last_play.date).days + 1) // 7
 
-    @reify
+    @cached_property
     def title(self) -> str:
         return self.split_id3_title()[0]
 
-    @reify
+    @cached_property
     def album(self) -> str:
         return self.id3_album
 
-    @reify
+    @cached_property
     def role(self) -> Optional[str]:
         return self.split_id3_title()[1]
 
-    @reify
+    @cached_property
     def roles(self) -> list[str]:
         return self.role.split('|') if self.role else []
 
-    @reify
+    @cached_property
     def role_details(self) -> list[Role]:
         return [Role(role) for role in self.roles]
 
@@ -847,7 +847,7 @@ class Track(CleanOnSaveMixin, models.Model):
     def has_anime(self, anime: str) -> bool:
         return anime in (r.anime for r in self.role_details)
 
-    @reify
+    @cached_property
     def artist(self) -> str:
         return self.id3_artist
 
@@ -1375,7 +1375,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             content and re.search(r'\b(birthday|b-?day)', content, flags=re.IGNORECASE)
         )
 
-    @reify
+    @cached_property
     def hat(self) -> Optional[UserBadge]:
         """
         Get the most important badge for a given vote, where the most important
@@ -1599,7 +1599,7 @@ class Request(CleanOnSaveMixin, models.Model):
             if (k not in Request.METADATA_KEYS or k == 'contact') and v.strip()
         }
 
-    @reify
+    @cached_property
     def active_shelving(self) -> Optional[ElfShelving]:
         try:
             return self.shelvings.get(disabled_at__isnull=True)
@@ -1616,7 +1616,7 @@ class Request(CleanOnSaveMixin, models.Model):
         >>> request.is_shelved
         False
         >>> shelving = ElfShelving.objects.create(request=request, created_by=user)
-        >>> del request.active_shelving  # to make @reify forget the cached response
+        >>> del request.active_shelving  # to make @cached_property forget the cached response
         >>> request.is_shelved
         True
         >>> shelving.disabled_at = timezone.now()
@@ -1829,7 +1829,7 @@ class UserBadge(CleanOnSaveMixin, models.Model):
                     }
                 )
 
-    @reify
+    @cached_property
     def badge_info(self) -> dict[str, Any]:
         (badge,) = (b for b in BADGES if b.slug == self.badge)
 

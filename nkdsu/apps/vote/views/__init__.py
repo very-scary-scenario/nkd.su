@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 from abc import abstractmethod
+from functools import cached_property
 from itertools import chain
 from random import sample
 from typing import Any, Iterable, Optional, Sequence, cast
@@ -32,7 +33,7 @@ from nkdsu.mixins import MarkdownView
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import Profile, Request, Show, Track, TrackQuerySet, TwitterUser, Vote
 from ..templatetags.vote_tags import eligible_for
-from ..utils import BrowsableItem, BrowsableYear, reify
+from ..utils import BrowsableItem, BrowsableYear
 from ..voter import Voter
 from ...vote import mixins
 
@@ -330,7 +331,7 @@ class Search(ListView):
 
         return resp
 
-    @reify
+    @cached_property
     def _queryset(self) -> TrackQuerySet:
         return self.model.objects.search(
             self.request.GET.get('q', ''),
