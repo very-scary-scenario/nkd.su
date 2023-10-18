@@ -128,7 +128,7 @@ class ShowDetailMixin(LetMemoizeGetObject[Show]):
         try:
             return qs[0]
         except IndexError:
-            raise Http404
+            raise Http404()
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         date_fmt = '%Y-%m-%d'
@@ -145,7 +145,7 @@ class ShowDetailMixin(LetMemoizeGetObject[Show]):
                 try:
                     naive_date = datetime.datetime.strptime(kwargs['date'], '%d-%m-%Y')
                 except ValueError:
-                    raise Http404
+                    raise Http404()
                 else:
                     fell_back = True
 
@@ -192,7 +192,7 @@ class ThisShowDetailMixin(ShowDetailMixin):
             try:
                 return self.model.at(timezone.now())
             except self.model.DoesNotExist:
-                raise Http404
+                raise Http404()
         else:
             return super().get_object()
 
@@ -274,7 +274,7 @@ class TwitterUserDetailMixin(LetMemoizeGetObject[TwitterUser]):
         )
 
         if not users.exists():
-            raise Http404
+            raise Http404()
         elif users.count() == 1:
             user = users[0]
         else:
@@ -283,7 +283,7 @@ class TwitterUserDetailMixin(LetMemoizeGetObject[TwitterUser]):
         if user.vote_set.exists():
             return user
         else:
-            raise Http404
+            raise Http404()
 
 
 class BreadcrumbMixin:

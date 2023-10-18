@@ -1385,6 +1385,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         badge_order = [b.slug for b in BADGES]
 
+        def get_badge_index(badge: UserBadge) -> int:
+            return badge_order.index(badge.badge)
+
         if not self.voter:
             return None
 
@@ -1401,7 +1404,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
                     or b.badge_info['finish'] >= self.show.end
                 )
             ),
-            key=lambda b: badge_order.index(b.badge),
+            key=get_badge_index,
             reverse=True,
         ):
             return badge
