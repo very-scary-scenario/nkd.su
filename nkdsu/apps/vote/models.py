@@ -374,7 +374,7 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
         return self.screen_name
 
     @property
-    def username(self):
+    def username(self) -> str:
         return self.screen_name
 
     def _twitter_user_and_profile(
@@ -453,7 +453,7 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         return (self.twitter_user, self)
 
     @property
-    def username(self):
+    def username(self) -> str:
         return self.user.username
 
     def get_absolute_url(self) -> str:
