@@ -1,6 +1,6 @@
 import codecs
 from os import path
-from typing import Any
+from typing import Any, Optional
 
 from django.conf import settings
 from django.views.generic import TemplateView
@@ -8,7 +8,7 @@ from markdown import markdown
 
 
 class MarkdownView(TemplateView):
-    template_name = 'markdown.html'
+    template_name: Optional[str] = 'markdown.html'
     filename: str
     title: str
 
