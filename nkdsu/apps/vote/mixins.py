@@ -5,7 +5,7 @@ import re
 from abc import abstractmethod
 from collections import OrderedDict
 from copy import copy
-from typing import Any, Generic, Iterable, Optional, Sequence, TypeVar, cast
+from typing import Any, Iterable, Optional, Sequence, TypeVar, cast
 
 from django.db.models import Model, QuerySet
 from django.db.utils import NotSupportedError
@@ -15,6 +15,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.base import ContextMixin
+from django.views.generic.detail import SingleObjectMixin
 
 from .models import Show, Track, TrackQuerySet, TwitterUser
 from .utils import BrowsableItem, memoize
@@ -30,7 +31,7 @@ class CurrentShowMixin(ContextMixin):
         return context
 
 
-class LetMemoizeGetObject(Generic[M]):
+class LetMemoizeGetObject(SingleObjectMixin[M]):
     """
     A view mixin that allows objects to be memoized if, and only if, the base
     queryset is not overridden, so we can be confident that sequential
@@ -41,11 +42,11 @@ class LetMemoizeGetObject(Generic[M]):
     particularly expensive.
     """
 
-    def get_object(self, queryset: Optional[QuerySet] = None) -> M:
+    def get_object(self, queryset: Optional[QuerySet[M]] = None) -> M:
         if queryset is None:
             return self.get_memoizable_object()
         else:
-            return super().get_object(queryset=queryset)  # type: ignore
+            return super().get_object(queryset=queryset)
 
     @abstractmethod
     def get_memoizable_object(self) -> M:
@@ -173,7 +174,7 @@ class ShowDetailMixin(LetMemoizeGetObject[Show]):
             return redirect(url)
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)  # type: ignore
+        context = super().get_context_data(**kwargs)
 
         context['show'] = self.get_object()
         return context

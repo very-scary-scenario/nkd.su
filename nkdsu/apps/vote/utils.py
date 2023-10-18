@@ -3,12 +3,11 @@ from __future__ import annotations
 import logging
 import string
 from dataclasses import dataclass
-from functools import partial
+from functools import lru_cache
 from os import environ
 from typing import (
     Any,
     Callable,
-    Generic,
     Iterable,
     NoReturn,
     Optional,
@@ -191,55 +190,8 @@ def split_query_into_keywords(query: str) -> list[str]:
 T = TypeVar('T')
 
 
-class Memoize(Generic[T]):
-    """
-    Cache the return value of a method on the object itself.
-
-    This class is meant to be used as a decorator of methods. The return value
-    from a given method invocation will be cached on the instance whose method
-    was invoked. All arguments passed to a method decorated with memoize must
-    be hashable.
-
-    If a memoized method is invoked directly on its class the result will not
-    be cached. Instead the method will be invoked like a static method:
-
-    >>> class Obj(object):
-    ...     @memoize
-    ...     def add_to(self, arg):
-    ...         return self + arg
-
-    >>> Obj.add_to(1)
-    Traceback (most recent call last):
-      ...
-    TypeError: Obj.add_to() missing 1 required positional argument: 'arg'
-    >>> Obj.add_to(1, 2) # result is not cached
-    3
-    """
-
-    def __init__(self, func: Callable[..., T]) -> None:
-        self.func = func
-
-    def __get__(self, obj, objtype=None):
-        if obj is None:
-            return self.func
-        return partial(self, obj)
-
-    def __call__(self, *args: Any, **kw: Any) -> T:
-        obj = args[0]
-        try:
-            cache = obj.__cache
-        except AttributeError:
-            cache = obj.__cache = {}
-        key = (self.func, args[1:], frozenset(kw.items()))
-        try:
-            res = cache[key]
-        except KeyError:
-            res = cache[key] = self.func(*args, **kw)
-        return res
-
-
 def memoize(func: Callable[..., T]) -> Callable[..., T]:
-    return Memoize(func)
+    return lru_cache(func)
 
 
 def reify(func: Callable[[Any], T]) -> T:
