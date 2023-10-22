@@ -245,18 +245,12 @@ class Show(CleanOnSaveMixin, models.Model):
     @memoize
     def shortlisted(self) -> list[Track]:
         playlist = self.playlist()
-        return [
-            p.track for p in self.shortlist_set.all()
-            if p.track not in playlist
-        ]
+        return [p.track for p in self.shortlist_set.all() if p.track not in playlist]
 
     @memoize
     def discarded(self) -> list[Track]:
         playlist = self.playlist()
-        return [
-            p.track for p in self.discard_set.all()
-            if p.track not in playlist
-        ]
+        return [p.track for p in self.discard_set.all() if p.track not in playlist]
 
     @memoize
     @pk_cached(20)
