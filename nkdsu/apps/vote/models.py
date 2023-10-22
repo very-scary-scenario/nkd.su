@@ -85,6 +85,9 @@ class Show(CleanOnSaveMixin, models.Model):
     def __repr__(self) -> str:
         return str(self)
 
+    def __hash__(self) -> int:
+        return hash((type(self), self.id))
+
     def clean(self) -> None:
         if self.end < self.showtime:
             raise ValidationError(
@@ -365,6 +368,9 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
     def __repr__(self) -> str:
         return self.screen_name
 
+    def __hash__(self) -> int:
+        return hash((type(self), self.id))
+
     @property
     def username(self) -> str:
         return self.screen_name
@@ -438,6 +444,9 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
 
     def __str__(self) -> str:
         return f'{self.display_name} ({self.user.username})'
+
+    def __hash__(self) -> int:
+        return hash((type(self), self.id))
 
     def _twitter_user_and_profile(
         self,
@@ -666,7 +675,7 @@ class Track(CleanOnSaveMixin, models.Model):
         return type(self) is type(other) and self.id == other.id
 
     def __hash__(self) -> int:
-        return hash(self.id)
+        return hash((type(self), self.id))
 
     def clean(self) -> None:
         # these checks can be deleted once we're on django 4.2, since they're enforced in a constraint
@@ -1254,6 +1263,9 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     # manual only
     name = models.CharField(max_length=40, blank=True)
     kind = models.CharField(max_length=10, choices=MANUAL_VOTE_KINDS, blank=True)
+
+    def __hash__(self) -> int:
+        return hash((type(self), self.id))
 
     def clean(self) -> None:
         match self.vote_kind:
