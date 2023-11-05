@@ -22,7 +22,7 @@
   {% else %}
     <div class="markdown">
       <p>you are not eligible to request any of the tracks you have selected at the moment</p>
-      <p>were you doing anything weird to end up in this situation? if you think you might have found a bug, please consider <a href="https://github.com/very-scary-scenario/nkd.su/issues/new">reporting it</a><p>
     </div>
+    <p class="aside"><a href="{% url "vote:index" %}">go home?</a></p>
   {% endif %}
 {% endblock %}
