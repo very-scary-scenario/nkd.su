@@ -88,7 +88,7 @@
             <li><a href="{% url "password_set" %}">set password</a></li>
           {% endif %}
           <li>
-            <a href="{% url "logout" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log out</a>
+            <a href="{% url "logout" %}">log out</a>
           </li>
         {% else %}
           <li>
