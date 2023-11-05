@@ -21,5 +21,12 @@
       <span><a target="_blank" href="https://github.com/very-scary-scenario/nkd.su">source</a></span>
       <span><a target="_blank" href="https://github.com/very-scary-scenario/nkd.su/issues">issues</a></span>
     {% endif %}
+    <span>
+      {% if user.is_authenticated %}
+        <a href="{% url "logout" %}">log out</a>
+      {% else %}
+        <a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in</a>
+      {% endif %}
+    </span>
   </p>
 </div>
