@@ -1,8 +1,9 @@
 import re
 from random import choice
-from typing import Any, Optional
+from typing import Any, Optional, Sequence
 
 from django import forms
+from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 
 from .models import Note, Track, Vote
@@ -125,12 +126,25 @@ class VoteForm(forms.ModelForm):
     A form for creating a :class:`.models.Vote`.
     """
 
+    tracks: Sequence[Track]
+    user: User
+
     class Meta:
         model = Vote
         fields = ['text']
         widgets = {
             'text': forms.TextInput(),
         }
+
+    def __init__(self, *args, tracks: Sequence[Track], **kwargs):
+        self.tracks = tracks
+        super().__init__(*args, **kwargs)
+
+    def clean(self) -> None:
+        super().clean()
+
+        if len(self.tracks) == 0:
+            raise forms.ValidationError('No tracks were selected')
 
 
 class CheckMetadataForm(forms.Form):

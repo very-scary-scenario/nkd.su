@@ -777,13 +777,12 @@ class VoteView(LoginRequiredMixin, CreateView):
         )
 
     def get_form_kwargs(self) -> dict[str, Any]:
-        self.get_track_pks()  # to make sure we throw a 404 before doing anything with too many tracks
-
         assert not isinstance(self.request.user, AnonymousUser)
         instance = Vote(user=self.request.user, date=timezone.now())
         return {
             **super().get_form_kwargs(),
             'instance': instance,
+            'tracks': self.get_tracks(),
         }
 
     def form_valid(self, form: VoteForm) -> HttpResponse:
