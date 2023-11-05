@@ -3,7 +3,6 @@ from random import choice
 from typing import Any, Optional, Sequence
 
 from django import forms
-from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 
 from .models import Note, Track, Vote
@@ -127,7 +126,6 @@ class VoteForm(forms.ModelForm):
     """
 
     tracks: Sequence[Track]
-    user: User
 
     class Meta:
         model = Vote
