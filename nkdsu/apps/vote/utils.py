@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import string
 from dataclasses import dataclass
-from functools import lru_cache
 from os import environ
 from typing import (
     Any,
@@ -186,11 +185,17 @@ def split_query_into_keywords(query: str) -> list[str]:
     return keywords
 
 
-memoize = lru_cache
-
-
 T = TypeVar('T')
 C = TypeVar('C', bound=Callable[[VarArg(Any), KwArg(Any)], Any])
+
+
+def memoize(func: C) -> C:
+    """
+    Do nothing, for now; :func:`.lru_cache` does not get wiped for new instances of
+    `self`, which is a problem when we need to catch updates.
+    """
+
+    return func
 
 
 def cached(seconds: int, cache_key: str) -> Callable[[C], C]:
