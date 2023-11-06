@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Optional, Protocol, TYPE_CHECKING, _ProtocolMeta
+from typing import Iterable, Optional, Protocol, TYPE_CHECKING, _ProtocolMeta
 
 from django.db.models import BooleanField, CharField, QuerySet
 from django.db.models.base import ModelBase
@@ -9,7 +9,7 @@ from django.utils import timezone
 from .utils import memoize
 
 if TYPE_CHECKING:
-    from .models import UserBadge, Vote, Show, Track, Profile, TwitterUser
+    from .models import UserBadge, Vote, Show, Track, Profile, TwitterUser, UserWebsite
 
     # to check to see that their VoterProtocol implementations are complete:
     Profile()
@@ -117,6 +117,9 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
             )
             .exists()
         )
+
+    def get_websites(self) -> Iterable[UserWebsite]:
+        return []
 
     def _batting_average(
         self,

@@ -69,5 +69,15 @@
       {% endfor %}
     </ul>
   {% endif %}
+
+  {% if voter.get_websites %}
+    <ul class="websites">
+      {% for website in voter.get_websites %}
+        <li>
+          <a href="website.url">{{ website.url }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 </div>
 
