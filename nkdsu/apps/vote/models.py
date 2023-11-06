@@ -488,6 +488,42 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         return reverse('vote:admin:toggle_local_abuser', kwargs={'user_id': self.pk})
 
 
+class UserWebsite(CleanOnSaveMixin, models.Model):
+    url = models.URLField()
+    profile = models.ForeignKey(Profile, related_name='websites', on_delete=models.CASCADE)
+
+    @property
+    def icon(self) -> str:
+        """
+        Return an appropriate identify for for what kind of URL this is.
+
+        >>> UserWebsite(url='https://someone.tumblr.com').icon
+        'tumblr'
+        >>> UserWebsite(url='https://tumblr.com/someone').icon
+        'tumblr'
+        >>> UserWebsite(url='https://cohost.org/someone').icon
+        'cohost'
+        >>> UserWebsite(url='https://bsky.app/profile/someone').icon
+        'bsky'
+        >>> UserWebsite(url='https://www.instagram.com/someone').icon
+        'instagram'
+        >>> UserWebsite(url='https://www.threads.net/@someone').icon
+        'threads'
+        >>> UserWebsite(url='https://linkedin.com/in/someone-jsioadj/').icon
+        'linkedin'
+        >>> UserWebsite(url='https://facebook.com/someone').icon
+        'facebook'
+        >>> UserWebsite(url='https://www.youtube.com/@someone').icon
+        'youtube'
+        >>> UserWebsite(url='https://www.youtube.com/channel/someone/').icon
+        'youtube'
+        >>> UserWebsite(url='https://www.twitch.tv/someone/').icon
+        'twitch'
+        >>> UserWebsite(url='https://website.tld').icon
+        'website'
+        """
+
+
 def art_path(i: Track, f: str) -> str:
     return 'art/bg/%s.%s' % (i.pk, f.split('.')[-1])
 
