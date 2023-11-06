@@ -488,6 +488,9 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         return reverse('vote:admin:toggle_local_abuser', kwargs={'user_id': self.pk})
 
 
+MAX_WEBSITES = 5
+
+
 class UserWebsite(CleanOnSaveMixin, models.Model):
     class Meta:
         constraints = [
@@ -495,13 +498,18 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
                 fields=['url', 'profile'],
                 name='unique_url_per_profile',
                 violation_error_message="You can't provide the same URL more than once",
-            )
+            ),
         ]
 
     url = models.URLField()
     profile = models.ForeignKey(
         Profile, related_name='websites', on_delete=models.CASCADE
     )
+
+    def clean(self) -> None:
+        super().clean()
+        if self._state.adding and self.profile.websites.count() >= MAX_WEBSITES:
+            raise ValidationError('You cannot have any more websites')
 
     @property
     def icon(self) -> str:
