@@ -499,7 +499,9 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
         ]
 
     url = models.URLField()
-    profile = models.ForeignKey(Profile, related_name='websites', on_delete=models.CASCADE)
+    profile = models.ForeignKey(
+        Profile, related_name='websites', on_delete=models.CASCADE
+    )
 
     @property
     def icon(self) -> str:
