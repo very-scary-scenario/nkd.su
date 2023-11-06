@@ -73,7 +73,7 @@
   {% if voter.get_websites %}
     <ul class="websites">
       {% for website in voter.get_websites %}
-        <li>
+        <li data-icon="{{ website.icon }}">
           <a href="website.url">{{ website.url }}</a>
         </li>
       {% endfor %}

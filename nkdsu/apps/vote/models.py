@@ -9,7 +9,7 @@ from functools import cached_property
 from io import BytesIO
 from string import ascii_letters
 from typing import Any, Iterable, Optional, cast
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 from uuid import uuid4
 
 from Levenshtein import ratio
@@ -544,6 +544,34 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
         >>> UserWebsite(url='https://website.tld').icon
         'website'
         """
+
+        hostname = urlparse(self.url).hostname
+        assert hostname is not None, f"url {self.url!r} has no hostname"
+
+        rv = {
+            'bsky.app': 'bsky',
+            'cohost.org': 'cohost',
+            'facebook.com': 'facebook',
+            'instagram.com': 'instagram',
+            'linkedin.com': 'linkedin',
+            'threads.net': 'threads',
+            'tumblr.com': 'tumblr',
+            'twitch.tv': 'twitch',
+            'twitter.com': 'twitter',
+            'x.com': 'twitter',
+            'youtube.com': 'youtube',
+        }.get(hostname.removeprefix('www.'))
+
+        if rv is not None:
+            return rv
+
+        # some places let you use subdomains:
+        if hostname.endswith('.tumblr.com'):
+            return 'tumblr'
+        if hostname.endswith('.cohost.com'):
+            return 'cohost'
+
+        return 'website'
 
 
 def art_path(i: Track, f: str) -> str:
