@@ -1081,9 +1081,15 @@ dl.metadata-check {
     margin: 1em 0;
   }
 
-  form p input, form p label, form p textarea {
-    display: block;
-    max-width: 100%;
+  form p {
+    input, label, textarea {
+      display: block;
+      max-width: 100%;
+    }
+
+    input[type="text"], input[type="password"], textarea {
+      width: 100%;
+    }
   }
 
   form p label {
