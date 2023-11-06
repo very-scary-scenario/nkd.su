@@ -784,8 +784,21 @@ form {
       text-align: center;
     }
 
-    input, textarea {
+    input[type=text], input[type=password], textarea {
+      .nkdsu-font();
+      box-sizing: border-box;
+      background-color: @inv_fg;
+      color: @inv_bg;
+      border-radius: .2em;
+      border: none;
+      outline: none;
+      padding: .1em .2em;
+      font-size: 1.1em;
       text-align: left;
+
+      &:focus {
+        outline: 2px solid @hl;
+      }
     }
 
     .helptext {
@@ -819,9 +832,6 @@ main.login {
     justify-content: space-evenly;
 
     > section {
-      padding: 0 1em;
-      max-width: 30rem;
-
       p {
         margin-bottom: .5em;
       }
@@ -1043,14 +1053,18 @@ dl.metadata-check {
       > label {
         clear: both;
         float: left;
-        width: 42%;
+        width: 32%;
         text-align: right;
         padding-right: .5em;
+        margin: .2em 0 .5em;
+      }
+      > input[type=text], > input[type=password], > textarea {
+        width: 60%;
       }
     }
 
     .helptext, .clear-file, .replacement-file-input {
-      margin-left: 42%;
+      margin-left: 32%;
       padding-left: .5em;
     }
   }
@@ -1073,6 +1087,7 @@ dl.metadata-check {
 
   form p input, form p label, form p textarea {
     display: block;
+    max-width: 100%;
   }
 
   form p label {
