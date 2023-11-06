@@ -22,7 +22,7 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from django.db.models import Q
-from django.db.models.constraints import CheckConstraint
+from django.db.models.constraints import CheckConstraint, UniqueConstraint
 from django.template.defaultfilters import slugify
 from django.templatetags.static import static
 from django.urls import reverse
@@ -489,6 +489,15 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
 
 
 class UserWebsite(CleanOnSaveMixin, models.Model):
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['url', 'profile'],
+                name='unique_url_per_profile',
+                violation_error_message="You can't provide the same URL more than once",
+            )
+        ]
+
     url = models.URLField()
     profile = models.ForeignKey(Profile, related_name='websites', on_delete=models.CASCADE)
 
