@@ -23,9 +23,6 @@ installed.
 - Run `npm install` from the repository root to install the node tools used for
   static file preprocessing and linting.
 - Create a `nkdsu/settings_local.py`
-    - Add Twitter API keys as `SOCIAL_AUTH_TWITTER_KEY` and
-      `SOCIAL_AUTH_TWITTER_SECRET` It does not matter what account you use for
-      this.
     - [Make some last.fm API keys][lastfmapikeys] and add them as
       `LASTFM_API_KEY` and `LASTFM_API_SECRET`.
 - Set up a database and add the [settings][db] for it to your
@@ -55,9 +52,6 @@ to accept votes and generally be responsible, though:
     - You should run the `refresh_votes` management command every two minutes
       or so.
     - You should run the `clearsessions` management command daily.
-    - So that we don't start getting broken images for Twitter users who've
-      changed their avatar since they last voted, you should run the
-      `update_twitter_avatars` management command daily.
     - To keep track album art up to date, you should run the
       `update_background_art` command at least once a week.
     - It would be super considerate to run the `dumpdata vote` command piped to
