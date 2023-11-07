@@ -33,6 +33,7 @@ from markdown import markdown
 import requests
 
 from .managers import NoteQuerySet, TrackQuerySet
+from .mastodon_instances import MASTODON_INSTANCES
 from .parsers import ParsedArtist, parse_artist
 from .placeholder_avatars import placeholder_avatar_for
 from .utils import (
@@ -543,6 +544,8 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
         'youtube'
         >>> UserWebsite(url='https://www.twitch.tv/someone/').icon
         'twitch'
+        >>> UserWebsite(url='https://plush.city/@someone').icon
+        'mastodon'
         >>> UserWebsite(url='https://website.tld').icon
         'website'
         """
@@ -572,6 +575,9 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
             return 'tumblr'
         if hostname.endswith('.cohost.com'):
             return 'cohost'
+
+        if hostname in MASTODON_INSTANCES:
+            return 'mastodon'
 
         return 'website'
 
