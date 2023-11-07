@@ -50,26 +50,6 @@
     <p class="patron">{{ voter.name }} supports Neko Desu <a href="https://www.patreon.com/NekoDesu">financially</a>!</p>
   {% endif %}
 
-  {% if voter.badges %}
-    <ul class="badges">
-      {% for badge in voter.badges %}
-        <li>
-          <i class="fa fa-{{ badge.badge_info.icon }}"></i>
-
-          <div class="badge-detail">
-            <div class="badge-detail-content">
-              <p>{{ badge.badge_info.description }}</p>
-
-              {% if badge.badge_info.url %}
-                <p><a href="{{ badge.badge_info.url }}">More info&hellip;</a></p>
-              {% endif %}
-            </div>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-
   {% if voter.get_websites or voter == request.user %}
     <div class="websites">
       <ul>
@@ -95,6 +75,26 @@
         </details>
       {% endif %}
     </div>
+  {% endif %}
+
+  {% if voter.badges %}
+    <ul class="badges">
+      {% for badge in voter.badges %}
+        <li>
+          <i class="fa fa-{{ badge.badge_info.icon }}"></i>
+
+          <div class="badge-detail">
+            <div class="badge-detail-content">
+              <p>{{ badge.badge_info.description }}</p>
+
+              {% if badge.badge_info.url %}
+                <p><a href="{{ badge.badge_info.url }}">More info&hellip;</a></p>
+              {% endif %}
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
   {% endif %}
 </div>
 
