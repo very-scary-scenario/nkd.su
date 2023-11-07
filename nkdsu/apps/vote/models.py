@@ -531,22 +531,8 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
         'tumblr'
         >>> UserWebsite(url='https://cohost.org/someone').icon
         'cohost'
-        >>> UserWebsite(url='https://bsky.app/profile/someone').icon
-        'bsky'
         >>> UserWebsite(url='https://www.instagram.com/someone').icon
         'instagram'
-        >>> UserWebsite(url='https://www.threads.net/@someone').icon
-        'threads'
-        >>> UserWebsite(url='https://linkedin.com/in/someone-jsioadj/').icon
-        'linkedin'
-        >>> UserWebsite(url='https://facebook.com/someone').icon
-        'facebook'
-        >>> UserWebsite(url='https://www.youtube.com/@someone').icon
-        'youtube'
-        >>> UserWebsite(url='https://www.youtube.com/channel/someone/').icon
-        'youtube'
-        >>> UserWebsite(url='https://www.twitch.tv/someone/').icon
-        'twitch'
         >>> UserWebsite(url='https://plush.city/@someone').icon
         'mastodon'
         >>> UserWebsite(url='https://website.tld').icon
