@@ -68,7 +68,7 @@
 
       {% if voter == request.user.profile and not voter.has_max_websites %}
         <details>
-          <summary>add a website</summary>
+          <summary><span>add a website</span></summary>
           <form method="post">
             {% csrf_token %}
             <p>
