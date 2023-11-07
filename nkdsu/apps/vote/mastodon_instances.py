@@ -1,6 +1,7 @@
 # this file is populated by running `python manage.py update_mastodon_instances`
+# do not edit it by hand
 
-MASTODON_INSTANCES = {
+MASTODON_INSTANCES: set[str] = {
     '0-0.cum.cx',
     '0.01010011.xyz',
     '0.0n.ee',
