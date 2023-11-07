@@ -56,10 +56,12 @@
         {% for website in voter.get_websites %}
           <li data-icon="{{ website.icon }}">
             <a href="{{ website.url }}">{{ website.url|strip_scheme }}</a>
-            <form method="post">
-              {% csrf_token %}
-              <button title="remove this URL from your profile" class="link" type="submit" name="delete-website" value="{{ website.pk }}">✗</button>
-            </form>
+            {% if voter == request.user.profile %}
+              <form method="post">
+                {% csrf_token %}
+                <button title="remove this URL from your profile" class="link" type="submit" name="delete-website" value="{{ website.pk }}">✗</button>
+              </form>
+            {% endif %}
           </li>
         {% endfor %}
       </ul>
