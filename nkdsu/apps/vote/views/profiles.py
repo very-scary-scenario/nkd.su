@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -49,6 +50,19 @@ class ProfileView(VoterDetail):
             else:
                 website.delete()
                 messages.success(self.request, f"website {website.url!r} removed from your profile")
+                return redirect('.')
+
+        if request.POST.get('add-website') == 'yes' and request.POST.get('url'):
+            if user.profile.has_max_websites():
+                messages.warning(self.request, "don't you think you have enough websites already")
+                return redirect('.')
+            else:
+                try:
+                    website = user.profile.websites.create(url=request.POST['url'])
+                except ValidationError as e:
+                    messages.warning(self.request, ', '.join(e.messages))
+                    return redirect('.')
+                messages.success(self.request, f"website {website.url} added to your profile")
                 return redirect('.')
 
         return redirect('.')
