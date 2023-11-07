@@ -562,6 +562,7 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
             'facebook.com': 'facebook',
             'instagram.com': 'instagram',
             'linkedin.com': 'linkedin',
+            'nkd.su': 'nkdsu',
             'threads.net': 'threads',
             'tumblr.com': 'tumblr',
             'twitch.tv': 'twitch',
