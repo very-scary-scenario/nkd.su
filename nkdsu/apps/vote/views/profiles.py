@@ -1,16 +1,18 @@
 from typing import Optional
 
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
-from django.shortcuts import get_object_or_404
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import UpdateView
 
 from . import VoterDetail
 from ..forms import ClearableFileInput
-from ..models import Profile
+from ..models import Profile, UserWebsite
 from ..utils import get_profile_for
 
 
@@ -28,6 +30,28 @@ class ProfileView(VoterDetail):
             queryset = self.get_queryset()
 
         return get_object_or_404(queryset, username=self.kwargs['username'])
+
+    def post(self, request: HttpRequest, username: str) -> HttpResponse:
+        user = self.get_object()
+        assert isinstance(user, User)
+
+        if request.user != user:
+            messages.warning(self.request, "this isn't you. stop that.")
+            return redirect('.')
+
+        delete_pk = request.POST.get('delete-website')
+        if delete_pk is not None:
+            try:
+                website = user.profile.websites.get(pk=delete_pk)
+            except UserWebsite.DoesNotExist:
+                messages.warning(self.request, "that website isn't on your profile at the moment")
+                return redirect('.')
+            else:
+                website.delete()
+                messages.success(self.request, f"website {website.url!r} removed from your profile")
+                return redirect('.')
+
+        return redirect('.')
 
     def get_voter(self) -> Profile:
         user = self.get_object()
