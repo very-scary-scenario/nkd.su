@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 from typing import Iterable, Optional
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 from allauth.account.models import EmailAddress
 from django.contrib.auth.models import AnonymousUser, User
@@ -125,16 +125,16 @@ def eligible_for(track: Track, user: User | AnonymousUser) -> bool:
 
 
 @register.filter
-def strip_scheme(url: str) -> str:
+def url_display(url: str) -> str:
     """
-    Strip the scheme from a URL, if present.
+    Strip the scheme and unquote %-sequences in a URL, if present.
 
-    >>> strip_scheme('https://nkd.su/path?q=s#fragment')
+    >>> url_display('https://nkd.su/path?q=s#fragment')
     'nkd.su/path?q=s#fragment'
-    >>> strip_scheme('ftps://nkd.su/path?q=s#fragment')
-    'nkd.su/path?q=s#fragment'
-    >>> strip_scheme('not a url')
+    >>> url_display('ftps://nkd.su/p%C3%A4th?q=s#fragment')
+    'nkd.su/päth?q=s#fragment'
+    >>> url_display('not a url')
     'not a url'
     """
 
-    return url.removeprefix(f'{urlparse(url).scheme}://')
+    return unquote(url.removeprefix(f'{urlparse(url).scheme}://'))

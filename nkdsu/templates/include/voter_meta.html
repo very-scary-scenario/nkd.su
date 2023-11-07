@@ -55,7 +55,7 @@
       <ul>
         {% for website in voter.get_websites %}
           <li data-icon="{{ website.icon }}">
-            <a href="{{ website.url }}">{{ website.url|strip_scheme }}</a>
+            <a href="{{ website.url }}">{{ website.url|url_display }}</a>
             {% if voter == request.user.profile %}
               <form method="post">
                 {% csrf_token %}
