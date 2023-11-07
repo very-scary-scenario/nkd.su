@@ -536,7 +536,7 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
         >>> UserWebsite(url='https://plush.city/@someone').icon
         'mastodon'
         >>> UserWebsite(url='https://website.tld').icon
-        'website'
+        '_website'
         """
 
         hostname = urlparse(self.url).hostname
@@ -571,7 +571,7 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
         if hostname in MASTODON_INSTANCES:
             return 'mastodon'
 
-        return 'website'
+        return '_website'
 
 
 def art_path(i: Track, f: str) -> str:
