@@ -61,7 +61,7 @@ This can include:
 - a [hashed][django-password-storage] password
 - a screen name and a display name
 - an avatar
-- an email address
+- email addresses
 
 [django-password-storage]: https://docs.djangoproject.com/en/3.2/topics/auth/passwords/#how-django-stores-passwords "how Django stores passwords"
 
