@@ -21,7 +21,8 @@ class Command(BaseCommand):
 
         with open(module_path, 'wt') as f:
             f.write(
-                "# this file is populated by running `python manage.py update_mastodon_instances`\n\n"
+                "# this file is populated by running `python manage.py update_mastodon_instances`\n"
+                "# do not edit it by hand\n\n"
             )
             f.write(f"MASTODON_INSTANCES: set[str] = {{ {', '.join((repr(i) for i in instances))} }}")
 
