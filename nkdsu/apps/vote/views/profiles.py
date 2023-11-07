@@ -69,7 +69,7 @@ class ProfileView(VoterDetail):
                     messages.warning(self.request, ', '.join(e.messages))
                     return redirect('.')
                 messages.success(
-                    self.request, f"website {website.url} added to your profile"
+                    self.request, f"website {website.url!r} added to your profile"
                 )
                 return redirect('.')
 
