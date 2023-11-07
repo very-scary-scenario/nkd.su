@@ -70,14 +70,31 @@
     </ul>
   {% endif %}
 
-  {% if voter.get_websites %}
-    <ul class="websites">
-      {% for website in voter.get_websites %}
-        <li data-icon="{{ website.icon }}">
-          <a href="website.url">{{ website.url }}</a>
-        </li>
-      {% endfor %}
-    </ul>
+  {% if voter.get_websites or voter == request.user %}
+    <div class="websites">
+      <ul>
+        {% for website in voter.get_websites %}
+          <li data-icon="{{ website.icon }}">
+            <a href="website.url">{{ website.url }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      {% if voter == request.user.profile %}
+        <details>
+          <summary>add a website</summary>
+          <form method="post">
+            <p>
+              <label>URL:</label>
+              <input type="text" name="url" placeholder="https://mycoolwebsite.gov"/>
+            </p>
+            <p class="submit">
+              <button class="button" type="submit">Add website</button>
+            </p>
+          </form>
+        </details>
+      {% endif %}
+    </div>
   {% endif %}
 </div>
 
