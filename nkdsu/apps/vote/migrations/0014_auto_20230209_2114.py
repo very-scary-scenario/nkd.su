@@ -28,7 +28,10 @@ class Migration(migrations.Migration):
                 blank=True,
                 crop=['middle', 'center'],
                 force_format='PNG',
-                help_text='will be resized to 500x500 and converted to png, so provide that if you can',
+                help_text=(
+                    'will be resized to 500x500 and converted to png, so provide that'
+                    ' if you can'
+                ),
                 keep_meta=False,
                 quality=-1,
                 scale=None,

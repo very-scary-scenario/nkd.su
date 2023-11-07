@@ -252,19 +252,32 @@ class Migration(migrations.Migration):
                             ),
                             (
                                 'charity-2016',
-                                '{user.name} donated to the Very Scary Scenario charity streams for Special Effect in 2016.',
+                                (
+                                    '{user.name} donated to the Very Scary Scenario'
+                                    ' charity streams for Special Effect in 2016.'
+                                ),
                             ),
                             (
                                 'charity-2017',
-                                '{user.name} donated to the Very Scary Scenario charity streams and Neko Desu All-Nighter for Cancer Research UK in 2017.',
+                                (
+                                    '{user.name} donated to the Very Scary Scenario'
+                                    ' charity streams and Neko Desu All-Nighter for'
+                                    ' Cancer Research UK in 2017.'
+                                ),
                             ),
                             (
                                 'charity-2018',
-                                '{user.name} donated to the Very Scary Scenario charity streams for Cancer Research UK in 2018.',
+                                (
+                                    '{user.name} donated to the Very Scary Scenario'
+                                    ' charity streams for Cancer Research UK in 2018.'
+                                ),
                             ),
                             (
                                 'charity-2019',
-                                '{user.name} donated to the Very Scary Scenario charity streams for Samaritans in 2019.',
+                                (
+                                    '{user.name} donated to the Very Scary Scenario'
+                                    ' charity streams for Samaritans in 2019.'
+                                ),
                             ),
                         ],
                         max_length=12,

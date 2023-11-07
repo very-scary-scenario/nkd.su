@@ -5,8 +5,7 @@ from ...models import Track
 
 class Command(BaseCommand):
     help = (
-        'copy all plays and votes from one track to another and then remove '
-        'the first'
+        'copy all plays and votes from one track to another and then remove the first'
     )
 
     def add_arguments(self, parser) -> None:

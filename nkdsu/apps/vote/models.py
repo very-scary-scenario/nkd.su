@@ -437,7 +437,10 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         force_format='PNG',
         keep_meta=False,
         size=[AVATAR_SIZE, AVATAR_SIZE],
-        help_text=f'will be resized to {AVATAR_SIZE}x{AVATAR_SIZE} and converted to png, so provide that if you can',
+        help_text=(
+            f'will be resized to {AVATAR_SIZE}x{AVATAR_SIZE} and converted to png, so'
+            ' provide that if you can'
+        ),
         # it'd be nice to optipng these as they're uploaded, but we can always do it later or in a cron job
     )
     display_name = models.CharField(max_length=100, blank=True)
@@ -735,7 +738,10 @@ class Track(CleanOnSaveMixin, models.Model):
     # derived from Myriad
     media_id = models.IntegerField(blank=True, null=True, unique=True)
     has_hook = models.BooleanField(
-        help_text='Whether this track has a hook in Myriad. Null if not matched against a Myriad export.',
+        help_text=(
+            'Whether this track has a hook in Myriad. Null if not matched against a'
+            ' Myriad export.'
+        ),
         blank=True,
         null=True,
     )
@@ -744,7 +750,8 @@ class Track(CleanOnSaveMixin, models.Model):
     revealed = models.DateTimeField(blank=True, null=True, db_index=True)
     archived = models.BooleanField(
         help_text=(
-            'This will never be played again, but cannot be removed from the database for historical reasons.'
+            'This will never be played again, but cannot be removed from the database'
+            ' for historical reasons.'
         ),
         default=False,
     )
@@ -1685,7 +1692,10 @@ class Request(CleanOnSaveMixin, models.Model):
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
-        help_text='the track that this request is about, if this is a request for a correction',
+        help_text=(
+            'the track that this request is about, if this is a request for a'
+            ' correction'
+        ),
     )
 
     def serialise(self, struct):
@@ -1862,8 +1872,7 @@ BADGES: list[Badge] = [
     ),
     Badge(
         'charity-2021',
-        u'{name} donated to the Very Scary Scenario charity streams for '
-        u'Mind in 2021.',
+        u'{name} donated to the Very Scary Scenario charity streams for Mind in 2021.',
         'donated to the 2021 Very Scary Scenario charity streams',
         'brain',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2021',
@@ -1872,8 +1881,7 @@ BADGES: list[Badge] = [
     ),
     Badge(
         'charity-2022',
-        u'{name} donated to the Very Scary Scenario charity streams for '
-        u'akt in 2022.',
+        u'{name} donated to the Very Scary Scenario charity streams for akt in 2022.',
         'donated to the 2022 Very Scary Scenario charity streams',
         'home',
         'https://www.justgiving.com/fundraising/very-charity-scenario-2022',
@@ -1947,7 +1955,9 @@ class UserBadge(CleanOnSaveMixin, models.Model):
                 check=Q(profile__isnull=True, twitter_user__isnull=False)
                 | Q(profile__isnull=False, twitter_user__isnull=True),
                 name='badge_must_have_user',
-                violation_error_message='Badges must be associated with either a profile or twitter user',
+                violation_error_message=(
+                    'Badges must be associated with either a profile or twitter user'
+                ),
             ),
             # until we handle this when creating profile objects, this check should not be enforced in the database:
             # CheckConstraint(

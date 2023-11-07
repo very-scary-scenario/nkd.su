@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
             field=models.BooleanField(
                 default=False,
                 help_text=(
-                    'This will never be played again, but cannot be removed from the database for historical reasons.'
+                    'This will never be played again, but cannot be removed from the'
+                    ' database for historical reasons.'
                 ),
             ),
         ),

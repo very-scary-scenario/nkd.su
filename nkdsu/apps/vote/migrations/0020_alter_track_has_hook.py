@@ -11,7 +11,10 @@ class Migration(migrations.Migration):
             model_name='track',
             name='has_hook',
             field=models.BooleanField(
-                help_text='Whether this track has a hook in Myriad. Null if not matched against a Myriad export.',
+                help_text=(
+                    'Whether this track has a hook in Myriad. Null if not matched'
+                    ' against a Myriad export.'
+                ),
                 blank=True,
                 null=True,
             ),

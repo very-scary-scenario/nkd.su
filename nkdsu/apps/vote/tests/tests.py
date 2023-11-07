@@ -110,9 +110,10 @@ class TrackTest(TestCase):
             inudesu=False,
             id3_title="a track with a lot of artists",
             id3_artist=(
-                "this string has to be long enough that it makes us have to truncate the tweet we're gonna post "
-                "when this track is played, so here's some words about that! here are some more words because "
-                "tweets got long Jiosajfdoisapfjdiosuapfjdiosapfdjisoafjdsoiafdsa"
+                "this string has to be long enough that it makes us have to truncate"
+                " the tweet we're gonna post when this track is played, so here's some"
+                " words about that! here are some more words because tweets got long"
+                " Jiosajfdoisapfjdiosuapfjdiosapfdjisoafjdsoiafdsa"
             ),
             added=timezone.now(),
             revealed=timezone.now(),

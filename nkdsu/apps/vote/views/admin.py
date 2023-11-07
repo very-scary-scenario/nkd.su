@@ -439,10 +439,8 @@ class MyriadExportUploadView(AdminMixin, FormView):
 
         messages.success(
             self.request,
-            (
-                'myriad export imported. '
-                f'{matched} entries matched to tracks; {unmatched} entries unmatched.'
-            ),
+            'myriad export imported. '
+            f'{matched} entries matched to tracks; {unmatched} entries unmatched.',
         )
         return redirect(reverse('vote:index'))
 

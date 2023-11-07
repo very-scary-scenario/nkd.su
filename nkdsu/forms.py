@@ -10,9 +10,9 @@ class RegistrationForm(TriviaForm, UserCreationForm):
         username = self.cleaned_data['username']
         if TwitterUser.objects.filter(screen_name__iexact=username).exists():
             raise ValidationError(
-                "There's a Twitter user by this screen name who has requested music on nkd.su in the past. "
-                "If you are this user, you'll need to log in with Twitter to claim that username. "
-                "Otherwise, choose another name. "
+                "There's a Twitter user by this screen name who has requested music on"
+                " nkd.su in the past. If you are this user, you'll need to log in with"
+                " Twitter to claim that username. Otherwise, choose another name. "
             )
 
         return username

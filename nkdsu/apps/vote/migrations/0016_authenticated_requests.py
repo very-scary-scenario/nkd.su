@@ -70,7 +70,10 @@ class Migration(migrations.Migration):
             name='track',
             field=models.ForeignKey(
                 blank=True,
-                help_text='the track that this request is about, if this is a request for a correction',
+                help_text=(
+                    'the track that this request is about, if this is a request for a'
+                    ' correction'
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 to='vote.track',

@@ -21,23 +21,39 @@ class Migration(migrations.Migration):
                     ('tblc', '{user.name} bought Take Back Love City for the RSPCA.'),
                     (
                         'charity-2016',
-                        '{user.name} donated to the Very Scary Scenario charity streams for Special Effect in 2016.',
+                        (
+                            '{user.name} donated to the Very Scary Scenario charity'
+                            ' streams for Special Effect in 2016.'
+                        ),
                     ),
                     (
                         'charity-2017',
-                        '{user.name} donated to the Very Scary Scenario charity streams and Neko Desu All-Nighter for Cancer Research UK in 2017.',
+                        (
+                            '{user.name} donated to the Very Scary Scenario charity'
+                            ' streams and Neko Desu All-Nighter for Cancer Research UK'
+                            ' in 2017.'
+                        ),
                     ),
                     (
                         'charity-2018',
-                        '{user.name} donated to the Very Scary Scenario charity streams for Cancer Research UK in 2018.',
+                        (
+                            '{user.name} donated to the Very Scary Scenario charity'
+                            ' streams for Cancer Research UK in 2018.'
+                        ),
                     ),
                     (
                         'charity-2019',
-                        '{user.name} donated to the Very Scary Scenario charity streams for Samaritans in 2019.',
+                        (
+                            '{user.name} donated to the Very Scary Scenario charity'
+                            ' streams for Samaritans in 2019.'
+                        ),
                     ),
                     (
                         'charity-2020',
-                        '{user.name} donated to the Very Scary Scenario charity streams in 2020.',
+                        (
+                            '{user.name} donated to the Very Scary Scenario charity'
+                            ' streams in 2020.'
+                        ),
                     ),
                 ],
                 max_length=12,

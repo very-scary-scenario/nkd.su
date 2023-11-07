@@ -1,5 +1,6 @@
 [tool.black]
 skip-string-normalization = true
+experimental-string-processing = true
 color = true
 
 [tool.mypy]

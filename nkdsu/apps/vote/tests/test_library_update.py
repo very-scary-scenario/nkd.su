@@ -515,8 +515,8 @@ class MetadataConsistencyCheckTest(TestCase):
                 {
                     'field': 'artist',
                     'message': (
-                        '"an artist of some knid" was not found in the database, but it looks similar to '
-                        '"an artist of some kind"'
+                        '"an artist of some knid" was not found in the database, but it'
+                        ' looks similar to "an artist of some kind"'
                     ),
                 }
             ],
@@ -554,8 +554,8 @@ class MetadataConsistencyCheckTest(TestCase):
                 {
                     'field': 'artist',
                     'message': (
-                        '"kind some of artist an" was not found in the database, but it looks similar to '
-                        '"an artist of some kind"'
+                        '"kind some of artist an" was not found in the database, but it'
+                        ' looks similar to "an artist of some kind"'
                     ),
                 }
             ],
@@ -596,7 +596,10 @@ class MetadataConsistencyCheckTest(TestCase):
             [
                 {
                     'field': 'artist',
-                    'message': '"a VAN" was not found in the database, but it looks similar to "a VA"',
+                    'message': (
+                        '"a VAN" was not found in the database, but it looks similar to'
+                        ' "a VA"'
+                    ),
                 },
             ],
         )
@@ -621,7 +624,10 @@ class MetadataConsistencyCheckTest(TestCase):
                 # ...and also treat the invalid artist name as one complete artist:
                 {
                     'field': 'artist',
-                    'message': '"(()" was not found in the database, but it looks similar to "(("',
+                    'message': (
+                        '"(()" was not found in the database, but it looks similar to'
+                        ' "(("'
+                    ),
                 },
             ],
         )
@@ -642,7 +648,10 @@ class MetadataConsistencyCheckTest(TestCase):
                 # ...and also treat the invalid artist name as one complete artist:
                 {
                     'field': 'composer',
-                    'message': '"(()" was not found in the database, but it looks similar to "(("',
+                    'message': (
+                        '"(()" was not found in the database, but it looks similar to'
+                        ' "(("'
+                    ),
                 },
             ],
         )

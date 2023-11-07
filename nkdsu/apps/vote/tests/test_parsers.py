@@ -20,8 +20,10 @@ PART_EXAMPLES: list[tuple[str, list[tuple[bool, str]]]] = [
         ],
     ),
     (
-        'Date Arisa, Yoshimura Haruka, Matsuda Satsumi, Nakatsu Mariko and '
-        'Kotobuki Minako',
+        (
+            'Date Arisa, Yoshimura Haruka, Matsuda Satsumi, Nakatsu Mariko and '
+            'Kotobuki Minako'
+        ),
         [
             (True, 'Date Arisa'),
             (False, ', '),

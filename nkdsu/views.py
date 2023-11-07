@@ -81,7 +81,8 @@ class SetPasswordView(FormView):
         form.save()
         messages.success(
             self.request,
-            f'you have set a password. please log in with it. your username is {form.user.get_username()}',
+            'you have set a password. please log in with it. your username is'
+            f' {form.user.get_username()}',
         )
         return super().form_valid(form)
 

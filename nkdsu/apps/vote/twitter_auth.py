@@ -15,8 +15,9 @@ from .models import TwitterUser, avatar_upload_path
 
 
 TWITTER_NOT_POSSIBLE: str = (
-    'it is no longer possible to authenticate on nkd.su with twitter, sorry. '
-    'please send a twitter direct message to @NekoDesuRadio if you did not already set a password'
+    'it is no longer possible to authenticate on nkd.su with twitter, sorry. please'
+    ' send a twitter direct message to @NekoDesuRadio if you did not already set a'
+    ' password'
 )
 
 
@@ -83,8 +84,9 @@ def link_twitteruser(uid: int, user: User, is_new: bool, *args, **kwargs) -> Non
     # and also, we should check this just to be sure:
     if hasattr(twitter_user, 'profile') and (twitter_user.profile.user != user):
         raise AssertionError(
-            f'auth_allowed() messed up, because {user!r} should not have been able to log in as {twitter_user!r}; '
-            f'that user was already adopted by {twitter_user.profile.user!r}'
+            f'auth_allowed() messed up, because {user!r} should not have been able to'
+            f' log in as {twitter_user!r}; that user was already adopted by'
+            f' {twitter_user.profile.user!r}'
         )
 
     if is_new:
