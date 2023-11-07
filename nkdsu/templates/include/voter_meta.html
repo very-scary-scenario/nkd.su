@@ -75,7 +75,7 @@
       <ul>
         {% for website in voter.get_websites %}
           <li data-icon="{{ website.icon }}">
-            <a href="website.url">{{ website.url }}</a>
+            <a href="website.url">{{ website.url|strip_scheme }}</a>
           </li>
         {% endfor %}
       </ul>
