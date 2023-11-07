@@ -366,8 +366,7 @@ class VoterDetail(DetailView):
     paginate_by = 100
 
     @abstractmethod
-    def get_voter(self) -> Voter:
-        ...
+    def get_voter(self) -> Voter: ...
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)

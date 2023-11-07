@@ -28,12 +28,10 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
 
     def _twitter_user_and_profile(
         self,
-    ) -> tuple[Optional[TwitterUser], Optional[Profile]]:
-        ...
+    ) -> tuple[Optional[TwitterUser], Optional[Profile]]: ...
 
     @property
-    def username(self) -> str:
-        ...
+    def username(self) -> str: ...
 
     @property
     def voter_id(self) -> tuple[Optional[int], Optional[int]]:
@@ -52,11 +50,9 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
 
         return UserBadge.for_voter(self)
 
-    def unordered_votes(self) -> QuerySet[Vote]:
-        ...
+    def unordered_votes(self) -> QuerySet[Vote]: ...
 
-    def get_toggle_abuser_url(self) -> str:
-        ...
+    def get_toggle_abuser_url(self) -> str: ...
 
     def votes(self) -> QuerySet[Vote]:
         return self.unordered_votes().order_by('-date').prefetch_related('tracks')
