@@ -50,7 +50,7 @@
     <p class="patron">{{ voter.name }} supports Neko Desu <a href="https://www.patreon.com/NekoDesu">financially</a>!</p>
   {% endif %}
 
-  {% if voter.get_websites or voter == request.user %}
+  {% if voter.get_websites or voter == request.user.profile %}
     <div class="websites">
       <ul>
         {% for website in voter.get_websites %}
