@@ -557,11 +557,13 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
         assert hostname is not None, f"url {self.url!r} has no hostname"
 
         rv = {
+            'anilist.co': 'anilist',
             'bsky.app': 'bsky',
             'cohost.org': 'cohost',
             'facebook.com': 'facebook',
             'instagram.com': 'instagram',
             'linkedin.com': 'linkedin',
+            'myanimelist.net': 'myanimelist',
             'nkd.su': 'nkdsu',
             'threads.net': 'threads',
             'tumblr.com': 'tumblr',
