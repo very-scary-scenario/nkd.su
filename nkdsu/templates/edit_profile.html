@@ -5,6 +5,10 @@
 
 <h2 class="aligned">edit profile</h2>
 
+<p class="aside">
+  you can add websites to your profile from <a href="{% url "vote:profiles:profile" username=request.user.username %}">your profile page</a>
+</p>
+
 {% include "include/user_infobox.html" with user=request.user hide_edit_button=True %}
 
 <form method="post" enctype="multipart/form-data">
