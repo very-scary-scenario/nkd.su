@@ -23,7 +23,7 @@ class Command(BaseCommand):
             f.write(
                 "# this file is populated by running `python manage.py update_mastodon_instances`\n\n"
             )
-            f.write(f"MASTODON_INSTANCES = {{ {', '.join((repr(i) for i in instances))} }}")
+            f.write(f"MASTODON_INSTANCES: set[str] = {{ {', '.join((repr(i) for i in instances))} }}")
 
         subprocess.check_call(['black', module_path])
 
