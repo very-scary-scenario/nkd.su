@@ -493,7 +493,7 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         return self.websites.count() >= MAX_WEBSITES
 
     def get_websites(self) -> Iterable[UserWebsite]:
-        return self.websites.all()
+        return sorted(self.websites.all(), key=lambda w: (w.icon, w.url))
 
 
 class UserWebsite(CleanOnSaveMixin, models.Model):
