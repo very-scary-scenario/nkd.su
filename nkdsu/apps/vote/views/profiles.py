@@ -45,16 +45,22 @@ class ProfileView(VoterDetail):
             try:
                 website = user.profile.websites.get(pk=delete_pk)
             except UserWebsite.DoesNotExist:
-                messages.warning(self.request, "that website isn't on your profile at the moment")
+                messages.warning(
+                    self.request, "that website isn't on your profile at the moment"
+                )
                 return redirect('.')
             else:
                 website.delete()
-                messages.success(self.request, f"website {website.url!r} removed from your profile")
+                messages.success(
+                    self.request, f"website {website.url!r} removed from your profile"
+                )
                 return redirect('.')
 
         if request.POST.get('add-website') == 'yes' and request.POST.get('url'):
             if user.profile.has_max_websites():
-                messages.warning(self.request, "don't you think you have enough websites already")
+                messages.warning(
+                    self.request, "don't you think you have enough websites already"
+                )
                 return redirect('.')
             else:
                 try:
@@ -62,7 +68,9 @@ class ProfileView(VoterDetail):
                 except ValidationError as e:
                     messages.warning(self.request, ', '.join(e.messages))
                     return redirect('.')
-                messages.success(self.request, f"website {website.url} added to your profile")
+                messages.success(
+                    self.request, f"website {website.url} added to your profile"
+                )
                 return redirect('.')
 
         return redirect('.')
