@@ -54,6 +54,8 @@ from ..vote import mixcloud
 
 User = get_user_model()
 
+MAX_WEBSITES = 5
+
 
 class CleanOnSaveMixin:
     def save(self, *args, **kwargs):
@@ -487,11 +489,11 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
     def get_toggle_abuser_url(self) -> str:
         return reverse('vote:admin:toggle_local_abuser', kwargs={'user_id': self.pk})
 
+    def has_max_websites(self) -> bool:
+        return self.websites.count() >= MAX_WEBSITES
+
     def get_websites(self) -> Iterable[UserWebsite]:
         return self.websites.all()
-
-
-MAX_WEBSITES = 5
 
 
 class UserWebsite(CleanOnSaveMixin, models.Model):

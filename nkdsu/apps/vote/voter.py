@@ -118,6 +118,9 @@ class Voter(Protocol, metaclass=ModelVoterMeta):
             .exists()
         )
 
+    def has_max_websites(self) -> bool:
+        return True
+
     def get_websites(self) -> Iterable[UserWebsite]:
         return []
 
