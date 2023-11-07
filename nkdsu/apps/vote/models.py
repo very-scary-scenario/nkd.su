@@ -9,7 +9,7 @@ from functools import cached_property
 from io import BytesIO
 from string import ascii_letters
 from typing import Any, Iterable, Optional, cast
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 from uuid import uuid4
 
 from Levenshtein import ratio
@@ -22,7 +22,7 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from django.db.models import Q
-from django.db.models.constraints import CheckConstraint
+from django.db.models.constraints import CheckConstraint, UniqueConstraint
 from django.template.defaultfilters import slugify
 from django.templatetags.static import static
 from django.urls import reverse
@@ -53,6 +53,8 @@ from ..vote import mixcloud
 
 
 User = get_user_model()
+
+MAX_WEBSITES = 5
 
 
 class CleanOnSaveMixin:
@@ -486,6 +488,92 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
 
     def get_toggle_abuser_url(self) -> str:
         return reverse('vote:admin:toggle_local_abuser', kwargs={'user_id': self.pk})
+
+    def has_max_websites(self) -> bool:
+        return self.websites.count() >= MAX_WEBSITES
+
+    def get_websites(self) -> Iterable[UserWebsite]:
+        return sorted(self.websites.all(), key=lambda w: (w.icon, w.url))
+
+
+class UserWebsite(CleanOnSaveMixin, models.Model):
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['url', 'profile'],
+                name='unique_url_per_profile',
+                violation_error_message="You can't provide the same URL more than once",
+            ),
+        ]
+
+    url = models.URLField()
+    profile = models.ForeignKey(
+        Profile, related_name='websites', on_delete=models.CASCADE
+    )
+
+    def clean(self) -> None:
+        super().clean()
+        if self._state.adding and self.profile.websites.count() >= MAX_WEBSITES:
+            raise ValidationError('You cannot have any more websites')
+
+    @property
+    def icon(self) -> str:
+        """
+        Return an appropriate identify for for what kind of URL this is.
+
+        >>> UserWebsite(url='https://someone.tumblr.com').icon
+        'tumblr'
+        >>> UserWebsite(url='https://tumblr.com/someone').icon
+        'tumblr'
+        >>> UserWebsite(url='https://cohost.org/someone').icon
+        'cohost'
+        >>> UserWebsite(url='https://bsky.app/profile/someone').icon
+        'bsky'
+        >>> UserWebsite(url='https://www.instagram.com/someone').icon
+        'instagram'
+        >>> UserWebsite(url='https://www.threads.net/@someone').icon
+        'threads'
+        >>> UserWebsite(url='https://linkedin.com/in/someone-jsioadj/').icon
+        'linkedin'
+        >>> UserWebsite(url='https://facebook.com/someone').icon
+        'facebook'
+        >>> UserWebsite(url='https://www.youtube.com/@someone').icon
+        'youtube'
+        >>> UserWebsite(url='https://www.youtube.com/channel/someone/').icon
+        'youtube'
+        >>> UserWebsite(url='https://www.twitch.tv/someone/').icon
+        'twitch'
+        >>> UserWebsite(url='https://website.tld').icon
+        'website'
+        """
+
+        hostname = urlparse(self.url).hostname
+        assert hostname is not None, f"url {self.url!r} has no hostname"
+
+        rv = {
+            'bsky.app': 'bsky',
+            'cohost.org': 'cohost',
+            'facebook.com': 'facebook',
+            'instagram.com': 'instagram',
+            'linkedin.com': 'linkedin',
+            'threads.net': 'threads',
+            'tumblr.com': 'tumblr',
+            'twitch.tv': 'twitch',
+            'twitter.com': 'twitter',
+            'x.com': 'x',
+            'youtube.com': 'youtube',
+        }.get(hostname.removeprefix('www.'))
+
+        if rv is not None:
+            return rv
+
+        # some places let you use subdomains:
+        if hostname.endswith('.tumblr.com'):
+            return 'tumblr'
+        if hostname.endswith('.cohost.com'):
+            return 'cohost'
+
+        return 'website'
 
 
 def art_path(i: Track, f: str) -> str:

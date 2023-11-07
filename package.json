@@ -21,7 +21,7 @@
     "yuglify": "^2.0.0"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@fortawesome/fontawesome-free": "<7",
     "details-polyfill": "^1.2.0",
     "jsmediatags": "^3.9.7",
     "sortablejs": "^1.14.0"

@@ -50,6 +50,38 @@
     <p class="patron">{{ voter.name }} supports Neko Desu <a href="https://www.patreon.com/NekoDesu">financially</a>!</p>
   {% endif %}
 
+  {% if voter.get_websites or voter == request.user %}
+    <div class="websites">
+      <ul>
+        {% for website in voter.get_websites %}
+          <li data-icon="{{ website.icon }}">
+            <a href="{{ website.url }}">{{ website.url|strip_scheme }}</a>
+            <form method="post">
+              {% csrf_token %}
+              <button title="remove this URL from your profile" class="link" type="submit" name="delete-website" value="{{ website.pk }}">✗</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+
+      {% if voter == request.user.profile and not voter.has_max_websites %}
+        <details>
+          <summary>add a website</summary>
+          <form method="post">
+            {% csrf_token %}
+            <p>
+              <label>URL:</label>
+              <input type="text" name="url" placeholder="https://mycoolwebsite.gov"/>
+            </p>
+            <p class="submit">
+              <button class="button" name="add-website" value="yes" type="submit">Add website</button>
+            </p>
+          </form>
+        </details>
+      {% endif %}
+    </div>
+  {% endif %}
+
   {% if voter.badges %}
     <ul class="badges">
       {% for badge in voter.badges %}
