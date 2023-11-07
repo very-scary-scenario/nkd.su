@@ -560,7 +560,7 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
             'tumblr.com': 'tumblr',
             'twitch.tv': 'twitch',
             'twitter.com': 'twitter',
-            'x.com': 'twitter',
+            'x.com': 'x',
             'youtube.com': 'youtube',
         }.get(hostname.removeprefix('www.'))
 
