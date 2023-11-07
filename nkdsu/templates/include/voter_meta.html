@@ -68,6 +68,7 @@
         <details>
           <summary>add a website</summary>
           <form method="post">
+            {% csrf_token %}
             <p>
               <label>URL:</label>
               <input type="text" name="url" placeholder="https://mycoolwebsite.gov"/>
