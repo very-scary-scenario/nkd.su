@@ -59,6 +59,13 @@ def weeks_ago(play: Play) -> int:
 def percent(flt: Optional[float]) -> str:
     """
     Convert a float into a percentage string.
+
+    >>> percent(2.5)
+    '250%'
+    >>> percent(2/3)
+    '67%'
+    >>> percent(None)
+    '[in flux]'
     """
 
     if flt is None:
