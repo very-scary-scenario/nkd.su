@@ -1,8 +1,8 @@
-"""
-Horrible hacks. Please ignore.
-"""
-
 def patch() -> None:
+    """
+    Do any horrible hacks here.
+    """
+
     _replace_password_validators_help_text_html()
 
 
