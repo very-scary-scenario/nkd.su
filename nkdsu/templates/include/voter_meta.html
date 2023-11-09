@@ -54,7 +54,7 @@
     <div class="websites">
       <ul>
         {% for website in voter.get_websites %}
-          <li data-icon="{{ website.icon }}">
+          <li data-kind="{{ website.kind }}">
             <a href="{{ website.url }}">{{ website.url|url_display }}</a>
             {% if voter == request.user.profile %}
               <form method="post">

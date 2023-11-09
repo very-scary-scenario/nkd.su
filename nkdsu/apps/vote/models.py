@@ -8,7 +8,7 @@ from enum import Enum, auto
 from functools import cached_property
 from io import BytesIO
 from string import ascii_letters
-from typing import Any, Iterable, Optional, cast
+from typing import Any, Iterable, Literal, Optional, cast
 from urllib.parse import quote, urlparse
 from uuid import uuid4
 
@@ -497,7 +497,27 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         return self.websites.count() >= MAX_WEBSITES
 
     def get_websites(self) -> Iterable[UserWebsite]:
-        return sorted(self.websites.all(), key=lambda w: (w.icon, w.url))
+        return sorted(self.websites.all(), key=lambda w: (w.kind, w.url))
+
+
+UserWebsiteKind = Literal[
+    '_website',
+    'anilist',
+    'bsky',
+    'cohost',
+    'facebook',
+    'instagram',
+    'linkedin',
+    'mastodon',
+    'myanimelist',
+    'nkdsu',
+    'threads',
+    'tumblr',
+    'twitch',
+    'twitter',
+    'x',
+    'youtube',
+]
 
 
 class UserWebsite(CleanOnSaveMixin, models.Model):
@@ -521,28 +541,28 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
             raise ValidationError('You cannot have any more websites')
 
     @property
-    def icon(self) -> str:
+    def kind(self) -> UserWebsiteKind:
         """
         Return an appropriate identify for for what kind of URL this is.
 
-        >>> UserWebsite(url='https://someone.tumblr.com').icon
+        >>> UserWebsite(url='https://someone.tumblr.com').kind
         'tumblr'
-        >>> UserWebsite(url='https://tumblr.com/someone').icon
+        >>> UserWebsite(url='https://tumblr.com/someone').kind
         'tumblr'
-        >>> UserWebsite(url='https://cohost.org/someone').icon
+        >>> UserWebsite(url='https://cohost.org/someone').kind
         'cohost'
-        >>> UserWebsite(url='https://www.instagram.com/someone').icon
+        >>> UserWebsite(url='https://www.instagram.com/someone').kind
         'instagram'
-        >>> UserWebsite(url='https://plush.city/@someone').icon
+        >>> UserWebsite(url='https://plush.city/@someone').kind
         'mastodon'
-        >>> UserWebsite(url='https://website.tld').icon
+        >>> UserWebsite(url='https://website.tld').kind
         '_website'
         """
 
         hostname = urlparse(self.url).hostname
         assert hostname is not None, f"url {self.url!r} has no hostname"
 
-        rv = {
+        basic_kinds: dict[str, UserWebsiteKind] = {
             'anilist.co': 'anilist',
             'bsky.app': 'bsky',
             'cohost.org': 'cohost',
@@ -557,7 +577,8 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
             'twitter.com': 'twitter',
             'x.com': 'x',
             'youtube.com': 'youtube',
-        }.get(hostname.removeprefix('www.'))
+        }
+        rv = basic_kinds.get(hostname.removeprefix('www.'))
 
         if rv is not None:
             return rv
