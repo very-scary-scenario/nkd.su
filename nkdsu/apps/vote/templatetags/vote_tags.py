@@ -104,6 +104,14 @@ def total_length(tracks: Iterable[Track]):
 
 @register.filter
 def markdown(text: str) -> SafeText:
+    """
+    Render markdown content as HTML.
+
+    :warning:
+        Do not use with user-provided strings, or XSS attacks will immediately
+        be possible.
+    """
+
     return mark_safe(md(text))
 
 
