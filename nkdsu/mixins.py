@@ -21,11 +21,9 @@ class MarkdownView(TemplateView):
             ).read()
         )
 
-        context.update(
-            {
-                'title': self.title,
-                'words': words,
-            }
-        )
+        context.update({
+            'title': self.title,
+            'words': words,
+        })
 
         return context

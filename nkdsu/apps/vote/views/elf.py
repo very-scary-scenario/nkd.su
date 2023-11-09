@@ -140,15 +140,13 @@ class CheckMetadata(ElfMixin, FormView):
             composer=form.cleaned_data['composer'],
             year=form.cleaned_data['year'],
         )
-        context.update(
-            {
-                'track': track,
-                'warnings': metadata_consistency_checks(
-                    track,
-                    Track.all_anime_titles(),
-                    Track.all_artists(),
-                    Track.all_composers(),
-                ),
-            }
-        )
+        context.update({
+            'track': track,
+            'warnings': metadata_consistency_checks(
+                track,
+                Track.all_anime_titles(),
+                Track.all_artists(),
+                Track.all_composers(),
+            ),
+        })
         return self.render_to_response(context)

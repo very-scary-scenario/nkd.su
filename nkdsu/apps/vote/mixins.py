@@ -73,12 +73,10 @@ class TrackListWithAnimeGrouping(ContextMixin):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                'grouped_tracks': self.grouped_tracks,
-                'tracks': self.get_track_queryset(),
-            }
-        )
+        context.update({
+            'grouped_tracks': self.grouped_tracks,
+            'tracks': self.get_track_queryset(),
+        })
 
         return context
 
@@ -166,9 +164,9 @@ class ShowDetailMixin(LetMemoizeGetObject[Show]):
                 and request.resolver_match.url_name is not None
             )
             new_kwargs = copy(kwargs)
-            name = self.view_name or ':'.join(
-                [request.resolver_match.namespace, request.resolver_match.url_name]
-            )
+            name = self.view_name or ':'.join([
+                request.resolver_match.namespace, request.resolver_match.url_name
+            ])
             new_kwargs['date'] = self.object.showtime.date().strftime(date_fmt)
             url = reverse(name, kwargs=new_kwargs)
             return redirect(url)

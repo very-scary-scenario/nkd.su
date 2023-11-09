@@ -283,19 +283,17 @@ class Roulette(ListView):
         minutes_str = self.kwargs.get('minutes', str(self.default_minutes_count))
         tracks, option_count = self.get_tracks()
 
-        context.update(
-            {
-                'decades': Track.all_decades(),
-                'decade': int(decade_str) if decade_str else None,
-                'minutes': int(minutes_str) if minutes_str else None,
-                'allowed_minutes': (1, 2, 3),
-                'mode': mode,
-                'mode_name': dict(self.modes)[mode],
-                'modes': self.modes,
-                'tracks': tracks,
-                'option_count': option_count,
-            }
-        )
+        context.update({
+            'decades': Track.all_decades(),
+            'decade': int(decade_str) if decade_str else None,
+            'minutes': int(minutes_str) if minutes_str else None,
+            'allowed_minutes': (1, 2, 3),
+            'mode': mode,
+            'mode_name': dict(self.modes)[mode],
+            'modes': self.modes,
+            'tracks': tracks,
+            'option_count': option_count,
+        })
 
         return context
 
@@ -379,12 +377,10 @@ class VoterDetail(DetailView):
         except InvalidPage:
             raise Http404('Not a page')
 
-        context.update(
-            {
-                'votes': vote_page,
-                'page_obj': vote_page,
-            }
-        )
+        context.update({
+            'votes': vote_page,
+            'page_obj': vote_page,
+        })
 
         return context
 
@@ -458,16 +454,12 @@ class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         self.tracks = context['tracks']
-        context.update(
-            {
-                'artist': self.kwargs['artist'],
-                'played': [t for t in context['tracks'] if t.last_play()],
-                'artist_suggestions': self.artist_suggestions,
-                'tracks_as_composer': len(
-                    Track.objects.by_composer(self.kwargs['artist'])
-                ),
-            }
-        )
+        context.update({
+            'artist': self.kwargs['artist'],
+            'played': [t for t in context['tracks'] if t.last_play()],
+            'artist_suggestions': self.artist_suggestions,
+            'tracks_as_composer': len(Track.objects.by_composer(self.kwargs['artist'])),
+        })
         return context
 
 
@@ -498,16 +490,14 @@ class Anime(mixins.BreadcrumbMixin, ListView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                'anime': self.kwargs['anime'],
-                'related_anime': (
-                    context['tracks'][0]
-                    .role_detail_for_anime(self.kwargs['anime'])
-                    .related_anime
-                ),
-            }
-        )
+        context.update({
+            'anime': self.kwargs['anime'],
+            'related_anime': (
+                context['tracks'][0]
+                .role_detail_for_anime(self.kwargs['anime'])
+                .related_anime
+            ),
+        })
         return context
 
 
@@ -528,14 +518,10 @@ class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                'composer': self.kwargs['composer'],
-                'tracks_as_artist': len(
-                    Track.objects.by_artist(self.kwargs['composer'])
-                ),
-            }
-        )
+        context.update({
+            'composer': self.kwargs['composer'],
+            'tracks_as_artist': len(Track.objects.by_artist(self.kwargs['composer'])),
+        })
         return context
 
 
@@ -619,13 +605,11 @@ class Stats(TemplateView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                'streaks': self.streaks,
-                'batting_averages': self.batting_averages,
-                'popular_tracks': self.popular_tracks,
-            }
-        )
+        context.update({
+            'streaks': self.streaks,
+            'batting_averages': self.batting_averages,
+            'popular_tracks': self.popular_tracks,
+        })
         return context
 
 

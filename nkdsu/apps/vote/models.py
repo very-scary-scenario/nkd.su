@@ -834,11 +834,9 @@ class Track(CleanOnSaveMixin, models.Model):
                 .values_list('year', flat=True)
             )
         else:
-            return sorted(
-                {
-                    year for year in tracks.values_list('year', flat=True)  # type: ignore # same reason as above
-                }
-            )
+            return sorted({
+                year for year in tracks.values_list('year', flat=True)  # type: ignore # same reason as above
+            })
 
     @classmethod
     def complete_decade_range(cls) -> list[tuple[int, bool]]:
@@ -1942,14 +1940,12 @@ class UserBadge(CleanOnSaveMixin, models.Model):
             except Profile.DoesNotExist:
                 pass
             else:
-                raise ValidationError(
-                    {
-                        'twitter_user': (
-                            'This Twitter user has a profile you should use instead. '
-                            f'"{self.twitter_user}" has a profile called "{profile}"'
-                        )
-                    }
-                )
+                raise ValidationError({
+                    'twitter_user': (
+                        'This Twitter user has a profile you should use instead. '
+                        f'"{self.twitter_user}" has a profile called "{profile}"'
+                    )
+                })
 
     @cached_property
     def badge_info(self) -> dict[str, Any]:
