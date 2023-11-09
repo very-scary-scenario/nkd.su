@@ -62,7 +62,7 @@ autodoc_default_options = {
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3.11", None),
     "django": (
-        "https://docs.djangoproject.com/en/3.2",
-        "https://docs.djangoproject.com/en/3.2/_objects/",
+        "https://docs.djangoproject.com/en/4.2",
+        "https://docs.djangoproject.com/en/4.2/_objects/",
     ),
 }
