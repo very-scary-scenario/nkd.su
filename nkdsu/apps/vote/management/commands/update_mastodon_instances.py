@@ -12,6 +12,10 @@ SOURCE_INSTANCES = {
 }
 
 
+def is_acceptable(domain: str) -> bool:
+    return not domain.endswith('.activitypub-troll.cf')
+
+
 class Command(BaseCommand):
     def write_instances(self, instances: list[str]) -> None:
         txt_path = os.path.join(
@@ -27,7 +31,10 @@ class Command(BaseCommand):
 
         for source_instance in SOURCE_INSTANCES:
             instances.update(
-                requests.get(f"https://{source_instance}/api/v1/instance/peers").json()
+                filter(
+                    is_acceptable,
+                    requests.get(f"https://{source_instance}/api/v1/instance/peers").json(),
+                )
             )
 
         self.write_instances(sorted(instances))
