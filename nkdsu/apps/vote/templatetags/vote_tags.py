@@ -12,14 +12,14 @@ from django.utils import timezone
 from django.utils.safestring import SafeText, mark_safe
 from markdown import markdown as md
 
-from ..models import Play, Show, Track
+from ..models import Play, Show, Track, Vote
 from ..utils import length_str
 
 register = Library()
 
 
 @register.filter
-def votes_for(track, show: Show) -> QuerySet[Track]:
+def votes_for(track: Track, show: Show) -> QuerySet[Vote]:
     """
     Return all votes applicable to to `track` for `show`.
     """
