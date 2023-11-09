@@ -6,6 +6,19 @@ import django
 
 
 def _commit_year_range() -> str:
+    """
+    Return the range of years that nkd.su has been worked on during.
+
+    It should match what's in the license:
+
+    >>> import os
+    >>> lic_path = os.path.join(os.path.dirname(__file__), '..', 'LICENSE')
+    >>> with open(lic_path, 'rt') as lic:
+    ...     first_line = lic.readlines()[0]
+    >>> years = _commit_year_range()
+    >>> assert years in first_line, f'{years!r} not in {first_line!r}'
+    """
+
     commit_years = [
         int(y)
         for y in subprocess.check_output([
