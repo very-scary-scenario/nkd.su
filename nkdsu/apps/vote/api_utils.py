@@ -1,12 +1,19 @@
 from datetime import datetime
-from typing import Protocol, _ProtocolMeta
+from typing import Protocol, Union, _ProtocolMeta
 
 from django.db.models.base import Model, ModelBase
 
 
-JsonEncodable = (
-    None | bool | int | float | str | datetime | dict[str, 'JsonEncodable'] | list['JsonEncodable']
-)
+JsonEncodable = Union[
+    None,
+    bool,
+    int,
+    float,
+    str,
+    datetime,
+    dict[str, 'JsonEncodable'],
+    list['JsonEncodable'],
+]
 JsonDict = dict[str, JsonEncodable]
 JsonList = list[JsonEncodable]
 
