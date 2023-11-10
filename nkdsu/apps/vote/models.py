@@ -420,9 +420,20 @@ def avatar_upload_path(instance: Profile, filename: str) -> str:
 
 
 AVATAR_SIZE = 500
+ARBITRARY_LEAP_YEAR = 1972
 
 
 class Profile(Voter, CleanOnSaveMixin, models.Model):
+    class Meta:
+        constraints = [
+            CheckConstraint(
+                check=Q(birthday_date__isnull=True)
+                | Q(birthday_date__year=ARBITRARY_LEAP_YEAR),
+                name='birthday_date_must_have_specific_year',
+                violation_error_message=f"Birthdays must be saved as if they're in {ARBITRARY_LEAP_YEAR}",
+            ),
+        ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     twitter_user = models.OneToOneField(
         TwitterUser,
@@ -445,6 +456,7 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         # it'd be nice to optipng these as they're uploaded, but we can always do it later or in a cron job
     )
     display_name = models.CharField(max_length=100, blank=True)
+    birthday_date = models.DateField(blank=True, null=True)
 
     is_patron = models.BooleanField(default=False)
     is_abuser = models.BooleanField(default=False)
