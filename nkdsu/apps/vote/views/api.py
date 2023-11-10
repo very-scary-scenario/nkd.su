@@ -52,5 +52,5 @@ class SearchAPI(APIView, Search):
         return [t.api_dict() for t in self.get_queryset()]
 
 
-class TwitterUserAPI(TwitterUserDetailMixin, APIView):
+class TwitterUserAPI(TwitterUserDetailMixin, DetailAPIView):
     pass
