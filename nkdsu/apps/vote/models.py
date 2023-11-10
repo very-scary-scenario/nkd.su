@@ -32,6 +32,7 @@ from django_resized import ResizedImageField
 from markdown import markdown
 import requests
 
+from .api_utils import JsonDict, Serializable
 from .managers import NoteQuerySet, TrackQuerySet
 from .mastodon_instances import MASTODON_INSTANCES
 from .parsers import ParsedArtist, parse_artist
@@ -72,7 +73,7 @@ class SetShowBasedOnDateMixin:
         return super().save(*args, **kwargs)
 
 
-class Show(CleanOnSaveMixin, models.Model):
+class Show(CleanOnSaveMixin, Serializable, models.Model):
     """
     A broadcast of the show and, by extention, the week leading up to it.
     """
@@ -331,7 +332,7 @@ class Show(CleanOnSaveMixin, models.Model):
         else:
             return prev.end
 
-    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> JsonDict:
         return {
             'playlist': [p.api_dict() for p in self.plays()],
             'added': [t.api_dict() for t in self.revealed()],
@@ -405,7 +406,7 @@ class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
             return self.profile.votes()
         return self.vote_set.all()
 
-    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> JsonDict:
         return {
             'user_name': self.name,
             'user_screen_name': self.screen_name,
@@ -717,7 +718,7 @@ class Role:
         ]
 
 
-class Track(CleanOnSaveMixin, models.Model):
+class Track(CleanOnSaveMixin, Serializable, models.Model):
     class Meta:
         constraints = [
             CheckConstraint(
@@ -1289,7 +1290,7 @@ class Track(CleanOnSaveMixin, models.Model):
 
         self.background_art.save(image_url.split('/')[-1] + suffix, File(temp_file))
 
-    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> JsonDict:
         show_revealed = self.show_revealed()
 
         the_track = {
@@ -1351,7 +1352,7 @@ class VoteKind(Enum):
 
 class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     # universal
-    tracks = models.ManyToManyField(Track, db_index=True)
+    tracks: models.ManyToManyField[Track, Any] = models.ManyToManyField(Track, db_index=True)
     date = models.DateTimeField(db_index=True)
     show = models.ForeignKey(Show, related_name='vote_set', on_delete=models.CASCADE)
     text = models.TextField(
@@ -1555,7 +1556,7 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
         return float(self.tracks.all().count())
 
-    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> JsonDict:
         tracks = self.tracks.all()
         the_vote: dict[str, Any] = {
             'comment': self.content() if self.content() != '' else None,
@@ -1606,7 +1607,7 @@ class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
             self.track.revealed = timezone.now()
             self.track.save()
 
-    def api_dict(self, verbose: bool = False) -> dict[str, Any]:
+    def api_dict(self, verbose: bool = False) -> JsonDict:
         return {
             'time': self.date,
             'track': self.track.api_dict(),

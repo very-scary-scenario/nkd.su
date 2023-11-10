@@ -185,7 +185,10 @@ class ThisShowDetailMixin(ShowDetailMixin):
     """
 
     @memoize
-    def get_object(self):
+    def get_object(self, queryset: Optional[QuerySet[Show]] = None) -> Show:
+        if queryset is not None:
+            raise NotImplementedError('Show detail mixins cannot be restricted')
+
         if self.date is None:
             try:
                 return self.model.at(timezone.now())
