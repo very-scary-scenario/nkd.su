@@ -1364,7 +1364,9 @@ class VoteKind(Enum):
 
 class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     # universal
-    tracks: models.ManyToManyField[Track, Any] = models.ManyToManyField(Track, db_index=True)
+    tracks: models.ManyToManyField[Track, Any] = models.ManyToManyField(
+        Track, db_index=True
+    )
     date = models.DateTimeField(db_index=True)
     show = models.ForeignKey(Show, related_name='vote_set', on_delete=models.CASCADE)
     text = models.TextField(
