@@ -21,7 +21,9 @@ class Migration(migrations.Migration):
                     _connector='OR',
                 ),
                 name='birthday_date_must_have_specific_year',
-                violation_error_message=f"Birthdays must be saved as if they're in 1972",
+                violation_error_message=(
+                    f"Birthdays must be saved as if they're in 1972"
+                ),
             ),
         ),
     ]

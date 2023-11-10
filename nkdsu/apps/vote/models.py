@@ -430,7 +430,9 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
                 check=Q(birthday_date__isnull=True)
                 | Q(birthday_date__year=ARBITRARY_LEAP_YEAR),
                 name='birthday_date_must_have_specific_year',
-                violation_error_message=f"Birthdays must be saved as if they're in {ARBITRARY_LEAP_YEAR}",
+                violation_error_message=(
+                    f"Birthdays must be saved as if they're in {ARBITRARY_LEAP_YEAR}"
+                ),
             ),
         ]
 
