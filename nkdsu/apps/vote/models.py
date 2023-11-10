@@ -1560,14 +1560,23 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
         tracks = self.tracks.all()
         the_vote: dict[str, Any] = {
             'comment': self.content() if self.content() != '' else None,
+            'kind': self.vote_kind.name,
             'time': self.date,
             'track_ids': [t.id for t in tracks],
             'tracks': [t.api_dict() for t in tracks],
         }
 
-        if self.twitter_user is not None and self.tweet_id is not None:
+        if self.vote_kind == VoteKind.twitter:
+            assert self.twitter_user is not None
             the_vote.update({'tweet_id': self.tweet_id})
             the_vote.update(self.twitter_user.api_dict())
+
+        if self.vote_kind == VoteKind.local:
+            assert self.user is not None
+            the_vote.update({'username': self.user.username})
+
+        if self.vote_kind == VoteKind.manual:
+            the_vote.update({'name': self.name, 'manual_vote_kind': self.kind})
 
         return the_vote
 
