@@ -43,7 +43,7 @@ class PrevShowAPI(ShowDetailMixin, DetailAPIView):
     view_name = 'vote:api:show'
 
 
-class TrackAPI(SingleObjectMixin, APIView):
+class TrackAPI(DetailAPIView):
     model = Track
 
 
