@@ -67,7 +67,9 @@ class TrackListWithAnimeGrouping(ContextMixin):
         grouped_tracks: OrderedDict[str, list[Track]] = OrderedDict()
 
         for anime in animes:
-            grouped_tracks[anime] = [t for t in tracks if t.has_anime(anime)]
+            tracks = [t for t in tracks if t.has_anime(anime)]
+            if tracks:
+                grouped_tracks[anime] = tracks
 
         return grouped_tracks
 
