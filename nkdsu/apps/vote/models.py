@@ -622,21 +622,20 @@ class Role:
     sortkey_group: float
     caveat: Optional[str] = None
     full_role: str
-    kind: str
-    specifics: str
+    kind: str = ''
+    specifics: str = ''
 
     def __init__(self, full_tag: str):
         self.full_tag = full_tag
 
-        ep = r' ?(ep\d+(-\d+)?\b.*)?'
-
         result = re.match(
             r'^(?P<anime>.*?) ?\b('
             r'(?P<caveat>(rebroadcast|tv broadcast|netflix) )?\b(?P<role>'
-            r'((ED|OP)\d*\b\W*\w*' + ep + ')|'
+            r'(('
+            r'((ED|OP))|'
+            r'(insert (track|song)\b)'
+            r')(?P<specifics>\d*\b\W*\w* ?((ep\d+(-\d+)?\b.*)|b-side)?)?)|'
             r'((character|image) song\b.*)|'
-            r'(' + ep + r')|'
-            r'(insert (track|song)\b)' + ep + r'|'
             r'(ins)|'
             r'((main )?theme ?\d*)|'
             r'(bgm\b.*)|'
@@ -651,30 +650,30 @@ class Role:
             self.anime = deets['anime']
             self.full_role = deets['role']
             self.caveat = deets['caveat']
+            self.specifics = (deets['specifics'] or '').strip()
         else:
             self.anime = None
             self.full_role = self.full_tag
 
-        if self.full_role[:2] in ('OP', 'ED'):
-            self.kind, self.specifics = (self.full_role[:2], self.full_role[2:].strip())
-        elif self.full_role[:11].lower() == 'insert song':
-            self.kind, self.specifics = (
-                self.full_role[:11],
-                self.full_role[11:].strip(),
-            )
-        elif ' - ' in self.full_role:
-            self.kind, self.specifics = self.full_role.split(' - ', 1)
-        elif self.full_role.lower() in ('character song', 'insert song'):
-            self.kind, self.specifics = (self.full_role, '')
-        else:
-            self.kind, self.specifics = ('', self.full_role)
-
-        self.sortkey_group, self.verbose, self.plural = {
+        sortable_kinds: dict[str, tuple[int, str, str]] = {
             'op': (0, 'Opening theme', 'Opening themes'),
             'ed': (1, 'Ending theme', 'Ending themes'),
             'insert song': (2, 'Insert song', 'Insert songs'),
             'character song': (3, 'Character song', 'Character songs'),
-        }.get(self.kind.lower(), (99, 'Other', 'Others'))
+        }
+
+        if self.specifics:
+            self.kind = self.full_role.removesuffix(self.specifics).strip()
+        elif ' - ' in self.full_role:
+            self.kind, self.specifics = self.full_role.split(' - ', 1)
+        elif self.full_role.lower() in ('character song', 'insert song'):
+            self.kind, self.specifics = (self.full_role, '')
+        elif self.full_role.lower() in sortable_kinds.keys():
+            self.kind = self.full_role
+        else:
+            self.kind, self.specifics = ('', self.full_role)
+
+        self.sortkey_group, self.verbose, self.plural = sortable_kinds.get(self.kind.lower(), (99, 'Other', 'Others'))
 
         if self.caveat and self.caveat.lower().strip() == 'rebroadcast':
             self.sortkey_group += 0.5
