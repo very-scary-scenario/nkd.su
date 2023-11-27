@@ -646,7 +646,7 @@ class Role:
             flags=re.IGNORECASE,
         )
 
-        if result:
+        if result and result.groupdict()['role']:
             deets = result.groupdict()
             self.anime = deets['anime']
             self.full_role = deets['role']
