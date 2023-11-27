@@ -1,13 +1,19 @@
+{% regroup track.role_details by anime as roles_by_anime %}
+
 <span class="roles">
-  {% for role_detail in track.role_details %}
+  {% for anime_roles in roles_by_anime %}
     <span class="role">
-      {% if role_detail.anime %}
-        <a href="{% url "vote:anime" anime=role_detail.anime %}">{{ role_detail.anime }}</a>
-        {{ role_detail.caveat|default:"" }}
-        {{ role_detail.full_role }}
-      {% else %}
-        {{ role_detail }}
+      {% if anime_roles.grouper %}
+        <a href="{% url "vote:anime" anime=anime_roles.grouper %}">{{ anime_roles.grouper }}</a>
       {% endif %}
+      {% for role_detail in anime_roles.list %}
+        {% if role_detail.anime %}
+          {{ role_detail.caveat|default:"" }}
+          {{ role_detail.full_role }}{% if not forloop.last %},{% endif %}
+        {% else %}
+          {{ role_detail }}{% if not forloop.last %},{% endif %}
+        {% endif %}
+      {% endfor %}
     </span>
   {% endfor %}
 </span>
