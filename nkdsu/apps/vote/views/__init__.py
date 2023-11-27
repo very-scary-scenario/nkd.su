@@ -31,7 +31,16 @@ from django.views.generic import (
 
 from nkdsu.mixins import MarkdownView
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
-from ..models import Profile, Request, Show, Track, TrackQuerySet, TwitterUser, Vote
+from ..models import (
+    Profile,
+    Request,
+    Role,
+    Show,
+    Track,
+    TrackQuerySet,
+    TwitterUser,
+    Vote,
+)
 from ..templatetags.vote_tags import eligible_for
 from ..utils import BrowsableItem, BrowsableYear
 from ..voter import Voter
@@ -483,18 +492,24 @@ class Anime(mixins.BreadcrumbMixin, ListView):
         if len(tracks) == 0:
             raise Http404('No tracks for this anime')
         else:
-            return sorted(
-                tracks,
-                key=lambda t: t.role_detail_for_anime(self.kwargs['anime']),
-            )
+            return tracks
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        role_tracks: list[tuple[Role, Track]] = sorted(
+            (
+                (role, track)
+                for track in context[self.context_object_name]
+                for role in track.role_details_for_anime(self.kwargs['anime'])
+            ),
+            key=lambda rt: rt[0],
+        )
         context.update({
             'anime': self.kwargs['anime'],
+            'role_tracks': role_tracks,
             'related_anime': (
                 context['tracks'][0]
-                .role_detail_for_anime(self.kwargs['anime'])
+                .role_details_for_anime(self.kwargs['anime'])[0]
                 .related_anime
             ),
         })

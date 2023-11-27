@@ -949,13 +949,9 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
     def role_details(self) -> list[Role]:
         return [Role(role) for role in self.roles]
 
-    def role_detail_for_anime(self, anime: str) -> Role:
+    def role_details_for_anime(self, anime: str) -> list[Role]:
         self._recently_relevant_anime = anime
-        (details,) = [r for r in self.role_details if r.anime == anime]
-        return details
-
-    def role_detail_for_recently_relevant_anime(self) -> Role:
-        return self.role_detail_for_anime(self._recently_relevant_anime)
+        return [r for r in self.role_details if r.anime == anime]
 
     def has_anime(self, anime: str) -> bool:
         return anime in (r.anime for r in self.role_details)

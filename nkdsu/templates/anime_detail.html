@@ -20,14 +20,14 @@
     </p>
   {% endif %}
 
-  {% regroup tracks by role_detail_for_recently_relevant_anime.plural as roles %}
+  {% regroup role_tracks by 0.plural as roles %}
 
   <div class="track-groups">
-    {% for role, tracks in roles %}
+    {% for role, these_role_tracks in roles %}
       <div class="track-group">
         <h3>{{ role }}</h3>
         <ul class="tracks">
-          {% for track in tracks %}
+          {% for role, track in these_role_tracks %}
             {% include "include/track.html" %}
           {% endfor %}
         </ul>
