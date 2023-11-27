@@ -269,7 +269,7 @@ class ArtistParserTests(TestCase):
 
 ROLE_EXAMPLES: dict[str, tuple[Optional[str], Optional[str], str, str, str]] = {
     '': (None, None, '', '', ''),
-    'unmatchable': ('unmatchable', None, '', '', ''),
+    'unmatchable': (None, None, '', 'unmatchable', 'unmatchable'),
     'Mobile Suit Gundam SEED ED3': ('Mobile Suit Gundam SEED', None, 'ED', '3', 'ED3'),
     "Vivy -Fluorite Eye's Song- Character Song": (
         "Vivy -Fluorite Eye's Song-",
