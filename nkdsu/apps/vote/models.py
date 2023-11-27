@@ -673,7 +673,9 @@ class Role:
         else:
             self.kind, self.specifics = ('', self.full_role)
 
-        self.sortkey_group, self.verbose, self.plural = sortable_kinds.get(self.kind.lower(), (99, 'Other', 'Others'))
+        self.sortkey_group, self.verbose, self.plural = sortable_kinds.get(
+            self.kind.lower(), (99, 'Other', 'Others')
+        )
 
         if self.caveat and self.caveat.lower().strip() == 'rebroadcast':
             self.sortkey_group += 0.5
