@@ -278,6 +278,7 @@ ROLE_EXAMPLES: dict[str, tuple[Optional[str], Optional[str], str, str, str]] = {
         '',
         'Character Song',
     ),
+    'ab image song - gdm': ('ab', None, 'image song', 'gdm', 'image song - gdm'),
     'Pop Team Epic Rebroadcast OP': ('Pop Team Epic', 'Rebroadcast ', 'OP', '', 'OP'),
     'takt op.Destiny ED': ('takt op.Destiny', None, 'ED', '', 'ED'),
     'Im OP Even at lv1 OP': ('Im OP Even at lv1', None, 'OP', '', 'OP'),
