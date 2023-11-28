@@ -628,13 +628,17 @@ class Role:
     def __init__(self, full_tag: str):
         self.full_tag = full_tag
 
+        ep = r'(ep\d+(-\d+)?\b.*)'
         result = re.match(
             r'^(?P<anime>.*?) ?\b('
             r'(?P<caveat>(rebroadcast|tv broadcast|netflix) )?\b(?P<role>'
             r'(('
             r'((ED|OP))|'
-            r'(insert (track|song)\b)'
-            r')(?P<specifics>\d*\b\W*\w* ?((ep\d+(-\d+)?\b.*)|b-side)?)?)|'
+            r'(insert (track|song)\b)|'
+            + ep
+            + r')(?P<specifics>\d*\b\W*\w* ?('
+            + ep
+            + r'|b-side)?)?)|'
             r'((character|image) song\b.*)|'
             r'(ins)|'
             r'((main )?theme ?\d*)|'
@@ -645,7 +649,7 @@ class Role:
             flags=re.IGNORECASE,
         )
 
-        if result and result.groupdict()['role']:
+        if result and result.groupdict()['role'] and result.groupdict()['anime']:
             deets = result.groupdict()
             self.anime = deets['anime']
             self.full_role = deets['role']
