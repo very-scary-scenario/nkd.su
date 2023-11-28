@@ -285,6 +285,7 @@ ROLE_EXAMPLES: dict[str, tuple[Optional[str], Optional[str], str, str, str]] = {
     'Im OP Even at lv1 OP 1': ('Im OP Even at lv1', None, 'OP', '1', 'OP 1'),
     'sasami@ganbont OP B-sIdE': ('sasami@ganbont', None, 'OP', 'B-sIdE', 'OP B-sIdE'),
     'twgok ED EP07': ('twgok', None, 'ED', 'EP07', 'ED EP07'),
+    'a show ep4 insert': ('a show', None, '', 'ep4 insert', 'ep4 insert'),
     'idfs ED EP01-03': ('idfs', None, 'ED', 'EP01-03', 'ED EP01-03'),
     'idfs insert song EP01-03': (
         'idfs',
