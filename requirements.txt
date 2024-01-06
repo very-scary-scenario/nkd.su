@@ -7,7 +7,7 @@ django-instant-coverage==1.2.1
 django-pipeline==2.0.8
 django-resized==1.0.2
 django-stubs==4.2.5
-django>=4.2.5<4.3
+django>=4.2.5,<4.3
 flake8-import-order<2
 flake8>=3.8
 musicbrainzngs==0.5
