@@ -19,9 +19,9 @@ class Command(BaseCommand):
             print("Performing dry run; 'commit' to confirm")
 
         self.stdout.write(
-            '\n'.join([
-                track['item'] for track in update_library(plist, dry_run=dry_run)
-            ])
+            '\n'.join(
+                [track['item'] for track in update_library(plist, dry_run=dry_run)]
+            )
             + '\n'
         )
         plistfile.close()

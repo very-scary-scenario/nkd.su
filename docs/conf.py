@@ -21,9 +21,9 @@ def _commit_year_range() -> str:
 
     commit_years = [
         int(y)
-        for y in subprocess.check_output([
-            'git', 'log', '--format=%cd', '--date=format:%Y'
-        ])
+        for y in subprocess.check_output(
+            ['git', 'log', '--format=%cd', '--date=format:%Y']
+        )
         .decode('ascii')
         .split('\n')
         if y

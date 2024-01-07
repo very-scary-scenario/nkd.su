@@ -316,14 +316,12 @@ class Search(ListView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         resp = super().get(request, *args, **kwargs)
         qs = self.get_queryset()
-        animes = set(
-            (
-                role_detail.anime
-                for t in qs
-                for role_detail in t.role_details
-                if role_detail.anime is not None
-            )
-        )
+        animes = set((
+            role_detail.anime
+            for t in qs
+            for role_detail in t.role_details
+            if role_detail.anime is not None
+        ))
 
         # if our search results are identical to an anime detail page, take us
         # there instead

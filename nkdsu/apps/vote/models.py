@@ -817,14 +817,12 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
 
     @classmethod
     def all_anime_titles(cls) -> set[str]:
-        return set(
-            (
-                rd.anime
-                for t in cls.objects.public()
-                for rd in t.role_details
-                if rd.anime is not None
-            )
-        )
+        return set((
+            rd.anime
+            for t in cls.objects.public()
+            for rd in t.role_details
+            if rd.anime is not None
+        ))
 
     @classmethod
     def all_artists(cls) -> set[str]:
@@ -881,14 +879,12 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
         if qs is None:
             qs = cls.objects.all()
 
-        return set(
-            (
-                f'{role_detail.full_role}'
-                f'\n | {role_detail.kind}\n | {role_detail.specifics}\n'
-                for t in qs
-                for role_detail in t.role_details
-            )
-        )
+        return set((
+            f'{role_detail.full_role}'
+            f'\n | {role_detail.kind}\n | {role_detail.specifics}\n'
+            for t in qs
+            for role_detail in t.role_details
+        ))
 
     @classmethod
     def all_non_inudesu_roles(cls) -> set[str]:

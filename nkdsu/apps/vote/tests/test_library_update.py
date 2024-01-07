@@ -511,15 +511,13 @@ class MetadataConsistencyCheckTest(TestCase):
                 ],
                 [],
             ),
-            [
-                {
-                    'field': 'artist',
-                    'message': (
-                        '"an artist of some knid" was not found in the database, but it'
-                        ' looks similar to "an artist of some kind"'
-                    ),
-                }
-            ],
+            [{
+                'field': 'artist',
+                'message': (
+                    '"an artist of some knid" was not found in the database, but it'
+                    ' looks similar to "an artist of some kind"'
+                ),
+            }],
         )
 
         self.assertEqual(
@@ -550,15 +548,13 @@ class MetadataConsistencyCheckTest(TestCase):
                 ],
                 [],
             ),
-            [
-                {
-                    'field': 'artist',
-                    'message': (
-                        '"kind some of artist an" was not found in the database, but it'
-                        ' looks similar to "an artist of some kind"'
-                    ),
-                }
-            ],
+            [{
+                'field': 'artist',
+                'message': (
+                    '"kind some of artist an" was not found in the database, but it'
+                    ' looks similar to "an artist of some kind"'
+                ),
+            }],
         )
 
     def test_multiple_artists(self) -> None:
