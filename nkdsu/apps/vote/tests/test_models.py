@@ -1,6 +1,23 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from ..models import Track
+from ..models import Show, Track
+
+
+class ShowTest(TestCase):
+    def test_showtime_date_constraint(self) -> None:
+        Show.objects.create(showtime='2038-01-01T12:00:00Z', end='2038-01-01T14:00:00Z')
+
+        with self.assertRaises(ValidationError) as e:
+            Show.objects.create(
+                showtime='2038-01-01T16:00:00Z', end='2038-01-01T18:00:00Z'
+            )
+        self.assertEqual(
+            str(e.exception),
+            str({'__all__': ['Constraint “unique_showtime_dates” is violated.']}),
+        )
+
+        Show.objects.create(showtime='2038-01-02T12:00:00Z', end='2038-01-02T14:00:00Z')
 
 
 class TrackTest(TestCase):

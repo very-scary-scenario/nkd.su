@@ -78,6 +78,15 @@ class Show(CleanOnSaveMixin, Serializable, models.Model):
     A broadcast of the show and, by extention, the week leading up to it.
     """
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                'showtime__date',
+                name='unique_showtime_dates',
+            ),
+        ]
+        ordering = ['-showtime']
+
     showtime = models.DateTimeField(db_index=True)
     end = models.DateTimeField(db_index=True)
     message = models.TextField(blank=True)
@@ -345,9 +354,6 @@ class Show(CleanOnSaveMixin, Serializable, models.Model):
             'message_html': markdown(self.message) if self.message else None,
             'voting_allowed': self.voting_allowed,
         }
-
-    class Meta:
-        ordering = ['-showtime']
 
 
 class TwitterUser(Voter, CleanOnSaveMixin, models.Model):
