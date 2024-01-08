@@ -5,7 +5,10 @@ runs:
       with:
         python-version: '3.11'
 
-    - run: pip install -r requirements.txt
+    - run: pip install poetry
+      shell: bash
+
+    - run: poetry install
       shell: bash
 
     - run: npm install
