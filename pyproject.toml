@@ -21,7 +21,7 @@ addopts = "--doctest-modules --doctest-glob=*.rst --numprocesses=auto --dist=wor
 timeout = 120
 
 [tool.poetry]
-name = "nkd.su"
+name = "nkdsu"
 version = "0.0.0"
 description = "A Neko Desu request robot"
 authors = []
