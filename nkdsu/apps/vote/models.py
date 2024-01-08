@@ -8,7 +8,7 @@ from enum import Enum, auto
 from functools import cached_property
 from io import BytesIO
 from string import ascii_letters
-from typing import Any, Iterable, Literal, Optional, cast
+from typing import Any, Iterable, Literal, Optional, TYPE_CHECKING, cast
 from urllib.parse import quote, urlparse
 from uuid import uuid4
 
@@ -52,6 +52,10 @@ from .utils import (
 )
 from .voter import Voter
 from ..vote import mixcloud
+
+
+if TYPE_CHECKING:
+    from django.db.models.fields.manager import RelatedManager
 
 
 User = get_user_model()
@@ -742,6 +746,10 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
         ]
 
     objects = TrackQuerySet.as_manager()
+
+    note_set: RelatedManager[Note]
+    play_set: RelatedManager[Play]
+    vote_set: RelatedManager[Vote]
 
     # derived from iTunes
     id = models.CharField(max_length=16, primary_key=True)
