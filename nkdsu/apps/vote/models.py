@@ -1049,11 +1049,11 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
         return self.vote_set.filter(show=show).order_by('date')
 
     @memoize
-    def notes(self) -> models.QuerySet[Note]:
+    def notes(self) -> NoteQuerySet:
         return self.note_set.for_show_or_none(Show.current())
 
     @memoize
-    def public_notes(self) -> models.QuerySet[Note]:
+    def public_notes(self) -> NoteQuerySet:
         return self.notes().filter(public=True)
 
     def play_tweet_content(self) -> str:

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .models import Note, Show, Track
 
 
-class NoteQuerySet(models.QuerySet):
+class NoteQuerySet(models.QuerySet["Note"]):
     def for_show_or_none(self, show: Show) -> models.QuerySet[Note]:
         return self.filter(models.Q(show=show) | models.Q(show=None))
 
