@@ -8,7 +8,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: npm run-script test
+      - run: poetry run npm run-script test
 
   migrations:
     name: "check django migrations"
@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: npm run-script check-migrations
+      - run: poetry run npm run-script check-migrations
 
   docs:
     name: "ensure the docs build"
@@ -25,28 +25,28 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - working-directory: docs
-        run: make html
+        run: poetry run make html
 
   black:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: npm run-script lint-black
+      - run: poetry run npm run-script lint-black
 
   flake8:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: npm run-script lint-flake8
+      - run: poetry run npm run-script lint-flake8
 
   mypy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: npm run-script lint-mypy
+      - run: poetry run npm run-script lint-mypy
 
   eslint:
     runs-on: ubuntu-latest
