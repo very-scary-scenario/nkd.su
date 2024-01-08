@@ -14,7 +14,7 @@ runs:
     - run: poetry install
       shell: bash
 
-    - run: ./.venv/bin/activate
+    - run: . ./.venv/bin/activate
       shell: bash
 
     - run: npm install
