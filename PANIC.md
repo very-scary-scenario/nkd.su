@@ -18,8 +18,8 @@ installed.
 - Make and activate a [virtualenv][venv].
     - I use [virtualenvwrapper][vew], but it's up to you how to set this up.
 - Clone the repository.
-- Run `pip install -r requirements.txt` from the repository root to install
-  Python requirements.
+- Run `pip install poetry && poetry install` from the repository root to
+  install Python requirements.
 - Run `npm install` from the repository root to install the node tools used for
   static file preprocessing and linting.
 - Create a `nkdsu/settings_local.py`
