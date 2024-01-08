@@ -80,10 +80,7 @@ class Show(CleanOnSaveMixin, Serializable, models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                'showtime__date',
-                name='unique_showtime_dates',
-            ),
+            models.UniqueConstraint('showtime', name='unique_showtime'),
         ]
         ordering = ['-showtime']
 

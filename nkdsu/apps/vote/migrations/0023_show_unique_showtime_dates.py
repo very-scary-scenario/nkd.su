@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name='show',
             constraint=models.UniqueConstraint(
-                models.F('showtime__date'), name='unique_showtime_dates'
+                models.F('showtime'), name='unique_showtime'
             ),
         ),
     ]

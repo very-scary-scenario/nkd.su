@@ -101,11 +101,11 @@ class ShowTest(TestCase):
 
         with self.assertRaises(ValidationError) as e:
             Show.objects.create(
-                showtime='2038-01-01T16:00:00Z', end='2038-01-01T18:00:00Z'
+                showtime='2038-01-01T12:00:00Z', end='2038-01-01T12:00:00Z'
             )
         self.assertEqual(
             str(e.exception),
-            str({'__all__': ['Constraint “unique_showtime_dates” is violated.']}),
+            str({'__all__': ['Constraint “unique_showtime” is violated.']}),
         )
 
         Show.objects.create(showtime='2038-01-02T12:00:00Z', end='2038-01-02T14:00:00Z')
