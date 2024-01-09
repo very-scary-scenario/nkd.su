@@ -20,6 +20,10 @@ python_files = "*.py"
 addopts = "--doctest-modules --doctest-glob=*.rst --numprocesses=auto --dist=worksteal --pyargs"
 timeout = 120
 
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
 name = "nkdsu"
 version = "0.0.0"
