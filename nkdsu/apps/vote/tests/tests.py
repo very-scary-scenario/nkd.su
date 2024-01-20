@@ -9,7 +9,7 @@ from ..models import Play, Show, Track
 
 
 def mkutc(*args, **kwargs) -> datetime.datetime:
-    return timezone.make_aware(datetime.datetime(*args, **kwargs), timezone.utc)
+    return timezone.make_aware(datetime.datetime(*args, **kwargs), datetime.timezone.utc)
 
 
 class ShowTest(TestCase):

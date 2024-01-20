@@ -120,7 +120,6 @@ TIME_ZONE = 'Europe/London'
 LANGUAGE_CODE = 'en-gb'
 SITE_ID = 1
 USE_I18N = False
-USE_L10N = False
 USE_TZ = True
 
 # these URLs will not work when DEBUG is False; set up your webserver to serve
@@ -206,7 +205,11 @@ LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = 'vote:index'
 
 # STATIC
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineManifestStorage'
+STORAGES = {
+    'staticfiles': {
+        'BACKEND': 'pipeline.storage.PipelineManifestStorage',
+    },
+}
 
 PIPELINE = {
     'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
