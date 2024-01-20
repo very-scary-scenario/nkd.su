@@ -25,7 +25,7 @@
     };
     devShells.default = pkgs.mkShell {
       inputsFrom = [ self.packages.${system}.nkdsu ];
-      packages = [ pkgs.poetry ];
+      packages = [ pkgs.poetry pkgs.nodejs_20 ];
     };
   }
   );
