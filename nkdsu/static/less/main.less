@@ -776,7 +776,6 @@ header {
           > form, > a {
             width: 100%;
             display: block;
-            padding: .5em;
 
             &.alert::before {
               content: '●';
@@ -784,10 +783,26 @@ header {
             }
           }
 
-          form#dark-mode-settings {
-            .child-iter();
-            text-align: inherit;
+          > a { padding: .5em; }
+
+          > form {
             margin: 0;
+            padding: 0 .5rem;
+            text-align: inherit;
+
+            button {
+              text-align: inherit;
+              padding: .5rem 0;
+              width: 100%;
+            }
+
+            &#dark-mode-settings {
+              .child-iter();
+
+              button {
+                width: auto;
+              }
+            }
           }
         }
       }

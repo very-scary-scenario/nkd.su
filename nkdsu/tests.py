@@ -115,10 +115,6 @@ class EverythingTest(
         '/reset-password/done/',
         '/reset-password/key/abc-def/',
         '/reset-password/key/done/',
-        # it's important that logout be last since we have a sublcass of this
-        # test that logs in at the start, and we want it to stay logged in
-        '/logout/',
-        '/account/logout/',
     ]
 
     uncovered_urls = [
@@ -137,6 +133,8 @@ class EverythingTest(
         '/vote-admin/requests/claim/1/',
         '/vote-admin/requests/shelf/1/',
         '/set-dark-mode/',
+        '/logout/',
+        '/account/logout/',
         # can only be accessed if you are logged in with an unusable password
         '/set-password/',
         # is intentionally broken

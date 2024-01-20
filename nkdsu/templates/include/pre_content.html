@@ -88,7 +88,10 @@
             <li><a href="{% url "password_set" %}">set password</a></li>
           {% endif %}
           <li>
-            <a href="{% url "logout" %}">log out</a>
+            <form method="post" action="{% url "logout" %}">
+              {% csrf_token %}
+              <button class="link mono">log out</button>
+            </form>
           </li>
         {% else %}
           <li>
