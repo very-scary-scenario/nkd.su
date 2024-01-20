@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup
       - working-directory: docs
-        run: make html
+        run: poetry run make html
       - uses: actions/upload-pages-artifact@v1
         with:
           path: docs/_build/html
