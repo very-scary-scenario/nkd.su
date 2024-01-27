@@ -206,6 +206,9 @@ LOGOUT_REDIRECT_URL = LOGIN_REDIRECT_URL = 'vote:index'
 # STATIC
 
 STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
     'staticfiles': {
         'BACKEND': 'pipeline.storage.PipelineManifestStorage',
     },
