@@ -44,12 +44,6 @@ search box on the website.
 
 ## More things
 
-If you're going to create tweets for voters, make sure that '@nkdsu' appears at
-the start of the vote tweet. Right now, URLs are constructed in a particular
-way and can fall anywhere within a vote tweet, but this is subject to change.
-To be safe, keep the URLs before any text and use the `url` value provided in
-track objects.
-
 If there is something else you want added or changed, or if you find something
 that's broken, [file a bug][new_issue].
 
