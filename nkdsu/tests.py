@@ -137,6 +137,8 @@ class EverythingTest(
         '/account/logout/',
         # can only be accessed if you are logged in with an unusable password
         '/set-password/',
+        # can only be accessed by particular users
+        '/update-request/1/',
         # is intentionally broken
         '/vote-admin/throw-500/',
     ]
