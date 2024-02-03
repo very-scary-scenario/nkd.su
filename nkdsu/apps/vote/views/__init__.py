@@ -414,6 +414,8 @@ class UpdateVoteView(LoginRequiredMixin, UpdateView):
     fields = ['text']
 
     def get_queryset(self) -> QuerySet[Vote]:
+        # enforced by LoginRequiredMixin:
+        assert not isinstance(self.request.user, AnonymousUser)
         return Vote.objects.filter(user=self.request.user)
 
     def get_success_url(self) -> str:
