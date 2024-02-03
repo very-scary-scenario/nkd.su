@@ -27,6 +27,7 @@ from django.views.generic import (
     FormView,
     ListView,
     TemplateView,
+    UpdateView,
 )
 
 from nkdsu.mixins import MarkdownView
@@ -406,6 +407,17 @@ class TwitterUserDetail(mixins.TwitterUserDetailMixin, VoterDetail):
 
     def get_voter(self) -> TwitterUser:
         return self.get_object()
+
+
+class UpdateVoteView(LoginRequiredMixin, UpdateView):
+    template_name = 'vote_edit.html'
+    fields = ['text']
+
+    def get_queryset(self) -> QuerySet[Vote]:
+        return Vote.objects.filter(user=self.request.user)
+
+    def get_success_url(self) -> str:
+        return reverse('vote:profiles:profile', kwargs={'username': self.object.user})
 
 
 class Year(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):

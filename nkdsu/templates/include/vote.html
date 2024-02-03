@@ -19,6 +19,9 @@
         {{ vote.date|when }}
       {% endif %}
     </span>
+    {% if vote.user == user %}
+      <a class="edit" title="edit" href="{% url "vote:edit-vote" pk=vote.pk %}"></a>
+    {% endif %}
     {{ vote.content|safe }}
   </p>
 </li>

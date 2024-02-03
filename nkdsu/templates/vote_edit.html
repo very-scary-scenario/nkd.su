@@ -1,0 +1,25 @@
+{% extends parent %}
+
+{% block title %}edit request{% endblock %}
+
+{% block content %}
+  <h2>edit request</h2>
+  <p class="aside">you can edit the text of this request</p>
+  <p class="aside">it is a request for the following track{{ object.tracks.all|pluralize }}:</p>
+
+  <div class="vote-preview">
+    <ul class="tracks">
+      {% for track in object.tracks.all %}
+        {% include "include/nanotrack.html" with tiny=True %}
+      {% endfor %}
+    </ul>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="submit" class="button" value="save"></input>
+  </form>
+
+{% endblock %}
