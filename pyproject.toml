@@ -55,6 +55,7 @@ social-auth-app-django = "*"
 social-auth-core = "*"
 sphinx = "<6.2"
 ujson = "*"
+ipython = "^8.21.0"
 
 [tool.poetry.group.test.dependencies]
 typeguard = "<3"
