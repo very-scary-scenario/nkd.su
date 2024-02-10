@@ -45,7 +45,7 @@ class PlayoutEntry:
         def pass_if_none_exists(get_track=Callable[[], Track]) -> Optional[Track]:
             try:
                 return get_track()
-            except Track.DoesNotExist:
+            except (Track.DoesNotExist, Track.MultipleObjectsReturned) as e:
                 return None
 
         return (
