@@ -19,7 +19,7 @@
         {{ vote.date|when }}
       {% endif %}
     </span>
-    {% if vote.user == user %}
+    {% if vote.user == user and vote.is_editable %}
       <a class="edit" title="edit" href="{% url "vote:edit-vote" pk=vote.pk %}"></a>
     {% endif %}
     {{ vote.content|safe }}
