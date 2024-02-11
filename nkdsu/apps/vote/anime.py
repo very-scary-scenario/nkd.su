@@ -33,3 +33,20 @@ with open(
         a['title']: Anime(**{camel_to_snake(k): v for k, v in a.items()})
         for a in ujson.load(aodf)['data']
     }
+
+
+by_synonym = {
+    synonym: anime for anime in by_title.values() for synonym in anime.synonyms
+}
+
+
+def anime(title: str) -> Optional[Anime]:
+    """
+    >>> anime('Machikado Mazoku').title
+    'Machikado Mazoku'
+    >>> anime('The Demon Girl Next Door').title
+    'Machikado Mazoku'
+    >>> anime('shamiko')
+    """
+
+    return by_title.get(title) or by_synonym.get(title)
