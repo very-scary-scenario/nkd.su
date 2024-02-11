@@ -1,11 +1,10 @@
-from dataclasses import dataclass
+from pydantic import BaseModel
 import os
 
 import ujson
 
 
-@dataclass
-class Anime:
+class Anime(BaseModel):
     title: str
     synonyms: list[str]
 
