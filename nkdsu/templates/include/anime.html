@@ -1,0 +1,9 @@
+{% load vote_tags %}
+
+{% if anime %}
+  <div class="anime">
+    <p class="aside">
+      anime broadcast in {{ anime|season }}
+    </p>
+  </div>
+{% endif %}

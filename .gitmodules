@@ -1,0 +1,3 @@
+[submodule "nkdsu/apps/vote/data/mpaod"]
+	path = nkdsu/apps/vote/data/mpaod
+	url = https://github.com/manami-project/anime-offline-database.git

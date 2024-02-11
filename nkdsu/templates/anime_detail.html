@@ -1,5 +1,7 @@
 {% extends parent %}
 
+{% load vote_tags %}
+
 {% block title %}{{ anime }}{% endblock %}
 
 {% block main_classes %}
@@ -10,6 +12,10 @@
 {% block content %}
 
   <h2>{{ anime }}</h2>
+
+  {% with anime|anime as anime_detail %}
+    {% include "include/anime.html" with anime=anime_detail %}
+  {% endwith %}
 
   {% if related_anime %}
     <p class="related-anime">

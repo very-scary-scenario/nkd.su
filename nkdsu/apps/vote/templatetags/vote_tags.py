@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Iterable, Optional
+from typing import Iterable, Literal, Optional
 from urllib.parse import unquote, urlparse
 
 from allauth.account.models import EmailAddress
@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.utils.safestring import SafeText, mark_safe
 from markdown import markdown as md
 
+from ..anime import Anime, anime as get_anime
 from ..models import Play, Show, Track, Vote
 from ..utils import length_str
 
@@ -153,3 +154,29 @@ def url_display(url: str) -> str:
     """
 
     return unquote(url.removeprefix(f'{urlparse(url).scheme}://'))
+
+
+@register.filter
+def anime(title: str) -> Optional[Anime]:
+    return get_anime(title)
+
+
+@register.filter
+def season(anime: Anime) -> str:
+
+    src_season: Literal['SPRING', 'SUMMER', 'FALL', 'WINTER', 'UNDEFINED'] = (
+        anime.anime_season['season']
+    )
+    dst_season = {
+        'SPRING': 'spring',
+        'SUMMER': 'summer',
+        'FALL': 'autumn',
+        'WINTER': 'winter',
+        'UNDEFINED': None,
+    }[src_season]
+
+    return (
+        f'{anime.anime_season["year"]}'
+        if dst_season is None
+        else f'{dst_season} {anime.anime_season["year"]}'
+    )
