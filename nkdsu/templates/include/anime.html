@@ -1,0 +1,9 @@
+{% if anime %}
+  <div class="anime">
+    <ul class="titles">
+      {% for title in anime.titles %}
+        <li>{{ title }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}

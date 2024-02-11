@@ -1,4 +1,5 @@
 import os
+from itertools import chain
 from typing import Literal, Optional
 
 from pydantic import BaseModel
@@ -18,6 +19,9 @@ class Anime(BaseModel):
     synonyms: list[str]
     sources: list[str]
     anime_season: Season
+
+    def titles(self) -> list[str]:
+        return sorted(chain(self.synonyms, (self.title,)))
 
 
 with open(

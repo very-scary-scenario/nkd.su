@@ -13,6 +13,10 @@
 
 <p class="aside">added to the library on <a href="{{ track.show_revealed.get_revealed_url }}">{{ track.revealed|date:"F"|lower }}&nbsp;{{ track.revealed|date:"jS, Y" }}</a></p>
 
+{% for role in track.role_details %}
+  {% include "include/anime.html" with anime=role.anime_data %}
+{% endfor %}
+
 {% if track.plays %}
   <h3>
     {{ track.plays|length }} {{ track.plays|length|pluralize:"play,plays" }} on record:
