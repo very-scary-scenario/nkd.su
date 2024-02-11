@@ -22,7 +22,7 @@ class Anime(BaseModel):
     synonyms: list[str]
     sources: list[str]
     anime_season: Season
-    type: Literal['MOVIE', 'ONA', 'OVA', 'TV', 'UNKNOWN']
+    type: Literal['MOVIE', 'ONA', 'OVA', 'SPECIAL', 'TV', 'UNKNOWN']
 
     def titles(self) -> list[str]:
         return sorted(chain(self.synonyms, (self.title,)))
@@ -33,7 +33,7 @@ class Anime(BaseModel):
         likely to be included in the nkd.su library will return a lower number.
         """
 
-        return ['TV', 'MOVIE', 'OVA', 'ONA', 'UNKNOWN'].index(self.type)
+        return ['TV', 'MOVIE', 'OVA', 'ONA', 'SPECIAL', 'UNKNOWN'].index(self.type)
 
 
 by_title: dict[str, Anime] = {}
@@ -49,8 +49,6 @@ with open(
     'rt',
 ) as aodf:
     for d in ujson.load(aodf)['data']:
-        if d['type'] == 'SPECIAL':
-            continue
         a = Anime(**{camel_to_snake(k): v for k, v in d.items()})
         if (a.title not in by_title) or (by_title[a.title].type_rank() > a.type_rank()):
             by_title[a.title] = a
