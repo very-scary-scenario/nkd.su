@@ -17,7 +17,7 @@ installed.
   npm.
 - Make and activate a [virtualenv][venv].
     - I use [virtualenvwrapper][vew], but it's up to you how to set this up.
-- Clone the repository.
+- Clone the repository and its submodules.
 - Run `pip install poetry && poetry install` from the repository root to
   install Python requirements.
 - Run `npm install` from the repository root to install the node tools used for
