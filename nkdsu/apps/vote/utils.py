@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import string
 from dataclasses import dataclass
 from os import environ
@@ -102,6 +103,15 @@ def length_str(msec: float) -> str:
         return '%i:%02d:%02d' % (hours, remainder_minutes, remainder_seconds)
     else:
         return '%i:%02d' % (minutes, remainder_seconds)
+
+
+def camel_to_snake(camel: str) -> str:
+    """
+    >>> camel_to_snake('camelCaseABCD')
+    'camel_case_a_b_c_d'
+    """
+
+    return re.sub(r'[A-Z]', lambda m: f'_{m.group(0).lower()}', camel)
 
 
 def vote_url(tracks: Iterable[Track]) -> str:

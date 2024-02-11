@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from typing_extensions import TypedDict
 import ujson
 
+from .utils import camel_to_snake
+
 
 class Season(TypedDict):
     year: Optional[int]
@@ -15,7 +17,7 @@ class Anime(BaseModel):
     title: str
     synonyms: list[str]
     sources: list[str]
-    animeSeason: Season
+    anime_season: Season
 
 
 with open(
@@ -27,4 +29,7 @@ with open(
     ),
     'rt',
 ) as aodf:
-    by_title = {a['title']: Anime(**a) for a in ujson.load(aodf)['data']}
+    by_title = {
+        a['title']: Anime(**{camel_to_snake(k): v for k, v in a.items()})
+        for a in ujson.load(aodf)['data']
+    }
