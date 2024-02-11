@@ -156,6 +156,8 @@ class CheckMetadata(ElfMixin, FormView):
 class UnmatchedAnimeTitles(ElfMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
         return HttpResponse(
-            content='\n'.join(t for t in Track.all_anime_titles() if not get_anime(t)),
+            content='\n'.join(
+                sorted(t for t in Track.all_anime_titles() if not get_anime(t))
+            ),
             content_type='text/plain',
         )
