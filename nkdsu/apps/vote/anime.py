@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from typing_extensions import TypedDict
 import ujson
 
-from .utils import cached, camel_to_snake
+from .utils import camel_to_snake
 
 
 MAX_ANIME_SUGGESTIONS = 10
@@ -59,7 +59,6 @@ def anime(title: str) -> Optional[Anime]:
     return by_title.get(title) or by_synonym.get(title)
 
 
-@cached(60 * 60, 'fuzzy-aliases')
 def fuzzy_nkdsu_aliases() -> dict[str, str]:
     """
     Return a dict of ``{alias: nkdsu_title}`` where ``nkdsu_title`` is an anime
