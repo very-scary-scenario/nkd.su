@@ -2,12 +2,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import Form
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import FormView, ListView
+from django.views.generic import FormView, ListView, View
 
+from ..anime import get_anime
 from ..elfs import is_elf
 from ..forms import CheckMetadataForm
 from ..models import ElfShelving, Request, Track
@@ -150,3 +151,11 @@ class CheckMetadata(ElfMixin, FormView):
             ),
         })
         return self.render_to_response(context)
+
+
+class UnmatchedAnimeTitles(ElfMixin, View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        return HttpResponse(
+            content='\n'.join(t for t in Track.all_anime_titles() if not get_anime(t)),
+            content_type='text/plain',
+        )

@@ -122,6 +122,11 @@ elf_patterns = [
         name='shelf_request',
     ),
     url(r'^check-metadata/$', elf.CheckMetadata.as_view(), name='check_metadata'),
+    url(
+        r'^unmatched-anime/$',
+        elf.UnmatchedAnimeTitles.as_view(),
+        name='unmatched_anime_titles',
+    ),
 ]
 
 
