@@ -37,6 +37,7 @@ class Anime(BaseModel):
 
 
 by_title: dict[str, Anime] = {}
+by_synonym: dict[str, Anime] = {}
 
 with open(
     os.path.join(
@@ -54,15 +55,11 @@ with open(
         if (a.title not in by_title) or (by_title[a.title].type_rank() > a.type_rank()):
             by_title[a.title] = a
 
-
-by_synonym: dict[str, Anime] = {}
-
-for a in by_title.values():
-    for synonym in a.synonyms:
-        if (synonym not in by_synonym) or (
-            by_synonym[synonym].type_rank() > a.type_rank()
-        ):
-            by_synonym[synonym] = a
+        for synonym in a.synonyms:
+            if (synonym not in by_synonym) or (
+                by_synonym[synonym].type_rank() > a.type_rank()
+            ):
+                by_synonym[synonym] = a
 
 
 def get_anime(title: str) -> Optional[Anime]:
