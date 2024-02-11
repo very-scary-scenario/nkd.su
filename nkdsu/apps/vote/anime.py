@@ -22,7 +22,7 @@ class Anime(BaseModel):
     synonyms: list[str]
     sources: list[str]
     anime_season: Season
-    type: Literal['MOVIE', 'ONA', 'OVA', 'SPECIAL', 'TV', 'UNKNOWN']
+    type: Literal['MOVIE', 'ONA', 'OVA', 'TV', 'UNKNOWN']
 
     def titles(self) -> list[str]:
         return sorted(chain(self.synonyms, (self.title,)))
@@ -40,6 +40,7 @@ with open(
     by_title = {
         a['title']: Anime(**{camel_to_snake(k): v for k, v in a.items()})
         for a in ujson.load(aodf)['data']
+        if a['type'] != 'SPECIAL'
     }
 
 
