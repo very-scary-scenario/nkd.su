@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Literal, Iterable, Optional
+from typing import Iterable, Literal, Optional
 from urllib.parse import unquote, urlparse
 
 from allauth.account.models import EmailAddress
