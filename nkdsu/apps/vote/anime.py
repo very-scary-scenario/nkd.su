@@ -14,7 +14,7 @@ MAX_ANIME_SUGGESTIONS = 10
 
 class Season(TypedDict):
     year: Optional[int]
-    season: Literal['SPRING', 'SUMMER', 'FALL', 'WINTER', 'UNDEFINED']
+    season: Literal['WINTER', 'SPRING', 'SUMMER', 'FALL', 'UNDEFINED']
 
 
 class Anime(BaseModel):
