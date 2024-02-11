@@ -11,11 +11,11 @@
 
 <p class="aside"><a href="{{ track.get_report_url }}">report bad metadata</a></p>
 
-<p class="aside">added to the library on <a href="{{ track.show_revealed.get_revealed_url }}">{{ track.revealed|date:"F"|lower }}&nbsp;{{ track.revealed|date:"jS, Y" }}</a></p>
-
 {% for role in track.role_details %}
   {% include "include/anime.html" with anime=role.anime_data %}
 {% endfor %}
+
+<p class="aside">added to the library on <a href="{{ track.show_revealed.get_revealed_url }}">{{ track.revealed|date:"F"|lower }}&nbsp;{{ track.revealed|date:"jS, Y" }}</a></p>
 
 {% if track.plays %}
   <h3>

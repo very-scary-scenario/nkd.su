@@ -1,9 +1,9 @@
+{% load vote_tags %}
+
 {% if anime %}
   <div class="anime">
-    <ul class="titles">
-      {% for title in anime.titles %}
-        <li>{{ title }}</li>
-      {% endfor %}
-    </ul>
+    <p class="aside">
+      anime broadcast in {{ anime|season }}
+    </p>
   </div>
 {% endif %}
