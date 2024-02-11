@@ -32,7 +32,7 @@ from django_resized import ResizedImageField
 from markdown import markdown
 import requests
 
-from .anime import Anime, anime
+from .anime import Anime, get_anime
 from .api_utils import JsonDict, Serializable
 from .managers import NoteQuerySet, TrackQuerySet
 from .mastodon_instances import MASTODON_INSTANCES
@@ -717,7 +717,7 @@ class Role:
         )
 
     def anime_data(self) -> Optional[Anime]:
-        return None if self.anime is None else anime(self.anime)
+        return None if self.anime is None else get_anime(self.anime)
 
     def anime_is_related(self, anime: Optional[str]) -> bool:
         if anime is None or self.anime is None:

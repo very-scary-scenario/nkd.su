@@ -65,7 +65,7 @@ for a in by_title.values():
             by_synonym[synonym] = a
 
 
-def anime(title: str) -> Optional[Anime]:
+def get_anime(title: str) -> Optional[Anime]:
     """
     >>> anime('Machikado Mazoku').title
     'Machikado Mazoku'
@@ -112,7 +112,7 @@ def fuzzy_nkdsu_aliases() -> dict[str, str]:
 
     return {
         alt_title.lower(): title
-        for anime, title in map(lambda t: (anime(t), t), Track.all_anime_titles())
+        for anime, title in map(lambda t: (get_anime(t), t), Track.all_anime_titles())
         if anime is not None
         for alt_title in anime.titles()
     }

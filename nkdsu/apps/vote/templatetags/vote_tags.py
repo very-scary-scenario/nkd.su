@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.utils.safestring import SafeText, mark_safe
 from markdown import markdown as md
 
-from ..anime import Anime, anime as get_anime
+from ..anime import Anime, get_anime
 from ..models import Play, Show, Track, Vote
 from ..utils import length_str
 
