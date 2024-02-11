@@ -1,6 +1,9 @@
 runs:
   using: "composite"
   steps:
+    - run: git submodule update --init --recursive
+      shell: bash
+
     - uses: actions/setup-python@v4
       with:
         python-version: '3.11'
