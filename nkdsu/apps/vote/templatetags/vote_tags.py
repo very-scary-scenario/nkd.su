@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.utils.safestring import SafeText, mark_safe
 from markdown import markdown as md
 
+from ..anime import anime as get_anime
 from ..models import Play, Show, Track, Vote
 from ..utils import length_str
 
@@ -153,3 +154,8 @@ def url_display(url: str) -> str:
     """
 
     return unquote(url.removeprefix(f'{urlparse(url).scheme}://'))
+
+
+@register.filter
+def anime(title: str) -> Optional[anime]:
+    return get_anime(title)
