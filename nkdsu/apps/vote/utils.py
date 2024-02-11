@@ -26,7 +26,7 @@ from mypy_extensions import KwArg, VarArg
 import requests
 
 if TYPE_CHECKING:
-    from .models import Profile, Track
+    from .models import Profile, Show, Track
 
 
 BUILDING_DOCS = bool(environ.get('BUILDING_DOCS'))
@@ -256,6 +256,18 @@ def get_profile_for(user: User) -> Profile:
         from .models import Profile
 
         return Profile.objects.create(user=user)
+
+
+def vote_edit_cutoff() -> Show:
+    """
+    Return the last show for which vote comments should be editable.
+    """
+
+    from .models import Show
+
+    current = Show.current()
+    prev = current.prev()
+    return current if prev is None else prev
 
 
 musicbrainzngs.set_useragent('nkd.su', '0', 'http://nkd.su/')

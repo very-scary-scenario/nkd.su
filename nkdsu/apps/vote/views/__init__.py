@@ -43,7 +43,7 @@ from ..models import (
     Vote,
 )
 from ..templatetags.vote_tags import eligible_for
-from ..utils import BrowsableItem, BrowsableYear
+from ..utils import BrowsableItem, BrowsableYear, vote_edit_cutoff
 from ..voter import Voter
 from ...vote import mixins
 
@@ -416,7 +416,9 @@ class UpdateVoteView(LoginRequiredMixin, UpdateView):
     def get_queryset(self) -> QuerySet[Vote]:
         # enforced by LoginRequiredMixin:
         assert not isinstance(self.request.user, AnonymousUser)
-        return Vote.objects.filter(user=self.request.user)
+        return Vote.objects.filter(
+            user=self.request.user, show__showtime__gte=vote_edit_cutoff().showtime
+        )
 
     def get_success_url(self) -> str:
         return reverse('vote:profiles:profile', kwargs={'username': self.object.user})

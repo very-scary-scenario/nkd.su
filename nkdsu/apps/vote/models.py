@@ -48,6 +48,7 @@ from .utils import (
     musicbrainzngs,
     pk_cached,
     split_id3_title,
+    vote_edit_cutoff,
     vote_url,
 )
 from .voter import Voter
@@ -1439,6 +1440,10 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     @property
     def is_local(self) -> bool:
         return self.vote_kind == VoteKind.local
+
+    @property
+    def is_editable(self) -> bool:
+        return self.show.showtime >= vote_edit_cutoff().showtime
 
     def get_image_url(self) -> str:
         if self.user and self.user.profile:
