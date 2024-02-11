@@ -22,6 +22,7 @@ class Anime(BaseModel):
     synonyms: list[str]
     sources: list[str]
     anime_season: Season
+    type: Literal['MOVIE', 'ONA', 'OVA', 'SPECIAL', 'TV', 'UNKNOWN']
 
     def titles(self) -> list[str]:
         return sorted(chain(self.synonyms, (self.title,)))
