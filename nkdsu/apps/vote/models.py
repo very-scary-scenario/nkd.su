@@ -717,7 +717,7 @@ class Role:
         )
 
     def anime_data(self) -> Optional[Anime]:
-        return anime(self.anime)
+        return None if self.anime is None else anime(self.anime)
 
     def anime_is_related(self, anime: Optional[str]) -> bool:
         if anime is None or self.anime is None:
