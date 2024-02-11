@@ -318,21 +318,23 @@ class Search(ListView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         resp = super().get(request, *args, **kwargs)
         qs = self.get_queryset()
-        animes = set((
+        track_animes: set[str] = set((
             role_detail.anime
             for t in qs
             for role_detail in t.role_details
             if role_detail.anime is not None
         ))
+        all_animes = track_animes | self.anime_suggestions
 
-        # if our search results are identical to an anime detail page, take us
-        # there instead
-        if len(animes) == 1:
-            (anime,) = animes
+        # if our search results are identical to an anime detail page, or if
+        # there's one suggestion and no results, take us there instead
+        if len(all_animes) == 1:
+            (anime,) = all_animes
             anime_qs = self.model.objects.by_anime(anime)
 
             if anime is not None and (
-                sorted((t.pk for t in anime_qs)) == sorted((t.pk for t in qs))
+                (not qs)
+                or sorted((t.pk for t in anime_qs)) == sorted((t.pk for t in qs))
             ):
                 return redirect(reverse('vote:anime', kwargs={'anime': anime}))
 
@@ -350,12 +352,17 @@ class Search(ListView):
     def get_queryset(self) -> QuerySet[Track]:
         return self._queryset
 
+    @cached_property
+    def anime_suggestions(self) -> set[str]:
+        query = self.request.GET.get('q')
+        return set() if query is None else suggest_anime(query)
+
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         query = self.request.GET.get('q', '')
         context.update({
             'query': query,
-            'anime_suggestions': suggest_anime(query),
+            'anime_suggestions': self.anime_suggestions,
         })
         return context
 
