@@ -27,6 +27,16 @@ class Anime(BaseModel):
     def titles(self) -> list[str]:
         return sorted(chain(self.synonyms, (self.title,)))
 
+    def type_rank(self) -> int:
+        """
+        Return the priority of a given anime's type. Things that are more
+        likely to be included in the nkd.su library will return a lower number.
+        """
+
+        return ['TV', 'MOVIE', 'OVA', 'ONA', 'UNKNOWN'].index(self.type)
+
+
+by_title: dict[str, Anime] = {}
 
 with open(
     os.path.join(
@@ -37,16 +47,22 @@ with open(
     ),
     'rt',
 ) as aodf:
-    by_title = {
-        a['title']: Anime(**{camel_to_snake(k): v for k, v in a.items()})
-        for a in ujson.load(aodf)['data']
-        if a['type'] != 'SPECIAL'
-    }
+    for d in ujson.load(aodf)['data']:
+        if d['type'] == 'SPECIAL':
+            continue
+        a = Anime(**{camel_to_snake(k): v for k, v in d.items()})
+        if (a.title not in by_title) or (by_title[a.title].type_rank() > a.type_rank()):
+            by_title[a.title] = a
 
 
-by_synonym = {
-    synonym: anime for anime in by_title.values() for synonym in anime.synonyms
-}
+by_synonym: dict[str, Anime] = {}
+
+for a in by_title.values():
+    for synonym in a.synonyms:
+        if (synonym not in by_synonym) or (
+            by_synonym[synonym].type_rank() > a.type_rank()
+        ):
+            by_synonym[synonym] = a
 
 
 def anime(title: str) -> Optional[Anime]:
