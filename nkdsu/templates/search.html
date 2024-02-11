@@ -5,6 +5,21 @@
   <h2>search results</h2>
   <p class="subheading">{{ query }}</p>
 
+  {% if anime_suggestions %}
+    <div class="anime-suggestions">
+      <p>did you mean:</p>
+      <ul>
+        {% for anime_suggestion in anime_suggestions %}
+          <li>
+            <a href="{% url "vote:anime" anime=anime_suggestion %}">
+              {{ anime_suggestion }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
   <ul class="tracks">
     {% include "include/tracklist.html" %}
   </ul>

@@ -9,6 +9,9 @@ import ujson
 from .utils import cached, camel_to_snake
 
 
+MAX_ANIME_SUGGESTIONS = 10
+
+
 class Season(TypedDict):
     year: Optional[int]
     season: Literal['SPRING', 'SUMMER', 'FALL', 'WINTER', 'UNDEFINED']
@@ -96,3 +99,17 @@ def fuzzy_nkdsu_aliases() -> dict[str, str]:
         if anime is not None
         for alt_title in anime.titles()
     }
+
+
+def suggest_anime(query: str) -> set[str]:
+    lower_query = query.lower()
+    suggestions: set[str] = set()
+
+    for alias, canonical_title in fuzzy_nkdsu_aliases().items():
+        if lower_query in alias:
+            suggestions.add(canonical_title)
+
+            if len(suggestions) > MAX_ANIME_SUGGESTIONS:
+                return set()
+
+    return suggestions

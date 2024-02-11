@@ -31,6 +31,7 @@ from django.views.generic import (
 )
 
 from nkdsu.mixins import MarkdownView
+from ..anime import suggest_anime
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import (
     Profile,
@@ -351,7 +352,11 @@ class Search(ListView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['query'] = self.request.GET.get('q', '')
+        query = self.request.GET.get('q', '')
+        context.update({
+            'query': query,
+            'anime_suggestions': suggest_anime(query),
+        })
         return context
 
 
