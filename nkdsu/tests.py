@@ -6,6 +6,7 @@ from django.test import TestCase
 from instant_coverage import InstantCoverageMixin, optional
 
 from .apps.vote.elfs import ELFS_NAME, is_elf
+from .apps.vote.models import Show, Vote
 
 
 User = get_user_model()
@@ -172,8 +173,17 @@ class EverythingTest(
 
 
 class LoggedInEverythingTest(EverythingTest):
+    covered_urls = [
+        '/update-request/123/',
+    ] + EverythingTest.covered_urls
+
     def setUp(self) -> None:
         super().setUp()
+        Vote.objects.create(
+            pk=123,
+            user=User.objects.get(username='what'),
+            date=Show.objects.latest('showtime').showtime,
+        )
         self.assertTrue(self.client.login(username='what', password='what'))
 
 
