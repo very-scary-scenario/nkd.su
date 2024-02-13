@@ -1,10 +1,10 @@
 import os
 from itertools import chain
 from typing import Literal, Optional
+from urllib.parse import urlparse
 
 from pydantic import BaseModel
 from typing_extensions import TypedDict
-from urllib.parse import urlparse
 import ujson
 
 from .utils import camel_to_snake
