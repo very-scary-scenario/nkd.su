@@ -83,11 +83,11 @@ with open(
 
 def get_anime(title: str) -> Optional[Anime]:
     """
-    >>> anime('Machikado Mazoku').title
+    >>> get_anime('Machikado Mazoku').title
     'Machikado Mazoku'
-    >>> anime('The Demon Girl Next Door').title
+    >>> get_anime('The Demon Girl Next Door').title
     'Machikado Mazoku'
-    >>> anime('shamiko')
+    >>> get_anime('shamiko')
     """
 
     return by_title.get(title) or by_synonym.get(title)
