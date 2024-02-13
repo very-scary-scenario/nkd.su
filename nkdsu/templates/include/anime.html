@@ -2,8 +2,11 @@
 
 {% if anime %}
   <div class="anime">
-    <p class="aside">
-      anime aired in {{ anime|season }}
+    <p class="aside anime-info">
+      <span>aired in {{ anime|season }}</span>
+      {% for name, site in anime.urls %}
+        <span><a rel="noreferrer" href="{{ site }}">{{ name }}</a></span>
+      {% endfor %}
     </p>
   </div>
 {% endif %}

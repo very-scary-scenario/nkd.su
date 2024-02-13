@@ -21,7 +21,7 @@
     <p class="related-anime">
       Related anime:
       {% for anime in related_anime %}
-      <a href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>{% if not forloop.last %},{% endif %}
+        <a href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>{% if not forloop.last %},{% endif %}
       {% endfor %}
     </p>
   {% endif %}

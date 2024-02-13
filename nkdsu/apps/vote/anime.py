@@ -4,12 +4,20 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel
 from typing_extensions import TypedDict
+from urllib.parse import urlparse
 import ujson
 
 from .utils import camel_to_snake
 
 
 MAX_ANIME_SUGGESTIONS = 10
+
+ANIME_WEBSITES = {
+    'anidb.net': 'AniDB',
+    'anilist.co': 'AniList',
+    'kitsu.io': 'Kitsu',
+    'myanimelist.net': 'MAL',
+}
 
 
 class Season(TypedDict):
@@ -34,6 +42,19 @@ class Anime(BaseModel):
         """
 
         return ['TV', 'MOVIE', 'OVA', 'ONA', 'SPECIAL', 'UNKNOWN'].index(self.type)
+
+    def urls(self) -> list[tuple[str, str]]:
+        return sorted(
+            (
+                (website, url)
+                for website, url in (
+                    (ANIME_WEBSITES.get(urlparse(source).netloc), source)
+                    for source in self.sources
+                )
+                if website is not None
+            ),
+            key=lambda u: u[0],
+        )
 
 
 by_title: dict[str, Anime] = {}
