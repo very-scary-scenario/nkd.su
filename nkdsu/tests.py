@@ -140,6 +140,7 @@ class EverythingTest(
         '/set-password/',
         # can only be accessed by particular users
         '/update-request/1/',
+        '/vote-admin/unmatched-anime/',
         # is intentionally broken
         '/vote-admin/throw-500/',
     ]
@@ -188,6 +189,10 @@ class LoggedInEverythingTest(EverythingTest):
 
 
 class ElfEverythingTest(EverythingTest):
+    covered_urls = [
+        '/vote-admin/unmatched-anime/',
+    ] + EverythingTest.covered_urls
+
     def setUp(self) -> None:
         super().setUp()
         us = User.objects.get(username='what')
