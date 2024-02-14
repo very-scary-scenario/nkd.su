@@ -46,7 +46,7 @@ class Anime(BaseModel):
         if not os.path.isdir(ANIME_PICTURE_DIR):
             os.makedirs(ANIME_PICTURE_DIR)
 
-        ext = self.picture.split('/')[-1].split('.')[-1]
+        ext = urlparse(self.picture).path.split('/')[-1].split('.')[-1]
         filename = f"{hashlib.md5(self.picture.encode()).hexdigest()}.{ext}"
         path = os.path.join(ANIME_PICTURE_DIR, filename)
 
