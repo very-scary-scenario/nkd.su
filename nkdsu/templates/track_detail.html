@@ -3,17 +3,18 @@
 
 {% block title %}{{ track.title }}{% endblock %}
 
+{% block main_classes %}
+  {{ block.super }}
+  wide
+{% endblock %}
+
 {% block content %}
 
-<ul class="tracks">
+<ul class="tracks unconstrained">
   {% include "include/track.html" %}
 </ul>
 
 <p class="aside"><a href="{{ track.get_report_url }}">report bad metadata</a></p>
-
-{% for role in track.role_details %}
-  {% include "include/anime.html" with anime=role.anime_data %}
-{% endfor %}
 
 <p class="aside">added to the library on <a href="{{ track.show_revealed.get_revealed_url }}">{{ track.revealed|date:"F"|lower }}&nbsp;{{ track.revealed|date:"jS, Y" }}</a></p>
 
@@ -42,5 +43,11 @@
 {% else %}
   <p class="aside">no plays on record</p>
 {% endif %}
+
+<div class="track-animes">
+  {% for role in track.role_details %}
+    {% include "include/anime.html" with anime_data=role.anime_data anime=role.anime external=True %}
+  {% endfor %}
+</div>
 
 {% endblock %}

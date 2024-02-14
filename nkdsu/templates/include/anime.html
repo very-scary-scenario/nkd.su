@@ -1,12 +1,37 @@
 {% load vote_tags %}
 
-{% if anime %}
-  <div class="anime">
-    <p class="aside anime-info">
-      <span>aired in {{ anime|season }}</span>
-      {% for name, site in anime.urls %}
-        <span><a rel="noreferrer" href="{{ site }}">{{ name }}</a></span>
-      {% endfor %}
-    </p>
+{% if anime_data %}
+  <div class="anime-infobox">
+    <img
+      class="anime-picture"
+      {% if anime_data.picture_is_cached %}
+        src="{{ anime_data.cached_picture_url }}"
+      {% else %}
+        src="{% url "vote:anime-picture" anime=anime %}"
+      {% endif %}
+      alt=""/>
+
+    <div class="detail">
+      <h2>
+        {% if external %}
+          <a href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>
+        {% else %}
+          {{ anime }}
+        {% endif %}
+      </h2>
+      <p>
+        <span>aired in {{ anime_data|season }}</span>
+      </p>
+      {% if anime_data.urls %}
+        <p class="anime-urls">
+          {% for name, site in anime_data.urls %}
+            <span><a rel="noreferrer" href="{{ site }}">{{ name }}</a></span>
+          {% endfor %}
+        </p>
+      {% endif %}
+      {% if not external %}
+        {% include "include/related_anime.html" %}
+      {% endif %}
+    </div>
   </div>
 {% endif %}

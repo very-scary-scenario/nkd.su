@@ -12,22 +12,7 @@
 {% block content %}
 
   {% if anime_data %}
-    <div class="anime-detail-header">
-      <img
-        class="anime-picture"
-        {% if anime_data.picture_is_cached %}
-          src="{{ anime_data.cached_picture_url }}"
-        {% else %}
-          src="{% url "vote:anime-picture" anime=anime %}"
-        {% endif %}
-        alt=""/>
-
-      <div class="detail">
-        <h2>{{ anime }}</h2>
-        {% include "include/anime.html" with anime=anime_data %}
-        {% include "include/related_anime.html" %}
-      </div>
-    </div>
+    {% include "include/anime.html" %}
   {% else %}
     <h2>{{ anime }}</h2>
     {% include "include/related_anime.html" %}
