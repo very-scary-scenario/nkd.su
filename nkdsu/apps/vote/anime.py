@@ -41,7 +41,7 @@ class Anime(BaseModel):
 
     def cached_picture_url(self, force_refresh: bool = False) -> str:
         if not os.path.isdir(ANIME_PICTURE_DIR):
-            os.mkdir(ANIME_PICTURE_DIR)
+            os.makedirs(ANIME_PICTURE_DIR)
 
         ext = self.picture.split('/')[-1].split('.')[-1]
         filename = f"{hashlib.md5(self.picture.encode()).hexdigest()}.{ext}"
