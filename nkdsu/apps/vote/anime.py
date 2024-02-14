@@ -1,9 +1,12 @@
+import hashlib
 import os
 from itertools import chain
 from typing import Literal, Optional
 from urllib.parse import urlparse
 
+from django.conf import settings
 from pydantic import BaseModel
+import requests
 from typing_extensions import TypedDict
 import ujson
 
@@ -19,6 +22,8 @@ ANIME_WEBSITES = {
     'myanimelist.net': 'MAL',
 }
 
+ANIME_PICTURE_DIR = os.path.join(settings.MEDIA_ROOT, 'ap')
+
 
 class Season(TypedDict):
     year: Optional[int]
@@ -33,6 +38,21 @@ class Anime(BaseModel):
     sources: list[str]
     anime_season: Season
     type: Literal['MOVIE', 'ONA', 'OVA', 'SPECIAL', 'TV', 'UNKNOWN']
+
+    def cached_picture_url(self) -> str:
+        if not os.path.isdir(ANIME_PICTURE_DIR):
+            os.mkdir(ANIME_PICTURE_DIR)
+
+        ext = self.picture.split('/')[-1].split('.')[-1]
+        filename = f"{hashlib.md5(self.picture.encode()).hexdigest()}.{ext}"
+        path = os.path.join(ANIME_PICTURE_DIR, filename)
+
+        if not os.path.exists(path):
+            image_content = requests.get(self.picture).content
+            with open(path, 'wb') as image_file:
+                image_file.write(image_content)
+
+        return f'{settings.MEDIA_URL.rstrip("/")}/ap/{filename}'
 
     def titles(self) -> list[str]:
         return sorted(chain(self.synonyms, (self.title,)))
