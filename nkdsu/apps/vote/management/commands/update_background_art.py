@@ -1,4 +1,6 @@
-from django.core.management.base import BaseCommand
+from typing import Iterable, Optional
+
+from django.core.management.base import BaseCommand, CommandParser
 
 from ...models import Track
 
@@ -9,7 +11,7 @@ class Command(BaseCommand):
         "argument if you only want to do one track."
     )
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: CommandParser) -> None:
         parser.add_argument(
             '--quick',
             action='store_true',
@@ -17,7 +19,9 @@ class Command(BaseCommand):
             help="Don't get art for tracks that already have art",
         )
 
-    def handle(self, track_id=None, *args, **options):
+    def handle(self, track_id: Optional[str] = None, *args, **options) -> None:
+        tracks: Iterable[Track]
+
         if track_id is None:
             tracks = Track.objects.all()
             total = tracks.count()
