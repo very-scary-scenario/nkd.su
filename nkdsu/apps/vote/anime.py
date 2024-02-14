@@ -39,7 +39,7 @@ class Anime(BaseModel):
     anime_season: Season
     type: Literal['MOVIE', 'ONA', 'OVA', 'SPECIAL', 'TV', 'UNKNOWN']
 
-    def cached_picture_url(self) -> str:
+    def cached_picture_url(self, force_refresh: bool = False) -> str:
         if not os.path.isdir(ANIME_PICTURE_DIR):
             os.mkdir(ANIME_PICTURE_DIR)
 
@@ -47,7 +47,7 @@ class Anime(BaseModel):
         filename = f"{hashlib.md5(self.picture.encode()).hexdigest()}.{ext}"
         path = os.path.join(ANIME_PICTURE_DIR, filename)
 
-        if not os.path.exists(path):
+        if force_refresh or not os.path.exists(path):
             image_content = requests.get(self.picture).content
             with open(path, 'wb') as image_file:
                 image_file.write(image_content)
