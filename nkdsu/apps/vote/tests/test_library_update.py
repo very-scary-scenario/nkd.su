@@ -49,9 +49,9 @@ TrackMeta = namedtuple(
 DEFAULT_TRACKS = [
     TrackMeta(
         "1",
-        "Canpeki Shinakya! (RO-KYU-BU! Character Song: Saki)",
+        "Canpeki Shinakya! (Ro-Kyu-Bu! Character Song: Saki)",
         "Hikasa Youko",
-        "RO-KYU-BU! Character Songs 03 - Nagatsuka Saki|Lucky Star ED4",
+        "Ro-Kyu-Bu! Character Songs 03 - Nagatsuka Saki|Lucky Star ED4",
         "idk, someone",
         "2014",
         "225044",
