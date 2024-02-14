@@ -549,8 +549,8 @@ class Anime(mixins.BreadcrumbMixin, ListView):
 
 class AnimePicture(Anime):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        tracks = self.get_queryset()
-        anime_data = tracks[0].role_details[0].anime_data()
+        self.get_queryset()  # 404 if this isn't an anime we have on record
+        anime_data = get_anime(self.kwargs['anime'])
         if anime_data is None:
             raise Http404()
         if not anime_data.picture_is_cached():
