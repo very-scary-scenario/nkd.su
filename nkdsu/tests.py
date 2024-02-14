@@ -90,8 +90,7 @@ class EverythingTest(
         '/canpeki-shinakya/0007C3F2760E0541/',
         '/0007C3F2760E0541/report/',
         '/artist/Hikasa Youko/',
-        '/anime/RO-KYU-BU%21/',
-        '/anime-picture/RO-KYU-BU%21/',
+        '/anime/Ro-Kyu-Bu!/',
         '/composer/folks/',
         '/year/2014/',
         '/show/2014-02-05/listen/',
@@ -137,6 +136,8 @@ class EverythingTest(
         '/set-dark-mode/',
         '/logout/',
         '/account/logout/',
+        # redirects in a way the tests can't understand
+        '/anime-picture/Ro-Kyu-Bu!/',
         # can only be accessed if you are logged in with an unusable password
         '/set-password/',
         # can only be accessed by particular users
