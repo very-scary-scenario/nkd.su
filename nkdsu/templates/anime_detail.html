@@ -13,7 +13,14 @@
 
   {% if anime_data %}
     <div class="anime-detail-header">
-      <img class="anime-picture" src="{% url "vote:anime-picture" anime=anime %}" alt=""/>
+      <img
+        class="anime-picture"
+        {% if anime_data.picture_is_cached %}
+          src="{{ anime_data.cached_picture_url }}"
+        {% else %}
+          src="{% url "vote:anime-picture" anime=anime %}"
+        {% endif %}
+        alt=""/>
 
       <div class="detail">
         <h2>{{ anime }}</h2>

@@ -18,5 +18,8 @@ class Command(BaseCommand):
     def handle(self, *, force_refresh: bool, **options) -> None:
         for anime_title in Track.all_anime_titles():
             anime_detail = get_anime(anime_title)
-            if anime_detail is not None:
-                anime_detail.cached_picture_url(force_refresh=force_refresh)
+            if anime_detail is None:
+                continue
+
+            if force_refresh or not anime_detail.picture_is_cached():
+                anime_detail.cache_picture()

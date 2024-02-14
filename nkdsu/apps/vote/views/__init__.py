@@ -553,6 +553,8 @@ class AnimePicture(Anime):
         anime_data = tracks[0].role_details[0].anime_data()
         if anime_data is None:
             raise Http404()
+        if not anime_data.picture_is_cached():
+            anime_data.cache_picture()
         return redirect(anime_data.cached_picture_url())
 
 

@@ -53,20 +53,26 @@ class Anime(BaseModel):
         }[self.anime_season['season']]
         return f'{self.anime_season["year"]}-{quarter}'
 
-    def cached_picture_url(self, force_refresh: bool = False) -> str:
+    def cached_picture_filename(self) -> str:
         if not os.path.isdir(ANIME_PICTURE_DIR):
             os.makedirs(ANIME_PICTURE_DIR)
 
         ext = urlparse(self.picture).path.split('/')[-1].split('.')[-1]
-        filename = f"{hashlib.md5(self.picture.encode()).hexdigest()}.{ext}"
-        path = os.path.join(ANIME_PICTURE_DIR, filename)
+        return f"{hashlib.md5(self.picture.encode()).hexdigest()}.{ext}"
 
-        if force_refresh or not os.path.exists(path):
-            image_content = requests.get(self.picture).content
-            with open(path, 'wb') as image_file:
-                image_file.write(image_content)
+    def cached_picture_path(self) -> str:
+        return os.path.join(ANIME_PICTURE_DIR, self.cached_picture_filename())
 
-        return f'{settings.MEDIA_URL.rstrip("/")}/ap/{filename}'
+    def picture_is_cached(self) -> bool:
+        return os.path.exists(self.cached_picture_path())
+
+    def cached_picture_url(self, force_refresh: bool = False) -> str:
+        return f'{settings.MEDIA_URL.rstrip("/")}/ap/{self.cached_picture_filename()}'
+
+    def cache_picture(self) -> None:
+        image_content = requests.get(self.picture).content
+        with open(self.cached_picture_path(), 'wb') as image_file:
+            image_file.write(image_content)
 
     def titles(self) -> list[str]:
         return sorted(chain(self.synonyms, (self.title,)))
