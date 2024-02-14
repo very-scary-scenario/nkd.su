@@ -1016,6 +1016,26 @@ dl.metadata-check {
   }
 }
 
+.anime-detail-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > * { margin: 0 .5em; }
+
+  .anime-picture {
+    max-width: 15rem;
+    max-height: 15rem;
+    border-radius: .5em;
+  }
+
+  .detail {
+    max-width: 50em;
+    * { text-align: left; }
+    h2 { margin-top: 0; }
+  }
+}
+
 .anime {
   .anime-info {
     .child-iter();

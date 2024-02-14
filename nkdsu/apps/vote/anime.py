@@ -27,6 +27,8 @@ class Season(TypedDict):
 
 class Anime(BaseModel):
     title: str
+    picture: str
+    thumbnail: str
     synonyms: list[str]
     sources: list[str]
     anime_season: Season
