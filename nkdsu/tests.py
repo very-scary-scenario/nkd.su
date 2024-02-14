@@ -166,9 +166,9 @@ class EverythingTest(
         # the cat's website returns HTTP 429 when crawled in these tests
         del urls['https://thecat.radio']
 
-        # twitter is twitter
         for url in list(urls.keys()):
-            if urlparse(url).netloc == 'twitter.com':
+            # twitter is twitter and anidb 403s
+            if urlparse(url).netloc in ['twitter.com', 'anidb.net']:
                 del urls[url]
 
         return super().ensure_all_urls_resolve(urls)
