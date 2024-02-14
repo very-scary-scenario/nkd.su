@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import hashlib
 import os
 from itertools import chain
-from typing import Literal, Optional
+from typing import Iterable, Literal, Optional
 from urllib.parse import urlparse
 
 from django.conf import settings
@@ -36,6 +38,7 @@ class Anime(BaseModel):
     thumbnail: str
     synonyms: list[str]
     sources: list[str]
+    relations: list[str]
     anime_season: Season
     type: Literal['MOVIE', 'ONA', 'OVA', 'SPECIAL', 'TV', 'UNKNOWN']
 
@@ -76,6 +79,19 @@ class Anime(BaseModel):
                 if website is not None
             ),
             key=lambda u: u[0],
+        )
+
+    def related_anime(self) -> Iterable[str]:
+        from .models import Track
+
+        return (
+            title
+            for title, anime in (
+                (anime_title, get_anime(anime_title))
+                for anime_title in Track.all_anime_titles()
+            )
+            if anime is not None
+            and any((source in self.relations for source in anime.sources))
         )
 
 

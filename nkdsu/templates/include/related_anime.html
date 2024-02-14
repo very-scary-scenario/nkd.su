@@ -1,0 +1,8 @@
+{% if related_anime %}
+  <p class="related-anime">
+    related anime:
+    {% for anime in related_anime %}
+      <a href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  </p>
+{% endif %}

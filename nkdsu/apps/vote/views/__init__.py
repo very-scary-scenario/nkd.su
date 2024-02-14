@@ -31,7 +31,7 @@ from django.views.generic import (
 )
 
 from nkdsu.mixins import MarkdownView
-from ..anime import suggest_anime
+from ..anime import get_anime, suggest_anime
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import (
     Profile,
@@ -530,14 +530,19 @@ class Anime(mixins.BreadcrumbMixin, ListView):
             ),
             key=lambda rt: rt[0],
         )
+        anime_data = get_anime(self.kwargs['anime'])
+        related_anime = (
+            list(anime_data.related_anime())
+            if anime_data is not None
+            else context['tracks'][0]
+            .role_details_for_anime(self.kwargs['anime'])[0]
+            .related_anime
+        )
         context.update({
             'anime': self.kwargs['anime'],
             'role_tracks': role_tracks,
-            'related_anime': (
-                context['tracks'][0]
-                .role_details_for_anime(self.kwargs['anime'])[0]
-                .related_anime
-            ),
+            'anime_data': anime_data,
+            'related_anime': related_anime,
         })
         return context
 

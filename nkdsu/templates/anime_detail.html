@@ -11,38 +11,20 @@
 
 {% block content %}
 
-  {% with anime|anime as anime_detail %}
-    {% if anime_detail %}
-      <div class="anime-detail-header">
-        <img class="anime-picture" src="{% url "vote:anime-picture" anime=anime %}" alt=""/>
+  {% if anime_data %}
+    <div class="anime-detail-header">
+      <img class="anime-picture" src="{% url "vote:anime-picture" anime=anime %}" alt=""/>
 
-        <div class="detail">
-          <h2>{{ anime }}</h2>
-          {% include "include/anime.html" with anime=anime_detail %}
-          {% if related_anime %}
-            {# replace this to use the relations from the offline db #}
-            <p class="related-anime">
-              related anime:
-              {% for anime in related_anime %}
-                <a href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>{% if not forloop.last %},{% endif %}
-              {% endfor %}
-            </p>
-          {% endif %}
-        </div>
+      <div class="detail">
+        <h2>{{ anime }}</h2>
+        {% include "include/anime.html" with anime=anime_data %}
+        {% include "include/related_anime.html" %}
       </div>
-    {% else %}
-      <h2>{{ anime }}</h2>
-
-      {% if related_anime %}
-        <p class="related-anime">
-          related anime:
-          {% for anime in related_anime %}
-            <a href="{% url "vote:anime" anime=anime %}">{{ anime }}</a>{% if not forloop.last %},{% endif %}
-          {% endfor %}
-        </p>
-      {% endif %}
-    {% endif %}
-  {% endwith %}
+    </div>
+  {% else %}
+    <h2>{{ anime }}</h2>
+    {% include "include/related_anime.html" %}
+  {% endif %}
 
   {% regroup role_tracks by 0.plural as roles %}
 
