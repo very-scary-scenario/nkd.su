@@ -1035,11 +1035,13 @@ dl.metadata-check {
     p { margin-bottom: .5em; }
     h2 { margin-top: 0; }
     .anime-urls { .child-iter(); }
-    .related-anime {
-      .child-iter();
-      span { display: inline-block; }
-    }
   }
+}
+
+// needs to apply for unmatched anime, too
+.related-anime {
+  .child-iter();
+  span { display: inline-block; }
 }
 
 .track-animes {
