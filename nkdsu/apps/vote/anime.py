@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import os
 from itertools import chain
-from typing import Iterable, Literal, Optional
+from typing import Literal, Optional
 from urllib.parse import urlparse
 
 from django.conf import settings
@@ -41,6 +41,17 @@ class Anime(BaseModel):
     relations: list[str]
     anime_season: Season
     type: Literal['MOVIE', 'ONA', 'OVA', 'SPECIAL', 'TV', 'UNKNOWN']
+
+    @property
+    def quarter(self) -> str:
+        quarter = {
+            'WINTER': 'q1',
+            'SPRING': 'q2',
+            'SUMMER': 'q3',
+            'FALL': 'q4',
+            'UNDEFINED': 'q?',
+        }[self.anime_season['season']]
+        return f'{self.anime_season["year"]}-{quarter}'
 
     def cached_picture_url(self, force_refresh: bool = False) -> str:
         if not os.path.isdir(ANIME_PICTURE_DIR):
@@ -81,18 +92,24 @@ class Anime(BaseModel):
             key=lambda u: u[0],
         )
 
-    def related_anime(self) -> Iterable[str]:
+    def related_anime(self) -> list[str]:
         from .models import Track
 
-        return (
+        return [
             title
-            for title, anime in (
-                (anime_title, get_anime(anime_title))
-                for anime_title in Track.all_anime_titles()
+            for title, anime in sorted(
+                (
+                    (title, anime)
+                    for title, anime in (
+                        (anime_title, get_anime(anime_title))
+                        for anime_title in Track.all_anime_titles()
+                    )
+                    if anime is not None
+                    and any((source in self.relations for source in anime.sources))
+                ),
+                key=lambda ta: ta[1].quarter,
             )
-            if anime is not None
-            and any((source in self.relations for source in anime.sources))
-        )
+        ]
 
 
 by_title: dict[str, Anime] = {}

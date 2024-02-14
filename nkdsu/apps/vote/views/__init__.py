@@ -532,7 +532,7 @@ class Anime(mixins.BreadcrumbMixin, ListView):
         )
         anime_data = get_anime(self.kwargs['anime'])
         related_anime = (
-            list(anime_data.related_anime())
+            anime_data.related_anime()
             if anime_data is not None
             else context['tracks'][0]
             .role_details_for_anime(self.kwargs['anime'])[0]
