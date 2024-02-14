@@ -1022,7 +1022,7 @@ dl.metadata-check {
   justify-content: center;
   align-items: center;
 
-  > * { margin: 0 .5em; }
+  > * { margin: .5em; }
 
   .anime-picture {
     max-height: 15rem;
@@ -1055,10 +1055,14 @@ dl.metadata-check {
     margin: 1em 1vw;
     flex-wrap: nowrap;
 
-    > *:first-child { margin-left: 0 }
-    > *:last-child { margin-right: 0 }
+    > * {
+      margin: 0;
+      &:first-child { margin-left: 0; }
+      &:last-child { margin-right: 0; }
+    }
     h2 { font-size: 1.1em; }
     .anime-picture { max-height: 7em; }
+    .detail { margin-left: 1em; }
   }
 }
 
