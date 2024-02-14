@@ -1033,9 +1033,13 @@ dl.metadata-check {
     padding: .5em 0;
     max-width: 50em;
     * { text-align: left; }
-    p { line-height: 1.5em; }
+    p { margin-bottom: .5em; }
     h2 { margin-top: 0; }
     .anime-urls { .child-iter(); }
+    .related-anime {
+      .child-iter();
+      span { display: inline-block; }
+    }
   }
 }
 
@@ -1046,14 +1050,10 @@ dl.metadata-check {
   flex-basis: 0;
 
   .anime-infobox {
-    margin: .5em 1em;
+    margin: 1em;
 
-    h2 {
-      font-size: 1.1em;
-    }
-    .anime-picture {
-      max-height: 7em;
-    }
+    h2 { font-size: 1.1em; }
+    .anime-picture { max-height: 7em; }
   }
 }
 

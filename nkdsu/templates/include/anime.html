@@ -19,9 +19,6 @@
           {{ anime }}
         {% endif %}
       </h2>
-      <p>
-        <span>aired in {{ anime_data|season }}</span>
-      </p>
       {% if anime_data.urls %}
         <p class="anime-urls">
           {% for name, site in anime_data.urls %}
@@ -29,6 +26,9 @@
           {% endfor %}
         </p>
       {% endif %}
+      <p>
+        <span>aired in {{ anime_data|season }}</span>
+      </p>
       {% if not external %}
         {% include "include/related_anime.html" %}
       {% endif %}
