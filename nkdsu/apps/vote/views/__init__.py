@@ -542,6 +542,15 @@ class Anime(mixins.BreadcrumbMixin, ListView):
         return context
 
 
+class AnimePicture(Anime):
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        tracks = self.get_queryset()
+        anime_data = tracks[0].role_details[0].anime_data()
+        if anime_data is None:
+            raise Http404()
+        return redirect(anime_data.cached_picture_url())
+
+
 class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
     section = 'browse'
     template_name = 'composer_detail.html'

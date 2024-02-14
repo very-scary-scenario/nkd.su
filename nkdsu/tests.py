@@ -91,6 +91,7 @@ class EverythingTest(
         '/0007C3F2760E0541/report/',
         '/artist/Hikasa Youko/',
         '/anime/RO-KYU-BU%21/',
+        '/anime-picture/RO-KYU-BU%21/',
         '/composer/folks/',
         '/year/2014/',
         '/show/2014-02-05/listen/',
