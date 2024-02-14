@@ -964,7 +964,12 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
 
     @cached_property
     def role_details(self) -> list[Role]:
-        return [Role(role) for role in self.roles]
+        def quarter(anime_data: Optional[Anime]) -> str:
+            return '_' if anime_data is None else anime_data.quarter
+
+        return sorted(
+            (Role(role) for role in self.roles), key=lambda r: quarter(r.anime_data())
+        )
 
     def role_details_for_anime(self, anime: str) -> list[Role]:
         return [r for r in self.role_details if r.anime == anime]
