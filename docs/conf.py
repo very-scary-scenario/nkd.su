@@ -39,7 +39,7 @@ django.setup()
 # Project meta
 
 project = 'nkd.su'
-copyright = f'{_commit_year_range()}, colons and nkd.su contributors'
+project_copyright = f'{_commit_year_range()}, colons and nkd.su contributors'
 author = 'Very Scary Scenario'
 
 # General
