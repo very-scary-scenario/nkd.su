@@ -6,12 +6,7 @@ from django.contrib.staticfiles import finders
 from .voter import Voter
 
 
-__all__ = ['placeholder_art_for', 'placeholder_avatar_for']
-
-
-def placeholder_art_for(string: str) -> str:
-    hashed: int = crc32(string.encode())
-    return _static_path_from_filename(AVATAR_FILENAMES[hashed % len(AVATAR_FILENAMES)])
+__all__ = ['placeholder_avatar_for']
 
 
 def placeholder_avatar_for(voter: Voter) -> str:

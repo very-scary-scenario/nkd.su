@@ -45,7 +45,6 @@ from ..models import (
     TwitterUser,
     Vote,
 )
-from ..placeholder_avatars import placeholder_art_for
 from ..templatetags.vote_tags import eligible_for
 from ..utils import BrowsableItem, BrowsableYear, vote_edit_cutoff
 from ..voter import Voter
@@ -560,7 +559,7 @@ class AnimePicture(Anime):
             try:
                 anime_data.cache_picture()
             except RequestException:
-                return redirect(static(placeholder_art_for(anime_data.picture)))
+                return redirect(static('i/naidesu.svg'))
 
         return redirect(anime_data.cached_picture_url())
 
