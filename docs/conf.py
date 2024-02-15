@@ -41,7 +41,8 @@ django.setup()
 project = 'nkd.su'
 
 # sphinx automatically replaces four-digit clusters in copyright strings if this is set:
-del os.environ['SOURCE_DATE_EPOCH']
+if 'SOURCE_DATE_EPOCH' in os.environ:
+    del os.environ['SOURCE_DATE_EPOCH']
 
 project_copyright = f'{_commit_year_range()}, colons and nkd.su contributors'
 author = 'Very Scary Scenario'
