@@ -5,7 +5,7 @@ This is documentation for people who want to do development work on `nkd.su`_.
 You can get the code from `Codeberg`_ or `GitHub`_. If you're looking for help
 using the website itself, you should go to `the info page`_ instead. If colons
 is not reachable and and you need to get a replacement instance of the website
-running, `PANIC.md`_ should help.
+running, check the :ref:`recovery-procedure`.
 
 .. _nkd.su: https://nkd.su/
 .. _the info page: https://nkd.su/info/
@@ -19,6 +19,7 @@ running, `PANIC.md`_ should help.
    setup
    core-concepts
    code/modules
+   panic
 
 ----
 

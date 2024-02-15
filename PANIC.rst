@@ -1,3 +1,5 @@
+.. _recovery-procedure:
+
 emergency recovery procedure for when i get hit by a bus
 ========================================================
 
@@ -69,7 +71,7 @@ if you want to be able to accept votes and generally be responsible,
 though:
 
 -  Set up some more management commands (stuff you run by invoking
-   ``python   manage.py [command]``) as cron jobs.
+   ``python manage.py [command]``) as cron jobs.
 
    -  You should run the ``refresh_votes`` management command every two
       minutes or so.
