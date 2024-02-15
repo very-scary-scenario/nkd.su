@@ -18,6 +18,7 @@ from django.db.models.functions import Cast, Now
 from django.forms import BaseForm
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.templatetags.static import static
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_duration
@@ -29,6 +30,7 @@ from django.views.generic import (
     TemplateView,
     UpdateView,
 )
+from requests.exceptions import RequestException
 
 from nkdsu.mixins import MarkdownView
 from ..anime import get_anime, suggest_anime
@@ -43,6 +45,7 @@ from ..models import (
     TwitterUser,
     Vote,
 )
+from ..placeholder_avatars import placeholder_art_for
 from ..templatetags.vote_tags import eligible_for
 from ..utils import BrowsableItem, BrowsableYear, vote_edit_cutoff
 from ..voter import Voter
@@ -554,7 +557,11 @@ class AnimePicture(Anime):
         if anime_data is None:
             raise Http404()
         if not anime_data.picture_is_cached():
-            anime_data.cache_picture()
+            try:
+                anime_data.cache_picture()
+            except RequestException:
+                return redirect(static(placeholder_art_for(anime_data.picture)))
+
         return redirect(anime_data.cached_picture_url())
 
 
