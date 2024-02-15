@@ -12,12 +12,13 @@
     packages = {
       nkdsu = mkPoetryApplication {
         projectDir = self;
-        groups = [ "test" "linting" ];
+        groups = [ "docs" "test" "linting" ];
         overrides = overrides.withDefaults (final: prev: {
           alabaster = prev.alabaster.override { preferWheel = true; };  # requires flit
           django-instant-coverage = prev.django-instant-coverage.override { preferWheel = true; };  # requires setuptools
           django-pipeline = prev.django-pipeline.override { preferWheel = true; };  # requires setuptools
           django-resized = prev.django-resized.override { preferWheel = true; };  # requires setuptools
+          furo = prev.furo.override { preferWheel = true; };  # requires sphinx_theme_builder
           levenshtein = prev.levenshtein.override { preferWheel = true; };  # requires packaging
           types-ujson = prev.types-ujson.override { preferWheel = true; };  # requires setuptools
         });

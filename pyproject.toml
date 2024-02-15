@@ -53,10 +53,13 @@ requests = "*"
 sly = "*"
 social-auth-app-django = "*"
 social-auth-core = "*"
-sphinx = "<6.2"
 ujson = "*"
 ipython = "^8.21.0"
 pydantic = "^2.6.1"
+
+[tool.poetry.group.docs.dependencies]
+furo = "*"
+sphinx = "*"
 
 [tool.poetry.group.test.dependencies]
 typeguard = "<3"
