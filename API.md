@@ -45,9 +45,10 @@ search box on the website.
 ## More things
 
 If there is something else you want added or changed, or if you find something
-that's broken, [file a bug][new_issue].
+that's broken, file a bug on [Codeberg][new_issue_codeberg] or [GitHub][new_issue_github].
 
-[new_issue]: https://github.com/very-scary-scenario/nkd.su/issues/new
+[new_issue_codeberg]: https://codeberg.org/very-scary-scenario/nkdsu/issues/new
+[new_issue_github]: https://github.com/very-scary-scenario/nkd.su/issues/new
 [api_root]: https://nkd.su/api/
 [eg_track]: https://nkd.su/api/track/7C4D7B4B394E0E59/
 [eg_latest_week]: https://nkd.su/api/week/

@@ -32,19 +32,21 @@ not a link.
 
 ## How does it work?
 
-The code is on [GitHub] and there is developer-facing documentation at
-[dev-docs.nkd.su][dev-docs].
+The code is on [Codeberg] and [GitHub], and there is developer-facing
+documentation at [dev-docs.nkd.su][dev-docs].
 
-[Github]: https://github.com/very-scary-scenario/nkd.su
+[Codeberg]: https://codeberg.org/very-scary-scenario/nkdsu
+[GitHub]: https://github.com/very-scary-scenario/nkd.su
 [dev-docs]: https://dev-docs.nkd.su/
 
 ## Can I build things with this data?
 
 Totally! There's a JSON API documented [here](https://nkd.su/info/api/). If
-there's some data you want that isn't currently surfaced in that API, [let me
-know][new-issue].
+there's some data you want that isn't currently surfaced in that API, let me
+know on [Codeberg][new-issue-codeberg] or [GitHub][new-issue-github].
 
-[new-issue]: https://github.com/very-scary-scenario/nkd.su/issues/new
+[new-issue-codeberg]: https://codeberg.org/very-scary-scenario/nkdsu/issues/new
+[new-issue-github]: https://github.com/very-scary-scenario/nkd.su/issues/new
 
 ## Who's to blame?
 

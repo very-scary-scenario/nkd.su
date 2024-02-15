@@ -2,7 +2,7 @@
 
 You can look at [the history of changes to this document][history] if you want.
 
-[history]: https://github.com/very-scary-scenario/nkd.su/commits/main/PRIVACY.md "the history of this privacy policy"
+[history]: https://codeberg.org/very-scary-scenario/nkdsu/commits/branch/main/PRIVACY.md "the history of this privacy policy"
 
 ## who we are
 

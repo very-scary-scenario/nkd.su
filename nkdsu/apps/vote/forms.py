@@ -64,9 +64,9 @@ class TriviaForm(forms.Form):
 
         if not human:
             hint = (
-                "That's not right, sorry. There are hints <a href='https://"
-                "github.com/very-scary-scenario/nkd.su/blob/master/nkdsu/apps/"
-                "vote/trivia.py'>here</a>."
+                "That's not right, sorry. There are hints <a href='"
+                "https://codeberg.org/very-scary-scenario/nkdsu/src/branch/main/nkdsu/apps/vote/trivia.py"
+                "'>here</a>."
             )
             mutable = self.data._mutable
             self.data._mutable = True
