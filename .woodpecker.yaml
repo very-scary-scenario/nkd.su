@@ -1,0 +1,60 @@
+clone:
+  git:
+    image: woodpeckerci/plugin-git
+    settings:
+      # we check git history in the tests, so:
+      partial: false
+
+steps:
+  setup:
+    image: nikolaik/python-nodejs:python3.11-nodejs20
+    commands:
+      - npm install
+      - mkdir .venv
+      - poetry config virtualenvs.path ./.venv
+      - poetry install
+      - poetry run ./manage.py migrate --settings=nkdsu.settings_testing
+      - poetry run ./manage.py collectstatic --no-input --settings=nkdsu.settings_testing
+
+  test:
+    image: nikolaik/python-nodejs:python3.11-nodejs20
+    depends_on: setup
+    commands:
+      - poetry run npm run-script test
+
+  check-migrations:
+    image: nikolaik/python-nodejs:python3.11-nodejs20
+    depends_on: setup
+    commands:
+      - poetry run npm run-script check-migrations
+
+  docs:
+    image: nikolaik/python-nodejs:python3.11-nodejs20
+    depends_on: setup
+    commands:
+      - cd docs
+      - poetry run make html
+
+  black:
+    image: nikolaik/python-nodejs:python3.11-nodejs20
+    depends_on: setup
+    commands:
+      - poetry run npm run-script lint-black
+
+  flake8:
+    image: nikolaik/python-nodejs:python3.11-nodejs20
+    depends_on: setup
+    commands:
+      - poetry run npm run-script lint-flake8
+
+  mypy:
+    image: nikolaik/python-nodejs:python3.11-nodejs20
+    depends_on: setup
+    commands:
+      - poetry run npm run-script lint-mypy
+
+  eslint:
+    image: nikolaik/python-nodejs:python3.11-nodejs20
+    depends_on: setup
+    commands:
+      - poetry run npm run-script lint-js
