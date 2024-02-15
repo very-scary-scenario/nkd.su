@@ -73,8 +73,6 @@ though:
 -  Set up some more management commands (stuff you run by invoking
    ``python manage.py [command]``) as cron jobs.
 
-   -  You should run the ``refresh_votes`` management command every two
-      minutes or so.
    -  You should run the ``clearsessions`` management command daily.
    -  To keep track album art up to date, you should run the
       ``update_background_art`` command at least once a week.
