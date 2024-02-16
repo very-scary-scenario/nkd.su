@@ -80,6 +80,7 @@
               </a>
             </li>
             <li><a href="{% url "vote:admin:check_metadata" %}">check metadata</a></li>
+            <li><a href="{% url "vote:admin:unmatched_anime_titles" %}">unmatched anime titles</a></li>
           {% endif %}
 
           {% if user.has_usable_password %}
