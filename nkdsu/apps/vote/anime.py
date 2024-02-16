@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import os
 from itertools import chain
-from typing import Literal, Optional
+from typing import Literal, NotRequired, Optional
 
 from django.conf import settings
 from pydantic import BaseModel, HttpUrl
@@ -27,7 +27,7 @@ ANIME_PICTURE_DIR = os.path.join(settings.MEDIA_ROOT, 'ap')
 
 
 class Season(TypedDict):
-    year: Optional[int]
+    year: NotRequired[int]
     season: Literal['WINTER', 'SPRING', 'SUMMER', 'FALL', 'UNDEFINED']
 
 
@@ -50,7 +50,7 @@ class Anime(BaseModel):
             'FALL': 'q4',
             'UNDEFINED': 'q?',
         }[self.anime_season['season']]
-        return f'{self.anime_season["year"]}-{quarter}'
+        return f'{self.anime_season.get("year"), 0}-{quarter}'
 
     def cached_picture_filename(self) -> str:
         if not os.path.isdir(ANIME_PICTURE_DIR):
