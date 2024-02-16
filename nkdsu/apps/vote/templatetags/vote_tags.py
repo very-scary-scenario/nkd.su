@@ -162,8 +162,7 @@ def anime(title: str) -> Optional[Anime]:
 
 
 @register.filter
-def season(anime: Anime) -> str:
-
+def season(anime: Anime) -> Optional[str]:
     src_season: Literal['SPRING', 'SUMMER', 'FALL', 'WINTER', 'UNDEFINED'] = (
         anime.anime_season['season']
     )
@@ -174,9 +173,8 @@ def season(anime: Anime) -> str:
         'WINTER': 'winter',
         'UNDEFINED': None,
     }[src_season]
+    year = anime.anime_season.get('year')
+    if year is None:
+        return None
 
-    return (
-        f'{anime.anime_season["year"]}'
-        if dst_season is None
-        else f'{dst_season} {anime.anime_season["year"]}'
-    )
+    return f'{year}' if dst_season is None else f'{dst_season} {year}'

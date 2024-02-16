@@ -26,9 +26,13 @@
           {% endfor %}
         </p>
       {% endif %}
-      <p>
-        <span>aired in {{ anime_data|season }}</span>
-      </p>
+      {% with anime_data|season as season %}
+        {% if season %}
+          <p>
+            <span>aired in {{ anime_data|season }}</span>
+          </p>
+        {% endif %}
+      {% endwith %}
       {% if not external %}
         {% include "include/related_anime.html" %}
       {% endif %}
