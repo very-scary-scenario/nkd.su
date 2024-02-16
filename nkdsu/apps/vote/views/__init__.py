@@ -296,17 +296,19 @@ class Roulette(ListView):
         minutes_str = self.kwargs.get('minutes', str(self.default_minutes_count))
         tracks, option_count = self.get_tracks()
 
-        context.update({
-            'decades': Track.all_decades(),
-            'decade': int(decade_str) if decade_str else None,
-            'minutes': int(minutes_str) if minutes_str else None,
-            'allowed_minutes': (1, 2, 3),
-            'mode': mode,
-            'mode_name': dict(self.modes)[mode],
-            'modes': self.modes,
-            'tracks': tracks,
-            'option_count': option_count,
-        })
+        context.update(
+            {
+                'decades': Track.all_decades(),
+                'decade': int(decade_str) if decade_str else None,
+                'minutes': int(minutes_str) if minutes_str else None,
+                'allowed_minutes': (1, 2, 3),
+                'mode': mode,
+                'mode_name': dict(self.modes)[mode],
+                'modes': self.modes,
+                'tracks': tracks,
+                'option_count': option_count,
+            }
+        )
 
         return context
 
@@ -320,12 +322,14 @@ class Search(ListView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         resp = super().get(request, *args, **kwargs)
         qs = self.get_queryset()
-        track_animes: set[str] = set((
-            role_detail.anime
-            for t in qs
-            for role_detail in t.role_details
-            if role_detail.anime is not None
-        ))
+        track_animes: set[str] = set(
+            (
+                role_detail.anime
+                for t in qs
+                for role_detail in t.role_details
+                if role_detail.anime is not None
+            )
+        )
         all_animes = track_animes | self.anime_suggestions
 
         # if our search results are identical to an anime detail page, or if
@@ -362,10 +366,12 @@ class Search(ListView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         query = self.request.GET.get('q', '')
-        context.update({
-            'query': query,
-            'anime_suggestions': self.anime_suggestions,
-        })
+        context.update(
+            {
+                'query': query,
+                'anime_suggestions': self.anime_suggestions,
+            }
+        )
         return context
 
 
@@ -399,10 +405,12 @@ class VoterDetail(DetailView):
         except InvalidPage:
             raise Http404('Not a page')
 
-        context.update({
-            'votes': vote_page,
-            'page_obj': vote_page,
-        })
+        context.update(
+            {
+                'votes': vote_page,
+                'page_obj': vote_page,
+            }
+        )
 
         return context
 
@@ -491,12 +499,16 @@ class Artist(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         self.tracks = context['tracks']
-        context.update({
-            'artist': self.kwargs['artist'],
-            'played': [t for t in context['tracks'] if t.last_play()],
-            'artist_suggestions': self.artist_suggestions,
-            'tracks_as_composer': len(Track.objects.by_composer(self.kwargs['artist'])),
-        })
+        context.update(
+            {
+                'artist': self.kwargs['artist'],
+                'played': [t for t in context['tracks'] if t.last_play()],
+                'artist_suggestions': self.artist_suggestions,
+                'tracks_as_composer': len(
+                    Track.objects.by_composer(self.kwargs['artist'])
+                ),
+            }
+        )
         return context
 
 
@@ -540,12 +552,14 @@ class Anime(mixins.BreadcrumbMixin, ListView):
             .role_details_for_anime(self.kwargs['anime'])[0]
             .related_anime
         )
-        context.update({
-            'anime': self.kwargs['anime'],
-            'role_tracks': role_tracks,
-            'anime_data': anime_data,
-            'related_anime': related_anime,
-        })
+        context.update(
+            {
+                'anime': self.kwargs['anime'],
+                'role_tracks': role_tracks,
+                'anime_data': anime_data,
+                'related_anime': related_anime,
+            }
+        )
         return context
 
 
@@ -581,10 +595,14 @@ class Composer(mixins.BreadcrumbMixin, mixins.TrackListWithAnimeGroupingListView
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update({
-            'composer': self.kwargs['composer'],
-            'tracks_as_artist': len(Track.objects.by_artist(self.kwargs['composer'])),
-        })
+        context.update(
+            {
+                'composer': self.kwargs['composer'],
+                'tracks_as_artist': len(
+                    Track.objects.by_artist(self.kwargs['composer'])
+                ),
+            }
+        )
         return context
 
 
@@ -668,11 +686,13 @@ class Stats(TemplateView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update({
-            'streaks': self.streaks,
-            'batting_averages': self.batting_averages,
-            'popular_tracks': self.popular_tracks,
-        })
+        context.update(
+            {
+                'streaks': self.streaks,
+                'batting_averages': self.batting_averages,
+                'popular_tracks': self.popular_tracks,
+            }
+        )
         return context
 
 

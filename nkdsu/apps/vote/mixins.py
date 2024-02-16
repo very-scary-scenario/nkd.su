@@ -75,10 +75,12 @@ class TrackListWithAnimeGrouping(ContextMixin):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.update({
-            'grouped_tracks': self.grouped_tracks,
-            'tracks': self.get_track_queryset(),
-        })
+        context.update(
+            {
+                'grouped_tracks': self.grouped_tracks,
+                'tracks': self.get_track_queryset(),
+            }
+        )
 
         return context
 

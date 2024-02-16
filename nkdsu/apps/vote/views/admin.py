@@ -79,10 +79,12 @@ class AdminActionMixin(AdminMixin):
     def get_ajax_success_message(self):
         self.object = self.get_object()
         context = self.get_context_data()
-        context.update({
-            'track': self.object,
-            'cache_invalidator': os.urandom(16),
-        })
+        context.update(
+            {
+                'track': self.object,
+                'cache_invalidator': os.urandom(16),
+            }
+        )
         return TemplateResponse(
             self.request,
             'include/track.html',
@@ -132,11 +134,13 @@ class DestructiveAdminAction(AdminActionMixin, TemplateResponseMixin):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        context.update({
-            'deets': self.get_deets(),
-            'action': self.__doc__.strip('\n .'),
-            'cancel_url': self.get_cancel_url(),
-        })
+        context.update(
+            {
+                'deets': self.get_deets(),
+                'action': self.__doc__.strip('\n .'),
+                'cancel_url': self.get_cancel_url(),
+            }
+        )
         return context
 
     def get(self, request, *args, **kwargs):
