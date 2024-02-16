@@ -4,10 +4,9 @@ import hashlib
 import os
 from itertools import chain
 from typing import Literal, Optional
-from urllib.parse import urlparse
 
 from django.conf import settings
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 import requests
 from typing_extensions import TypedDict
 import ujson
@@ -34,11 +33,11 @@ class Season(TypedDict):
 
 class Anime(BaseModel):
     title: str
-    picture: str
-    thumbnail: str
+    picture: HttpUrl
+    thumbnail: HttpUrl
     synonyms: list[str]
-    sources: list[str]
-    relations: list[str]
+    sources: list[HttpUrl]
+    relations: list[HttpUrl]
     anime_season: Season
     type: Literal['MOVIE', 'ONA', 'OVA', 'SPECIAL', 'TV', 'UNKNOWN']
 
@@ -57,8 +56,10 @@ class Anime(BaseModel):
         if not os.path.isdir(ANIME_PICTURE_DIR):
             os.makedirs(ANIME_PICTURE_DIR)
 
-        ext = urlparse(self.picture).path.split('/')[-1].split('.')[-1]
-        return f"{hashlib.md5(self.picture.encode()).hexdigest()}.{ext}"
+        path = self.picture.path
+        assert path is not None, f"{self.picture} has no path"
+        ext = path.split('/')[-1].split('.')[-1]
+        return f"{hashlib.md5(str(self.picture).encode()).hexdigest()}.{ext}"
 
     def cached_picture_path(self) -> str:
         return os.path.join(ANIME_PICTURE_DIR, self.cached_picture_filename())
@@ -70,7 +71,7 @@ class Anime(BaseModel):
         return f'{settings.MEDIA_URL.rstrip("/")}/ap/{self.cached_picture_filename()}'
 
     def cache_picture(self) -> None:
-        image_content = requests.get(self.picture).content
+        image_content = requests.get(str(self.picture)).content
         with open(self.cached_picture_path(), 'wb') as image_file:
             image_file.write(image_content)
 
@@ -85,13 +86,14 @@ class Anime(BaseModel):
 
         return ['TV', 'MOVIE', 'OVA', 'ONA', 'SPECIAL', 'UNKNOWN'].index(self.type)
 
-    def urls(self) -> list[tuple[str, str]]:
+    def urls(self) -> list[tuple[str, HttpUrl]]:
         return sorted(
             (
                 (website, url)
                 for website, url in (
-                    (ANIME_WEBSITES.get(urlparse(source).netloc), source)
+                    (ANIME_WEBSITES.get(source.host), source)
                     for source in self.sources
+                    if source.host is not None
                 )
                 if website is not None
             ),
