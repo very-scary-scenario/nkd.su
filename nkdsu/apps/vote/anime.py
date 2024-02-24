@@ -80,13 +80,18 @@ class Anime(BaseModel):
     def titles(self) -> list[str]:
         return sorted(chain(self.synonyms, (self.title,)))
 
-    def type_rank(self) -> int:
+    def inclusion_ranking(self) -> tuple[int, float]:
         """
-        Return the priority of a given anime's type. Things that are more
-        likely to be included in the nkd.su library will return a lower number.
+        Return an estimated representation of how likely this anime is to be
+        something in the library, in the form of a tuple of numbers that you
+        can sort by. Helpful for situations where we have multiple matches for
+        the same name. Lower is more likely.
         """
 
-        return ['TV', 'MOVIE', 'OVA', 'ONA', 'SPECIAL', 'UNKNOWN'].index(self.type)
+        return (
+            ['TV', 'MOVIE', 'OVA', 'ONA', 'SPECIAL', 'UNKNOWN'].index(self.type),
+            1 / len(self.sources),
+        )
 
     def urls(self) -> list[tuple[str, HttpUrl]]:
         return sorted(
@@ -136,12 +141,12 @@ with open(
 ) as aodf:
     for d in ujson.load(aodf)['data']:
         a = Anime(**{camel_to_snake(k): v for k, v in d.items()})
-        if (a.title not in by_title) or (by_title[a.title].type_rank() > a.type_rank()):
+        if (a.title not in by_title) or (by_title[a.title].inclusion_ranking() > a.inclusion_ranking()):
             by_title[a.title] = a
 
         for synonym in a.synonyms:
             if (synonym not in by_synonym) or (
-                by_synonym[synonym].type_rank() > a.type_rank()
+                by_synonym[synonym].inclusion_ranking() > a.inclusion_ranking()
             ):
                 by_synonym[synonym] = a
 
