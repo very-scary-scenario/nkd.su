@@ -32,6 +32,10 @@ class Season(TypedDict):
 
 
 class Anime(BaseModel):
+    model_config = {
+        'frozen': True,
+    }
+
     title: str
     picture: HttpUrl
     thumbnail: HttpUrl
