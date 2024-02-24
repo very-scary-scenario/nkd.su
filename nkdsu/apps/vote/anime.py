@@ -128,7 +128,6 @@ class Anime(BaseModel):
 
 
 by_title: dict[str, Anime] = {}
-by_synonym: dict[str, Anime] = {}
 
 with open(
     os.path.join(
@@ -141,14 +140,10 @@ with open(
 ) as aodf:
     for d in ujson.load(aodf)['data']:
         a = Anime(**{camel_to_snake(k): v for k, v in d.items()})
-        if (a.title not in by_title) or (by_title[a.title].inclusion_ranking() > a.inclusion_ranking()):
-            by_title[a.title] = a
 
-        for synonym in a.synonyms:
-            if (synonym not in by_synonym) or (
-                by_synonym[synonym].inclusion_ranking() > a.inclusion_ranking()
-            ):
-                by_synonym[synonym] = a
+        for title in chain([a.title], a.synonyms):
+            if (title not in by_title) or (by_title[title].inclusion_ranking() > a.inclusion_ranking()):
+                by_title[title] = a
 
 
 def get_anime(title: str) -> Optional[Anime]:
@@ -160,7 +155,7 @@ def get_anime(title: str) -> Optional[Anime]:
     >>> get_anime('shamiko')
     """
 
-    return by_title.get(title) or by_synonym.get(title)
+    return by_title.get(title)
 
 
 def fuzzy_nkdsu_aliases() -> dict[str, str]:
