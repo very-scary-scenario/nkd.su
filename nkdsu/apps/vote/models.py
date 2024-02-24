@@ -1831,6 +1831,21 @@ class Note(CleanOnSaveMixin, models.Model):
         return self.content
 
 
+class ProRouletteCommitment(CleanOnSaveMixin, models.Model):
+    show = models.ForeignKey(Show, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                *('show', 'user'),
+                name='pro_roulette_commitment_unique',
+                violation_error_message='a user can only have one pro roulette commitment per show',
+            )
+        ]
+
+
 @dataclass
 class Badge:
     slug: str
