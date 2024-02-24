@@ -1,6 +1,6 @@
+import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
-import django.db.models.deletion
 import nkdsu.apps.vote.models
 
 
@@ -43,6 +43,7 @@ class Migration(migrations.Migration):
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
             bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),
         ),

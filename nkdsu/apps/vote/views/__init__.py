@@ -301,6 +301,7 @@ class Roulette(ListView, AccessMixin):
 
         context.update(
             {
+                'pro_roulette_commitment': self.commitment(),
                 'decades': Track.all_decades(),
                 'decade': int(decade_str) if decade_str else None,
                 'minutes': int(minutes_str) if minutes_str else None,

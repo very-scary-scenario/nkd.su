@@ -1835,6 +1835,7 @@ class ProRouletteCommitment(CleanOnSaveMixin, models.Model):
     show = models.ForeignKey(Show, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [
