@@ -142,7 +142,9 @@ with open(
         a = Anime(**{camel_to_snake(k): v for k, v in d.items()})
 
         for title in chain([a.title], a.synonyms):
-            if (title not in by_title) or (by_title[title].inclusion_ranking() > a.inclusion_ranking()):
+            if (title not in by_title) or (
+                by_title[title].inclusion_ranking() > a.inclusion_ranking()
+            ):
                 by_title[title] = a
 
 
