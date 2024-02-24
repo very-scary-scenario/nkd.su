@@ -283,7 +283,8 @@ class Roulette(ListView, AccessMixin):
                 .filter(time_per_play__lt=parse_duration('365 days'))
             )
             # order_by('?') fails when annotate() has been used
-            return (sample(list(qs), 5), qs.count())
+            staples = list(qs)
+            return (sample(staples, min(len(staples), 5)), len(staples))
         elif self.kwargs.get('mode') == 'short':
             length_msec = (
                 int(self.kwargs.get('minutes', self.default_minutes_count)) * 60 * 1000

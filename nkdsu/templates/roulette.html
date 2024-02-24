@@ -64,8 +64,10 @@
       these are all terrible
     {% elif option_count > 1 %}
       i would like to see these {{ option_count }} tracks in a new, random order
-    {% else %}
+    {% elif option_count == 1 %}
       oh, just one, huh? can&hellip; can i try again anyway?
+    {% else %}
+      if there's nothing, it's probably not worth trying again. but i still want to
     {% endif %}
   </a></p>
   <p class="aside">
