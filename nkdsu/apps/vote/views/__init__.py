@@ -258,7 +258,7 @@ class Roulette(ListView, AccessMixin):
     def get_tracks(self) -> tuple[Iterable[Track], int]:
         qs = self.get_base_queryset()
         if self.kwargs.get('mode') == 'pro':
-            qs = qs.filter(pk=self.commitment(commit_from=qs).track.pk)
+            return ([self.commitment(commit_from=qs).track], 1)
         elif self.kwargs.get('mode') == 'hipster':
             qs = qs.filter(play=None)
         elif self.kwargs.get('mode') == 'almost-100':
