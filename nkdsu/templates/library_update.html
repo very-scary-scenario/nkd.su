@@ -2,41 +2,53 @@
 
 {% block deets %}
   {% if deets %}
-    <ul class="changes">
-      {% for change in deets %}
-        <li>
+    {% regroup deets|dictsort:"type" by type as deets_by_type %}
 
-          <p class="title"><strong>{{ change.item }}</strong></p>
+    {% for type, type_deets in deets_by_type %}
+      <details
+        {% if type != "locked" %}
+          open="true"
+        {% endif %}
+      >
+        <summary>
+          <strong>{{ type }}</strong>
+        </summary>
+        <ul class="changes">
+          {% for change in type_deets %}
+            <li>
+              <p class="title"><strong>{{ change.item }}</strong></p>
 
-          {% for warning in change.warnings %}
-            {% include "include/consistency_warning.html" %}
-          {% endfor %}
-
-          {% if change.type == 'new' %}
-            <p>Has been added</p>
-          {% elif change.type == 'hide' %}
-            <p>Has been removed and will be hidden</p>
-          {% elif change.type == 'change' or change.type == 'locked' %}
-            {% if change.type == 'locked' %}
-              <p class="update-message update-info">Will not be changed, because metadata is locked</p>
-            {% endif %}
-
-            <ul class="diff">
-              {% for item in change.changes %}
-                <li>
-                  <p><em>{{ item.field }}</em> used to be:</p>
-                  <p>{% if item.was %}<code>{{ item.was }}</code>{% else %}<em>empty</em>{% endif %}</p>
-                  <p>and has been changed to:</p>
-                  <p>{% if item.becomes %}<code>{{ item.becomes }}</code>{% else %}<em>empty</em>{% endif %}</p>
-                </li>
+              {% for warning in change.warnings %}
+                {% include "include/consistency_warning.html" %}
               {% endfor %}
-            </ul>
-          {% else %}
-            <p>Unknown change; please file a bug.</p>
-          {% endif %}
-        </li>
-      {% endfor %}
-    </li>
+
+              {% if change.type == 'new' %}
+                <p>Has been added</p>
+              {% elif change.type == 'hide' %}
+                <p>Has been removed and will be hidden</p>
+              {% elif change.type == 'change' or change.type == 'locked' %}
+                {% if change.type == 'locked' %}
+                  <p class="update-message update-info">Will not be changed, because metadata is locked</p>
+                {% endif %}
+
+                <ul class="diff">
+                  {% for item in change.changes %}
+                    <li>
+                      <p><em>{{ item.field }}</em> used to be:</p>
+                      <p>{% if item.was %}<code>{{ item.was }}</code>{% else %}<em>empty</em>{% endif %}</p>
+                      <p>and has been changed to:</p>
+                      <p>{% if item.becomes %}<code>{{ item.becomes }}</code>{% else %}<em>empty</em>{% endif %}</p>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p>Unknown change; please file a bug.</p>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </details>
+    {% endfor %}
   {% else %}
     <p class="aside">Nothing changed.</p>
   {% endif %}
