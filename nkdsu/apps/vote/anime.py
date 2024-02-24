@@ -71,7 +71,9 @@ class Anime(BaseModel):
         return f'{settings.MEDIA_URL.rstrip("/")}/ap/{self.cached_picture_filename()}'
 
     def cache_picture(self) -> None:
-        image_content = requests.get(str(self.picture)).content
+        resp = requests.get(str(self.picture))
+        resp.raise_for_status()
+        image_content = resp.content
         with open(self.cached_picture_path(), 'wb') as image_file:
             image_file.write(image_content)
 
