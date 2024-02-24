@@ -60,6 +60,7 @@ This can include:
   (like Twitter, for instance)
 - a [hashed][django-password-storage] password
 - a screen name and a display name
+- any commitments you have made under pro roulette
 - an avatar
 - email addresses
 - URLs of websites you choose to show on your profile page
