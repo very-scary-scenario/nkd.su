@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from typing import Any, Iterable, Literal, Optional, TypedDict
+from typing import Any, Iterable, Literal, NotRequired, Optional, TypedDict
 
 from Levenshtein import ratio
 from django.utils.timezone import get_default_timezone, make_aware
@@ -59,6 +59,19 @@ class MetadataWarning(TypedDict):
 
     field: UpdateFieldName
     message: str
+
+
+class FieldAlteration(TypedDict):
+    field: str
+    was: str
+    becomes: str
+
+
+class MetadataChange(TypedDict):
+    type: Literal['locked', 'change', 'new', 'hide']
+    item: str
+    changes: NotRequired[list[FieldAlteration]]
+    warnings: NotRequired[list[MetadataWarning]]
 
 
 def check_artist_consistency(
@@ -149,8 +162,8 @@ def metadata_consistency_checks(
 
 def update_library(
     tree, dry_run: bool = False, inudesu: bool = False
-) -> list[dict[str, Any]]:
-    changes: list[dict[str, Any]] = []
+) -> list[MetadataChange]:
+    changes: list[MetadataChange] = []
     alltracks = Track.objects.filter(inudesu=inudesu)
     all_anime_titles = Track.all_anime_titles()
     all_artists = Track.all_artists()
@@ -160,7 +173,7 @@ def update_library(
         changed = False
         new = False
         warnings: list[MetadataWarning] = []
-        field_alterations = []
+        field_alterations: list[FieldAlteration] = []
 
         t = tree['Tracks'][tid]
         added = make_aware(t['Date Added'], get_default_timezone())
@@ -201,8 +214,8 @@ def update_library(
                 field_alterations = [
                     {
                         'field': k,
-                        'from': db_dict[k],
-                        'to': track_dict[k],
+                        'was': db_dict[k],
+                        'becomes': track_dict[k],
                     }
                     for k in db_dict.keys()
                     if db_dict[k] != track_dict[k]

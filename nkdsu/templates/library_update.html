@@ -25,9 +25,9 @@
               {% for item in change.changes %}
                 <li>
                   <p><em>{{ item.field }}</em> used to be:</p>
-                  <p>{% if item.from %}<code>{{ item.from }}</code>{% else %}<em>empty</em>{% endif %}</p>
+                  <p>{% if item.was %}<code>{{ item.was }}</code>{% else %}<em>empty</em>{% endif %}</p>
                   <p>and has been changed to:</p>
-                  <p>{% if item.to %}<code>{{ item.to }}</code>{% else %}<em>empty</em>{% endif %}</p>
+                  <p>{% if item.becomes %}<code>{{ item.becomes }}</code>{% else %}<em>empty</em>{% endif %}</p>
                 </li>
               {% endfor %}
             </ul>

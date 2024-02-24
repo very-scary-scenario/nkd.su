@@ -1,7 +1,7 @@
 import os
 import plistlib
 from codecs import getreader
-from typing import Any, Optional
+from typing import Optional
 
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
@@ -26,7 +26,7 @@ from .js import JSApiMixin
 from ..forms import LibraryUploadForm, MyriadExportUploadForm, NoteForm
 from ..models import Block, Note, Profile, Show, Track, TwitterUser, Vote
 from ..myriad_export import entries_for_file
-from ..update_library import update_library
+from ..update_library import MetadataChange, update_library
 
 
 class AdminMixin(LoginRequiredMixin):
@@ -404,7 +404,7 @@ class LibraryUploadConfirmView(DestructiveAdminAction, TemplateView):
 
     template_name = 'library_update.html'
 
-    def update_library(self, dry_run: bool) -> list[dict[str, Any]]:
+    def update_library(self, dry_run: bool) -> list[MetadataChange]:
         library_update = self.request.session['library_update']
         return update_library(
             plistlib.loads(library_update['library_xml'].encode()),

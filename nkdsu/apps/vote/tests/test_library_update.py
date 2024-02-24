@@ -385,9 +385,9 @@ class LibraryUpdateDryRunTest(LibraryUpdateTest):
                     field = warning.get('field', None)
                     fields.add(field)
                     if field == 'anime':
-                        self.assertIn("Tamako Market", warning.get('message'))
+                        self.assertIn("Tamako Market", warning['message'])
                     elif field == 'artist':
-                        self.assertIn("Suzaki Aya", warning.get('message'))
+                        self.assertIn("Suzaki Aya", warning['message'])
                     else:
                         self.fail("Unexpected warning field")
                 self.assertEqual(fields, {'anime', 'artist'})
