@@ -30,6 +30,14 @@
     </p>
   {% endif %}
 
+  {% if pro_roulette_commitment %}
+    <p class="subheading">
+      you committed to pro roulette
+      on {{ pro_roulette_commitment.created_at|date:"F jS"|lower }}
+      at {{ pro_roulette_commitment.created_at|date:"g:i A"|lower }}
+    </p>
+  {% endif %}
+
   {% if mode == "short" %}
     <p class="subheading roulette-mode-switch">
       {% for minute_slug in allowed_minutes %}
@@ -56,8 +64,10 @@
       these are all terrible
     {% elif option_count > 1 %}
       i would like to see these {{ option_count }} tracks in a new, random order
-    {% else %}
+    {% elif option_count == 1 %}
       oh, just one, huh? can&hellip; can i try again anyway?
+    {% else %}
+      if there's nothing, it's probably not worth trying again. but i still want to
     {% endif %}
   </a></p>
   <p class="aside">

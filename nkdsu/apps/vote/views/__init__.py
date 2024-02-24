@@ -5,11 +5,11 @@ from abc import abstractmethod
 from functools import cached_property
 from itertools import chain
 from random import sample
-from typing import Any, Iterable, Optional, Sequence, cast
+from typing import Any, Iterable, Optional, Sequence, cast, overload
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
@@ -36,6 +36,7 @@ from nkdsu.mixins import MarkdownView
 from ..anime import get_anime, suggest_anime
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import (
+    ProRouletteCommitment,
     Profile,
     Request,
     Role,
@@ -190,7 +191,7 @@ class ListenRedirect(mixins.ShowDetail):
         return redirect(cast(Show, self.object).get_absolute_url())
 
 
-class Roulette(ListView):
+class Roulette(ListView, AccessMixin):
     section = 'roulette'
     model = Track
     template_name = 'roulette.html'
@@ -208,10 +209,12 @@ class Roulette(ListView):
     ]
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
-        if kwargs.get('mode') != 'pro' and self.request.session.get(
-            self.pro_roulette_session_key()
-        ):
+        if kwargs.get('mode') != 'pro' and self.commitment() is not None:
             return redirect(reverse('vote:roulette', kwargs={'mode': 'pro'}))
+
+        elif kwargs.get('mode') == 'pro' and not request.user.is_authenticated:
+            messages.warning(self.request, 'pro roulette requires you to log in')
+            return self.handle_no_permission()
 
         elif kwargs.get('mode') is None:
             if request.user.is_staff:
@@ -223,39 +226,39 @@ class Roulette(ListView):
         else:
             return super().get(request, *args, **kwargs)
 
-    def pro_roulette_session_key(self) -> str:
-        return PRO_ROULETTE.format(Show.current().pk)
+    @overload
+    def commitment(self, commit_from: TrackQuerySet) -> ProRouletteCommitment: ...
 
-    def pro_pk(self) -> int:
-        sk = self.pro_roulette_session_key()
-        pk = self.request.session.get(self.pro_roulette_session_key())
+    @overload
+    def commitment(self) -> Optional[ProRouletteCommitment]: ...
 
-        if pk is None:
-            for i in range(100):
-                track = self.get_base_queryset().order_by('?')[0]
-                if track.eligible():
-                    break
+    def commitment(
+        self, commit_from: Optional[TrackQuerySet] = None
+    ) -> Optional[ProRouletteCommitment]:
+        if not self.request.user.is_authenticated:
+            assert commit_from is None, 'cannot commit if not authenticated'
+            return None
+        try:
+            return ProRouletteCommitment.objects.get(
+                user=self.request.user, show=Show.current()
+            )
+        except ProRouletteCommitment.DoesNotExist:
+            if commit_from:
+                return ProRouletteCommitment.objects.create(
+                    user=self.request.user,
+                    show=Show.current(),
+                    track=next(t for t in commit_from.order_by('?') if t.eligible()),
+                )
             else:
-                raise RuntimeError('are you sure anything is eligible')
+                return None
 
-            pk = track.pk
-            session = self.request.session
-            session[sk] = pk
-            session.save()
-
-        return pk
-
-    def pro_queryset(self, qs):
-        return qs.filter(pk=self.pro_pk())
-
-    def get_base_queryset(self):
+    def get_base_queryset(self) -> TrackQuerySet:
         return self.model.objects.public()
 
     def get_tracks(self) -> tuple[Iterable[Track], int]:
         qs = self.get_base_queryset()
-
         if self.kwargs.get('mode') == 'pro':
-            qs = self.pro_queryset(qs)
+            return ([self.commitment(commit_from=qs).track], 1)
         elif self.kwargs.get('mode') == 'hipster':
             qs = qs.filter(play=None)
         elif self.kwargs.get('mode') == 'almost-100':
@@ -280,7 +283,8 @@ class Roulette(ListView):
                 .filter(time_per_play__lt=parse_duration('365 days'))
             )
             # order_by('?') fails when annotate() has been used
-            return (sample(list(qs), 5), qs.count())
+            staples = list(qs)
+            return (sample(staples, min(len(staples), 5)), len(staples))
         elif self.kwargs.get('mode') == 'short':
             length_msec = (
                 int(self.kwargs.get('minutes', self.default_minutes_count)) * 60 * 1000
@@ -298,6 +302,7 @@ class Roulette(ListView):
 
         context.update(
             {
+                'pro_roulette_commitment': self.commitment(),
                 'decades': Track.all_decades(),
                 'decade': int(decade_str) if decade_str else None,
                 'minutes': int(minutes_str) if minutes_str else None,
