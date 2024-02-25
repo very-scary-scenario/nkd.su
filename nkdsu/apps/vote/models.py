@@ -8,7 +8,7 @@ from enum import Enum, auto
 from functools import cached_property
 from io import BytesIO
 from string import ascii_letters
-from typing import Any, Iterable, Literal, Optional, TYPE_CHECKING, cast
+from typing import Any, Iterable, Literal, Optional, TYPE_CHECKING, TypedDict, cast
 from urllib.parse import quote, urlparse
 from uuid import uuid4
 
@@ -1847,6 +1847,16 @@ class ProRouletteCommitment(CleanOnSaveMixin, models.Model):
         ]
 
 
+class BadgeInfoForUser(TypedDict):
+    slug: str
+    description: str
+    summary: str
+    icon: str
+    url: str
+    start: Optional[datetime.datetime]
+    finish: Optional[datetime.datetime]
+
+
 @dataclass
 class Badge:
     slug: str
@@ -1857,7 +1867,7 @@ class Badge:
     start: Optional[datetime.datetime]
     finish: Optional[datetime.datetime]
 
-    def info(self, user: TwitterUser | Profile) -> dict[str, Any]:
+    def info(self, user: TwitterUser | Profile) -> BadgeInfoForUser:
         return {
             'slug': self.slug,
             'description': self.description_fmt.format(name=user.name),
@@ -2001,7 +2011,7 @@ class UserBadge(CleanOnSaveMixin, models.Model):
                 )
 
     @cached_property
-    def badge_info(self) -> dict[str, Any]:
+    def badge_info(self) -> BadgeInfoForUser:
         (badge,) = (b for b in BADGES if b.slug == self.badge)
 
         u = self.profile or self.twitter_user
