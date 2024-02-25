@@ -10,11 +10,21 @@ From hereon out, I'm going to assume that you are somewhat comfortable in a
 unix-like terminal and that you have a package manager you're familiar with. I
 also will assume you have a copy of the nkd.su git repository.
 
+If you want to do your development on a computer running NixOS, there's
+:ref:`information about how to develop on NixOS <nixos-development>` for you.
+
 .. [#macos] Sorry, I'm out of the loop on macOS package managers. I assume
    people still use Homebrew. Are Fink and MacPorts keeping up with the annual
    releases? Is it reasonable to recommend Nix yet?
 
 .. _WSL: https://learn.microsoft.com/en-us/windows/wsl/
+
+.. toctree::
+   :hidden:
+
+   setup/nix
+
+.. _system:
 
 System packages
 ---------------
@@ -49,6 +59,8 @@ Headers for:
    it's a small thing in the direction of less mass surveillance on the
    internet. I am sorry that it means you have to install npm on your computer.
 
+.. _python:
+
 Python packages
 ---------------
 
@@ -68,11 +80,15 @@ around them by temporarily editing ``requirements.txt`` to list
 ``psycopg2-binary`` instead of ``psycopg2`` and running ``pip install -r
 requirements.txt`` again.
 
+.. _npm:
+
 npm packages
 ------------
 
 You don't need to manually set up an environment for this one. Run ``npm
 install`` from the repository root and you should be all set.
+
+.. _setup-nkdsu:
 
 nkd.su itself
 -------------
