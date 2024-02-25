@@ -1871,7 +1871,7 @@ class Badge:
     start: Optional[datetime.datetime]
     finish: Optional[datetime.datetime]
 
-    def info(self, user: TwitterUser | Profile) -> BadgeInfoForUser:
+    def info(self, user: Voter) -> BadgeInfoForUser:
         return {
             'slug': self.slug,
             'description': self.description_fmt.format(name=user.name),
