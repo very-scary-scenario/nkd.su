@@ -106,9 +106,9 @@ Staff tools
 Staff users can do a lot more things than any other user. They can create
 :class:`~.models.Play`\ s to reflect what's being played on air. They can
 :class:`.Shortlist` or :class:`.Discard` tracks to help prepare a playlist for
-the show. They can perform library updates. They can add public or private
-:class:`.Note`\ s. They can force a track to be :ref:`ineligible <eligibility>`
-by putting a :class:`.Block` in effect.
+the show. They can perform :mod:`library updates <.vote.update_library>`. They
+can add public or private :class:`.Note`\ s. They can force a track to be
+:ref:`ineligible <eligibility>` by putting a :class:`.Block` in effect.
 
 For now at least, the full breadth of these features is probably out of scope
 for this document. I am currently not sure how to write an introduction to the
