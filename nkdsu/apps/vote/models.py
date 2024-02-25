@@ -935,6 +935,10 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
         return self.play_set.order_by('date')
 
     @memoize
+    def plays_newest_first(self) -> models.QuerySet[Play]:
+        return self.play_set.order_by('-date')
+
+    @memoize
     def weeks_since_play(self) -> Optional[int]:
         """
         Get the number of weeks since this track's last Play.
