@@ -14,12 +14,13 @@ running, check the :ref:`recovery-procedure`.
 .. _panic.md: https://codeberg.org/very-scary-scenario/nkdsu/src/branch/main/PANIC.md
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :includehidden:
 
    setup
    core-concepts
-   code/modules
-   panic
+   Code documentation <code/modules>
+   Emergency recovery procedure <panic>
 
 ----
 
