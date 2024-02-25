@@ -1620,6 +1620,10 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
 
 
 class Play(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
+    """
+    A record that a :class:`Track` was played on the show.
+    """
+
     date = models.DateTimeField(db_index=True)
     show = models.ForeignKey(Show, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, db_index=True, on_delete=models.CASCADE)
@@ -1836,6 +1840,12 @@ class Note(CleanOnSaveMixin, models.Model):
 
 
 class ProRouletteCommitment(CleanOnSaveMixin, models.Model):
+    """
+    A commitment from a given user to only use :class:`.Roulette` in 'pro' mode
+    until the current show ends. Retains the track they committed to and when
+    the commitment was made.
+    """
+
     show = models.ForeignKey(Show, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
