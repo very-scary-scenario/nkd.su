@@ -572,3 +572,25 @@ details.collapsed-artist {
 
   &[open] summary::before { content: @fa-var-angle-down; }
 }
+
+.track-animes {
+  margin: 1em 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-basis: 0;
+
+  .anime-infobox {
+    margin: 1em 1vw;
+    flex-wrap: nowrap;
+
+    > * {
+      margin: 0;
+      &:first-child { margin-left: 0; }
+      &:last-child { margin-right: 0; }
+    }
+    h2 { font-size: 1.1em; }
+    .anime-picture { max-height: 7em; }
+    .detail { margin-left: 1em; }
+  }
+}
