@@ -12,7 +12,7 @@
     packages = {
       nkdsu = mkPoetryApplication {
         projectDir = self;
-        groups = [ "docs" "test" "linting" ];
+        groups = [ "docs" "test" "lint" ];
         overrides = overrides.withDefaults (final: prev: {
           alabaster = prev.alabaster.override { preferWheel = true; };  # requires flit
           django-instant-coverage = prev.django-instant-coverage.override { preferWheel = true; };  # requires setuptools

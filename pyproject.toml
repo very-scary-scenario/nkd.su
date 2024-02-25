@@ -62,18 +62,17 @@ furo = "*"
 sphinx = "*"
 
 [tool.poetry.group.test.dependencies]
-typeguard = "<3"
-types-markdown = "*"
-types-python-dateutil = "*"
-types-requests = "*"
-types-ujson = "*"
-
-[tool.poetry.group.linting.dependencies]
-django-stubs = "*"
-flake8 = "*"
-flake8-import-order = "<2"
-mypy = { version = ">=1.7,<1.8", extras = ["mypyc"] }
 pytest = "*"
 pytest-django = "*"
 pytest-timeout = "*"
 pytest-xdist = "*"
+
+[tool.poetry.group.lint.dependencies]
+django-stubs = "*"
+flake8 = "*"
+flake8-import-order = "<2"
+mypy = { version = ">=1.7,<1.8", extras = ["mypyc"] }
+types-markdown = "*"
+types-python-dateutil = "*"
+types-requests = "*"
+types-ujson = "*"

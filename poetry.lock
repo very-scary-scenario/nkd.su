@@ -2071,21 +2071,6 @@ docs = ["myst-parser", "pydata-sphinx-theme", "sphinx"]
 test = ["argcomplete (>=3.0.3)", "mypy (>=1.7.0)", "pre-commit", "pytest (>=7.0,<7.5)", "pytest-mock", "pytest-mypy-testing"]
 
 [[package]]
-name = "typeguard"
-version = "2.13.3"
-description = "Run-time type checker for Python"
-optional = false
-python-versions = ">=3.5.3"
-files = [
-    {file = "typeguard-2.13.3-py3-none-any.whl", hash = "sha256:5e3e3be01e887e7eafae5af63d1f36c849aaa94e3a0112097312aabfa16284f1"},
-    {file = "typeguard-2.13.3.tar.gz", hash = "sha256:00edaa8da3a133674796cf5ea87d9f4b4c367d77476e185e80251cc13dfbb8c4"},
-]
-
-[package.extras]
-doc = ["sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme"]
-test = ["mypy", "pytest", "typing-extensions"]
-
-[[package]]
 name = "types-markdown"
 version = "3.5.0.20240129"
 description = "Typing stubs for Markdown"
@@ -2292,4 +2277,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11"
-content-hash = "8b79b2753e5c1056d9c302a8ee26381f0ab2fe26fbeaac210264479219887b9a"
+content-hash = "e42187eb27346d4568b0eb989706eaa793105c7c8b4945e8d7cd74586cf9b269"
