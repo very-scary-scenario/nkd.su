@@ -20,6 +20,7 @@
           django-resized = prev.django-resized.override { preferWheel = true; };  # requires setuptools
           furo = prev.furo.override { preferWheel = true; };  # requires sphinx_theme_builder
           levenshtein = prev.levenshtein.override { preferWheel = true; };  # requires packaging
+          mypy = prev.mypy.override { preferWheel = true; };  # takes forever to build
           types-ujson = prev.types-ujson.override { preferWheel = true; };  # requires setuptools
         });
       };
