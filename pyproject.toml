@@ -72,6 +72,7 @@ django-stubs = "*"
 flake8 = "*"
 flake8-import-order = "<2"
 mypy = { version = ">=1.7,<1.8", extras = ["mypyc"] }
+types-Pillow = "*"
 types-markdown = "*"
 types-python-dateutil = "*"
 types-requests = "*"
