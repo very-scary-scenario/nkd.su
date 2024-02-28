@@ -27,7 +27,7 @@ ANIME_PICTURE_DIR = os.path.join(settings.MEDIA_ROOT, 'ap')
 
 
 class Season(TypedDict):
-    year: NotRequired[int]
+    year: Optional[int]
     season: Literal['WINTER', 'SPRING', 'SUMMER', 'FALL', 'UNDEFINED']
 
 
@@ -143,7 +143,7 @@ with open(
     'rt',
 ) as aodf:
     for d in ujson.load(aodf)['data']:
-        a = Anime(**{camel_to_snake(k): v for k, v in d.items()})
+        a = Anime(**{'sources': [], 'relations': [], **{camel_to_snake(k): v for k, v in d.items()}})
 
         for title in chain([a.title], a.synonyms):
             if (title not in by_title) or (
