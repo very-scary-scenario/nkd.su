@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import os
 from itertools import chain
-from typing import Literal, NotRequired, Optional
+from typing import Literal, Optional
 
 from django.conf import settings
 from pydantic import BaseModel, HttpUrl
@@ -143,7 +143,13 @@ with open(
     'rt',
 ) as aodf:
     for d in ujson.load(aodf)['data']:
-        a = Anime(**{'sources': [], 'relations': [], **{camel_to_snake(k): v for k, v in d.items()}})
+        a = Anime(
+            **{
+                'sources': [],
+                'relations': d.pop('relatedAnime'),
+                **{camel_to_snake(k): v for k, v in d.items()},
+            }
+        )
 
         for title in chain([a.title], a.synonyms):
             if (title not in by_title) or (
