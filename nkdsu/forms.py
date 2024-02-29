@@ -1,3 +1,4 @@
+from allauth.account import forms as allauth_forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
@@ -16,3 +17,7 @@ class RegistrationForm(TriviaForm, UserCreationForm):
             )
 
         return username
+
+
+class ResetPasswordForm(TriviaForm, allauth_forms.ResetPasswordForm):
+    pass

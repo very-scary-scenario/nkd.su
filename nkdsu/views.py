@@ -15,7 +15,7 @@ from django.views.generic import CreateView, FormView
 from .apps.vote.mixins import BreadcrumbMixin
 from .apps.vote.models import Track
 from .apps.vote.views.profiles import UpdateProfileView
-from .forms import RegistrationForm
+from .forms import ResetPasswordForm, RegistrationForm
 from .mixins import MarkdownView
 
 
@@ -89,3 +89,7 @@ class SetPasswordView(FormView):
 
 class EmailView(LoginRequiredMixin, BreadcrumbMixin, allauth_views.EmailView):
     breadcrumbs = UpdateProfileView.base_breadcrumbs
+
+
+class PasswordResetView(allauth_views.PasswordResetView):
+    form_class = ResetPasswordForm
