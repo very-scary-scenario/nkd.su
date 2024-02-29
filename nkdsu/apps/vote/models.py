@@ -1473,9 +1473,8 @@ class Vote(SetShowBasedOnDateMixin, CleanOnSaveMixin, models.Model):
     def __str__(self) -> str:
         tracks = u', '.join([t.title for t in self.tracks.all()])
 
-        return u'{user} at {date} for {tracks}'.format(
-            user=self.name or self.twitter_user,
-            date=self.date,
+        return u'{user} for {tracks}'.format(
+            user=str(self.voter) if self.voter is not None else self.name,
             tracks=tracks,
         )
 
