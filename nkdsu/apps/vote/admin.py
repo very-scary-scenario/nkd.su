@@ -75,7 +75,7 @@ class DiscardShortlistAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('display_name', 'username', 'is_patron', 'is_abuser')
+    list_display = ('__str__', 'is_patron', 'is_abuser')
 
     @admin.display()
     def username(self, obj: models.Profile) -> str:
