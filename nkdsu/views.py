@@ -15,7 +15,7 @@ from django.views.generic import CreateView, FormView
 from .apps.vote.mixins import BreadcrumbMixin
 from .apps.vote.models import Track
 from .apps.vote.views.profiles import UpdateProfileView
-from .forms import ResetPasswordForm, RegistrationForm
+from .forms import RegistrationForm, ResetPasswordForm
 from .mixins import MarkdownView
 
 
