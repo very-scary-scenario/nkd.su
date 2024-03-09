@@ -111,6 +111,7 @@ class ArtistLexer(Lexer):
         r'King & Queen|'
         r'Kisida Kyodan & The Akebosi Rockets|'
         r'Konya, Anomachikara|'
+        r'Louis Armstrong and His Orchestra|'
         r'MYTH\s&\sROID|'
         r'OLIVIA inspi\' REIRA\(TRAPNEST\)|'
         r'Oranges\s(and|&)\sLemons|'
