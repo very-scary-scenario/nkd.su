@@ -36,6 +36,16 @@
       {% if not external %}
         {% include "include/related_anime.html" %}
       {% endif %}
+      {% if user|is_elf and anime_data.titles|length > 1 %}
+        <details class="alternate-titles">
+          <summary>known by {{ anime_data.titles|length }} names</summary>
+          <p>
+            {% for title in anime_data.titles %}
+              <span>{{ title }}</span>
+            {% endfor %}
+          </p>
+        </details>
+      {% endif %}
     </div>
   </div>
 {% endif %}
