@@ -50,4 +50,10 @@
   <p class="aside">no plays on record</p>
 {% endif %}
 
+{% if user.is_staff %}
+  <p class="aside">
+    <a href="{% url "vote:admin:migrate_away_from" pk=track.pk %}">migrate data from this track to a new one&hellip;</a>
+  </p>
+{% endif %}
+
 {% endblock %}

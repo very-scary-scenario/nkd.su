@@ -100,6 +100,11 @@ admin_patterns = [
     ),
     url(r'^make-note/(?P<pk>.+)/$', admin.MakeNote.as_view(), name='make_note'),
     url(r'^remove-note/(?P<pk>.+)/$', admin.RemoveNote.as_view(), name='remove_note'),
+    url(
+        r'^migrate-away-from/(?P<pk>.+)/$',
+        admin.MigrateAwayFrom.as_view(),
+        name='migrate_away_from',
+    ),
     url(r'^throw-500/$', admin.Throw500.as_view(), name='throw_500'),
 ]
 

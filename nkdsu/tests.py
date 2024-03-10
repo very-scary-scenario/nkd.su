@@ -38,6 +38,7 @@ class EverythingTest(
         '/vote-admin/reset/0007C3F2760E0541/',
         '/vote-admin/make-note/0007C3F2760E0541/',
         '/vote-admin/post-about-play/0007C3F2760E0541/',
+        '/vote-admin/migrate-away-from/0007C3F2760E0541/',
         '/vote-admin/remove-note/2/',
         '/vote-admin/archived/',
         '/vote-admin/hidden/',

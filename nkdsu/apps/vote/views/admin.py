@@ -3,10 +3,13 @@ import plistlib
 from codecs import getreader
 from typing import Optional
 
+from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
+from django.core.management import call_command
+from django.forms.widgets import RadioSelect
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -24,6 +27,7 @@ from django.views.generic.base import TemplateResponseMixin
 
 from .js import JSApiMixin
 from ..forms import LibraryUploadForm, MyriadExportUploadForm, NoteForm
+from ..managers import TrackQuerySet
 from ..models import Block, Note, Profile, Show, Track, TwitterUser, Vote
 from ..myriad_export import entries_for_file
 from ..update_library import MetadataChange, update_library
@@ -613,6 +617,27 @@ class RemoveNote(DestructiveAdminAction, DetailView):
     def do_thing(self) -> None:
         self.get_object().delete()
         messages.success(self.request, 'note removed')
+
+
+class MigrateAwayFrom(TrackSpecificAdminMixin, FormView):
+    template_name = 'migrate_away_from.html'
+
+    def get_possible_targets(self) -> TrackQuerySet:
+        return Track.objects.filter(hidden=True, inudesu=False).exclude(pk=self.kwargs['pk'])
+
+    def get_form_class(self) -> type[forms.Form]:
+        class TrackMigrationTargetForm(forms.Form):
+            migration_target = forms.ChoiceField(
+                choices=[(t.pk, f'{t.pk}: {t}') for t in self.get_possible_targets()],
+                widget=RadioSelect,
+            )
+
+        return TrackMigrationTargetForm
+
+    def form_valid(self, form: forms.Form) -> HttpResponse:
+        target = get_object_or_404(self.get_possible_targets(), pk=form.cleaned_data['migration_target'])
+        call_command('migrate_away_from', self.get_track().pk, target.pk)
+        return redirect(target.get_absolute_url())
 
 
 class Throw500(AdminMixin, DetailView):
