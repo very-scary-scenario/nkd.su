@@ -24,6 +24,11 @@ class Command(BaseCommand):
 
         to_remove.play_set.all().update(track=target)
         to_remove.note_set.all().update(track=target)
+        to_remove.shortlist_set.all().update(track=target)
+        to_remove.discard_set.all().update(track=target)
+        to_remove.request_set.all().update(track=target)
+        to_remove.proroulettecommitment_set.all().update(track=target)
+        to_remove.block_set.all().update(track=target)
 
         target.revealed = to_remove.revealed
         target.hidden = False
