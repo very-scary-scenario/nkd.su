@@ -68,10 +68,12 @@ class TrackQuerySet(models.QuerySet["Track"]):
             ):
                 title_q = models.Q(id3_title__unaccent__icontains=keyword)
                 artist_q = models.Q(id3_artist__unaccent__icontains=keyword)
+                composer_q = models.Q(composer__unaccent__icontains=keyword)
             else:
                 title_q = models.Q(id3_title__icontains=keyword)
                 artist_q = models.Q(id3_artist__icontains=keyword)
+                composer_q = models.Q(composer__icontains=keyword)
 
-            qs = qs.exclude(~title_q & ~artist_q)
+            qs = qs.exclude(~title_q & ~artist_q & ~composer_q)
 
         return qs
