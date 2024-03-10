@@ -623,7 +623,9 @@ class MigrateAwayFrom(TrackSpecificAdminMixin, FormView):
     template_name = 'migrate_away_from.html'
 
     def get_possible_targets(self) -> TrackQuerySet:
-        return Track.objects.filter(hidden=True, inudesu=False).exclude(pk=self.kwargs['pk'])
+        return Track.objects.filter(hidden=True, inudesu=False).exclude(
+            pk=self.kwargs['pk']
+        )
 
     def get_form_class(self) -> type[forms.Form]:
         class TrackMigrationTargetForm(forms.Form):
@@ -635,7 +637,9 @@ class MigrateAwayFrom(TrackSpecificAdminMixin, FormView):
         return TrackMigrationTargetForm
 
     def form_valid(self, form: forms.Form) -> HttpResponse:
-        target = get_object_or_404(self.get_possible_targets(), pk=form.cleaned_data['migration_target'])
+        target = get_object_or_404(
+            self.get_possible_targets(), pk=form.cleaned_data['migration_target']
+        )
         call_command('migrate_away_from', self.get_track().pk, target.pk)
         return redirect(target.get_absolute_url())
 
