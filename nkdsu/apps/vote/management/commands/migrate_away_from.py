@@ -40,4 +40,6 @@ class Command(BaseCommand):
         target.has_hook = to_remove.has_hook
 
         target.save()
-        to_remove.delete()
+
+        to_remove.archived = True
+        to_remove.save()
