@@ -605,6 +605,44 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
         return '_website'
 
 
+class UserTrackList(CleanOnSaveMixin, models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='track_lists')
+    name = models.CharField(max_length=100, blank=False)
+    public = models.BooleanField(default=False)
+    tracks: models.ManyToManyField[Track, UserTrackListTrack] = models.ManyToManyField(
+        'Track', through='UserTrackListTrack'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                *('user', 'name'),
+                name='user_track_list_name_unique',
+                violation_error_message='list names must be unique',
+            ),
+        ]
+
+
+class UserTrackListTrack(CleanOnSaveMixin, models.Model):
+    track = models.ForeignKey('Track', on_delete=models.CASCADE)
+    track_list = models.ForeignKey('UserTrackList', on_delete=models.CASCADE)
+    index = models.PositiveIntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                *('track_list', 'index'),
+                name='user_track_list_track_index_unique',
+                violation_error_message='each index must only appear once per list',
+            ),
+            models.UniqueConstraint(
+                *('track_list', 'track'),
+                name='user_track_list_track_track_unique',
+                violation_error_message='tracks can only be present once per list',
+            ),
+        ]
+
+
 def art_path(i: Track, f: str) -> str:
     return 'art/bg/%s.%s' % (i.pk, f.split('.')[-1])
 
