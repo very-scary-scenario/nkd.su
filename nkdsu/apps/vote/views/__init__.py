@@ -44,6 +44,7 @@ from ..models import (
     Track,
     TrackQuerySet,
     TwitterUser,
+    UserTrackListTrack,
     Vote,
 )
 from ..templatetags.vote_tags import eligible_for
@@ -868,6 +869,10 @@ class VoteView(LoginRequiredMixin, CreateView):
             **super().get_context_data(**kwargs),
             'tracks': tracks,
         }
+
+
+class AddToListView(LoginRequiredMixin, CreateView):
+    model = UserTrackListTrack
 
 
 class SetDarkModeView(FormView):

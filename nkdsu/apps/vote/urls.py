@@ -236,6 +236,11 @@ urlpatterns = [
     ),
     url(r'^request/$', views.VoteView.as_view(), name='vote'),
     path('update-request/<int:pk>/', views.UpdateVoteView.as_view(), name='edit-vote'),
+    url(
+        r'^add-to-list/(?P<pk>[0-9A-F]{16})/$',
+        views.AddToListView.as_view(),
+        name='add-to-list',
+    ),
     url(r'^set-dark-mode/$', views.SetDarkModeView.as_view(), name='set-dark-mode'),
     # tracks
     url(r'^(?P<pk>[0-9A-F]{16})/$', views.TrackDetail.as_view(), name='track'),
