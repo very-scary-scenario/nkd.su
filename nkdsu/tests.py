@@ -76,6 +76,7 @@ class EverythingTest(
         '/request/',
         '/request/?t=0007C3F2760E0541',
         '/request-addition/',
+        '/0007C3F2760E0541/add-to-list/',
         '/roulette/',
         '/roulette/hipster/',
         '/roulette/indiscriminate/',
