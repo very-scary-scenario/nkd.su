@@ -7,6 +7,7 @@ from itertools import chain
 from random import sample
 from typing import Any, Iterable, Optional, Sequence, cast, overload
 
+from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
@@ -44,7 +45,7 @@ from ..models import (
     Track,
     TrackQuerySet,
     TwitterUser,
-    UserTrackListTrack,
+    UserTrackList,
     Vote,
 )
 from ..templatetags.vote_tags import eligible_for
@@ -378,6 +379,18 @@ class Search(ListView):
                 'anime_suggestions': self.anime_suggestions,
             }
         )
+        return context
+
+
+class TrackSpecificMixin:
+    kwargs: dict[str, Any]
+
+    def get_track(self) -> Track:
+        return get_object_or_404(Track, pk=self.kwargs['pk'])
+
+    def get_context_data(self, *args, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(*args, **kwargs)  # type: ignore [misc]
+        context['track'] = self.get_track()
         return context
 
 
@@ -871,8 +884,41 @@ class VoteView(LoginRequiredMixin, CreateView):
         }
 
 
-class AddToListView(LoginRequiredMixin, CreateView):
-    model = UserTrackListTrack
+class AddToListView(LoginRequiredMixin, TrackSpecificMixin, FormView):
+    template_name = 'add_to_list.html'
+
+    def get_form_class(self) -> type[forms.Form]:
+        assert self.request.user.is_authenticated
+        user_pk = self.request.user.pk
+
+        class AddToListForm(forms.Form):
+            existing_list = forms.ModelChoiceField(
+                queryset=UserTrackList.objects.filter(user__pk=user_pk).exclude(
+                    tracks=self.get_track()
+                ),
+                required=False,
+            )
+            new_list_name = forms.CharField(
+                max_length=UserTrackList._meta.get_field('name').max_length,
+                required=False,
+            )
+
+            def clean(self) -> None:
+                raise NotImplementedError('require  a new list xor an existing one')
+
+        return AddToListForm
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        assert self.request.user.is_authenticated
+        return {
+            **super().get_context_data(**kwargs),
+            'already_in': UserTrackList.objects.filter(
+                user=self.request.user, tracks=self.get_track()
+            ),
+        }
+
+    def get_success_url(self) -> str:
+        raise NotImplementedError('detail of the list itself')
 
 
 class SetDarkModeView(FormView):
