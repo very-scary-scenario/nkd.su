@@ -18,6 +18,10 @@
     either pick an existing list, or provide a name for a new one
   </p>
 
+  <p class="aside">
+    new lists will be private by default
+  </p>
+
   <form method="post" action="." class="add-to-list">
     {% csrf_token %}
     {{ form.as_p }}

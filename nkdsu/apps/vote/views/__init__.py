@@ -12,6 +12,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
 from django.db.models import Count, DurationField, F, QuerySet
@@ -46,6 +47,7 @@ from ..models import (
     TrackQuerySet,
     TwitterUser,
     UserTrackList,
+    UserTrackListTrack,
     Vote,
 )
 from ..templatetags.vote_tags import eligible_for
@@ -887,7 +889,7 @@ class VoteView(LoginRequiredMixin, CreateView):
 class AddToListView(LoginRequiredMixin, TrackSpecificMixin, FormView):
     template_name = 'add_to_list.html'
 
-    def get_form_class(self) -> type[forms.Form]:
+    def get_form_class(self) -> type[forms.BaseForm]:
         assert self.request.user.is_authenticated
         user_pk = self.request.user.pk
 
@@ -903,8 +905,31 @@ class AddToListView(LoginRequiredMixin, TrackSpecificMixin, FormView):
                 required=False,
             )
 
+            def clean_new_list_name(self) -> None:
+                if UserTrackList.objects.filter(
+                    name=self.cleaned_data['new_list_name'],
+                    user__pk=user_pk,
+                ).exists():
+                    raise ValidationError('you already have a list by this name')
+
+                return self.cleaned_data['new_list_name']
+
             def clean(self) -> None:
-                raise NotImplementedError('require  a new list xor an existing one')
+                super().clean()
+
+                if self.cleaned_data.get('existing_list') and self.cleaned_data.get(
+                    'new_list_name'
+                ):
+                    raise ValidationError(
+                        'only pick either an existing list or provide a name for a new one, not both'
+                    )
+
+                if (not self.cleaned_data.get('existing_list')) and (
+                    not self.cleaned_data.get('new_list_name')
+                ):
+                    raise ValidationError(
+                        'pick either an existing list or provide a name for a new one'
+                    )
 
         return AddToListForm
 
@@ -917,8 +942,18 @@ class AddToListView(LoginRequiredMixin, TrackSpecificMixin, FormView):
             ),
         }
 
-    def get_success_url(self) -> str:
-        raise NotImplementedError('detail of the list itself')
+    def form_valid(self, form: BaseForm) -> HttpResponse:
+        assert self.request.user.is_authenticated
+        track_list = form.cleaned_data['existing_list']
+        if track_list is None:
+            track_list = UserTrackList.objects.create(
+                name=form.cleaned_data['new_list_name'], user=self.request.user
+            )
+
+        list_track = UserTrackListTrack.objects.create(
+            track=self.get_track(), track_list=track_list
+        )
+        return redirect(list_track.track_list.get_absolute_url())
 
 
 class SetDarkModeView(FormView):

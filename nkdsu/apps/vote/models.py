@@ -21,7 +21,7 @@ from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models
-from django.db.models import Q
+from django.db.models import Max, Q
 from django.db.models.constraints import CheckConstraint, UniqueConstraint
 from django.template.defaultfilters import slugify
 from django.templatetags.static import static
@@ -622,6 +622,12 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
             ),
         ]
 
+    def __str__(self) -> str:
+        return self.name
+
+    def get_absolute_url(self) -> str:
+        raise NotImplementedError()
+
 
 class UserTrackListTrack(CleanOnSaveMixin, models.Model):
     track = models.ForeignKey('Track', on_delete=models.CASCADE)
@@ -641,6 +647,15 @@ class UserTrackListTrack(CleanOnSaveMixin, models.Model):
                 violation_error_message='tracks can only be present once per list',
             ),
         ]
+
+    def save(self, *args, **kwargs) -> None:
+        if self.pk is None and self.index is None:
+            max_index = UserTrackListTrack.objects.filter(
+                track_list=self.track_list
+            ).aggregate(max_index=Max('index'))['max_index']
+            self.index = 0 if max_index is None else max_index + 1
+
+        return super().save(*args, **kwargs)
 
 
 def art_path(i: Track, f: str) -> str:
