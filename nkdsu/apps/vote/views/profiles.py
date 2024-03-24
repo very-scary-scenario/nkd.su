@@ -1,18 +1,21 @@
-from typing import Optional
+from typing import Any, Optional
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User as DjangoUser
 from django.core.exceptions import ValidationError
 from django.db.models import Q, QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import DetailView, ListView, UpdateView
+from django.views.generic.base import ContextMixin
 
 from . import VoterDetail
 from ..forms import ClearableFileInput
+from ..mixins import BreadcrumbMixin
 from ..models import Profile, UserTrackList, UserWebsite
 from ..utils import get_profile_for
 
@@ -103,9 +106,19 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         return get_profile_for(self.request.user)
 
 
-class UserTrackListMixin:
-    model = UserTrackList
+class UserTrackListMixin(ContextMixin):
+    model: type[UserTrackList]
     request: HttpRequest
+    kwargs: dict[str, Any]
+
+    def get_user(self) -> DjangoUser:
+        return get_object_or_404(User, username=self.kwargs['user'])
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        return {
+            **super().get_context_data(**kwargs),
+            'user': self.get_user(),
+        }
 
     def get_queryset(self) -> QuerySet[UserTrackList]:
         q = Q(public=True)
@@ -114,9 +127,33 @@ class UserTrackListMixin:
         return self.model.objects.filter(q)
 
 
-class UserTrackListView(UserTrackListMixin, DetailView[UserTrackList]):
+class UserTrackListListView(
+    BreadcrumbMixin, UserTrackListMixin, ListView[UserTrackList]
+):
+    model = UserTrackList
+    template_name = 'user_track_list_list.html'
+
+    def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
+        user = self.get_user()
+        return [(user.profile.get_absolute_url(), user.profile.display_name)]
+
+    def get_queryset(self) -> QuerySet[UserTrackList]:
+        return super().get_queryset().filter(user__username=self.kwargs['user'])
+
+
+class UserTrackListView(BreadcrumbMixin, UserTrackListMixin, DetailView[UserTrackList]):
     model = UserTrackList
     template_name = 'user_track_list_detail.html'
+
+    def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
+        user = self.get_user()
+        return [
+            (user.profile.get_absolute_url(), user.profile.display_name),
+            (
+                reverse('vote:profiles:track-lists', kwargs={'user': user.username}),
+                'track lists',
+            ),
+        ]
 
     def get_object(
         self, queryset: Optional[QuerySet[UserTrackList]] = None

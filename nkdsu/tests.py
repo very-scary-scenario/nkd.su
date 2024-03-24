@@ -103,7 +103,8 @@ class EverythingTest(
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
         '/@what/',
-        '/@what/list/cool/List for Pros/',
+        '/@what/track-lists/',
+        '/@what/track-list/cool/List for Pros/',
         '/profile/email/',
         '/profile/',
         '/confirm-email/',
@@ -165,7 +166,7 @@ class EverythingTest(
 
         UserTrackListTrack.objects.create(
             track=Track.objects.all()[0],
-            track_list=user.track_lists.create(name='cool/List for Pros', public=True)
+            track_list=user.track_lists.create(name='cool/List for Pros', public=True),
         )
 
     def ensure_all_urls_resolve(self, urls):

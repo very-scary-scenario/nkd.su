@@ -1,0 +1,12 @@
+{% extends parent %}
+
+{% block content %}
+
+  <h2>track lists by {{ user.profile.display_name }}</h2>
+
+  {% for track_list in object_list %}
+    <p><a href="{{ track_list.get_absolute_url }}">{{ track_list.name }}</a> ({{ track_list.tracks.count }})</p>
+  {% empty %}
+    <p class="aside">no lists (yet)</p>
+  {% endfor %}
+{% endblock %}
