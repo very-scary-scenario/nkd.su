@@ -5,15 +5,15 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import UpdateView
+from django.views.generic import DetailView, UpdateView
 
 from . import VoterDetail
 from ..forms import ClearableFileInput
-from ..models import Profile, UserWebsite
+from ..models import Profile, UserTrackList, UserWebsite
 from ..utils import get_profile_for
 
 
@@ -101,3 +101,28 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         if not self.request.user.is_authenticated:
             raise RuntimeError('LoginRequiredMixin should have prevented this')
         return get_profile_for(self.request.user)
+
+
+class UserTrackListMixin:
+    model = UserTrackList
+    request: HttpRequest
+
+    def get_queryset(self) -> QuerySet[UserTrackList]:
+        q = Q(public=True)
+        if self.request.user.is_authenticated:
+            q = q | Q(user=self.request.user)
+        return self.model.objects.filter(q)
+
+
+class UserTrackListView(UserTrackListMixin, DetailView[UserTrackList]):
+    model = UserTrackList
+    template_name = 'user_track_list_detail.html'
+
+    def get_object(
+        self, queryset: Optional[QuerySet[UserTrackList]] = None
+    ) -> UserTrackList:
+        return get_object_or_404(
+            queryset if queryset is not None else self.get_queryset(),
+            user__username=self.kwargs['user'],
+            name=self.kwargs['name'],
+        )

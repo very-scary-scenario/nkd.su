@@ -626,7 +626,18 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
         return self.name
 
     def get_absolute_url(self) -> str:
-        raise NotImplementedError()
+        return reverse(
+            'vote:profiles:track-list',
+            kwargs={'user': self.user.username, 'name': self.name},
+        )
+
+    def playlist(self) -> Iterable[Track]:
+        return (
+            utlt.track
+            for utlt in UserTrackListTrack.objects.filter(track_list=self).order_by(
+                'index'
+            )
+        )
 
 
 class UserTrackListTrack(CleanOnSaveMixin, models.Model):
