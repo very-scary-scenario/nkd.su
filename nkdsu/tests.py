@@ -6,7 +6,7 @@ from django.test import TestCase
 from instant_coverage import InstantCoverageMixin, optional
 
 from .apps.vote.elfs import ELFS_NAME, is_elf
-from .apps.vote.models import Show, Vote
+from .apps.vote.models import Show, Track, UserTrackListTrack, Vote
 
 
 User = get_user_model()
@@ -103,6 +103,7 @@ class EverythingTest(
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
         '/@what/',
+        '/@what/list/cool/List for Pros/',
         '/profile/email/',
         '/profile/',
         '/confirm-email/',
@@ -161,6 +162,11 @@ class EverythingTest(
         user = User(username='what')
         user.set_password('what')
         user.save()
+
+        UserTrackListTrack.objects.create(
+            track=Track.objects.all()[0],
+            track_list=user.track_lists.create(name='cool/List for Pros', public=True)
+        )
 
     def ensure_all_urls_resolve(self, urls):
         # linode has robot protection that makes automated testing of links to their site impossible, so:
