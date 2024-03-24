@@ -25,6 +25,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ('name', models.CharField(max_length=100)),
+                ('description', models.TextField(blank=True)),
                 ('public', models.BooleanField(default=False)),
             ],
             bases=(nkdsu.apps.vote.models.CleanOnSaveMixin, models.Model),

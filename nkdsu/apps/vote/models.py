@@ -608,6 +608,7 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
 class UserTrackList(CleanOnSaveMixin, models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='track_lists')
     name = models.CharField(max_length=100, blank=False)
+    description = models.TextField(blank=True)
     public = models.BooleanField(default=False)
     tracks: models.ManyToManyField[Track, UserTrackListTrack] = models.ManyToManyField(
         'Track', through='UserTrackListTrack'
