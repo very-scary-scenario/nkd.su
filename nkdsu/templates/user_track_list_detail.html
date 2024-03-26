@@ -1,10 +1,15 @@
 {% extends parent %}
 
+{% load vote_tags %}
+
 {% block title %}{{ object.name }}{% endblock %}
 
 {% block content %}
 
-  <h2>{{ object.name }}</h2>
+  <h2>
+    <i class="track-list-icon">{{ object.icon|fa_icon }}</i>
+    {{ object.name }}
+  </h2>
 
   <p class="subheading">
     curated by <a href="{{ object.user.profile.get_absolute_url }}">{{ object.user }}</a>

@@ -1,5 +1,7 @@
 {% extends parent %}
 
+{% load vote_tags %}
+
 {% block title %}track lists by {{ user.profile.display_name }}{% endblock %}
 
 {% block content %}
@@ -7,7 +9,13 @@
   <h2>track lists by {{ user.profile.display_name }}</h2>
 
   {% for track_list in object_list %}
-    <p><a href="{{ track_list.get_absolute_url }}">{{ track_list.name }}</a> ({{ track_list.tracks.count }})</p>
+    <p>
+      <a href="{{ track_list.get_absolute_url }}">
+        <i class="track-list-icon">{{ track_list.icon|fa_icon }}</i>
+        {{ track_list.name }}
+      </a>
+      ({{ track_list.tracks.count }})
+    </p>
   {% empty %}
     <p class="aside">no lists (yet)</p>
   {% endfor %}
