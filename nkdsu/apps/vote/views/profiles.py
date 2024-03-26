@@ -147,7 +147,7 @@ class UserTrackListView(
 ):
     model = UserTrackList
     template_name = 'user_track_list_detail.html'
-    fields = ['name', 'public', 'description']
+    fields = ['name', 'public', 'icon', 'description']
 
     def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
         user = self.get_user()
