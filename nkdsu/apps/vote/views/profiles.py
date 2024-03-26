@@ -7,10 +7,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User as DjangoUser
 from django.core.exceptions import ValidationError
 from django.db.models import Q, QuerySet
-from django.http import HttpRequest, HttpResponse
+from django.forms import ModelForm
+from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, ListView, UpdateView
+from django.views.generic import ListView, UpdateView
 from django.views.generic.base import ContextMixin
 
 from . import VoterDetail
@@ -84,7 +85,7 @@ class ProfileView(VoterDetail):
         return user.profile
 
 
-class UpdateProfileView(LoginRequiredMixin, UpdateView):
+class UpdateProfileView(LoginRequiredMixin, UpdateView[Profile, ModelForm]):
     model = Profile
     fields = ['display_name', 'avatar']
     template_name = 'edit_profile.html'
@@ -141,9 +142,10 @@ class UserTrackListListView(
         return super().get_queryset().filter(user__username=self.kwargs['user'])
 
 
-class UserTrackListView(BreadcrumbMixin, UserTrackListMixin, DetailView[UserTrackList]):
+class UserTrackListView(BreadcrumbMixin, UserTrackListMixin, UpdateView[UserTrackList, ModelForm]):
     model = UserTrackList
     template_name = 'user_track_list_detail.html'
+    fields = ['name', 'public', 'description']
 
     def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
         user = self.get_user()
@@ -154,6 +156,11 @@ class UserTrackListView(BreadcrumbMixin, UserTrackListMixin, DetailView[UserTrac
                 'track lists',
             ),
         ]
+
+    def form_valid(self, form: ModelForm) -> HttpResponse:
+        if self.request.user != self.get_user():
+            return HttpResponseNotAllowed("you cannot modify another user's track list")
+        return super().form_valid(form)
 
     def get_object(
         self, queryset: Optional[QuerySet[UserTrackList]] = None

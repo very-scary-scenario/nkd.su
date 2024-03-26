@@ -8,6 +8,17 @@
     curated by <a href="{{ object.user.profile.get_absolute_url }}">{{ object.user }}</a>
   </p>
 
+  {% if request.user == object.user %}
+    <details>
+      <summary>edit metadata&hellip;</summary>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="save" class="button">
+      </form>
+    </details>
+  {% endif %}
+
   <ul class="tracks">
     {% include "include/tracklist.html" with tracks=object.playlist %}
   </ul>
