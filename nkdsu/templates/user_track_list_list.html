@@ -9,4 +9,9 @@
   {% empty %}
     <p class="aside">no lists (yet)</p>
   {% endfor %}
+
+  {% if user == request.user %}
+    <p class="aside">you can make a new track list by clicking 'add to list' on a track you want to start with</p>
+  {% endif %}
+
 {% endblock %}
