@@ -15,6 +15,12 @@
     curated by <a href="{{ object.user.profile.get_absolute_url }}">{{ object.user }}</a>
   </p>
 
+  {% if not object.public %}
+    <p class="subheading">
+      private; only you can see this list
+    </p>
+    {% endif %}
+
   {% if object.description %}
     <div class="prose">
       {{ object.description|linebreaks }}

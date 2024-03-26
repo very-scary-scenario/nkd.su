@@ -14,7 +14,7 @@
         <i class="track-list-icon">{{ track_list.icon|fa_icon }}</i>
         {{ track_list.name }}
       </a>
-      ({{ track_list.tracks.count }})
+      ({{ track_list.tracks.count }}{% if not track_list.public %}, private{% endif %})
     </p>
   {% empty %}
     <p class="aside">no lists (yet)</p>
