@@ -142,7 +142,9 @@ class UserTrackListListView(
         return super().get_queryset().filter(user__username=self.kwargs['user'])
 
 
-class UserTrackListView(BreadcrumbMixin, UserTrackListMixin, UpdateView[UserTrackList, ModelForm]):
+class UserTrackListView(
+    BreadcrumbMixin, UserTrackListMixin, UpdateView[UserTrackList, ModelForm]
+):
     model = UserTrackList
     template_name = 'user_track_list_detail.html'
     fields = ['name', 'public', 'description']
