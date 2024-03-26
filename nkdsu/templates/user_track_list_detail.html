@@ -8,6 +8,12 @@
     curated by <a href="{{ object.user.profile.get_absolute_url }}">{{ object.user }}</a>
   </p>
 
+  {% if object.description %}
+    <div class="prose">
+      {{ object.description|linebreaks }}
+    </div>
+  {% endif %}
+
   {% if request.user == object.user %}
     <details>
       <summary>edit metadata&hellip;</summary>
