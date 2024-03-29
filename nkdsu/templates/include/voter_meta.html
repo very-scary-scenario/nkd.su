@@ -86,7 +86,7 @@
 
   {% if not voter.is_twitteruser %}
     <p class="aside">
-      <a href="{% url "vote:profiles:track-lists" user=user.username %}">{{ user.track_lists.all.count }} track list{{ user.track_lists.all.count|pluralize }}</a>
+      <a href="{% url "vote:profiles:track-lists" user=voter.user.username %}">{{ voter.user.track_lists.all.count }} track list{{ voter.user.track_lists.all.count|pluralize }}</a>
     </p>
   {% endif %}
 
