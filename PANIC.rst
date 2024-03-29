@@ -88,6 +88,9 @@ though:
 -  Make non-staff accounts for the elfs who gather tracks, so that they
    can get to the request list
 
+-  Try to run ``python manage.py update_local_data`` locally weekly or so.
+   Commit and deploy the results.
+
 --------------
 
 As well as the stuff noted above, Peter has auth details for my nic.ru
