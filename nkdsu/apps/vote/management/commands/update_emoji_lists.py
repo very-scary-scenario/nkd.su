@@ -12,9 +12,10 @@ SOURCE = 'https://unicode.org/Public/emoji/latest/{}'
 
 class Command(BaseCommand):
     def retrieve(self, fn: str) -> None:
+        resp = requests.get(SOURCE.format(fn))
+        resp.raise_for_status()
+
         with open(os.path.join(DIR, fn), 'wb') as f:
-            resp = requests.get(SOURCE.format(fn))
-            resp.raise_for_status()
             f.write(resp.content)
 
     def handle(self, *args, **kwargs) -> None:
