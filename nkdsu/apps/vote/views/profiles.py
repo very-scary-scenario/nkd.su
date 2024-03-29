@@ -82,7 +82,7 @@ class ProfileView(VoterDetail):
     def get_voter(self) -> Profile:
         user = self.get_object()
         assert isinstance(user, User)
-        return user.profile
+        return get_profile_for(user)
 
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView[Profile, ModelForm]):
