@@ -52,6 +52,20 @@ They will be used to:
 
 The website only shows these to elfs and admins, but they are emailed in plain text and will be shared among the elfs.
 
+### track lists
+
+These include:
+
+- the tracks you have selected and their order
+- metadata, including a name, icon, and description
+
+How these are to be used is up to you.
+
+Track lists are private by default. Public track lists are visible to all.
+Track lists not marked as public will only be visible to you on the website.
+Admins still have access, since they're stored in the same database as public
+ones, but we don't intend to look at them unless we suspect abuse.
+
 ### account information
 
 This can include:
