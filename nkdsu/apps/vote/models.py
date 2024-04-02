@@ -634,7 +634,7 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
         ]
 
     def __str__(self) -> str:
-        return self.name
+        return f'{self.icon} · {self.name}'
 
     def get_absolute_url(self) -> str:
         return reverse(
