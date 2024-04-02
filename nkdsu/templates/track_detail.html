@@ -56,4 +56,9 @@
   </p>
 {% endif %}
 
+{% if track.public_track_lists %}
+  <h3>listed in</h3>
+  {{ track.public_track_lists }}
+{% endif %}
+
 {% endblock %}
