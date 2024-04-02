@@ -1,0 +1,11 @@
+<a class="inline-track-list" href="{{ track_list.get_absolute_url }}">
+  <span class="track-list-icon">{{ track_list.icon }}</span>
+  <h3>
+    <span class="title">
+      {{ track_list.name }}
+    </span>
+    {% if not track_list.public %}<em>(private)</em>{% endif %}
+  </h3>
+
+  {{ track_list.tracks.count }} track{{ track_list.tracks.count|pluralize }}
+</a>

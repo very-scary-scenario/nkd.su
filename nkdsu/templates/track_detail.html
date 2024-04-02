@@ -57,8 +57,11 @@
 {% endif %}
 
 {% if track.public_track_lists %}
-  <h3>listed in</h3>
-  {{ track.public_track_lists }}
+  <h3>listed in:</h3>
+
+  {% for track_list in track.public_track_lists %}
+    {% include "include/track_list_summary.html" %}
+  {% endfor %}
 {% endif %}
 
 {% endblock %}
