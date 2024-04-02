@@ -11,7 +11,7 @@
   {% for track_list in object_list %}
     <p>
       <a href="{{ track_list.get_absolute_url }}">
-        <i class="track-list-icon">{{ track_list.icon|fa_icon }}</i>
+        <span class="track-list-icon">{{ track_list.icon }}</span>
         {{ track_list.name }}
       </a>
       ({{ track_list.tracks.count }}{% if not track_list.public %}, private{% endif %})
