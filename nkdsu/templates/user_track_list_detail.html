@@ -45,5 +45,16 @@
   <ul class="tracks">
     {% include "include/tracklist.html" with tracks=object.playlist %}
   </ul>
+{% endblock %}
 
+{% block footer_scripts %}
+  <script type="text/x-nkdsu-data" id="icon-options">
+    {{ emoji_json }}
+  </script>
+
+  <script>
+    (() => {
+      console.log(JSON.parse(document.getElementById('icon-options').innerText.replaceAll('&quot;', '"')))
+    })()
+  </script>
 {% endblock %}

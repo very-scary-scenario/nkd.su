@@ -13,8 +13,10 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, UpdateView
 from django.views.generic.base import ContextMixin
+import ujson
 
 from . import VoterDetail
+from ..emoji import EMOJI
 from ..forms import ClearableFileInput
 from ..mixins import BreadcrumbMixin
 from ..models import Profile, UserTrackList, UserWebsite
@@ -180,3 +182,6 @@ class UserTrackListView(
             user__username=self.kwargs['user'],
             name=self.kwargs['name'],
         )
+
+    def get_context_data(self) -> dict[str, Any]:
+        return {**super().get_context_data(), 'emoji_json': ujson.dumps(EMOJI)}
