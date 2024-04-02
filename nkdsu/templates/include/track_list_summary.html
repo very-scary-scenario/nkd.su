@@ -8,4 +8,8 @@
   </h3>
 
   {{ track_list.tracks.count }} track{{ track_list.tracks.count|pluralize }}
+
+  {% if not exclude_curator %}
+    - curated by {{ track_list.user }}
+  {% endif %}
 </a>
