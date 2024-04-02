@@ -32,9 +32,9 @@ from django_resized import ResizedImageField
 from markdown import markdown
 import requests
 
-from nkdsu.icons import ICONS
 from .anime import Anime, get_anime
 from .api_utils import JsonDict, Serializable
+from .emoji import EMOJI
 from .managers import NoteQuerySet, TrackQuerySet
 from .mastodon_instances import MASTODON_INSTANCES
 from .parsers import ParsedArtist, parse_artist
@@ -606,8 +606,8 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
         return '_website'
 
 
-DEFAULT_LIST_ICON = 'list'
-assert DEFAULT_LIST_ICON in ICONS.keys()
+DEFAULT_LIST_ICON = '⭐'
+assert DEFAULT_LIST_ICON in EMOJI.keys()
 
 
 class UserTrackList(CleanOnSaveMixin, models.Model):
@@ -616,8 +616,8 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
     description = models.TextField(blank=True)
     public = models.BooleanField(default=False)
     icon = models.CharField(
-        choices=[(slug, slug) for slug in ICONS.keys()],
-        max_length=max(len(slug) for slug in ICONS.keys()),
+        choices=[(char, f'{name} - {char}') for char, name in EMOJI.items()],
+        max_length=max(len(char) for char in EMOJI.keys()),
         default=DEFAULT_LIST_ICON,
     )
     tracks: models.ManyToManyField[Track, UserTrackListTrack] = models.ManyToManyField(
