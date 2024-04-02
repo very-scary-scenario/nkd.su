@@ -28,7 +28,11 @@
   {% endif %}
 
   {% if request.user == object.user %}
-    <details>
+    <details
+      {% if form.errors %}
+        open
+      {% endif %}
+    >
       <summary>edit metadata&hellip;</summary>
       <form method="post">
         {% csrf_token %}
