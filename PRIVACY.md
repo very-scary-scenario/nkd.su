@@ -79,7 +79,7 @@ This can include:
 - email addresses
 - URLs of websites you choose to show on your profile page
 
-[django-password-storage]: https://docs.djangoproject.com/en/3.2/topics/auth/passwords/#how-django-stores-passwords "how Django stores passwords"
+[django-password-storage]: https://docs.djangoproject.com/en/4.2/topics/auth/passwords/#how-django-stores-passwords "how Django stores passwords"
 
 These will be used to:
 
