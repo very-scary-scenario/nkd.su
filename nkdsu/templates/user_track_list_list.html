@@ -9,13 +9,17 @@
   <h2>track lists by {{ user.profile.display_name }}</h2>
 
   {% for track_list in object_list %}
-    <p>
-      <a href="{{ track_list.get_absolute_url }}">
-        <span class="track-list-icon">{{ track_list.icon }}</span>
-        {{ track_list.name }}
-      </a>
-      ({{ track_list.tracks.count }}{% if not track_list.public %}, private{% endif %})
-    </p>
+    <a class="inline-track-list" href="{{ track_list.get_absolute_url }}">
+      <span class="track-list-icon">{{ track_list.icon }}</span>
+      <h3>
+        <span class="title">
+          {{ track_list.name }}
+        </span>
+        {% if not track_list.public %}<em>(private)</em>{% endif %}
+      </h3>
+
+      {{ track_list.tracks.count }} track{{ track_list.tracks.count|pluralize }}
+    </a>
   {% empty %}
     <p class="aside">no lists (yet)</p>
   {% endfor %}

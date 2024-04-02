@@ -1159,6 +1159,37 @@ dl.metadata-check {
   }
 }
 
+a.inline-track-list {
+  display: block;
+  position: relative;
+  padding: 1em 1em 1em 9rem;
+  margin-bottom: 1em;
+
+  overflow: hidden;
+  background-color: @bg;
+  color: @hl !important;
+  text-shadow: none;
+  border-radius: .5rem;
+
+  &:hover {
+    color: @fg !important;
+  }
+
+  .track-list-icon {
+    text-shadow: 0 .1rem .2rem black;
+    position: absolute;
+    bottom: -1.5rem;
+    left: 1rem;
+    font-size: 6rem;
+    .transform(rotate(-10deg));
+  }
+
+  h3 {
+    margin: 0;
+    text-align: left;
+  }
+}
+
 .track-list-icon {
   margin-right: .3rem;
 }
