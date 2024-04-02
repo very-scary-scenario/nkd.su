@@ -1168,7 +1168,9 @@ a.inline-track-list {
   overflow: hidden;
   background-color: @bg;
   color: @hl !important;
+  .noise();
   text-shadow: none;
+  outline: 2px solid fade(@inv_bg, 50%);
   border-radius: .5rem;
 
   &:hover {
