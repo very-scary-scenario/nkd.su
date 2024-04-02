@@ -7,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User as DjangoUser
 from django.core.exceptions import ValidationError
 from django.db.models import Q, QuerySet
-from django.forms import ModelForm
+from django.forms import ModelForm, TextInput
 from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -158,6 +158,14 @@ class UserTrackListView(
                 'track lists',
             ),
         ]
+
+    def get_form_class(self) -> type[ModelForm]:
+        fc = super().get_form_class()
+        fc.base_fields['icon'].widget = TextInput()
+        fc.base_fields['icon'].help_text = (
+            'please provide one (1) emoji to use as an icon for this track list'
+        )
+        return fc
 
     def form_valid(self, form: ModelForm) -> HttpResponse:
         if self.request.user != self.get_user():
