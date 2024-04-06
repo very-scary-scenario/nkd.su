@@ -7,7 +7,7 @@
 
   {% if already_in %}
     <p class="aside">
-      already in lists:
+      already listed in:
       {% for list in already_in %}
         <a href="{{ list.get_absolute_url }}">{{ list.name }}</a>{% if not forloop.last %}, {% endif %}
       {% endfor %}
