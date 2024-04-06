@@ -1149,7 +1149,9 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
 
     @memoize
     def visible_track_lists(self) -> models.QuerySet[UserTrackList]:
-        return UserTrackList.objects.filter(public=True, tracks=self, user__profile__is_abuser=False)
+        return UserTrackList.objects.filter(
+            public=True, tracks=self, user__profile__is_abuser=False
+        )
 
     def play_tweet_content(self) -> str:
         # here we add a zwsp after every . to prevent twitter from turning
