@@ -103,7 +103,6 @@ class EverythingTest(
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
         '/@what/',
-        '/@what/track-lists/',
         '/@what/track-list/cool/List for Pros/',
         '/profile/email/',
         '/profile/',

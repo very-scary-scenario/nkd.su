@@ -6,16 +6,4 @@
 
 {% block content %}
 
-  <h2>track lists by {{ user.profile.display_name }}</h2>
-
-  {% for track_list in object_list %}
-    {% include "include/track_list_summary.html" with exclude_curator=True %}
-  {% empty %}
-    <p class="aside">no lists (yet)</p>
-  {% endfor %}
-
-  {% if user == request.user %}
-    <p class="aside">you can make a new track list by clicking 'add to list' on a track you want to start with</p>
-  {% endif %}
-
 {% endblock %}

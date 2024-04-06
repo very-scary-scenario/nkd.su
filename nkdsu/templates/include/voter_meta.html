@@ -84,12 +84,6 @@
     </div>
   {% endif %}
 
-  {% if not voter.is_twitteruser %}
-    <p class="aside">
-      <a href="{% url "vote:profiles:track-lists" user=voter.user.username %}">{{ voter.user.track_lists.all.count }} track list{{ voter.user.track_lists.all.count|pluralize }}</a>
-    </p>
-  {% endif %}
-
   {% if voter.badges %}
     <ul class="badges">
       {% for badge in voter.badges %}

@@ -86,6 +86,19 @@ class ProfileView(VoterDetail):
         assert isinstance(user, User)
         return get_profile_for(user)
 
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        profile = self.get_voter()
+
+        track_lists = UserTrackList.objects.filter(user=profile.user)
+
+        if self.request.user != profile.user:
+            track_lists = track_lists.filter(public=True)
+
+        return {
+            **super().get_context_data(),
+            'track_lists': track_lists,
+        }
+
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView[Profile, ModelForm]):
     model = Profile
@@ -155,10 +168,6 @@ class UserTrackListView(
         user = self.get_user()
         return [
             (user.profile.get_absolute_url(), user.profile.display_name),
-            (
-                reverse('vote:profiles:track-lists', kwargs={'user': user.username}),
-                'track lists',
-            ),
         ]
 
     def get_form_class(self) -> type[ModelForm]:
