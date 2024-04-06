@@ -132,6 +132,7 @@ class EverythingTest(
         '/vote-admin/unarchive-selection/',
         '/vote-admin/reset-shortlist-discard-selection/',
         # only accepts POST
+        '/@what/track-list-members/cool/List for Pros/',
         '/vote-admin/shortlist-order/',
         '/vote-admin/requests/fill/1/',
         '/vote-admin/requests/claim/1/',
