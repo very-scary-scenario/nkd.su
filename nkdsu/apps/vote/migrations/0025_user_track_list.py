@@ -528,7 +528,10 @@ class Migration(migrations.Migration):
                                 '🔁',
                                 'clockwise rightwards and leftwards open circle arrows - 🔁',
                             ),
-                            ('🔃', 'clockwise downwards and upwards open circle arrows - 🔃'),
+                            (
+                                '🔃',
+                                'clockwise downwards and upwards open circle arrows - 🔃',
+                            ),
                             (
                                 '🔄',
                                 'anticlockwise downwards and upwards open circle arrows - 🔄',
@@ -553,7 +556,10 @@ class Migration(migrations.Migration):
                             ('🔘', 'radio button - 🔘'),
                             ('🔙', 'back with leftwards arrow above - 🔙'),
                             ('🔚', 'end with leftwards arrow above - 🔚'),
-                            ('🔛', 'on with exclamation mark with left right arrow above - 🔛'),
+                            (
+                                '🔛',
+                                'on with exclamation mark with left right arrow above - 🔛',
+                            ),
                             ('🔜', 'soon with rightwards arrow above - 🔜'),
                             ('🔝', 'top with upwards arrow above - 🔝'),
                             ('🔞', 'no one under eighteen symbol - 🔞'),
@@ -621,7 +627,10 @@ class Migration(migrations.Migration):
                             ('😁', 'grinning face with smiling eyes - 😁'),
                             ('😂', 'face with tears of joy - 😂'),
                             ('😃', 'smiling face with open mouth - 😃'),
-                            ('😄', 'smiling face with open mouth and smiling eyes - 😄'),
+                            (
+                                '😄',
+                                'smiling face with open mouth and smiling eyes - 😄',
+                            ),
                             ('😅', 'smiling face with open mouth and cold sweat - 😅'),
                             ('😇', 'smiling face with halo - 😇'),
                             ('😉', 'winking face - 😉'),
@@ -642,7 +651,10 @@ class Migration(migrations.Migration):
                             ('😚', 'kissing face with closed eyes - 😚'),
                             ('😛', 'face with stuck-out tongue - 😛'),
                             ('😜', 'face with stuck-out tongue and winking eye - 😜'),
-                            ('😝', 'face with stuck-out tongue and tightly-closed eyes - 😝'),
+                            (
+                                '😝',
+                                'face with stuck-out tongue and tightly-closed eyes - 😝',
+                            ),
                             ('😟', 'worried face - 😟'),
                             ('😠', 'angry face - 😠'),
                             ('😡', 'pouting face - 😡'),
@@ -793,7 +805,10 @@ class Migration(migrations.Migration):
                             ('🤦', 'face palm - 🤦'),
                             ('🤨', 'face with one eyebrow raised - 🤨'),
                             ('🤩', 'grinning face with star eyes - 🤩'),
-                            ('🤪', 'grinning face with one large and one small eye - 🤪'),
+                            (
+                                '🤪',
+                                'grinning face with one large and one small eye - 🤪',
+                            ),
                             ('🤫', 'face with finger covering closed lips - 🤫'),
                             ('🤬', 'serious face with symbols covering mouth - 🤬'),
                             (
