@@ -37,14 +37,35 @@
       <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="save" class="button">
+        <input type="submit" value="save metadata" class="button">
       </form>
     </details>
   {% endif %}
 
-  <ul class="tracks">
-    {% include "include/tracklist.html" with tracks=object.playlist %}
-  </ul>
+  <form method="post">
+    {% csrf_token %}
+    {% for track in object.playlist %}
+      <div class="track-list-entry">
+        {% if request.user == object.user %}
+          <div class="track-list-inclusion">
+            <label>
+              index
+              <input type"number" value="{{ forloop.counter }}">
+            </label>
+            <label>
+              remove
+              <input type="checkbox">
+            </label>
+          </div>
+        {% endif %}
+
+        <ul class="tracks">
+          {% include "include/track.html" %}
+        </ul>
+      </div>
+    {% endfor %}
+    <input type="submit" value="save order and removals" class="button">
+  </form>
 {% endblock %}
 
 {% block footer_scripts %}
