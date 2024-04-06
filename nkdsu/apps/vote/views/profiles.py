@@ -183,5 +183,5 @@ class UserTrackListView(
             name=self.kwargs['name'],
         )
 
-    def get_context_data(self) -> dict[str, Any]:
-        return {**super().get_context_data(), 'emoji_json': ujson.dumps(EMOJI)}
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        return {**super().get_context_data(**kwargs), 'emoji_json': ujson.dumps(EMOJI)}
