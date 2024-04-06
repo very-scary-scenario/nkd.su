@@ -9,7 +9,7 @@
   <h2>track lists by {{ user.profile.display_name }}</h2>
 
   {% for track_list in object_list %}
-    {% include "includes/track_list_summary.html" exclude_curator=True %}
+    {% include "include/track_list_summary.html" with exclude_curator=True %}
   {% empty %}
     <p class="aside">no lists (yet)</p>
   {% endfor %}
