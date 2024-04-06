@@ -64,7 +64,10 @@
         </ul>
       </div>
     {% endfor %}
-    <input type="submit" value="save order and removals" class="button">
+
+    {% if request.user == object.user %}
+      <input type="submit" value="save order and removals" class="button">
+    {% endif %}
   </form>
 {% endblock %}
 
