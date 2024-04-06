@@ -56,10 +56,10 @@
   </p>
 {% endif %}
 
-{% if track.public_track_lists %}
+{% if track.visible_track_lists %}
   <h3>listed in:</h3>
 
-  {% for track_list in track.public_track_lists %}
+  {% for track_list in track.visible_track_lists %}
     {% include "include/track_list_summary.html" %}
   {% endfor %}
 {% endif %}
