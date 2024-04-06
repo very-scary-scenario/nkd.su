@@ -140,7 +140,7 @@ class BrowseRoles(ElfMixin, mixins.BrowseCategory):
     category_name = 'roles'
 
     def get_categories(self) -> Iterable[BrowsableItem]:
-        for role in Track.all_non_inudesu_roles():
+        for role in Track.all_public_roles():
             yield BrowsableItem(url=None, name=role)
 
 

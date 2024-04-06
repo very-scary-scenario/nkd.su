@@ -899,8 +899,8 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
         }
 
     @classmethod
-    def all_non_inudesu_roles(cls) -> set[str]:
-        return cls.all_roles(cls.objects.filter(inudesu=False))
+    def all_public_roles(cls) -> set[str]:
+        return cls.all_roles(cls.objects.public())
 
     @memoize
     def is_new(self) -> bool:
