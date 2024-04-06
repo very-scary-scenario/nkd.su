@@ -1174,17 +1174,18 @@ a.inline-track-list {
   outline: 1px solid @border;
   border-radius: .5rem;
 
-  &:hover {
-    color: @fg !important;
-  }
-
-  .track-list-icon {
+  &::before {
+    content: attr(data-icon);
     text-shadow: 0 .1rem .2rem black;
     position: absolute;
     bottom: -1.5rem;
     left: 1rem;
     font-size: 6rem;
     .transform(rotate(-10deg));
+  }
+
+  &:hover {
+    color: @fg !important;
   }
 
   h3 {
