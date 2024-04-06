@@ -171,6 +171,11 @@ profile_patterns = (
             profiles.UserTrackListView.as_view(),
             name='track-list',
         ),
+        path(
+            '@<str:user>/track-list-members/<path:name>/',
+            profiles.UserTrackListModifyMembersView.as_view(),
+            name='track-list-members',
+        ),
     ],
     'profiles',
 )

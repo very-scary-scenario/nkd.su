@@ -42,7 +42,7 @@
     </details>
   {% endif %}
 
-  <form method="post">
+  <form method="post" action="{% url "vote:profiles:track-list-members" user=object.user.username name=object.name %}">
     {% csrf_token %}
     {% for track in object.playlist %}
       <div class="track-list-entry">

@@ -157,9 +157,25 @@ class UserTrackListListView(
         return super().get_queryset().filter(user__username=self.kwargs['user'])
 
 
-class UserTrackListView(
-    BreadcrumbMixin, UserTrackListMixin, UpdateView[UserTrackList, ModelForm]
-):
+class ModifyUserTrackList(UserTrackListMixin, UpdateView[UserTrackList, ModelForm]):
+    model = UserTrackList
+
+    def form_valid(self, form: ModelForm) -> HttpResponse:
+        if self.request.user != self.get_user():
+            return HttpResponseNotAllowed("you cannot modify another user's track list")
+        return super().form_valid(form)
+
+    def get_object(
+        self, queryset: Optional[QuerySet[UserTrackList]] = None
+    ) -> UserTrackList:
+        return get_object_or_404(
+            queryset if queryset is not None else self.get_queryset(),
+            user__username=self.kwargs['user'],
+            name=self.kwargs['name'],
+        )
+
+
+class UserTrackListView(BreadcrumbMixin, ModifyUserTrackList):
     model = UserTrackList
     template_name = 'user_track_list_detail.html'
     fields = ['name', 'public', 'icon', 'description']
@@ -178,19 +194,9 @@ class UserTrackListView(
         )
         return fc
 
-    def form_valid(self, form: ModelForm) -> HttpResponse:
-        if self.request.user != self.get_user():
-            return HttpResponseNotAllowed("you cannot modify another user's track list")
-        return super().form_valid(form)
-
-    def get_object(
-        self, queryset: Optional[QuerySet[UserTrackList]] = None
-    ) -> UserTrackList:
-        return get_object_or_404(
-            queryset if queryset is not None else self.get_queryset(),
-            user__username=self.kwargs['user'],
-            name=self.kwargs['name'],
-        )
-
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         return {**super().get_context_data(**kwargs), 'emoji_json': ujson.dumps(EMOJI)}
+
+
+class UserTrackListModifyMembersView(ModifyUserTrackList):
+    pass
