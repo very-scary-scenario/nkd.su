@@ -6921,6 +6921,7 @@ abolition.online
 abolition.town
 abolitionmedia.noblogs.org
 abolivier.bzh
+abootible.com
 aboring.space
 aboringsite.dev
 about-bitcoin.com
@@ -7784,6 +7785,7 @@ allnutt.net
 allo.digital
 allovertheplace.ca
 allowlist.fedi.tax
+allpeep.com
 allpeep.social
 allpro.social
 allrite.at
@@ -8022,6 +8024,7 @@ anar.chi.st
 anara.social
 anarch.cc
 anarch.is
+anarchic-teapot.net
 anarchism.online
 anarchism.space
 anarchy-nomad.de
@@ -18212,6 +18215,7 @@ events.litera.tools
 events.louisvilletech.org
 events.mezzo.moe
 events.nixnet.services
+events.nogafam.fr
 events.nzoss.nz
 events.open-society.ch
 events.osm.lat
@@ -21398,6 +21402,7 @@ friloux.me
 frinkel.moe
 frinsocial.uk
 frinx.online
+frish.org
 friskypaws.social
 friskywhiskersfiction.online
 frisphook.hilciferous.nl
@@ -24547,6 +24552,7 @@ honk.manu.systems
 honk.masto.host
 honk.meme.technology
 honk.microkod.xyz
+honk.moe
 honk.motcha.tech
 honk.moth.monster
 honk.mr.gy
@@ -24990,6 +24996,7 @@ hubzilla.funkymonkey.org
 hubzilla.gadgeteer.co.za
 hubzilla.giovanni.netlib.re
 hubzilla.hopto.org
+hubzilla.hrn.one
 hubzilla.huebner.tk
 hubzilla.inclusion.cc
 hubzilla.irgendwo.social
@@ -26154,6 +26161,7 @@ itsjustdj.com
 itskevin.social
 itslit.bet
 itsme.lgbt
+itsmeow.cat
 itsmy.social
 itsnot.online
 itsnotjusttheflu.org
@@ -27720,6 +27728,7 @@ kksk.one
 kkxr027k.activitypub-troll.cf
 kl6kk5qd.activitypub-troll.cf
 kl9e4z9i.activitypub-troll.cf
+klacker.org
 klartube.de
 klaus.positiveinfinity.net
 klee-wife.moe
@@ -29809,6 +29818,7 @@ littleplanet.life
 littleroom.io
 littlesakura.blanchatre.net
 littletimemachine.com
+littletrips.me
 littleturnip.net
 littr.me
 litza.de
@@ -29863,6 +29873,7 @@ live.hatnix.net
 live.hermitcollective.net
 live.ianandjayspaceout.com
 live.igate.pw
+live.ilyamikcoder.com
 live.indiecreatorhub.com
 live.isekco.re
 live.itsmy.app
@@ -30990,6 +31001,7 @@ m.reddrefuge.com
 m.refractive.group
 m.relaychat.party
 m.remo.pro
+m.reneo.io
 m.right.wtf
 m.rnj.au
 m.roboco.dev
@@ -36380,6 +36392,7 @@ mastodon.top
 mastodon.toposware.com
 mastodon.topslakr.com
 mastodon.toptechtidbits.com
+mastodon.toti.is
 mastodon.totmin.ru
 mastodon.towade.me
 mastodon.toycode.com
@@ -42076,6 +42089,7 @@ neg.fpsource.eu
 neg9.org
 negative.social
 negativezero.link
+negeri.org
 negi.fjordur.net
 negino.social
 negipan.m.to
@@ -43957,6 +43971,7 @@ opantu.net
 opantu.opantu.site
 opaque.social
 opayq.social
+opbsd.rintik.xyz
 opc.onephoto.club
 open-social.xyz
 open-source-eschaton.net
@@ -45762,6 +45777,7 @@ pegelinux.top
 pegfun16.duckdns.org
 peggyheinkelwolfe.com
 pehnet.org
+peister.org
 peiu2iw1.activitypub-troll.cf
 pejookaloo.com
 pejookaloo.social
@@ -55763,6 +55779,7 @@ social.grotz.me
 social.groumpf-legroupe.fr
 social.growyourown.services
 social.grozog.tech
+social.grumpfff.info
 social.grumpyoldtechie.com
 social.grunert.dev
 social.grunig.org
@@ -56255,6 +56272,7 @@ social.jp.serial-experiments.com
 social.jp3d.de
 social.jpa.com
 social.jpi.io
+social.jpoehnelt.dev
 social.jrg.systems
 social.jrm.cc
 social.jrruethe.info
@@ -57893,6 +57911,7 @@ social.rican.ovh
 social.rice.id.au
 social.richardandbethany.xyz
 social.richardo.xyz
+social.richardsoper.me
 social.rickelobe.com
 social.ricky-dev.com
 social.ridetrans.it
@@ -58584,6 +58603,7 @@ social.terrancebrown.me
 social.territoridigitali.org
 social.territorisostenibili.org
 social.terryiscool160.xyz
+social.terrylaire.fr
 social.test.raeffs.ch
 social.test72.eu.org
 social.testmobo.com
@@ -62768,6 +62788,7 @@ tinou.eu
 tinsley.video
 tiny-pillowfort.floating-in.space
 tiny.gripe
+tiny.sengis.net
 tiny.tilde.website
 tinyap.glitch.me
 tinycart.club
@@ -65457,6 +65478,7 @@ unix.house
 unix.se
 unixcorn.xyz
 unixe.eu
+unixspace.online
 unkai.blog
 unknowable.place
 unknowngenius.com
@@ -69928,6 +69950,7 @@ yourhome.social
 yourintrinsicself.com
 yourlife.social
 yournetwork.cloud
+youronly.one
 yourwalls.today
 youshould.uwu.today
 youten.xyz
@@ -70333,6 +70356,7 @@ zlcs9rz9.activitypub-troll.cf
 zlgmtazm.activitypub-troll.cf
 zlhmcv1l.activitypub-troll.cf
 zli-misskey.shinbunbun.com
+zlinux.ru
 zlk2m6nb.activitypub-troll.cf
 zlma.org
 zmi.im
