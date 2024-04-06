@@ -47,14 +47,14 @@
     {% for track in object.playlist %}
       <div class="track-list-entry">
         {% if request.user == object.user %}
-          <div class="track-list-inclusion">
+          <div class="track-list-membership">
             <label>
               index
-              <input type="number" value="{{ forloop.counter }}">
+              <input name="index_{{ track.pk }}" type="number" value="{{ forloop.counter }}">
             </label>
             <label>
               remove
-              <input type="checkbox">
+              <input name="remove_{{ track.pk }}" type="checkbox">
             </label>
           </div>
         {% endif %}
