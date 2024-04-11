@@ -355,7 +355,7 @@ body {
               letter-spacing: .2em; // for eggbug
             }
             &[data-kind="anilist"]::before { content: @fa-var-list }
-            &[data-kind="bsky"]::before { content: @fa-var-cloud }
+            &[data-kind="bsky"]::before { .fab(); content: @fa-var-bluesky }
             &[data-kind="cohost"]::before { content: %("%s%s", @fa-var-egg, @fa-var-bug) }
             &[data-kind="facebook"]::before { .fab(); content: @fa-var-facebook }
             &[data-kind="instagram"]::before { .fab(); content: @fa-var-instagram }

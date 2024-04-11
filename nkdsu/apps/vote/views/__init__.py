@@ -35,6 +35,7 @@ from django.views.generic import (
 from requests.exceptions import RequestException
 
 from nkdsu.mixins import MarkdownView
+from .elf import ElfMixin
 from ..anime import get_anime, suggest_anime
 from ..forms import BadMetadataForm, DarkModeForm, RequestForm, VoteForm
 from ..models import (
@@ -137,13 +138,13 @@ class BrowseYears(mixins.BrowseCategory):
             )
 
 
-class BrowseRoles(mixins.BrowseCategory):
+class BrowseRoles(ElfMixin, mixins.BrowseCategory):
     section = 'browse'
     template_name = 'browse_roles.html'
     category_name = 'roles'
 
     def get_categories(self) -> Iterable[BrowsableItem]:
-        for role in Track.all_non_inudesu_roles():
+        for role in Track.all_public_roles():
             yield BrowsableItem(url=None, name=role)
 
 
