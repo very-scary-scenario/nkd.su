@@ -46,8 +46,10 @@ const bindMembershipForm = () => {
     return
   }
 
+  const getOrderInputs = () => membershipContainer.querySelectorAll('input.order')
+
   const handleChange = e => {
-    const orderInputs = membershipContainer.querySelectorAll('input.order')
+    const orderInputs = getOrderInputs()
     for (let i = 0; i < orderInputs.length; i++) {
       orderInputs[i].value = i + 1
     }
@@ -56,12 +58,24 @@ const bindMembershipForm = () => {
   const sortable = Sortable.create(membershipContainer, {
     onSort: handleChange,
   })
-  console.log(sortable)
 
   const orderingTutorial = document.createElement('p')
   orderingTutorial.innerText = 'you can drag tracks to reorder them'
   orderingTutorial.classList.add('aside')
   membershipForm.insertBefore(orderingTutorial, membershipContainer)
+
+  const orderInputs = getOrderInputs()
+  for (let i = 0; i < orderInputs.length; i++) {
+    orderInputs[i].addEventListener('change', ev => {
+      sortable.sort(sortable.toArray().sort(
+        (a, b) => {
+          const getValueForId = id => membershipContainer.querySelector(`[data-id="${id}"] input.order`).value
+          return getValueForId(a) - getValueForId(b)
+        },
+      ), true)
+      handleChange()
+    })
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

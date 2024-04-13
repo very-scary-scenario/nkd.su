@@ -46,7 +46,7 @@
     {% csrf_token %}
     <div id="track-list-membership">
       {% for track in object.playlist %}
-        <div class="track-list-entry">
+        <div class="track-list-entry" data-id="{{ track.pk }}">
           {% if request.user == object.user %}
             <div class="track-list-membership">
               <label>
