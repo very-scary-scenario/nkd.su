@@ -39,7 +39,13 @@ const bindIconOptions = () => {
 }
 
 const bindMembershipForm = () => {
+  const membershipForm = document.getElementById('track-list-membership-form')
   const membershipContainer = document.getElementById('track-list-membership')
+
+  if (membershipForm === null || membershipContainer === null || membershipForm.querySelector('input[type=submit]') === null) {
+    return
+  }
+
   const sortable = Sortable.create(membershipContainer, {})
   console.log(sortable)
 }
