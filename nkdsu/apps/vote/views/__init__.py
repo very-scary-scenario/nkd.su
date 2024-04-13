@@ -844,10 +844,13 @@ class TracksFromGetParamMixin(TemplateView):
         return track_pks
 
     def get_tracks(self) -> list[Track]:
-        return [
+        tracks = [
             get_object_or_404(Track.objects.public(), pk=pk)
             for pk in self.get_track_pks()
         ]
+        if not tracks:
+            raise Http404('no tracks picked')
+        return tracks
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         tracks = self.get_tracks()
