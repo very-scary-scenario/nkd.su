@@ -1,3 +1,5 @@
+/* global Sortable */
+
 const bindIconOptions = () => {
   const iconField = document.getElementById('id_icon')
   const iconOptionsElement = document.getElementById('icon-options')
@@ -36,6 +38,13 @@ const bindIconOptions = () => {
   iconField.addEventListener('input', backmap)
 }
 
+const bindMembershipForm = () => {
+  const membershipContainer = document.getElementById('track-list-membership')
+  const sortable = Sortable.create(membershipContainer, {})
+  console.log(sortable)
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   bindIconOptions()
+  bindMembershipForm()
 })
