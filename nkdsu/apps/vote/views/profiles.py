@@ -127,13 +127,13 @@ class UserTrackListMixin(ContextMixin):
     request: HttpRequest
     kwargs: dict[str, Any]
 
-    def get_user(self) -> DjangoUser:
+    def get_curator(self) -> DjangoUser:
         return get_object_or_404(User, username=self.kwargs['user'])
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         return {
             **super().get_context_data(**kwargs),
-            'user': self.get_user(),
+            'curator': self.get_curator(),
         }
 
     def get_queryset(self) -> QuerySet[UserTrackList]:
@@ -150,7 +150,7 @@ class UserTrackListListView(
     template_name = 'user_track_list_list.html'
 
     def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
-        user = self.get_user()
+        user = self.get_curator()
         return [(user.profile.get_absolute_url(), user.profile.display_name)]
 
     def get_queryset(self) -> QuerySet[UserTrackList]:
@@ -161,7 +161,7 @@ class ModifyUserTrackList(UserTrackListMixin, UpdateView[UserTrackList, ModelFor
     model = UserTrackList
 
     def form_valid(self, form: ModelForm) -> HttpResponse:
-        if self.request.user != self.get_user():
+        if self.request.user != self.get_curator():
             return HttpResponseNotAllowed("you cannot modify another user's track list")
         return super().form_valid(form)
 
@@ -181,9 +181,9 @@ class UserTrackListView(BreadcrumbMixin, ModifyUserTrackList):
     fields = ['name', 'public', 'icon', 'description']
 
     def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
-        user = self.get_user()
+        curator = self.get_curator()
         return [
-            (user.profile.get_absolute_url(), user.profile.display_name),
+            (curator.profile.get_absolute_url(), curator.profile.display_name),
         ]
 
     def get_form_class(self) -> type[ModelForm]:
