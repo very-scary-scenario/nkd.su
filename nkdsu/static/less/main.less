@@ -1210,6 +1210,35 @@ a.inline-track-list {
   margin-right: .3rem;
 }
 
+#track-list-membership-form {
+  #track-list-membership {
+    .track-list-entry {
+      text-align: left;
+
+      .track-list-membership-controls {
+        display: inline-block;
+        margin-left: 1em;
+        padding: .2em .5em .1em;
+        border: 1px solid fade(@lighter, 70%);
+        border-bottom: none;
+        border-radius: .3em .3em 0 0;
+
+        label {
+          margin: .2em .3em;
+
+          input[type=number] {
+            max-width: 4em;
+          }
+        }
+      }
+
+      .tracks li {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
 @media (min-width:551px) {
   form {
     p {
