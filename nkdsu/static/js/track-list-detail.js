@@ -46,7 +46,16 @@ const bindMembershipForm = () => {
     return
   }
 
-  const sortable = Sortable.create(membershipContainer, {})
+  const handleChange = e => {
+    const orderInputs = membershipContainer.querySelectorAll('input.order')
+    for (let i = 0; i < orderInputs.length; i++) {
+      orderInputs[i].value = i + 1
+    }
+  }
+
+  const sortable = Sortable.create(membershipContainer, {
+    onSort: handleChange,
+  })
   console.log(sortable)
 
   const orderingTutorial = document.createElement('p')
