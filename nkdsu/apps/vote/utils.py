@@ -114,10 +114,22 @@ def camel_to_snake(camel: str) -> str:
     return re.sub(r'[A-Z]', lambda m: f'_{m.group(0).lower()}', camel)
 
 
-def vote_url(tracks: Iterable[Track]) -> str:
-    base = reverse('vote:vote')
+def track_with_get_param_url(tracks: Iterable[Track], url: str) -> str:
+    """
+    Generate a URL for a view that uses :class:`.TracksFromGetParamMixin`.
+    """
+
+    base = reverse(url)
     query = {'t': ','.join(t.id for t in tracks)}
     return f'{base}?{urlencode(query)}'
+
+
+def add_to_list_url(tracks: Iterable[Track]) -> str:
+    return track_with_get_param_url(tracks, 'vote:add-to-list')
+
+
+def vote_url(tracks: Iterable[Track]) -> str:
+    return track_with_get_param_url(tracks, 'vote:vote')
 
 
 def split_id3_title(id3_title: str) -> tuple[str, Optional[str]]:

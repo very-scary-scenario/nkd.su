@@ -72,7 +72,7 @@
         {% endif %}
 
         {% if user.is_authenticated %}
-          <span><a class="add-to-list" href="{% url "vote:add-to-list" pk=track.pk  %}">add to list&hellip;</a></span>
+          <span><a class="add-to-list" href="{% url "vote:add-to-list" %}?t={{ track.pk }}">add to list&hellip;</a></span>
         {% endif %}
 
         {% if user.is_staff and track.media_id %}

@@ -247,7 +247,7 @@ urlpatterns = [
     url(r'^request/$', views.VoteView.as_view(), name='vote'),
     path('update-request/<int:pk>/', views.UpdateVoteView.as_view(), name='edit-vote'),
     url(
-        r'^(?P<pk>[0-9A-F]{16})/add-to-list/$',
+        r'^add-to-list/$',
         views.AddToListView.as_view(),
         name='add-to-list',
     ),

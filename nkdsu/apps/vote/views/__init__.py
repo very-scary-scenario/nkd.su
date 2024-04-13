@@ -31,7 +31,6 @@ from django.views.generic import (
     ListView,
     TemplateView,
     UpdateView,
-    View,
 )
 from requests.exceptions import RequestException
 
@@ -833,7 +832,7 @@ class RequestAddition(LoginRequiredMixin, MarkdownView, FormView):
         return super().form_valid(form)
 
 
-class TracksFromGetParamMixin(View):
+class TracksFromGetParamMixin(TemplateView):
     def get_track_pks(self) -> list[str]:
         track_pks_raw = self.request.GET.get('t')
 
@@ -850,8 +849,15 @@ class TracksFromGetParamMixin(View):
             for pk in self.get_track_pks()
         ]
 
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        tracks = self.get_tracks()
+        return {
+            **super().get_context_data(**kwargs),
+            'tracks': tracks,
+        }
 
-class VoteView(TracksFromGetParamMixin, LoginRequiredMixin, CreateView):
+
+class VoteView(LoginRequiredMixin, TracksFromGetParamMixin, CreateView):
     form_class = VoteForm
     template_name = 'vote.html'
     success_url = reverse_lazy('vote:index')
@@ -868,12 +874,7 @@ class VoteView(TracksFromGetParamMixin, LoginRequiredMixin, CreateView):
         def track_should_be_allowed_for_this_user(track: Track) -> bool:
             return eligible_for(track, self.request.user)
 
-        return list(
-            filter(
-                track_should_be_allowed_for_this_user,
-                super().get_tracks()
-            )
-        )
+        return list(filter(track_should_be_allowed_for_this_user, super().get_tracks()))
 
     def get_form_kwargs(self) -> dict[str, Any]:
         assert not isinstance(self.request.user, AnonymousUser)
@@ -890,15 +891,8 @@ class VoteView(TracksFromGetParamMixin, LoginRequiredMixin, CreateView):
         self.request.session['selection'] = []
         return resp
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
-        tracks = self.get_tracks()
-        return {
-            **super().get_context_data(**kwargs),
-            'tracks': tracks,
-        }
 
-
-class AddToListView(LoginRequiredMixin, TrackSpecificMixin, FormView):
+class AddToListView(LoginRequiredMixin, TracksFromGetParamMixin, FormView):
     template_name = 'add_to_list.html'
 
     def get_form_class(self) -> type[forms.BaseForm]:
@@ -907,9 +901,7 @@ class AddToListView(LoginRequiredMixin, TrackSpecificMixin, FormView):
 
         class AddToListForm(forms.Form):
             existing_list = forms.ModelChoiceField(
-                queryset=UserTrackList.objects.filter(user__pk=user_pk).exclude(
-                    tracks=self.get_track()
-                ),
+                queryset=UserTrackList.objects.filter(user__pk=user_pk),
                 required=False,
             )
             new_list_name = forms.CharField(
@@ -947,11 +939,17 @@ class AddToListView(LoginRequiredMixin, TrackSpecificMixin, FormView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         assert self.request.user.is_authenticated
+
+        context = super().get_context_data(**kwargs)
+
         return {
-            **super().get_context_data(**kwargs),
-            'already_in': UserTrackList.objects.filter(
-                user=self.request.user, tracks=self.get_track()
-            ),
+            **context,
+            'already_in': {
+                track: UserTrackList.objects.filter(
+                    user=self.request.user, tracks=track
+                )
+                for track in context['tracks']
+            },
         }
 
     def form_valid(self, form: BaseForm) -> HttpResponse:
@@ -962,10 +960,10 @@ class AddToListView(LoginRequiredMixin, TrackSpecificMixin, FormView):
                 name=form.cleaned_data['new_list_name'], user=self.request.user
             )
 
-        list_track = UserTrackListTrack.objects.create(
-            track=self.get_track(), track_list=track_list
-        )
-        return redirect(list_track.track_list.get_absolute_url())
+        for track in self.get_tracks():
+            UserTrackListTrack.objects.get_or_create(track=track, track_list=track_list)
+
+        return redirect(track_list.get_absolute_url())
 
 
 class SetDarkModeView(FormView):
