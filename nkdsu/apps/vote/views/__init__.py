@@ -860,7 +860,8 @@ class TracksFromGetParamMixin(TemplateView):
         }
 
 
-class VoteView(LoginRequiredMixin, TracksFromGetParamMixin, CreateView):
+class VoteView(LoginRequiredMixin, TracksFromGetParamMixin, CreateView[Vote, VoteForm]):
+    model = Vote
     form_class = VoteForm
     template_name = 'vote.html'
     success_url = reverse_lazy('vote:index')
@@ -881,7 +882,7 @@ class VoteView(LoginRequiredMixin, TracksFromGetParamMixin, CreateView):
 
     def get_form_kwargs(self) -> dict[str, Any]:
         assert not isinstance(self.request.user, AnonymousUser)
-        instance = Vote(user=self.request.user, date=timezone.now())
+        instance = self.model(user=self.request.user, date=timezone.now())
         return {
             **super().get_form_kwargs(),
             'instance': instance,
