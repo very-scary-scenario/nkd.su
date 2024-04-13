@@ -31,6 +31,7 @@ from django.views.generic import (
     ListView,
     TemplateView,
     UpdateView,
+    View,
 )
 from requests.exceptions import RequestException
 
@@ -832,11 +833,7 @@ class RequestAddition(LoginRequiredMixin, MarkdownView, FormView):
         return super().form_valid(form)
 
 
-class VoteView(LoginRequiredMixin, CreateView):
-    form_class = VoteForm
-    template_name = 'vote.html'
-    success_url = reverse_lazy('vote:index')
-
+class TracksFromGetParamMixin(View):
     def get_track_pks(self) -> list[str]:
         track_pks_raw = self.request.GET.get('t')
 
@@ -844,6 +841,23 @@ class VoteView(LoginRequiredMixin, CreateView):
             return []
 
         track_pks = track_pks_raw.split(',')
+
+        return track_pks
+
+    def get_tracks(self) -> list[Track]:
+        return [
+            get_object_or_404(Track.objects.public(), pk=pk)
+            for pk in self.get_track_pks()
+        ]
+
+
+class VoteView(TracksFromGetParamMixin, LoginRequiredMixin, CreateView):
+    form_class = VoteForm
+    template_name = 'vote.html'
+    success_url = reverse_lazy('vote:index')
+
+    def get_track_pks(self) -> list[str]:
+        track_pks = super().get_track_pks()
 
         if len(track_pks) > settings.MAX_REQUEST_TRACKS:
             raise Http404('too many tracks')
@@ -857,10 +871,7 @@ class VoteView(LoginRequiredMixin, CreateView):
         return list(
             filter(
                 track_should_be_allowed_for_this_user,
-                (
-                    get_object_or_404(Track.objects.public(), pk=pk)
-                    for pk in self.get_track_pks()
-                ),
+                super().get_tracks()
             )
         )
 
