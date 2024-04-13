@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+const bindIconOptions = () => {
   const iconField = document.getElementById('id_icon')
   const iconOptionsElement = document.getElementById('icon-options')
 
@@ -34,4 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   iconField.addEventListener('input', backmap)
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  bindIconOptions()
 })
