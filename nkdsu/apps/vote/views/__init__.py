@@ -882,10 +882,10 @@ class VoteView(LoginRequiredMixin, TracksFromGetParamMixin, CreateView[Vote, Vot
 
     def get_form_kwargs(self) -> dict[str, Any]:
         assert not isinstance(self.request.user, AnonymousUser)
-        instance = self.model(user=self.request.user, date=timezone.now())
+        self.object = self.model(user=self.request.user, date=timezone.now())
         return {
             **super().get_form_kwargs(),
-            'instance': instance,
+            'instance': self.object,
             'tracks': self.get_tracks(),
         }
 
