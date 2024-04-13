@@ -16,7 +16,7 @@
       <p class="aside">
         <a href="{{ track.get_absolute_url }}">{{ track.title }}</a> is already listed in:
         {% for list in lists %}
-          <a href="{{ list.get_absolute_url }}">{{ list.name }}</a>{% if not forloop.last %}, {% endif %}
+          <a href="{{ list.get_absolute_url }}">{{ list.icon }} {{ list.name }}</a>{% if not forloop.last %}, {% endif %}
         {% endfor %}
       </p>
     {% endif %}
