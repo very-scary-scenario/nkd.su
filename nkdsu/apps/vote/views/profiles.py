@@ -1,5 +1,6 @@
 from typing import Any, Optional
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -7,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User as DjangoUser
 from django.core.exceptions import ValidationError
 from django.db.models import Q, QuerySet
-from django.forms import ModelForm, TextInput
+from django.forms import BooleanField, IntegerField, ModelForm, TextInput
 from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
@@ -199,4 +200,31 @@ class UserTrackListView(BreadcrumbMixin, ModifyUserTrackList):
 
 
 class UserTrackListModifyMembersView(ModifyUserTrackList):
-    pass
+    fields = []
+
+    def get_form_class(self) -> type[ModelForm]:
+        form = super().get_form_class()
+        playlist = list(self.get_object().playlist())
+
+        return type(
+            'MembersForm',
+            (form,),
+            {
+                **{f'index_{t.pk}': IntegerField() for t in playlist},
+                **{f'remove_{t.pk}': BooleanField(required=False) for t in playlist},
+            },
+        )
+
+    def form_valid(self, form: ModelForm) -> HttpResponse:
+        raise RuntimeError(form.cleaned_data)
+
+    def form_invalid(self, form: ModelForm) -> HttpResponse:
+        messages.warning(
+            self.request,
+            (
+                str(form.errors)
+                if settings.DEBUG
+                else 'reordering invalid; perhaps the tracks in this list changed while you had the page loaded?'
+            ),
+        )
+        return redirect(form.instance.get_absolute_url())
