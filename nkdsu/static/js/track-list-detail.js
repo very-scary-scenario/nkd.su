@@ -48,6 +48,11 @@ const bindMembershipForm = () => {
 
   const sortable = Sortable.create(membershipContainer, {})
   console.log(sortable)
+
+  const orderingTutorial = document.createElement('p')
+  orderingTutorial.innerText = 'you can drag tracks to reorder them'
+  orderingTutorial.classList.add('aside')
+  membershipForm.insertBefore(orderingTutorial, membershipContainer)
 }
 
 document.addEventListener('DOMContentLoaded', () => {
