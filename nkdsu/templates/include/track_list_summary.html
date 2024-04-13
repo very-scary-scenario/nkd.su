@@ -3,8 +3,11 @@
     <span class="title">
       {{ track_list.name }}
     </span>
-    {% if not track_list.public %}<em>(private)</em>{% endif %}
   </h3>
+
+  {% if not track_list.public %}
+    <p class="private-badge">private</p>
+  {% endif %}
 
   {{ track_list.tracks.count }} track{{ track_list.tracks.count|pluralize }}
 
