@@ -20,6 +20,7 @@
             groups = ["docs" "test" "lint"];
             overrides = overrides.withDefaults (final: prev: {
               alabaster = prev.alabaster.override {preferWheel = true;}; # requires flit
+              cryptography = prev.cryptography.override {preferWheel = true;}; # not up to date
               django-instant-coverage = prev.django-instant-coverage.override {preferWheel = true;}; # requires setuptools
               django-pipeline = prev.django-pipeline.override {preferWheel = true;}; # requires setuptools
               django-resized = prev.django-resized.override {preferWheel = true;}; # requires setuptools
