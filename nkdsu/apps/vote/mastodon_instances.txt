@@ -3035,6 +3035,7 @@
 28aaf1e4x.activitypub-troll.cf
 28b5b8vo2.activitypub-troll.cf
 28ckpv96t.activitypub-troll.cf
+28d3-203-121-198-26.ngrok-free.app
 28d8zz9h8.activitypub-troll.cf
 28dj2fcyv.activitypub-troll.cf
 28dwtf97x.activitypub-troll.cf
@@ -4800,6 +4801,7 @@
 31506epbw.activitypub-troll.cf
 315d-65-190-132-176.ngrok.io
 315lq6kpv.activitypub-troll.cf
+316room.com
 316rpbyad.activitypub-troll.cf
 316yvpjhy.activitypub-troll.cf
 31731f5e1.activitypub-troll.cf
@@ -6028,6 +6030,7 @@
 45fa9kkl.activitypub-troll.cf
 45sukey.net
 4603fkee.activitypub-troll.cf
+465.onl
 465d-154-126-9-157.ngrok.io
 469ecjnc.activitypub-troll.cf
 46a50m2x.activitypub-troll.cf
@@ -6554,6 +6557,7 @@
 88v4odag.activitypub-troll.cf
 8907-2003-c1-c735-bb00-8676-8868-c7e8-71d8.ngrok-free.app
 8945-102-16-42-221.ngrok.io
+8967-2602-fb65-0-100-9816-e750-964c-81f2.ngrok-free.app
 89l5gvk4.activitypub-troll.cf
 8a08g8ix.activitypub-troll.cf
 8a1816fc.ngrok.io
@@ -6571,6 +6575,7 @@
 8bit.social
 8bitar.io
 8bitwizard.net
+8c55-2602-fb65-0-100-9dbc-e571-6928-adf1.ngrok-free.app
 8c5d-2001-9e8-aec-9800-3b16-1506-1654-c915.eu.ngrok.io
 8c60-82-65-180-17.eu.ngrok.io
 8d83-154-126-12-93.ngrok.io
@@ -8085,6 +8090,7 @@ andreas-moser.blog
 andreas.heigl.org
 andreasjr.com
 andreasmartens.wordpress.com
+andrehja.de
 andrepitz.de
 andrereichel.de
 andreubotella.com
@@ -9315,6 +9321,7 @@ b1n.win
 b1y.de
 b22e-154-126-12-153.ngrok.io
 b265e20b.ngrok.io
+b2a0-2602-fb65-0-100-9816-e750-964c-81f2.ngrok-free.app
 b2d6xo46.activitypub-troll.cf
 b2dee2f2.ngrok.io
 b30.in
@@ -11099,6 +11106,7 @@ blog.skytemple.org
 blog.slipfox.xyz
 blog.sn4il.site
 blog.sneakycrow.io
+blog.snowhouse.noho.st
 blog.soft.fish
 blog.sohwatt.com
 blog.souterra.com
@@ -13003,6 +13011,7 @@ chadda.se
 chadhigh.com
 chadland.net
 chads.usethetools.org
+chadthundercock.com
 chahan.m.to
 chahut.social
 chai.ahavah.gay
@@ -14144,6 +14153,7 @@ com.svrgtt.nohost.me
 com.thephysics.xyz
 com3065-h23.masto.host
 com3400-h22.masto.host
+com41.win
 coma.pictures
 coma.social
 comal.app
@@ -17440,6 +17450,7 @@ edwinavalos.com
 ee09-154-126-11-33.ngrok.io
 ee60-154-126-11-52.ngrok.io
 ee68a1a9.ngrok.io
+ee76-2602-fb65-0-100-9816-e750-964c-81f2.ngrok-free.app
 ee7898k0.activitypub-troll.cf
 eebookmarks.glitch.me
 eee.stuffbets.com
@@ -17589,6 +17600,7 @@ elandrion.net
 elastic-dystopia.asia
 elastos.social
 elb.cloud
+elbereth.xyz
 elbfotos.de
 elbmatsch.de
 elbrus.mentality.rip
@@ -19235,6 +19247,7 @@ fedi.gay
 fedi.gaykitty.lol
 fedi.gbdev.io
 fedi.gealdor.space
+fedi.gebbl.net
 fedi.gemlog.ca
 fedi.gerwitz.com
 fedi.getimiskon.xyz
@@ -19287,6 +19300,7 @@ fedi.jrlenz.net
 fedi.jyrgi.de
 fedi.kamima.info
 fedi.karthikbalakrishnan.com
+fedi.kasanwa.name
 fedi.kate.land
 fedi.keinpfusch.net
 fedi.kemonomimi.gay
@@ -19493,6 +19507,7 @@ fedi.space
 fedi.sphericalcow.space
 fedi.spi.id.au
 fedi.spider.ink
+fedi.spooky.click
 fedi.srijan.dev
 fedi.sszczyrb.dev
 fedi.steakandgravy.com
@@ -20339,6 +20354,7 @@ fish.otagao.net
 fish.pm
 fish.snoot.tube
 fish.weme.wtf
+fish.zvava.org
 fishandbits.es
 fishbowl.ink
 fisherman.coelacanth-dream.com
@@ -20619,6 +20635,7 @@ foodon.jp
 foodon.m.to
 foojay.social
 foolish.computer
+foorumi.katiska.eu
 foot.badly.co
 foot.ee
 footballwelove.com
@@ -23687,6 +23704,7 @@ hahn.de.com
 hai.haus
 hai.kendoo.eu
 haiger.info
+haigmail.com
 haiku.tfx.tw
 haikushane.com
 hails.org
@@ -24406,7 +24424,6 @@ hlzx4zbk.activitypub-troll.cf
 hmapl.wordpress.com
 hmbl.blog
 hmr.sh
-hmtwn.itzzen.net
 hncj.me
 hngh.io
 hnk619p4.activitypub-troll.cf
@@ -24485,6 +24502,7 @@ holomisskey.net
 holonet.social
 holopics.imperialba.se
 holovaty.com
+holyassociates.com
 holycarp.org
 holygrena.de
 holzer.social
@@ -34054,6 +34072,7 @@ mastodon.fo
 mastodon.fogade.gob.ve
 mastodon.fogelholk.se
 mastodon.fonsos.com
+mastodon.fooddrinklife.com
 mastodon.football
 mastodon.forsale
 mastodon.forty-two.sh
@@ -34440,6 +34459,7 @@ mastodon.iko.soy
 mastodon.ilove.bzh
 mastodon.im
 mastodon.imaginatrix.xyz
+mastodon.imaplatyp.us
 mastodon.imep.be
 mastodon.imfing.com
 mastodon.imibimi.xyz
@@ -35013,6 +35033,7 @@ mastodon.maara.dev
 mastodon.mabama.de
 mastodon.macbury.ninja
 mastodon.machique.st
+mastodon.mackners.com
 mastodon.macneilmediagroup.com
 mastodon.macondo.info
 mastodon.macsnet.cz
@@ -37198,6 +37219,7 @@ mattbk.com
 mattbog.art
 mattchew.ninja
 mattcrawford.me
+mattdobbins.com
 mattebox.social
 matteocapucci.wordpress.com
 matteodallombra.net
@@ -43825,6 +43847,7 @@ ogrelair.net
 ogtrekker.com
 oh-hi.social
 oh.holybutts.com
+oh.ke
 oh.mastocaz.zone
 oh.mg
 ohaa.xyz
@@ -48646,6 +48669,7 @@ pod.optional.page
 pod.pettigrew.org.uk
 pod.plishker.com
 pod.ryey.icu
+pod.sekretaerbaer.net
 pod.social
 pod.todz.ynh.fr
 pod.twintense.net
@@ -51049,6 +51073,7 @@ ribbit.social
 ribe.moe
 ribeiro.social
 ricard.social
+ricardramon.net
 ricci.social
 ricearoni.org
 ricejuice.xyz
@@ -51089,6 +51114,7 @@ riedstadt.social
 riegai.com
 riemann.social
 riesen.fail
+riesgos.club
 riffic.rocks
 riffraff.info
 riffz.glitch.me
@@ -54609,6 +54635,7 @@ social.biobuf.link
 social.biologianaweb.com.br
 social.biorez.de
 social.birding.blog
+social.birdinter.net
 social.birdsonbicycles.racing
 social.birth-online.de
 social.bitbukket.com
@@ -55169,6 +55196,7 @@ social.datsmore.com
 social.dave-vlab.com
 social.daveblank.com
 social.davehologram.com
+social.davejansen.com
 social.davesnider.com
 social.davewinter.info
 social.davidbrush.info
@@ -56270,6 +56298,7 @@ social.intensifi.es
 social.inter-mundos.de
 social.intercal.top
 social.interferencias.tech
+social.interfree.ca
 social.intergalactic.computer
 social.interhop.org
 social.interlan.ec
@@ -60237,6 +60266,7 @@ staging.social.mikutter.hachune.net
 staging.social.sf.gov
 staging.toot.community
 staging.tootnet.nl
+staging.tpaw.social
 staging.verse.averagedood.xyz
 staging.wedistribute.org
 staging2.moth.social
@@ -62387,6 +62417,7 @@ the.inflatable.computer
 the.jokertv.eu
 the.kanatan.club
 the.kessoku.club
+the.kittywi.re
 the.libbie.cloud
 the.mad-scientist.club
 the.monsterpit.net
@@ -66225,7 +66256,6 @@ veranstaltungen.bachgau.social
 verbraucherzentrale.social
 verces.vercel.app
 verdantsquare.net
-vereine.social
 verge.info.tm
 vergil-reality.com.au
 verhu.xyz
@@ -66294,6 +66324,7 @@ vg1zl4cs.activitypub-troll.cf
 vg2oj50a.activitypub-troll.cf
 vgai.de
 vgc.social
+vger.social
 vgg.lol
 vghi7fs.activitypub-troll.cf
 vgmastodon.it
@@ -66559,6 +66590,7 @@ video.imagotv.fr
 video.infojournal.fr
 video.informethique.org
 video.infosec.exchange
+video.innovationhub-act.org
 video.internet-czas-dzialac.pl
 video.interru.io
 video.iphodase.fr
@@ -66677,6 +66709,7 @@ video.oliwaisfreeman.nohost.me
 video.oljo.xyz
 video.omada.cafe
 video.omniatv.com
+video.onjase.quebec
 video.ordinobsolete.fr
 video.ordoevangelistarum.com
 video.osgeo.org
