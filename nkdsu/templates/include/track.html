@@ -39,11 +39,11 @@
         <a href="{{ track.get_absolute_url }}">{{ track.title }}</a>
       </p>
 
-      <p class="meta role-etc">
-        {% if track.role %}
-          {% include "include/roles.html" %}
-        {% endif %}
+      {% if track.role %}
+        {% include "include/roles.html" %}
+      {% endif %}
 
+      <p class="meta role-etc">
         {% if track.last_play %}
           <span class="last_played">played <a href="{{ track.last_play.show.get_absolute_url }}">
             {% if track.weeks_since_play == 0 %}
@@ -55,8 +55,6 @@
             {% endif %}
           </a></span>
         {% endif %}
-
-        <span class="length">{{ track.length_str }}</span>
       </p>
 
       <p class="meta composer-etc">
@@ -81,6 +79,8 @@
             </span>
           </span>
         {% endif %}
+
+        <span class="length">{{ track.length_str }}</span>
       </p>
 
       {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
