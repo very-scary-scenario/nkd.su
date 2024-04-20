@@ -79,22 +79,22 @@ def percent(flt: Optional[float]) -> str:
 @register.filter
 def format_otp(number: int) -> str:
     """
-    Put non-breaking spaces into the string representation of a number every three digits (from the right).
+    Put non-breaking spaces into the string representation of a number every three digits (from the left).
 
     >>> format_otp(123)
     '123'
     >>> format_otp(123456)
     '123\u202f456'
     >>> format_otp(1234567)
-    '1\u202f234\u202f567'
+    '123\u202f456\u202f7'
     """
 
     string = f'{number:d}'
     segments: list[str] = []
 
     while string:
-        segments.append(string[-3:])
-        string = string[:-3]
+        segments.insert(0, string[:3])
+        string = string[3:]
 
     return '\N{NARROW NO-BREAK SPACE}'.join(segments[::-1])
 

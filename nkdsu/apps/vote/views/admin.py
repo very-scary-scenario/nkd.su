@@ -428,6 +428,8 @@ class MyriadExportUploadView(AdminMixin, FormView):
         matched = 0
         unmatched = 0
 
+        Track.objects.all().update(media_id=None)
+
         for entry in entries_for_file(
             getreader('utf-8')(form.cleaned_data['myriad_csv'])
         ):
