@@ -43,20 +43,6 @@
         {% include "include/roles.html" %}
       {% endif %}
 
-      {% if track.last_play %}
-        <p class="meta role-etc">
-          <span class="last_played">played <a href="{{ track.last_play.show.get_absolute_url }}">
-            {% if track.weeks_since_play == 0 %}
-              this week
-            {% elif track.weeks_since_play == 1 %}
-              last week
-            {% else %}
-              {{ track.weeks_since_play }} weeks ago
-            {% endif %}
-          </a></span>
-        </p>
-      {% endif %}
-
       <p class="meta composer-etc">
         {% if track.composer %}
           <span class="composer">
@@ -82,6 +68,20 @@
           </span>
         {% endif %}
       </p>
+
+      {% if track.last_play %}
+        <p class="meta role-etc">
+          <span class="last_played">played <a href="{{ track.last_play.show.get_absolute_url }}">
+            {% if track.weeks_since_play == 0 %}
+              this week
+            {% elif track.weeks_since_play == 1 %}
+              last week
+            {% else %}
+              {{ track.weeks_since_play }} weeks ago
+            {% endif %}
+          </a></span>
+        </p>
+      {% endif %}
 
       {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
         <p class="refusal">{{ track.ineligible }}</p>
