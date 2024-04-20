@@ -25,16 +25,14 @@ class PlayoutEntry:
     media_id: int
     title: str
     artists: str
-    has_hook: bool
 
     @classmethod
     def from_csv(cls, entry: dict[str, str]) -> 'PlayoutEntry':
         return cls(
-            item_type=entry['ItemType'],
-            media_id=int(entry['MediaId']),
+            item_type=entry['Type'],
+            media_id=int(entry['Media Id']),
             title=entry['Title'],
-            artists=entry['Artists'],
-            has_hook=has_hook(entry),
+            artists=entry['Artist(s)'],
         )
 
     def matched_track(self) -> Optional[Track]:
@@ -73,8 +71,6 @@ class PlayoutEntry:
             return False
 
         matched_track.media_id = self.media_id
-        matched_track.has_hook = self.has_hook
-
         matched_track.save()
 
         return True
