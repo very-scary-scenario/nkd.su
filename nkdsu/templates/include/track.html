@@ -65,6 +65,8 @@
           </span>
         {% endif %}
 
+        <span class="length">{{ track.length_str }}</span>
+
         {% if track.year %}
           <span><a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a></span>
         {% endif %}
@@ -79,8 +81,6 @@
             </span>
           </span>
         {% endif %}
-
-        <span class="length">{{ track.length_str }}</span>
       </p>
 
       {% if track.ineligible and track.ineligible != "played last week" and track.ineligible != "played this week" %}
