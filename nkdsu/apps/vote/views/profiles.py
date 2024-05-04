@@ -172,7 +172,7 @@ class ModifyUserTrackList(UserTrackListMixin, UpdateView[UserTrackList, ModelFor
             messages.success(self.request, f"track list {name!r} deleted")
             return redirect(self.request.user.profile.get_absolute_url())
 
-        return super().post(*args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form: ModelForm) -> HttpResponse:
         try:
