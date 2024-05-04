@@ -102,7 +102,7 @@ class EverythingTest(
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
         '/@what/',
-        '/@what/track-list/coollist-for-pros/',
+        '/@what/list/coollist-for-pros/',
         '/profile/email/',
         '/profile/',
         '/confirm-email/',
@@ -130,7 +130,7 @@ class EverythingTest(
         '/vote-admin/unarchive-selection/',
         '/vote-admin/reset-shortlist-discard-selection/',
         # only accepts POST
-        '/@what/track-list-members/coollist-for-pros/',
+        '/@what/list-members/coollist-for-pros/',
         '/vote-admin/shortlist-order/',
         '/vote-admin/requests/fill/1/',
         '/vote-admin/requests/claim/1/',
@@ -161,7 +161,6 @@ class EverythingTest(
         user = User(username='what')
         user.set_password('what')
         user.save()
-
         UserTrackListTrack.objects.create(
             track=Track.objects.all()[0],
             track_list=user.track_lists.create(name='cool/List for Pros', public=True),
