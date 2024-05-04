@@ -645,7 +645,7 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
     def get_absolute_url(self) -> str:
         return reverse(
             'vote:profiles:track-list',
-            kwargs={'user': self.user.username, 'name': self.name},
+            kwargs={'user': self.user.username, 'slug': self.slug},
         )
 
     def save(self, *args, **kwargs) -> None:

@@ -172,7 +172,7 @@ class ModifyUserTrackList(UserTrackListMixin, UpdateView[UserTrackList, ModelFor
         return get_object_or_404(
             queryset if queryset is not None else self.get_queryset(),
             user__username=self.kwargs['user'],
-            name=self.kwargs['name'],
+            slug=self.kwargs['slug'],
         )
 
 

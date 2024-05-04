@@ -926,7 +926,9 @@ class AddToListView(LoginRequiredMixin, TracksFromGetParamMixin, FormView):
                     user__pk=user_pk,
                 )
                 if matching_slugs.exists():
-                    raise ValidationError(f'you already have a list by a similar name; {matching_slugs.get().name!r}')
+                    raise ValidationError(
+                        f'you already have a list by a similar name; {matching_slugs.get().name!r}'
+                    )
 
                 return self.cleaned_data['new_list_name']
 
