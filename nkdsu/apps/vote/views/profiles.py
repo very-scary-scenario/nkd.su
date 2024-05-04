@@ -161,9 +161,20 @@ class UserTrackListListView(
 class ModifyUserTrackList(UserTrackListMixin, UpdateView[UserTrackList, ModelForm]):
     model = UserTrackList
 
-    def form_valid(self, form: ModelForm) -> HttpResponse:
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if self.request.user != self.get_curator():
             return HttpResponseNotAllowed("you cannot modify another user's track list")
+
+        if 'delete' in request.POST:
+            track_list = self.get_object()
+            name = track_list.name
+            track_list.delete()
+            messages.success(self.request, f"track list {name!r} deleted")
+            return redirect(self.request.user.profile.get_absolute_url())
+
+        return super().post(*args, **kwargs)
+
+    def form_valid(self, form: ModelForm) -> HttpResponse:
         try:
             return super().form_valid(form)
         except ValidationError as e:
