@@ -167,12 +167,12 @@ profile_patterns = (
         path('@<str:username>/', profiles.ProfileView.as_view(), name='profile'),
         path('profile/', profiles.UpdateProfileView.as_view(), name='edit-profile'),
         path(
-            '@<str:user>/track-list/<slug:slug>/',
+            '@<str:user>/list/<slug:slug>/',
             profiles.UserTrackListView.as_view(),
             name='track-list',
         ),
         path(
-            '@<str:user>/track-list-members/<slug:slug>/',
+            '@<str:user>/list-members/<slug:slug>/',
             profiles.UserTrackListModifyMembersView.as_view(),
             name='track-list-members',
         ),
