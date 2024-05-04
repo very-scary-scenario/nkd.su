@@ -164,7 +164,11 @@ class ModifyUserTrackList(UserTrackListMixin, UpdateView[UserTrackList, ModelFor
     def form_valid(self, form: ModelForm) -> HttpResponse:
         if self.request.user != self.get_curator():
             return HttpResponseNotAllowed("you cannot modify another user's track list")
-        return super().form_valid(form)
+        try:
+            return super().form_valid(form)
+        except ValidationError as e:
+            form.add_error(None, e)
+            return self.form_invalid(form)
 
     def get_object(
         self, queryset: Optional[QuerySet[UserTrackList]] = None
