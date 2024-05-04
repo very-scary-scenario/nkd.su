@@ -43,30 +43,34 @@
     </details>
   {% endif %}
 
-  <form id="track-list-membership-form" method="post" action="{% url "vote:profiles:track-list-members" user=object.user.username slug=object.slug %}">
-    {% csrf_token %}
-    <div id="track-list-membership">
-      {% for track in object.playlist %}
-        <div class="track-list-entry" data-id="{{ track.pk }}">
-          {% if request.user == object.user %}
-            <div class="track-list-membership-controls">
-              <label>
-                order
-                <input class="order" name="index_{{ track.pk }}" type="number" value="{{ forloop.counter }}">
-              </label>
-              <label>
-                remove
-                <input name="remove_{{ track.pk }}" type="checkbox">
-              </label>
-            </div>
-          {% endif %}
+  {% if object.tracks.exists %}
+    <form id="track-list-membership-form" method="post" action="{% url "vote:profiles:track-list-members" user=object.user.username slug=object.slug %}">
+      {% csrf_token %}
+      <div id="track-list-membership">
+        {% for track in object.playlist %}
+          <div class="track-list-entry" data-id="{{ track.pk }}">
+            {% if request.user == object.user %}
+              <div class="track-list-membership-controls">
+                <label>
+                  order
+                  <input class="order" name="index_{{ track.pk }}" type="number" value="{{ forloop.counter }}">
+                </label>
+                <label>
+                  remove
+                  <input name="remove_{{ track.pk }}" type="checkbox">
+                </label>
+              </div>
+            {% endif %}
 
-          <ul class="tracks">
-            {% include "include/track.html" %}
-          </ul>
-        </div>
-      {% endfor %}
-    </div>
+            <ul class="tracks">
+              {% include "include/track.html" %}
+            </ul>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="aside">there are no tracks in this list</p>
+    {% endif %}
 
     {% if request.user == object.user %}
       <input type="submit" value="save order and removals" class="button">
