@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ('name', models.CharField(max_length=100)),
-                ('slug', models.SlugField(default='honk')),
+                ('slug', models.SlugField()),
                 ('description', models.TextField(blank=True)),
                 ('public', models.BooleanField(default=False)),
                 (
