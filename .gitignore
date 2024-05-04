@@ -14,3 +14,4 @@
 /nkdsu/staticfiles/
 /node_modules/
 songlibrary*.xml
+.mypy_cache
