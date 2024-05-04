@@ -78,7 +78,21 @@ const bindMembershipForm = () => {
   }
 }
 
+const bindDeletionWarning = () => {
+  const deleteButton = document.getElementById('delete-track-list')
+  if (deleteButton === null) {
+    return
+  }
+
+  deleteButton.addEventListener('click', e => {
+    if (!confirm('are you sure? the list will be permanently deleted')) {
+      e.preventDefault()
+    }
+  })
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   bindIconOptions()
   bindMembershipForm()
+  bindDeletionWarning()
 })

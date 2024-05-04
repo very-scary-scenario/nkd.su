@@ -38,7 +38,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="save metadata" class="button">
-        <input type="submit" value="delete" name="delete" class="button danger">
+        <input type="submit" value="delete" name="delete" class="button danger" id="delete-track-list">
       </form>
     </details>
   {% endif %}
