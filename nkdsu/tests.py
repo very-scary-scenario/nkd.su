@@ -102,7 +102,7 @@ class EverythingTest(
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
         '/@what/',
-        '/@what/track-list/cool/List for Pros/',
+        '/@what/track-list/coollist-for-pros/',
         '/profile/email/',
         '/profile/',
         '/confirm-email/',
@@ -130,7 +130,7 @@ class EverythingTest(
         '/vote-admin/unarchive-selection/',
         '/vote-admin/reset-shortlist-discard-selection/',
         # only accepts POST
-        '/@what/track-list-members/cool/List for Pros/',
+        '/@what/track-list-members/coollist-for-pros/',
         '/vote-admin/shortlist-order/',
         '/vote-admin/requests/fill/1/',
         '/vote-admin/requests/claim/1/',
