@@ -33,11 +33,12 @@
         open
       {% endif %}
     >
-      <summary>edit metadata&hellip;</summary>
+      <summary>edit metadata or delete list&hellip;</summary>
       <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="save metadata" class="button">
+        <input type="submit" value="delete" class="button danger">
       </form>
     </details>
   {% endif %}
