@@ -628,14 +628,9 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                *('user', 'name'),
-                name='user_track_list_name_unique',
-                violation_error_message='list names must be unique',
-            ),
-            models.UniqueConstraint(
                 *('user', 'slug'),
                 name='user_track_list_slug_unique',
-                violation_error_message='list names must not be similar to each other',
+                violation_error_message='you already have a list with a very similar name',
             ),
         ]
 
