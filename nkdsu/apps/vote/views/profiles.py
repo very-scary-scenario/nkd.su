@@ -167,6 +167,7 @@ class ModifyUserTrackList(UserTrackListMixin, UpdateView[UserTrackList, ModelFor
         try:
             return super().form_valid(form)
         except ValidationError as e:
+            form.instance.refresh_from_db()
             form.add_error(None, e)
             return self.form_invalid(form)
 
