@@ -162,7 +162,7 @@ class ModifyUserTrackList(UserTrackListMixin, UpdateView[UserTrackList, ModelFor
     model = UserTrackList
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        if self.request.user != self.get_curator():
+        if self.request.user.is_anonymous or self.request.user != self.get_curator():
             return HttpResponseNotAllowed("you cannot modify another user's track list")
 
         if 'delete' in request.POST:
