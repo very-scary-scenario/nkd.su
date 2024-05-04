@@ -25,6 +25,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ('name', models.CharField(max_length=100)),
+                ('slug', models.SlugField(default='honk')),
                 ('description', models.TextField(blank=True)),
                 ('public', models.BooleanField(default=False)),
                 (
@@ -1145,6 +1146,15 @@ class Migration(migrations.Migration):
                 models.F('name'),
                 name='user_track_list_name_unique',
                 violation_error_message='list names must be unique',
+            ),
+        ),
+        migrations.AddConstraint(
+            model_name='usertracklist',
+            constraint=models.UniqueConstraint(
+                models.F('user'),
+                models.F('slug'),
+                name='user_track_list_slug_unique',
+                violation_error_message='list names must not be similar to each other',
             ),
         ),
     ]

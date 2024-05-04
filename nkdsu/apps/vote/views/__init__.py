@@ -24,6 +24,7 @@ from django.templatetags.static import static
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_duration
+from django.utils.text import slugify
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -919,6 +920,13 @@ class AddToListView(LoginRequiredMixin, TracksFromGetParamMixin, FormView):
                     user__pk=user_pk,
                 ).exists():
                     raise ValidationError('you already have a list by this name')
+
+                matching_slugs = UserTrackList.objects.filter(
+                    slug=slugify(self.cleaned_data['new_list_name']),
+                    user__pk=user_pk,
+                )
+                if matching_slugs.exists():
+                    raise ValidationError(f'you already have a list by a similar name; {matching_slugs.get().name!r}')
 
                 return self.cleaned_data['new_list_name']
 

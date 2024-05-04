@@ -613,6 +613,7 @@ assert DEFAULT_LIST_ICON in EMOJI.keys()
 class UserTrackList(CleanOnSaveMixin, models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='track_lists')
     name = models.CharField(max_length=100, blank=False)
+    slug = models.SlugField(blank=False)
     description = models.TextField(blank=True)
     public = models.BooleanField(default=False)
     icon = models.CharField(
@@ -631,6 +632,11 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
                 name='user_track_list_name_unique',
                 violation_error_message='list names must be unique',
             ),
+            models.UniqueConstraint(
+                *('user', 'slug'),
+                name='user_track_list_slug_unique',
+                violation_error_message='list names must not be similar to each other',
+            ),
         ]
 
     def __str__(self) -> str:
@@ -641,6 +647,10 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
             'vote:profiles:track-list',
             kwargs={'user': self.user.username, 'name': self.name},
         )
+
+    def save(self, *args, **kwargs) -> None:
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
     def playlist(self) -> Iterable[Track]:
         return (
