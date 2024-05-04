@@ -24,7 +24,6 @@ from django.templatetags.static import static
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_duration
-from django.utils.text import slugify
 from django.views.generic import (
     CreateView,
     DetailView,
@@ -914,24 +913,6 @@ class AddToListView(LoginRequiredMixin, TracksFromGetParamMixin, FormView):
                 required=False,
             )
 
-            def clean_new_list_name(self) -> None:
-                if UserTrackList.objects.filter(
-                    name=self.cleaned_data['new_list_name'],
-                    user__pk=user_pk,
-                ).exists():
-                    raise ValidationError('you already have a list by this name')
-
-                matching_slugs = UserTrackList.objects.filter(
-                    slug=slugify(self.cleaned_data['new_list_name']),
-                    user__pk=user_pk,
-                )
-                if matching_slugs.exists():
-                    raise ValidationError(
-                        f'you already have a list by a similar name; {matching_slugs.get().name!r}'
-                    )
-
-                return self.cleaned_data['new_list_name']
-
             def clean(self) -> None:
                 super().clean()
 
@@ -970,9 +951,13 @@ class AddToListView(LoginRequiredMixin, TracksFromGetParamMixin, FormView):
         assert self.request.user.is_authenticated
         track_list = form.cleaned_data['existing_list']
         if track_list is None:
-            track_list = UserTrackList.objects.create(
-                name=form.cleaned_data['new_list_name'], user=self.request.user
-            )
+            try:
+                track_list = UserTrackList.objects.create(
+                    name=form.cleaned_data['new_list_name'], user=self.request.user
+                )
+            except ValidationError as e:
+                form.add_error(None, e)
+                return self.form_invalid(form)
 
         for track in self.get_tracks():
             UserTrackListTrack.objects.get_or_create(track=track, track_list=track_list)
