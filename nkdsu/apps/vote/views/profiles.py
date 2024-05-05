@@ -20,7 +20,7 @@ from . import VoterDetail
 from ..emoji import EMOJI
 from ..forms import ClearableFileInput
 from ..mixins import BreadcrumbMixin
-from ..models import Profile, UserTrackList, UserWebsite
+from ..models import Profile, UserTrackList, UserTrackListTrack, UserWebsite
 from ..utils import get_profile_for
 
 
@@ -235,15 +235,22 @@ class UserTrackListModifyMembersView(ModifyUserTrackList):
         )
 
     def form_valid(self, form: ModelForm) -> HttpResponse:
+        track_list = self.get_object()
         new_playlist = sorted(
             (
                 t
-                for t in self.get_object().tracks.all()
+                for t in track_list.tracks.all()
                 if not form.cleaned_data[f'remove_{t.pk}']
             ),
             key=lambda t: form.cleaned_data[f'index_{t.pk}'],
         )
-        raise RuntimeError(new_playlist)
+        UserTrackListTrack.objects.filter(track_list=track_list).delete()
+        for index, track in enumerate(new_playlist):
+            UserTrackListTrack.objects.create(
+                track_list=track_list, index=index, track=track
+            )
+
+        return redirect(track_list.get_absolute_url())
 
     def form_invalid(self, form: ModelForm) -> HttpResponse:
         messages.warning(
