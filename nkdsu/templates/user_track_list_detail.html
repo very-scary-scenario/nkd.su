@@ -28,7 +28,7 @@
   {% endif %}
 
   {% if request.user == object.user %}
-    <details
+    <details class="track-list-meta-edit"
       {% if form.errors %}
         open
       {% endif %}
@@ -73,7 +73,9 @@
     {% endif %}
 
     {% if request.user == object.user %}
-      <input type="submit" value="save order and removals" class="button">
+      <p class="aside">
+        <input type="submit" value="save order and removals" class="button">
+      </p>
     {% endif %}
   </form>
 {% endblock %}
