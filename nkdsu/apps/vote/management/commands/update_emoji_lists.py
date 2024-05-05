@@ -18,5 +18,5 @@ class Command(BaseCommand):
             f.write(resp.content)
 
     def handle(self, *args, **kwargs) -> None:
-        for fn in [emoji.SEQUENCCES_FN, emoji.ZWJ_SEQUENCES_FN]:
+        for fn in [emoji.SEQUENCES_FN, emoji.ZWJ_SEQUENCES_FN]:
             self.retrieve(fn)
