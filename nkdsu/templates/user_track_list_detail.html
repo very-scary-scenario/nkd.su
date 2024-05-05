@@ -68,15 +68,17 @@
           </div>
         {% endfor %}
       </div>
+
+      {% if request.user == object.user %}
+        <p class="aside">
+          <input type="submit" value="save order and removals" class="button">
+        </p>
+      {% endif %}
+
     {% else %}
       <p class="aside">there are no tracks in this list</p>
     {% endif %}
 
-    {% if request.user == object.user %}
-      <p class="aside">
-        <input type="submit" value="save order and removals" class="button">
-      </p>
-    {% endif %}
   </form>
 {% endblock %}
 
