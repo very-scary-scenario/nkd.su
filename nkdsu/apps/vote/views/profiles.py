@@ -218,6 +218,9 @@ class UserTrackListView(BreadcrumbMixin, ModifyUserTrackList):
 class UserTrackListModifyMembersView(ModifyUserTrackList):
     fields = []
 
+    def get(self, request: HttpRequest, *a, **k) -> HttpResponse:
+        return redirect(self.get_object().get_absolute_url())
+
     def get_form_class(self) -> type[ModelForm]:
         form = super().get_form_class()
         playlist = list(self.get_object().playlist())
