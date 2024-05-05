@@ -232,7 +232,15 @@ class UserTrackListModifyMembersView(ModifyUserTrackList):
         )
 
     def form_valid(self, form: ModelForm) -> HttpResponse:
-        raise RuntimeError(form.cleaned_data)
+        new_playlist = sorted(
+            (
+                t
+                for t in self.get_object().tracks.all()
+                if not form.cleaned_data[f'remove_{t.pk}']
+            ),
+            key=lambda t: form.cleaned_data[f'index_{t.pk}'],
+        )
+        raise RuntimeError(new_playlist)
 
     def form_invalid(self, form: ModelForm) -> HttpResponse:
         messages.warning(
