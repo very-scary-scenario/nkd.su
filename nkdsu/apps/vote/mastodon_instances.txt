@@ -7908,6 +7908,7 @@ altaica.cloud
 altbrakz.com
 altdelete.com
 altdn.me
+altearn.xyz
 alteholz.social
 altelectron.org.uk
 alter.wtf
@@ -8908,6 +8909,7 @@ astoundingteam.com
 astraea.pink
 astral.camp
 astrel.la
+astri.family
 astria.city
 astrian.social
 astrianzheng.cn
@@ -10012,6 +10014,7 @@ besties.com
 besties.house
 bestodon.com
 bestself.social
+beta.14chan.jp
 beta.4201337.xyz
 beta.5550d.xyz
 beta.birdsite.live
@@ -12998,6 +13001,7 @@ ce17-131-239-127-18.ngrok-free.app
 ceb8.de
 cecinestpasunefromage.wordpress.com
 cedar.sh
+cedwardsmedia.social
 ceejayoz.io
 ceilidh.online
 ceilidh.space
@@ -14418,6 +14422,7 @@ configure.ac
 confinement.me
 conflatedcultures.co.uk
 confraria.me
+confused.kim
 confusedyeti.com
 congregation.pardoners.church
 congress.alexisart.me
@@ -17915,6 +17920,7 @@ emu.social
 emucafe.club
 emy.lu
 en.gy
+en.ileif.de
 en.knubbel.me
 en.kry.pt
 en.nobl.ink
@@ -19571,6 +19577,7 @@ fedi.roli.social
 fedi.romu.casa
 fedi.rosiemma.online
 fedi.rpy.xyz
+fedi.rubedo.gay
 fedi.rubikoid.ru
 fedi.ruinouspowe.rs
 fedi.rusadam.hu
@@ -20029,6 +20036,7 @@ feed.chazx.cc
 feed.danj.ca
 feed.hella.cheap
 feed.hive.institute
+feed.hoopa-nsn.gov
 feed.indiecreatorhub.com
 feed.liseklucek.pl
 feed.lukehebb.com
@@ -27224,6 +27232,7 @@ justicewarrior.social
 justin-und-florian.de
 justin.earth
 justine.fyi
+justinferriman.com
 justinian.codes
 justinmarrington.com
 justinpot.com
@@ -34962,6 +34971,7 @@ mastodon.kida.io
 mastodon.kidsb.net
 mastodon.kiggy.land
 mastodon.kiko.casa
+mastodon.killcmd.com
 mastodon.kimse-bg.de
 mastodon.kinesin.org
 mastodon.kinlane.com
@@ -39632,6 +39642,7 @@ mitra.0ut0f.space
 mitra.anemoneya.me
 mitra.anon-kenkai.com
 mitra.karapara.net
+mitra.kemitix.net
 mitra.kongwoo.icu
 mitra.milkers.online
 mitra.social
@@ -42777,6 +42788,7 @@ neurodiverseleader.net
 neurodiversity-in.au
 neurohack.net
 neurology.social
+neuromansser.tech
 neuromatch.social
 neuropunks.org
 neuroqueer.net
@@ -44205,6 +44217,7 @@ olb0aijt.activitypub-troll.cf
 olching.social
 olcuh33e.activitypub-troll.cf
 old-home.faith
+old.akiba.social
 old.bnuy.zone
 old.mas.town
 old.mermaid.town
@@ -47105,6 +47118,7 @@ pixel.whisper.tf
 pixel.winklerfamilie.eu
 pixel.xarxa.cloud
 pixel.zerojay.com
+pixelaero.net
 pixelart.moe
 pixelbits.de
 pixelcats.xyz
@@ -48691,6 +48705,7 @@ pleroma.tuxcrafting.port0.org
 pleroma.twunk.uk
 pleroma.tyil.nl
 pleroma.uber.space
+pleroma.uii.pt
 pleroma.uni-muenster.de
 pleroma.uni.horse
 pleroma.unigiri.net
@@ -48972,6 +48987,7 @@ pod.dapor.org
 pod.datamol.org
 pod.debrouillonet.org
 pod.dou.bet
+pod.foss.wales
 pod.kranat.com
 pod.librescrum.org
 pod.ms
@@ -50210,6 +50226,7 @@ q84fpyg2.activitypub-troll.cf
 q8masto.social
 q9590gtq.activitypub-troll.cf
 qa.getpterotype.com
+qa.higgy.social
 qa.social
 qaf.men
 qaf.one
@@ -54471,6 +54488,7 @@ social.1011.link
 social.10one.net
 social.10vorne.eu
 social.1146.nohost.me
+social.115upm.net
 social.12vpx.com
 social.13-dx.de
 social.1337.lgbt
@@ -54669,6 +54687,7 @@ social.alton.cloud
 social.alxtratrstrl.id
 social.alyve.be
 social.alyx.pink
+social.alyx.to
 social.am-networks.fr
 social.amairo.space
 social.amanzi.nz
@@ -56460,6 +56479,7 @@ social.henshaw.org
 social.henzi.org
 social.herag.xyz
 social.heraut.eu
+social.herbimarquez.com
 social.here.blue
 social.hergorn.com
 social.hermanns.cloud
@@ -61290,6 +61310,7 @@ sub.natleft.wiki
 sub.rdls.dev
 sub.wetshaving.social
 subak.club
+subby.solutions
 subcarrier.tv
 subco.nscio.us
 subcon.pub
@@ -62391,6 +62412,7 @@ terikanefield.com
 term.social
 terminal-gravity.com
 terminal.ink
+terminal.space
 terminalaberto.pt
 termine.161.social
 termine.it-freelancer.hamburg
@@ -63343,6 +63365,7 @@ threehundredthirtyeight.com
 threemaxims.com
 threeofwands.com
 threesixthrive.com
+thrilleraddict.com
 thriving.party
 thts.gg
 thu.closed.social
@@ -65511,7 +65534,6 @@ tulsa.social
 tuluk.nl
 tum.social
 tumescent.social
-tummy.town
 tuna.cat
 tuna.today
 tunahan.social
@@ -69220,6 +69242,7 @@ www.attoppa.it
 www.aukondk.com
 www.automagiska.se
 www.automaton.be
+www.avalost.de
 www.awadwatt.com
 www.aweathermoment.com
 www.azbulutlu.org
@@ -69975,6 +69998,7 @@ www.zipbangwow.com
 www.zjuul.net
 www.zohup.com
 www.zohup.net
+www.zohup.top
 www.zornhau.de
 www.zotzmann-koch.com
 www2.kt2003.info
