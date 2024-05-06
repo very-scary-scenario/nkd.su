@@ -52,7 +52,12 @@ from ..models import (
     Vote,
 )
 from ..templatetags.vote_tags import eligible_for
-from ..utils import BrowsableItem, BrowsableYear, clear_selection_if_matches, vote_edit_cutoff
+from ..utils import (
+    BrowsableItem,
+    BrowsableYear,
+    clear_selection_if_matches,
+    vote_edit_cutoff,
+)
 from ..voter import Voter
 from ...vote import mixins
 
