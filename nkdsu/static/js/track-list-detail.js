@@ -48,15 +48,17 @@ const bindMembershipForm = () => {
 
   const getOrderInputs = () => membershipContainer.querySelectorAll('input.order')
 
-  const handleChange = e => {
+  const normalise = e => {
     const orderInputs = getOrderInputs()
     for (let i = 0; i < orderInputs.length; i++) {
-      orderInputs[i].value = i + 1
+      const orderInput = orderInputs[i]
+      orderInput.value = i + 1
+      orderInput.oldValue = orderInput.value
     }
   }
 
   const sortable = Sortable.create(membershipContainer, {
-    onSort: handleChange,
+    onSort: normalise,
   })
 
   const orderingTutorial = document.createElement('p')
@@ -65,16 +67,28 @@ const bindMembershipForm = () => {
   membershipForm.insertBefore(orderingTutorial, membershipContainer)
 
   const orderInputs = getOrderInputs()
+
   for (let i = 0; i < orderInputs.length; i++) {
-    orderInputs[i].addEventListener('change', ev => {
+    const orderInput = orderInputs[i]
+
+    orderInput.addEventListener('change', ev => {
+      // swap with the targetted number
+      const orderInputAtTargetIndex = getOrderInputs()[Number.parseInt(orderInput.value, 10) - 1]
+
+      if (orderInputAtTargetIndex !== undefined) {
+        orderInputAtTargetIndex.value = orderInput.oldValue
+      }
+
       sortable.sort(sortable.toArray().sort(
         (a, b) => {
-          const getValueForId = id => membershipContainer.querySelector(`[data-id="${id}"] input.order`).value
+          const getValueForId = id => parseInt(membershipContainer.querySelector(`[data-id="${id}"] input.order`).value, 10)
           return getValueForId(a) - getValueForId(b)
         },
       ), true)
-      handleChange()
+      normalise()
     })
+
+    normalise()
   }
 }
 
