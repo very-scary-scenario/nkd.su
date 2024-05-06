@@ -1,5 +1,5 @@
 {% if track_lists or voter.user == request.user %}
-  <h3>track lists by {{ voter.display_name }}</h3>
+  <h3>track lists by {{ voter.display_name|default:voter.user.username }}</h3>
 
   {% for track_list in track_lists %}
     {% include "include/track_list_summary.html" with exclude_curator=True %}
