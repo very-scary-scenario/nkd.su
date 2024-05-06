@@ -1234,8 +1234,13 @@ a.inline-track-list {
 .track-list-meta-edit {
   summary {
     text-align: center;
+    cursor: pointer;
+    color: @hl;
+    &:hover { color: inherit }
+    &::marker { color: @fg }
   }
 }
+.dark({ .track-list-meta-edit summary::marker { color: @inv_fg } });
 
 #track-list-membership-form {
   #track-list-membership {
