@@ -11,6 +11,7 @@ from typing import (
     Iterable,
     NoReturn,
     Optional,
+    Sequence,
     TYPE_CHECKING,
     TypeVar,
     cast,
@@ -21,6 +22,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpRequest
 from django.urls import reverse
 import musicbrainzngs
 from mypy_extensions import KwArg, VarArg
@@ -290,6 +292,11 @@ def vote_edit_cutoff() -> Show:
     current = Show.current()
     prev = current.prev()
     return current if prev is None else prev
+
+
+def clear_selection_if_matches(request: HttpRequest, tracks=Sequence['Track']) -> None:
+    if {t.pk for t in tracks} == set(request.session['selection']):
+        request.session['selection'] = []
 
 
 musicbrainzngs.set_useragent('nkd.su', '0', 'http://nkd.su/')

@@ -52,7 +52,7 @@ from ..models import (
     Vote,
 )
 from ..templatetags.vote_tags import eligible_for
-from ..utils import BrowsableItem, BrowsableYear, vote_edit_cutoff
+from ..utils import BrowsableItem, BrowsableYear, clear_selection_if_matches, vote_edit_cutoff
 from ..voter import Voter
 from ...vote import mixins
 
@@ -891,8 +891,9 @@ class VoteView(LoginRequiredMixin, TracksFromGetParamMixin, CreateView[Vote, Vot
 
     def form_valid(self, form: VoteForm) -> HttpResponse:
         resp = super().form_valid(form)
-        form.instance.tracks.set(self.get_tracks())
-        self.request.session['selection'] = []
+        tracks = self.get_tracks()
+        form.instance.tracks.set(tracks)
+        clear_selection_if_matches(self.request, tracks)
         return resp
 
 
@@ -959,10 +960,13 @@ class AddToListView(LoginRequiredMixin, TracksFromGetParamMixin, FormView):
                 form.add_error(None, e)
                 return self.form_invalid(form)
 
-        for track in self.get_tracks():
+        tracks = self.get_tracks()
+
+        for track in tracks:
             UserTrackListTrack.objects.get_or_create(track=track, track_list=track_list)
 
-        self.request.session['selection'] = []
+        clear_selection_if_matches(self.request, tracks)
+
         return redirect(track_list.get_absolute_url())
 
 
