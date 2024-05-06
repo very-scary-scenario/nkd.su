@@ -38,6 +38,9 @@
           <span><a href="{% url "vote:admin:archive_selection" %}">archive</a></span>
           <span><a href="{% url "vote:admin:archive_selection" %}">unarchive</a></span>
         </p>
+        <p class="actions">
+          <span><a class="add_to_list" href="{{ add_to_list_url }}">add to list</a></span>
+        </p>
       {% else %}
         <p class="actions">
           {% if vote_url %}
