@@ -144,20 +144,6 @@ class UserTrackListMixin(ContextMixin):
         return self.model.objects.filter(q)
 
 
-class UserTrackListListView(
-    BreadcrumbMixin, UserTrackListMixin, ListView[UserTrackList]
-):
-    model = UserTrackList
-    template_name = 'user_track_list_list.html'
-
-    def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
-        user = self.get_curator()
-        return [(user.profile.get_absolute_url(), user.profile.display_name)]
-
-    def get_queryset(self) -> QuerySet[UserTrackList]:
-        return super().get_queryset().filter(user__username=self.kwargs['user'])
-
-
 class ModifyUserTrackList(UserTrackListMixin, UpdateView[UserTrackList, ModelForm]):
     model = UserTrackList
 
