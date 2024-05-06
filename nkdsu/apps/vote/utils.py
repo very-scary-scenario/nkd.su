@@ -295,7 +295,7 @@ def vote_edit_cutoff() -> Show:
 
 
 def clear_selection_if_matches(request: HttpRequest, tracks=Sequence['Track']) -> None:
-    if {t.pk for t in tracks} == set(request.session['selection']):
+    if {t.pk for t in tracks} == set(request.session.get('selection', [])):
         request.session['selection'] = []
 
 
