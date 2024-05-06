@@ -1203,6 +1203,12 @@ a.inline-track-list {
     padding: .2em .5em;
     border-radius: .2em 0 0 0;
     .noise();
+
+    &::before {
+      .fa();
+      content: @fa-var-lock;
+      margin-right: .3em;
+    }
   }
 }
 
@@ -1216,6 +1222,12 @@ a.inline-track-list {
     text-shadow: none;
     padding: .2em .5em;
     border-radius: .2em;
+
+    &::before {
+      .fa();
+      content: @fa-var-lock;
+      margin-right: .3em;
+    }
   }
 }
 
