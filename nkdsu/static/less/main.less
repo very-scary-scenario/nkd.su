@@ -1229,13 +1229,22 @@ a.inline-track-list {
   margin-right: .3rem;
 }
 
-.track-list-meta-edit {
+details.track-list-meta-edit {
+  padding: .3em 0;
+  margin: -.3em 0 0;
+  border-radius: .5em;
+
   summary {
     text-align: center;
     cursor: pointer;
     color: @hl;
     &:hover { color: inherit }
     &::marker { color: @fg }
+  }
+
+  &[open] {
+    background-color: fade(@light; 10%);
+    outline: 1px solid fade(@light, 50%);
   }
 }
 .dark({ .track-list-meta-edit summary::marker { color: @inv_fg } });
