@@ -12,7 +12,9 @@
   </h2>
 
   <p class="subheading">
-    a list of tracks curated by <a href="{{ object.user.profile.get_absolute_url }}">{{ object.user }}</a>
+    a list of tracks curated by <a href="{{ object.user.profile.get_absolute_url }}">
+      {{ object.user.profile.display_name|default:object.user }}
+    </a>
   </p>
 
   {% if not object.public %}

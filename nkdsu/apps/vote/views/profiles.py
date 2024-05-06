@@ -200,7 +200,7 @@ class UserTrackListView(BreadcrumbMixin, ModifyUserTrackList):
     def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
         curator = self.get_curator()
         return [
-            (curator.profile.get_absolute_url(), curator.profile.display_name),
+            (curator.profile.get_absolute_url(), curator.profile.display_name or curator.username),
         ]
 
     def get_form_class(self) -> type[ModelForm]:
