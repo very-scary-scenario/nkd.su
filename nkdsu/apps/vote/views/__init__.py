@@ -962,6 +962,7 @@ class AddToListView(LoginRequiredMixin, TracksFromGetParamMixin, FormView):
         for track in self.get_tracks():
             UserTrackListTrack.objects.get_or_create(track=track, track_list=track_list)
 
+        self.request.session['selection'] = []
         return redirect(track_list.get_absolute_url())
 
 
