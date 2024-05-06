@@ -1159,6 +1159,21 @@ dl.metadata-check {
   }
 }
 
+.private-indicator() {
+  background-color: @lighter;
+  color: @fg;
+  text-shadow: none;
+  border-radius: .2em;
+  padding: .2em .5em;
+  .noise();
+
+  &::before {
+    .fa();
+    content: @fa-var-lock;
+    margin-right: .3em;
+  }
+}
+
 a.inline-track-list {
   display: block;
   position: relative;
@@ -1195,20 +1210,11 @@ a.inline-track-list {
   }
 
   .private-badge {
+    .private-indicator();
     position: absolute;
     bottom: 0;
     right: 0;
-    background-color: @lighter;
-    color: @fg;
-    padding: .2em .5em;
     border-radius: .2em 0 0 0;
-    .noise();
-
-    &::before {
-      .fa();
-      content: @fa-var-lock;
-      margin-right: .3em;
-    }
   }
 }
 
@@ -1217,17 +1223,7 @@ a.inline-track-list {
   margin: -.3em 0 1em;
 
   span {
-    background-color: @lighter;
-    color: @fg;
-    text-shadow: none;
-    padding: .2em .5em;
-    border-radius: .2em;
-
-    &::before {
-      .fa();
-      content: @fa-var-lock;
-      margin-right: .3em;
-    }
+    .private-indicator();
   }
 }
 
