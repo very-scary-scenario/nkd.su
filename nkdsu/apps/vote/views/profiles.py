@@ -12,7 +12,7 @@ from django.forms import BooleanField, IntegerField, ModelForm, TextInput
 from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, UpdateView
+from django.views.generic import UpdateView
 from django.views.generic.base import ContextMixin
 import ujson
 
