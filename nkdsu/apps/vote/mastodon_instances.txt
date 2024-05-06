@@ -7422,6 +7422,7 @@ ak.nikolagroup.uk
 ak.noleron.com
 ak.ouroboros.gay
 ak.pilk.space
+ak.sabross.xyz
 ak.suzu-ya.info
 ak.tau-ceti.space
 ak.todz.ynh.fr
@@ -8612,6 +8613,7 @@ arcanican.is
 arch-hive.masto.host
 archaeo.social
 archaeology.social
+archebleue.masto.host
 archfiend.org
 archi.pp.ua
 archie.party
@@ -8898,6 +8900,7 @@ assorted.paupers.xyz
 assortedblend.com
 assortedflotsam.com
 asstodon.social
+astarion.ru
 astdn.tokyo
 asteinhaus.de
 aster.lol
@@ -15061,6 +15064,7 @@ cuvou.net
 cuyes.mooo.com
 cuyes.zapto.org
 cville.online
+cvr123kohyoseyo.wordpress.com
 cvrkut.com
 cw2pjiz4.activitypub-troll.cf
 cw74ksdy.activitypub-troll.cf
@@ -15347,6 +15351,7 @@ dahoam.hallertau.social
 daily-life.naia.gay
 daily-twerk.com
 daily.chswx.com
+daily.ds106.us
 daily.iliana.fyi
 daily.surf
 dailydrop.hrbrmstr.dev
@@ -17950,6 +17955,7 @@ encryptr.net
 end0.ru
 enda.mccallig.com
 endeavr.de
+endersonmaia.com.br
 endgameviable.social
 endhill.masto.host
 endlesstalk.org
@@ -18322,6 +18328,7 @@ europecom.net
 europhiles.uk
 europlus.zone
 eurovision.social
+eurovisiondrinking.com
 euroxs.org
 euskirchen.social
 eutech.social
@@ -19265,6 +19272,7 @@ fedi.cpluspatch.com
 fedi.cpluspatch.dev
 fedi.cr-net.be
 fedi.criminallycute.fi
+fedi.crit.run
 fedi.ctrlz.es
 fedi.culturewar.us
 fedi.custodianship.club
@@ -22339,6 +22347,7 @@ geekspot.com
 geekstodon.com
 geekstream.org
 geektox.fun
+geekupdated.com
 geekvc.jp
 geeky.af
 geekyaubergine.com
@@ -22843,6 +22852,7 @@ gobbetti.name
 gobelet.com
 gobic2ec.activitypub-troll.cf
 goblackcat.net
+goblackcat.social
 goblackcat.xyz
 goblfc.org
 goblin.band
@@ -22992,6 +23002,7 @@ goto.dalliance.social
 goto.derpsin.space
 goto.devianze.city
 goto.distantserver.org
+goto.eerie.space
 goto.else.nohost.me
 goto.fediserve.de
 goto.fi
@@ -23477,6 +23488,7 @@ gts.io18.top
 gts.jaajko.com
 gts.jasminetea.uk
 gts.jermey.cn
+gts.jrashford.com
 gts.jyrgi.de
 gts.kasma.cyou
 gts.keysmash.xyz
@@ -24734,6 +24746,7 @@ honeybank.net
 honeycomb.engineer
 honeydew.wafflasy.boo
 honeymilk.m.to
+honeypot.net
 honeypot.revvy.de
 honeytree.social
 hong.io
@@ -26510,7 +26523,6 @@ j-ch.net
 j-w.au
 j.cetera.uk
 j.ioi-xd.net
-j.manes.blog
 j04a9duy.activitypub-troll.cf
 j09oqig5.activitypub-troll.cf
 j09qdbr0.activitypub-troll.cf
@@ -32311,6 +32323,7 @@ mast.odon.irish
 mast.odon.ninja
 mast.ohbutt.com
 mast.one
+mast.ortie.org
 mast.ouzu.im
 mast.p-hacking.org
 mast.pceninja.com
@@ -38104,6 +38117,7 @@ messurrection.com
 messy-knight.glitch.me
 messydesk.social
 mesta.social
+mester.social
 mestizo.monster
 meta-tube.de
 meta.32int.com
@@ -41743,6 +41757,7 @@ mtn.gnlk.ovh
 mtqm.me
 mtra.ohs.cx
 mtrichardson.com
+mtrnord.blog
 mtth.org
 mtu7.com
 mtwerk.com
@@ -43584,6 +43599,7 @@ notes.musing.studio
 notes.neocoretext.net
 notes.opensourcegardens.info
 notes.ovcharov.me
+notes.peteashton.com
 notes.tapenoise.cafe
 notes.tasche.me
 notes.telmina.com
@@ -44002,6 +44018,7 @@ oblivion.social
 obliviousdirt.glitch.me
 obousanmstdn.com
 obscura-px.social
+obscura-px.work
 observationblogger.com
 observatory.blog
 observatory.social
@@ -50993,6 +51010,7 @@ recurse.social
 recusant.app
 red-eye.monster
 red.0x89.de
+red.acsel.cl
 red.ameci.org
 red.colegiocontempora.com
 red.cyberhase.de
@@ -57441,6 +57459,7 @@ social.margiovanni.it
 social.mark.atwood.name
 social.markham.cc
 social.markham.family
+social.markiswrit.ing
 social.markofall.com
 social.markusgran.de
 social.markwaters.eu
@@ -60605,6 +60624,7 @@ ssp-gt.de
 sspaeth.de
 ssr.salrahman.com
 ssr576.wordpress.com
+sssa.africa
 ssul.one
 ssweeny.net
 st.3ends.info
@@ -69943,6 +69963,7 @@ www.vincentstpierre.com
 www.viverse.com
 www.vnchich.com
 www.vnchich.net
+www.vnchich.top
 www.vnshow.cc
 www.vnshow.net
 www.vnshow.xyz
