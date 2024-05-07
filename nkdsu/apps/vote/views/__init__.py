@@ -962,7 +962,7 @@ class AddToListView(LoginRequiredMixin, TracksFromGetParamMixin, FormView):
                     name=form.cleaned_data['new_list_name'], user=self.request.user
                 )
             except ValidationError as e:
-                form.add_error(None, e)
+                form.add_error(None, e)  # throws ValueError when you enter '-' as the list name
                 return self.form_invalid(form)
 
         tracks = self.get_tracks()
