@@ -5,7 +5,6 @@ const bindIconOptions = () => {
   const iconOptionsElement = document.getElementById('icon-options')
 
   if (iconField === null || iconOptionsElement === null) {
-    console.info('not a modifiable track list')
     return
   }
 
