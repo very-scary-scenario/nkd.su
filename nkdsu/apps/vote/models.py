@@ -34,7 +34,7 @@ import requests
 
 from .anime import Anime, get_anime
 from .api_utils import JsonDict, Serializable
-from .emoji import SINGLE_CODEPOINT_EMOJI
+from .emoji import SINGLE_CODEPOINT_EMOJI, ZWJ_EMOJI_SEQUENCES
 from .managers import NoteQuerySet, TrackQuerySet
 from .mastodon_instances import MASTODON_INSTANCES
 from .parsers import ParsedArtist, parse_artist
@@ -610,6 +610,11 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
 DEFAULT_LIST_ICON = '⭐'
 assert DEFAULT_LIST_ICON in SINGLE_CODEPOINT_EMOJI.keys()
 
+EMOJI_CHOICES: list[tuple[str, str]] = (
+    [(char, f'{name} - {char}') for char, name in SINGLE_CODEPOINT_EMOJI.items()]
+    + sorted((char, char) for char in ZWJ_EMOJI_SEQUENCES)
+)
+
 
 class UserTrackList(CleanOnSaveMixin, models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='track_lists')
@@ -626,10 +631,8 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
     description = models.TextField(blank=True)
     public = models.BooleanField(default=False)
     icon = models.CharField(
-        choices=[
-            (char, f'{name} - {char}') for char, name in SINGLE_CODEPOINT_EMOJI.items()
-        ],
-        max_length=max(len(char) for char in SINGLE_CODEPOINT_EMOJI.keys()),
+        choices=EMOJI_CHOICES,
+        max_length=max(len(char) for char, name in EMOJI_CHOICES),
         default=DEFAULT_LIST_ICON,
     )
     tracks: models.ManyToManyField[Track, UserTrackListTrack] = models.ManyToManyField(
