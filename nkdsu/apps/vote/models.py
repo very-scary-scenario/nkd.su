@@ -53,6 +53,7 @@ from .utils import (
     vote_edit_cutoff,
     vote_url,
 )
+from .validators import sluggable
 from .voter import Voter
 from ..vote import mixcloud
 
@@ -612,7 +613,7 @@ assert DEFAULT_LIST_ICON in EMOJI.keys()
 
 class UserTrackList(CleanOnSaveMixin, models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='track_lists')
-    name = models.CharField(max_length=100, blank=False)
+    name = models.CharField(max_length=100, blank=False, validators=[sluggable])
     slug = models.SlugField(blank=False)
     description = models.TextField(blank=True)
     public = models.BooleanField(default=False)

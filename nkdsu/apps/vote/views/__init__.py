@@ -962,7 +962,17 @@ class AddToListView(LoginRequiredMixin, TracksFromGetParamMixin, FormView):
                     name=form.cleaned_data['new_list_name'], user=self.request.user
                 )
             except ValidationError as e:
-                form.add_error(None, e)  # throws ValueError when you enter '-' as the list name
+                if 'name' in e.error_dict and 'slug' in e.error_dict:
+                    # errors about slugs cannot be surfaced here, since there is no slug field,
+                    # but we should only remove them if there's an appropriate error to show in its place.
+                    # if we get a slug-only error, we should probably just 500
+                    del e.error_dict['slug']
+                if 'name' in e.error_dict:
+                    # it's called something else here; move it
+                    e.error_dict['new_list_name'] = e.error_dict['name']
+                    del e.error_dict['name']
+
+                form.add_error(None, e)
                 return self.form_invalid(form)
 
         tracks = self.get_tracks()
