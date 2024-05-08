@@ -7,6 +7,7 @@ from dataclasses import asdict, dataclass
 from enum import Enum, auto
 from functools import cached_property
 from io import BytesIO
+from itertools import chain
 from string import ascii_letters
 from typing import Any, Iterable, Literal, Optional, TYPE_CHECKING, TypedDict, cast
 from urllib.parse import quote, urlparse
@@ -610,10 +611,10 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
 DEFAULT_LIST_ICON = '⭐'
 assert DEFAULT_LIST_ICON in SUGGESTABLE_EMOJI.keys()
 
-EMOJI_CHOICES: list[tuple[str, str]] = (
-    [(char, f'{name} - {char}') for char, name in SUGGESTABLE_EMOJI.items()]
-    + sorted((char, char) for char in OTHER_ALLOWED_EMOJI)
-)
+EMOJI_CHOICES: list[tuple[str, str]] = [
+    (char, f'{name} - {char}')
+    for char, name in chain(SUGGESTABLE_EMOJI.items(), OTHER_ALLOWED_EMOJI.items())
+]
 
 
 class UserTrackList(CleanOnSaveMixin, models.Model):

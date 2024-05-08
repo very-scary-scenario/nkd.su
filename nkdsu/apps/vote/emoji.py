@@ -13,7 +13,7 @@ ZWJ_SEQUENCES_FN = 'emoji-zwj-sequences.txt'
 SUGGESTABLE_EMOJI: dict[str, str] = {}
 
 #: Other emoji; allowed to be used, but not suggested due to there's too many of them
-OTHER_ALLOWED_EMOJI: set[str] = set()
+OTHER_ALLOWED_EMOJI: dict[str, str] = {}
 
 
 def _get_emoji() -> Iterable[str]:
@@ -45,21 +45,24 @@ for char in _get_emoji():
     SUGGESTABLE_EMOJI[char] = name.lower()
 
 
-def _get_zwj_sequences() -> Iterable[str]:
+def _get_zwj_sequences() -> Iterable[tuple[str, str]]:
     with open(os.path.join(DIR, ZWJ_SEQUENCES_FN)) as seq_f:
         for line in seq_f.readlines():
             if match := re.match(
-                r'^' r'(?P<points>[0-9A-F *]+?) *' r';.*$',
+                r'^' r'(?P<points>[0-9A-F *]+?) *' r';.*; *(?P<description>.+?) *#.*$',
                 line,
             ):
                 groups = match.groupdict()
-                yield ''.join(
-                    (chr(int(point, 16)) for point in groups['points'].split(' '))
+                yield (
+                    ''.join(
+                        (chr(int(point, 16)) for point in groups['points'].split(' '))
+                    ),
+                    groups['description'],
                 )
 
 
-for seq in _get_zwj_sequences():
-    OTHER_ALLOWED_EMOJI.add(seq)
+for char, name in _get_zwj_sequences():
+    OTHER_ALLOWED_EMOJI[char] = name
 
 
 if __name__ == '__main__':
