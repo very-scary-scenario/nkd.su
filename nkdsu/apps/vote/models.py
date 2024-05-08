@@ -613,7 +613,15 @@ assert DEFAULT_LIST_ICON in EMOJI.keys()
 
 class UserTrackList(CleanOnSaveMixin, models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='track_lists')
-    name = models.CharField(max_length=100, blank=False, validators=[sluggable])
+    name = models.CharField(
+        max_length=100,
+        blank=False,
+        validators=[sluggable],
+        help_text=(
+            "URLs for lists are based on their name. "
+            "If you change this name, you'll need to update any links you share to this list."
+        ),
+    )
     slug = models.SlugField(blank=False)
     description = models.TextField(blank=True)
     public = models.BooleanField(default=False)
