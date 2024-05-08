@@ -10,6 +10,7 @@ ZWJ_SEQUENCES_FN = 'emoji-zwj-sequences.txt'
 
 
 SINGLE_CODEPOINT_EMOJI: dict[str, str] = {}
+ZWJ_EMOJI_SEQUENCES: set[str] = set()
 
 
 def _get_emoji() -> Iterable[str]:
@@ -41,7 +42,25 @@ for char in _get_emoji():
     SINGLE_CODEPOINT_EMOJI[char] = name.lower()
 
 
+def _get_zwj_sequences() -> Iterable[str]:
+    with open(os.path.join(DIR, ZWJ_SEQUENCES_FN)) as seq_f:
+        for line in seq_f.readlines():
+            if match := re.match(
+                r'^' r'(?P<points>[0-9A-F *]+?) *' r';.*$',
+                line,
+            ):
+                groups = match.groupdict()
+                yield ''.join(
+                    (chr(int(point, 16)) for point in groups['points'].split(' '))
+                )
+
+
+for seq in _get_zwj_sequences():
+    ZWJ_EMOJI_SEQUENCES.add(seq)
+
+
 if __name__ == '__main__':
     from pprint import pprint
 
     pprint(SINGLE_CODEPOINT_EMOJI)
+    pprint(ZWJ_EMOJI_SEQUENCES)
