@@ -1167,7 +1167,7 @@ dl.metadata-check {
 
   &::before {
     .fa();
-    content: @fa-var-lock;
+    content: @fa-var-eye-slash;
     margin-right: .3em;
   }
 }
@@ -1222,6 +1222,15 @@ a.inline-track-list {
 
   span {
     .private-indicator();
+  }
+
+  &.public span {
+    background-color: @green;
+    color: @fg;
+
+    &::before {
+      content: @fa-var-eye;
+    }
   }
 }
 

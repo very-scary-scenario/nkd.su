@@ -17,10 +17,16 @@
     </a>
   </p>
 
-  {% if not object.public %}
-    <p class="track-list-private-info">
-      <span>private; only you can see this list</span>
-    </p>
+  {% if object.user == request.user %}
+    {% if object.public %}
+      <p class="track-list-private-info public">
+        <span>public; send this to your friends!</span>
+      </p>
+    {% else %}
+      <p class="track-list-private-info private">
+        <span>private; only you can see this list</span>
+      </p>
+    {% endif %}
   {% endif %}
 
   {% if object.description %}
