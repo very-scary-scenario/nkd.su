@@ -17,7 +17,7 @@ from django.views.generic.base import ContextMixin
 import ujson
 
 from . import VoterDetail
-from ..emoji import SINGLE_CODEPOINT_EMOJI
+from ..emoji import SUGGESTABLE_EMOJI
 from ..forms import ClearableFileInput
 from ..mixins import BreadcrumbMixin
 from ..models import Profile, UserTrackList, UserTrackListTrack, UserWebsite
@@ -203,7 +203,7 @@ class UserTrackListView(BreadcrumbMixin, ModifyUserTrackList):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         return {
             **super().get_context_data(**kwargs),
-            'emoji_json': ujson.dumps(SINGLE_CODEPOINT_EMOJI),
+            'emoji_json': ujson.dumps(SUGGESTABLE_EMOJI),
         }
 
 

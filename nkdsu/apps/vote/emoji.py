@@ -9,8 +9,11 @@ SEQUENCES_FN = 'emoji-sequences.txt'
 ZWJ_SEQUENCES_FN = 'emoji-zwj-sequences.txt'
 
 
-SINGLE_CODEPOINT_EMOJI: dict[str, str] = {}
-ZWJ_EMOJI_SEQUENCES: set[str] = set()
+#: Emoji that should be included in the emoji suggestions dropdown
+SUGGESTABLE_EMOJI: dict[str, str] = {}
+
+#: Other emoji; allowed to be used, but not suggested due to there's too many of them
+OTHER_ALLOWED_EMOJI: set[str] = set()
 
 
 def _get_emoji() -> Iterable[str]:
@@ -39,7 +42,7 @@ for char in _get_emoji():
     except ValueError:
         continue
 
-    SINGLE_CODEPOINT_EMOJI[char] = name.lower()
+    SUGGESTABLE_EMOJI[char] = name.lower()
 
 
 def _get_zwj_sequences() -> Iterable[str]:
@@ -56,11 +59,11 @@ def _get_zwj_sequences() -> Iterable[str]:
 
 
 for seq in _get_zwj_sequences():
-    ZWJ_EMOJI_SEQUENCES.add(seq)
+    OTHER_ALLOWED_EMOJI.add(seq)
 
 
 if __name__ == '__main__':
     from pprint import pprint
 
-    pprint(SINGLE_CODEPOINT_EMOJI)
-    pprint(ZWJ_EMOJI_SEQUENCES)
+    pprint(SUGGESTABLE_EMOJI)
+    pprint(OTHER_ALLOWED_EMOJI)

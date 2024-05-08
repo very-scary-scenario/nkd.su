@@ -34,7 +34,7 @@ import requests
 
 from .anime import Anime, get_anime
 from .api_utils import JsonDict, Serializable
-from .emoji import SINGLE_CODEPOINT_EMOJI, ZWJ_EMOJI_SEQUENCES
+from .emoji import OTHER_ALLOWED_EMOJI, SUGGESTABLE_EMOJI
 from .managers import NoteQuerySet, TrackQuerySet
 from .mastodon_instances import MASTODON_INSTANCES
 from .parsers import ParsedArtist, parse_artist
@@ -608,11 +608,11 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
 
 
 DEFAULT_LIST_ICON = '⭐'
-assert DEFAULT_LIST_ICON in SINGLE_CODEPOINT_EMOJI.keys()
+assert DEFAULT_LIST_ICON in SUGGESTABLE_EMOJI.keys()
 
 EMOJI_CHOICES: list[tuple[str, str]] = (
-    [(char, f'{name} - {char}') for char, name in SINGLE_CODEPOINT_EMOJI.items()]
-    + sorted((char, char) for char in ZWJ_EMOJI_SEQUENCES)
+    [(char, f'{name} - {char}') for char, name in SUGGESTABLE_EMOJI.items()]
+    + sorted((char, char) for char in OTHER_ALLOWED_EMOJI)
 )
 
 
