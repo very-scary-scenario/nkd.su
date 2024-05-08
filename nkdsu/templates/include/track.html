@@ -57,7 +57,7 @@
           <span><a href="{% url "vote:year" year=track.year  %}">{{ track.year }}</a></span>
         {% endif %}
 
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and not track.hidden and not track.inudesu and not track.archived %}
           <span><a class="add-to-list" href="{% url "vote:add-to-list" %}?t={{ track.pk }}">add to list&hellip;</a></span>
         {% endif %}
 
