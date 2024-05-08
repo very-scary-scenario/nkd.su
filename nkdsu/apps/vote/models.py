@@ -34,7 +34,7 @@ import requests
 
 from .anime import Anime, get_anime
 from .api_utils import JsonDict, Serializable
-from .emoji import EMOJI
+from .emoji import SINGLE_CODEPOINT_EMOJI
 from .managers import NoteQuerySet, TrackQuerySet
 from .mastodon_instances import MASTODON_INSTANCES
 from .parsers import ParsedArtist, parse_artist
@@ -608,7 +608,7 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
 
 
 DEFAULT_LIST_ICON = '⭐'
-assert DEFAULT_LIST_ICON in EMOJI.keys()
+assert DEFAULT_LIST_ICON in SINGLE_CODEPOINT_EMOJI.keys()
 
 
 class UserTrackList(CleanOnSaveMixin, models.Model):
@@ -626,8 +626,10 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
     description = models.TextField(blank=True)
     public = models.BooleanField(default=False)
     icon = models.CharField(
-        choices=[(char, f'{name} - {char}') for char, name in EMOJI.items()],
-        max_length=max(len(char) for char in EMOJI.keys()),
+        choices=[
+            (char, f'{name} - {char}') for char, name in SINGLE_CODEPOINT_EMOJI.items()
+        ],
+        max_length=max(len(char) for char in SINGLE_CODEPOINT_EMOJI.keys()),
         default=DEFAULT_LIST_ICON,
     )
     tracks: models.ManyToManyField[Track, UserTrackListTrack] = models.ManyToManyField(

@@ -9,7 +9,7 @@ SEQUENCES_FN = 'emoji-sequences.txt'
 ZWJ_SEQUENCES_FN = 'emoji-zwj-sequences.txt'
 
 
-EMOJI: dict[str, str] = {}
+SINGLE_CODEPOINT_EMOJI: dict[str, str] = {}
 
 
 def _get_emoji() -> Iterable[str]:
@@ -38,10 +38,10 @@ for char in _get_emoji():
     except ValueError:
         continue
 
-    EMOJI[char] = name.lower()
+    SINGLE_CODEPOINT_EMOJI[char] = name.lower()
 
 
 if __name__ == '__main__':
     from pprint import pprint
 
-    pprint(EMOJI)
+    pprint(SINGLE_CODEPOINT_EMOJI)
