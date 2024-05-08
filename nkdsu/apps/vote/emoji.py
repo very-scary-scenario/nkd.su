@@ -45,15 +45,21 @@ for char in _get_emoji():
     SUGGESTABLE_EMOJI[char] = name.lower()
 
 
-def _get_zwj_sequences() -> Iterable[tuple[str, str]]:
+def _get_zwj_sequences() -> Iterable[tuple[str, str, str]]:
     with open(os.path.join(DIR, ZWJ_SEQUENCES_FN)) as seq_f:
+        group = ''
         for line in seq_f.readlines():
+            if match := re.match(r'^# RGI_Emoji_ZWJ_Sequence: (?P<group>.*)$', line):
+                group = match.groupdict()['group']
+                continue
+
             if match := re.match(
                 r'^' r'(?P<points>[0-9A-F *]+?) *' r';.*; *(?P<description>.+?) *#.*$',
                 line,
             ):
                 groups = match.groupdict()
                 yield (
+                    group,
                     ''.join(
                         (chr(int(point, 16)) for point in groups['points'].split(' '))
                     ),
@@ -61,8 +67,17 @@ def _get_zwj_sequences() -> Iterable[tuple[str, str]]:
                 )
 
 
-for char, name in _get_zwj_sequences():
-    OTHER_ALLOWED_EMOJI[char] = name
+for group, char, name in _get_zwj_sequences():
+    if group == 'Other':
+        SUGGESTABLE_EMOJI[char] = name
+    else:
+        OTHER_ALLOWED_EMOJI[char] = name
+
+
+# some checks that we've read stuff correctly:
+assert SUGGESTABLE_EMOJI['⭐'] == 'white medium star'
+assert SUGGESTABLE_EMOJI['🐕‍🦺'] == 'service dog'
+assert OTHER_ALLOWED_EMOJI['🧑🏿‍🦳'] == 'person: dark skin tone, white hair'
 
 
 if __name__ == '__main__':
