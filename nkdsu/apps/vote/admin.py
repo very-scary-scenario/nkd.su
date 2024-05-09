@@ -91,6 +91,11 @@ class NoteAdmin(admin.ModelAdmin):
     list_display = ('track', 'show', 'public', 'content')
 
 
+class UserTrackListAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'user', 'public')
+    list_filter = ('public', 'user')
+
+
 admin.site.register(models.Show, ShowAdmin)
 admin.site.register(models.TwitterUser, TwitterUserAdmin)
 admin.site.register(models.UserBadge, UserBadgeAdmin)
@@ -103,3 +108,4 @@ admin.site.register(models.Discard, DiscardShortlistAdmin)
 admin.site.register(models.Profile, ProfileAdmin)
 admin.site.register(models.Request, RequestAdmin)
 admin.site.register(models.Note, NoteAdmin)
+admin.site.register(models.UserTrackList, UserTrackListAdmin)
