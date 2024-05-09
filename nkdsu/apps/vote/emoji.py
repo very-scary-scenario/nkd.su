@@ -1,6 +1,7 @@
 import os
 import re
 import unicodedata
+from itertools import chain
 from typing import Iterable
 
 
@@ -16,7 +17,21 @@ SUGGESTABLE_EMOJI: dict[str, str] = {}
 OTHER_ALLOWED_EMOJI: dict[str, str] = {}
 
 
-def _get_emoji() -> Iterable[tuple[str, str]]:
+GROUP_HOMES = {
+    'Basic_Emoji': SUGGESTABLE_EMOJI,
+    'Emoji_Keycap_Sequence': SUGGESTABLE_EMOJI,
+    'RGI_Emoji_Flag_Sequence': SUGGESTABLE_EMOJI,
+    'RGI_Emoji_Tag_Sequence': SUGGESTABLE_EMOJI,
+    'RGI_Emoji_Modifier_Sequence': OTHER_ALLOWED_EMOJI,
+    'Family': OTHER_ALLOWED_EMOJI,
+    'Role': OTHER_ALLOWED_EMOJI,
+    'Gendered': OTHER_ALLOWED_EMOJI,
+    'Hair': OTHER_ALLOWED_EMOJI,
+    'Other': SUGGESTABLE_EMOJI,
+}
+
+
+def _get_emoji() -> Iterable[tuple[str, str, str]]:
     with open(os.path.join(DIR, SEQUENCES_FN)) as seq_f:
         for line in seq_f.readlines():
             if match := re.match(
@@ -28,7 +43,7 @@ def _get_emoji() -> Iterable[tuple[str, str]]:
             ):
                 groups = match.groupdict()
                 if points := groups.get('points'):
-                    yield ''.join(
+                    yield groups['block'], ''.join(
                         chr(int(point, base=16)) for point in points.split(' ')
                     ), groups['name']
                 else:
@@ -36,11 +51,7 @@ def _get_emoji() -> Iterable[tuple[str, str]]:
                         int(groups['start'], base=16), int(groups['end'], base=16), 1
                     ):
                         char = chr(kp)
-                        yield char, unicodedata.name(char).lower()
-
-
-for char, name in _get_emoji():
-    SUGGESTABLE_EMOJI[char] = name.lower()
+                        yield groups['block'], char, unicodedata.name(char).lower()
 
 
 def _get_zwj_sequences() -> Iterable[tuple[str, str, str]]:
@@ -65,17 +76,19 @@ def _get_zwj_sequences() -> Iterable[tuple[str, str, str]]:
                 )
 
 
-for group, char, name in _get_zwj_sequences():
-    if group == 'Other':
-        SUGGESTABLE_EMOJI[char] = name
-    else:
+for group, char, name in chain(_get_emoji(), _get_zwj_sequences()):
+    if name.startswith('emoji '):
+        # don't suggest modifiers (eg. lone hair or skin tone indicators)
         OTHER_ALLOWED_EMOJI[char] = name
+    else:
+        GROUP_HOMES[group][char] = name
 
 
 # some checks that we've read stuff correctly:
 assert SUGGESTABLE_EMOJI['⭐'] == 'star'
 assert SUGGESTABLE_EMOJI['🐕‍🦺'] == 'service dog'
 assert OTHER_ALLOWED_EMOJI['🧑🏿‍🦳'] == 'person: dark skin tone, white hair'
+assert OTHER_ALLOWED_EMOJI['🦳'] == 'emoji component white hair'
 
 
 if __name__ == '__main__':
