@@ -27,6 +27,7 @@
               furo = prev.furo.override {preferWheel = true;}; # requires sphinx_theme_builder
               levenshtein = prev.levenshtein.override {preferWheel = true;}; # requires packaging
               mypy = prev.mypy.override {preferWheel = true;}; # takes forever to build
+              sqlparse = prev.sqlparse.override {preferWheel = true;}; # requires hatchling
               types-ujson = prev.types-ujson.override {preferWheel = true;}; # requires setuptools
             });
           };
