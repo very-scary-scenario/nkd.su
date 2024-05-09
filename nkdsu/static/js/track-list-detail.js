@@ -8,7 +8,7 @@ const bindIconOptions = () => {
     return
   }
 
-  const EMOJI = JSON.parse(iconOptionsElement.innerText.replaceAll('&quot;', '"'))
+  const EMOJI = JSON.parse(iconOptionsElement.innerText.replaceAll('&quot;', '"').replaceAll('&amp;', '&'))
 
   const datalistId = 'icon-suggesstions'
   const datalist = document.createElement('datalist')
