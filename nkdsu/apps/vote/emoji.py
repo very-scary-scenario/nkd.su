@@ -1,8 +1,9 @@
 import os
 import re
-import unicodedata
 from itertools import chain
 from typing import Iterable
+
+import unicodedata2 as unicodedata
 
 
 DIR = os.path.join(os.path.dirname(__file__), 'data', 'emoji')
