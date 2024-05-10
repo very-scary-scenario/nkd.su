@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from ...models import Track
+from ...models import Track, UserTrackListTrack
 
 
 class Command(BaseCommand):
@@ -29,6 +29,8 @@ class Command(BaseCommand):
         to_remove.request_set.all().update(track=target)
         to_remove.proroulettecommitment_set.all().update(track=target)
         to_remove.block_set.all().update(track=target)
+
+        UserTrackListTrack.objects.filter(track=to_remove).update(track=target)
 
         target.revealed = to_remove.revealed
         target.hidden = False

@@ -10,6 +10,8 @@
       {% include "include/user_infobox.html" with user=request.user %}
     {% endif %}
 
+    {% include "include/voter_track_lists.html" with voter=object.profile %}
+
     {% include "include/voter_votes.html" with voter=object.profile %}
   </div>
 

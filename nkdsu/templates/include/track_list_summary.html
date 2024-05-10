@@ -1,0 +1,17 @@
+<a class="inline-track-list" href="{{ track_list.get_absolute_url }}" data-icon="{{ track_list.icon }}">
+  <h3>
+    <span class="title">
+      {{ track_list.name }}
+    </span>
+  </h3>
+
+  {% if not track_list.public %}
+    <p class="private-badge">private</p>
+  {% endif %}
+
+  {{ track_list.tracks.count }} track{{ track_list.tracks.count|pluralize }}
+
+  {% if not exclude_curator %}
+    · curated by {{ track_list.user.profile.display_name|default:track_list.user }}
+  {% endif %}
+</a>

@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.utils.safestring import SafeText, mark_safe
 from markdown import markdown as md
 
+from nkdsu.icons import ICONS
 from ..anime import Anime, get_anime
 from ..models import Play, Show, Track, Vote
 from ..utils import length_str
@@ -178,3 +179,8 @@ def season(anime: Anime) -> Optional[str]:
         return None
 
     return f'{year}' if dst_season is None else f'{dst_season} {year}'
+
+
+@register.filter
+def fa_icon(slug: str) -> str:
+    return ICONS[slug]

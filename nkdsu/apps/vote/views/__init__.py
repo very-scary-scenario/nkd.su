@@ -7,10 +7,12 @@ from itertools import chain
 from random import sample
 from typing import Any, Iterable, Optional, Sequence, cast, overload
 
+from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.core.paginator import InvalidPage, Paginator
 from django.db.models import Count, DurationField, F, QuerySet
@@ -45,10 +47,17 @@ from ..models import (
     Track,
     TrackQuerySet,
     TwitterUser,
+    UserTrackList,
+    UserTrackListTrack,
     Vote,
 )
 from ..templatetags.vote_tags import eligible_for
-from ..utils import BrowsableItem, BrowsableYear, vote_edit_cutoff
+from ..utils import (
+    BrowsableItem,
+    BrowsableYear,
+    clear_selection_if_matches,
+    vote_edit_cutoff,
+)
 from ..voter import Voter
 from ...vote import mixins
 
@@ -378,6 +387,18 @@ class Search(ListView):
                 'anime_suggestions': self.anime_suggestions,
             }
         )
+        return context
+
+
+class TrackSpecificMixin:
+    kwargs: dict[str, Any]
+
+    def get_track(self) -> Track:
+        return get_object_or_404(Track, pk=self.kwargs['pk'])
+
+    def get_context_data(self, *args, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(*args, **kwargs)  # type: ignore [misc]
+        context['track'] = self.get_track()
         return context
 
 
@@ -816,11 +837,7 @@ class RequestAddition(LoginRequiredMixin, MarkdownView, FormView):
         return super().form_valid(form)
 
 
-class VoteView(LoginRequiredMixin, CreateView):
-    form_class = VoteForm
-    template_name = 'vote.html'
-    success_url = reverse_lazy('vote:index')
-
+class TracksFromGetParamMixin(TemplateView):
     def get_track_pks(self) -> list[str]:
         track_pks_raw = self.request.GET.get('t')
 
@@ -828,6 +845,34 @@ class VoteView(LoginRequiredMixin, CreateView):
             return []
 
         track_pks = track_pks_raw.split(',')
+
+        return track_pks
+
+    def get_tracks(self) -> list[Track]:
+        tracks = [
+            get_object_or_404(Track.objects.public(), pk=pk)
+            for pk in self.get_track_pks()
+        ]
+        if not tracks:
+            raise Http404('no tracks picked')
+        return tracks
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        tracks = self.get_tracks()
+        return {
+            **super().get_context_data(**kwargs),
+            'tracks': tracks,
+        }
+
+
+class VoteView(LoginRequiredMixin, TracksFromGetParamMixin, CreateView[Vote, VoteForm]):
+    model = Vote
+    form_class = VoteForm
+    template_name = 'vote.html'
+    success_url = reverse_lazy('vote:index')
+
+    def get_track_pks(self) -> list[str]:
+        track_pks = super().get_track_pks()
 
         if len(track_pks) > settings.MAX_REQUEST_TRACKS:
             raise Http404('too many tracks')
@@ -838,37 +883,106 @@ class VoteView(LoginRequiredMixin, CreateView):
         def track_should_be_allowed_for_this_user(track: Track) -> bool:
             return eligible_for(track, self.request.user)
 
-        return list(
-            filter(
-                track_should_be_allowed_for_this_user,
-                (
-                    get_object_or_404(Track.objects.public(), pk=pk)
-                    for pk in self.get_track_pks()
-                ),
-            )
-        )
+        return list(filter(track_should_be_allowed_for_this_user, super().get_tracks()))
 
     def get_form_kwargs(self) -> dict[str, Any]:
         assert not isinstance(self.request.user, AnonymousUser)
-        instance = Vote(user=self.request.user, date=timezone.now())
+        self.object = self.model(user=self.request.user, date=timezone.now())
         return {
             **super().get_form_kwargs(),
-            'instance': instance,
+            'instance': self.object,
             'tracks': self.get_tracks(),
         }
 
     def form_valid(self, form: VoteForm) -> HttpResponse:
         resp = super().form_valid(form)
-        form.instance.tracks.set(self.get_tracks())
-        self.request.session['selection'] = []
+        tracks = self.get_tracks()
+        form.instance.tracks.set(tracks)
+        clear_selection_if_matches(self.request, tracks)
         return resp
 
+
+class AddToListView(LoginRequiredMixin, TracksFromGetParamMixin, FormView):
+    template_name = 'add_to_list.html'
+
+    def get_form_class(self) -> type[forms.BaseForm]:
+        assert self.request.user.is_authenticated
+        user_pk = self.request.user.pk
+
+        class AddToListForm(forms.Form):
+            existing_list = forms.ModelChoiceField(
+                queryset=UserTrackList.objects.filter(user__pk=user_pk),
+                required=False,
+            )
+            new_list_name = forms.CharField(
+                max_length=UserTrackList._meta.get_field('name').max_length,
+                required=False,
+            )
+
+            def clean(self) -> None:
+                super().clean()
+
+                if self.cleaned_data.get('existing_list') and self.cleaned_data.get(
+                    'new_list_name'
+                ):
+                    raise ValidationError(
+                        'only pick either an existing list or provide a name for a new one, not both'
+                    )
+
+                if (not self.cleaned_data.get('existing_list')) and (
+                    not self.cleaned_data.get('new_list_name')
+                ):
+                    raise ValidationError(
+                        'pick either an existing list or provide a name for a new one'
+                    )
+
+        return AddToListForm
+
     def get_context_data(self, **kwargs) -> dict[str, Any]:
-        tracks = self.get_tracks()
+        assert self.request.user.is_authenticated
+
+        context = super().get_context_data(**kwargs)
+
         return {
-            **super().get_context_data(**kwargs),
-            'tracks': tracks,
+            **context,
+            'already_in': {
+                track: UserTrackList.objects.filter(
+                    user=self.request.user, tracks=track
+                )
+                for track in context['tracks']
+            },
         }
+
+    def form_valid(self, form: BaseForm) -> HttpResponse:
+        assert self.request.user.is_authenticated
+        track_list = form.cleaned_data['existing_list']
+        if track_list is None:
+            try:
+                track_list = UserTrackList.objects.create(
+                    name=form.cleaned_data['new_list_name'], user=self.request.user
+                )
+            except ValidationError as e:
+                if 'name' in e.error_dict and 'slug' in e.error_dict:
+                    # errors about slugs cannot be surfaced here, since there is no slug field,
+                    # but we should only remove them if there's an appropriate error to show in its place.
+                    # if we get a slug-only error, we should probably just 500
+                    del e.error_dict['slug']
+                if 'name' in e.error_dict:
+                    # it's called something else here; move it
+                    e.error_dict['new_list_name'] = e.error_dict['name']
+                    del e.error_dict['name']
+
+                form.add_error(None, e)
+                return self.form_invalid(form)
+
+        tracks = self.get_tracks()
+
+        for track in tracks:
+            UserTrackListTrack.objects.get_or_create(track=track, track_list=track_list)
+
+        clear_selection_if_matches(self.request, tracks)
+
+        return redirect(track_list.get_absolute_url())
 
 
 class SetDarkModeView(FormView):

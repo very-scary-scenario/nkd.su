@@ -1,0 +1,38 @@
+{% extends parent %}
+
+{% block title %}add {{ track }} to list{% endblock %}
+
+{% block content %}
+  <h2 class=message>
+    {% if tracks|length == 1 %}
+      add <a href="{{ tracks.0.get_absolute_url }}">{{ tracks.0.title }}</a> to a list
+    {% else %}
+      add {{ tracks|length}} tracks to a list
+    {% endif %}
+  </h2>
+
+  {% for track, lists in already_in.items %}
+    {% if lists %}
+      <p class="aside">
+        <a href="{{ track.get_absolute_url }}">{{ track.title }}</a> is already listed in:
+        {% for list in lists %}
+          <a href="{{ list.get_absolute_url }}">{{ list.icon }} {{ list.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+    {% endif %}
+  {% endfor %}
+
+  <p class="aside">
+    either pick an existing list, or provide a name for a new one
+  </p>
+
+  <p class="aside">
+    new lists will be private by default
+  </p>
+
+  <form method="post" class="add-to-list">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="add to list" class="button">
+  </form>
+{% endblock %}

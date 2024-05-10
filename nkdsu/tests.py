@@ -6,7 +6,7 @@ from django.test import TestCase
 from instant_coverage import InstantCoverageMixin, optional
 
 from .apps.vote.elfs import ELFS_NAME, is_elf
-from .apps.vote.models import Show, Vote
+from .apps.vote.models import Show, Track, UserTrackListTrack, Vote
 
 
 User = get_user_model()
@@ -73,9 +73,9 @@ class EverythingTest(
         '/info/privacy/',
         '/info/tos/',
         '/profile/',
-        '/request/',
         '/request/?t=0007C3F2760E0541',
         '/request-addition/',
+        '/add-to-list/?t=0007C3F2760E0541',
         '/roulette/',
         '/roulette/hipster/',
         '/roulette/indiscriminate/',
@@ -102,11 +102,11 @@ class EverythingTest(
         '/search/?q=Canpeki',
         '/user/EuricaeriS/',
         '/@what/',
+        '/@what/list/coollist-for-pros/',
         '/profile/email/',
         '/profile/',
         '/confirm-email/',
         '/confirm-email/abc/',
-        '/request/',
         '/login/',
         '/account/login/',
         '/register/',
@@ -130,6 +130,7 @@ class EverythingTest(
         '/vote-admin/unarchive-selection/',
         '/vote-admin/reset-shortlist-discard-selection/',
         # only accepts POST
+        '/@what/list-members/coollist-for-pros/',
         '/vote-admin/shortlist-order/',
         '/vote-admin/requests/fill/1/',
         '/vote-admin/requests/claim/1/',
@@ -160,6 +161,10 @@ class EverythingTest(
         user = User(username='what')
         user.set_password('what')
         user.save()
+        UserTrackListTrack.objects.create(
+            track=Track.objects.all()[0],
+            track_list=user.track_lists.create(name='cool/List for Pros', public=True),
+        )
 
     def ensure_all_urls_resolve(self, urls):
         # linode has robot protection that makes automated testing of links to their site impossible, so:

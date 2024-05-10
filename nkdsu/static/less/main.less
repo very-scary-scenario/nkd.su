@@ -194,7 +194,7 @@ body {
       position: relative;
       padding-bottom: 13em;
 
-      .markdown {
+      .markdown, .prose {
         padding-bottom: 1em;
 
         h1 {
@@ -378,11 +378,9 @@ body {
 
           details {
             summary {
-              span {
-                color: @hl;
-                cursor: pointer;
-                &:hover { color: inherit; }
-              }
+              cursor: pointer;
+              span { color: @hl }
+              &:hover span { color: inherit }
             }
           }
         }
@@ -849,7 +847,7 @@ form {
       color: @inv_bg;
       border-radius: .2em;
       border: none;
-      outline: none;
+      outline: 1px solid fade(@fg, 30%);
       padding: .1em .2em;
       font-size: 1.1em;
       text-align: left;
@@ -873,7 +871,7 @@ form {
   ul.errorlist li {
     list-style: none;
     font-size: .9em;
-    color: @light;
+    color: @pink;
   }
 
   &.login tr {
@@ -1154,6 +1152,136 @@ dl.metadata-check {
       > form {
         display: inline-block;
         margin-right: 1em;
+      }
+    }
+  }
+}
+
+.private-indicator() {
+  background-color: @lighter;
+  color: @fg;
+  text-shadow: none;
+  border-radius: .2em;
+  padding: .2em .5em;
+  .noise();
+
+  &::before {
+    .fa();
+    content: @fa-var-eye-slash;
+    margin-right: .3em;
+  }
+}
+
+a.inline-track-list {
+  display: block;
+  position: relative;
+  max-width: 35rem;
+  padding: 1em 1em 1em 9rem;
+  margin: 0 auto 1em;
+
+  overflow: hidden;
+  background-color: @bg;
+  color: @hl !important;
+  .noise();
+  text-shadow: none;
+  outline: 1px solid @border;
+  border-radius: .5rem;
+
+  &::before {
+    content: attr(data-icon);
+    text-shadow: 0 .1rem .2rem black;
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    font-size: 6rem;
+    margin-top: -3.6rem;  // close to the middle vertically
+    .transform(rotate(-10deg));
+  }
+
+  &:hover {
+    color: @fg !important;
+  }
+
+  h3 {
+    margin: 0;
+    text-align: left;
+  }
+
+  .private-badge {
+    .private-indicator();
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-radius: .2em 0 0 0;
+  }
+}
+
+.track-list-private-info {
+  text-align: center;
+  margin: -.3em 0 1em;
+
+  span {
+    .private-indicator();
+  }
+
+  &.public span {
+    background-color: @green;
+    color: @fg;
+
+    &::before {
+      content: @fa-var-eye;
+    }
+  }
+}
+
+.track-list-icon {
+  margin-right: .3rem;
+}
+
+details.track-list-meta-edit {
+  padding: .3em .5em;
+  margin: -.3em 0 0;
+  border-radius: .5em;
+
+  summary {
+    text-align: center;
+    cursor: pointer;
+    color: @hl;
+    &:hover { color: inherit }
+    &::marker { color: @fg }
+  }
+
+  &[open] {
+    background-color: fade(@light; 5%);
+    outline: 1px solid fade(@light, 50%);
+  }
+}
+.dark({ .track-list-meta-edit summary::marker { color: @inv_fg } });
+
+#track-list-membership-form {
+  #track-list-membership {
+    .track-list-entry {
+      text-align: left;
+
+      .track-list-membership-controls {
+        display: inline-block;
+        margin-left: 1em;
+        padding: .2em .5em .1em;
+        border: 1px solid fade(@lighter, 70%);
+        border-bottom: none;
+        border-radius: .3em .3em 0 0;
+
+        label {
+          margin: .2em .3em;
+
+          input[type=number] {
+            max-width: 4em;
+          }
+        }
+      }
+
+      .tracks li {
+        margin-top: 0;
       }
     }
   }

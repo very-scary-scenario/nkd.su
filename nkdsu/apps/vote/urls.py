@@ -166,6 +166,16 @@ profile_patterns = (
     [
         path('@<str:username>/', profiles.ProfileView.as_view(), name='profile'),
         path('profile/', profiles.UpdateProfileView.as_view(), name='edit-profile'),
+        path(
+            '@<str:user>/list/<slug:slug>/',
+            profiles.UserTrackListView.as_view(),
+            name='track-list',
+        ),
+        path(
+            '@<str:user>/list-members/<slug:slug>/',
+            profiles.UserTrackListModifyMembersView.as_view(),
+            name='track-list-members',
+        ),
     ],
     'profiles',
 )
@@ -236,6 +246,11 @@ urlpatterns = [
     ),
     url(r'^request/$', views.VoteView.as_view(), name='vote'),
     path('update-request/<int:pk>/', views.UpdateVoteView.as_view(), name='edit-vote'),
+    url(
+        r'^add-to-list/$',
+        views.AddToListView.as_view(),
+        name='add-to-list',
+    ),
     url(r'^set-dark-mode/$', views.SetDarkModeView.as_view(), name='set-dark-mode'),
     # tracks
     url(r'^(?P<pk>[0-9A-F]{16})/$', views.TrackDetail.as_view(), name='track'),

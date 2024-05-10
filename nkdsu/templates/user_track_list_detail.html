@@ -1,0 +1,97 @@
+{% extends parent %}
+
+{% load vote_tags %}
+
+{% block title %}{{ object.icon }} {{ object.name }}{% endblock %}
+
+{% block content %}
+
+  <h2>
+    <span class="track-list-icon">{{ object.icon }}</span>
+    {{ object.name }}
+  </h2>
+
+  <p class="subheading">
+    a list of tracks curated by <a href="{{ object.user.profile.get_absolute_url }}">
+      {{ object.user.profile.display_name|default:object.user }}
+    </a>
+  </p>
+
+  {% if object.user == request.user %}
+    {% if object.public %}
+      <p class="track-list-private-info public">
+        <span>public; send this to your friends!</span>
+      </p>
+    {% else %}
+      <p class="track-list-private-info private">
+        <span>private; only you can see this list</span>
+      </p>
+    {% endif %}
+  {% endif %}
+
+  {% if object.description %}
+    <div class="prose">
+      {{ object.description|linebreaks }}
+    </div>
+  {% endif %}
+
+  {% if request.user == object.user %}
+    <details class="track-list-meta-edit"
+      {% if form.errors %}
+        open
+      {% endif %}
+    >
+      <summary>edit metadata or delete list&hellip;</summary>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="save metadata" class="button">
+        <input type="submit" value="delete" name="delete" class="button danger" id="delete-track-list">
+      </form>
+    </details>
+  {% endif %}
+
+  {% if object.tracks.exists %}
+    <form id="track-list-membership-form" method="post" action="{% url "vote:profiles:track-list-members" user=object.user.username slug=object.slug %}">
+      {% csrf_token %}
+      <div id="track-list-membership">
+        {% for track in object.playlist %}
+          <div class="track-list-entry" data-id="{{ track.pk }}">
+            {% if request.user == object.user %}
+              <div class="track-list-membership-controls">
+                <label>
+                  order
+                  <input class="order" name="index_{{ track.pk }}" type="number" value="{{ forloop.counter }}">
+                </label>
+                <label>
+                  remove
+                  <input name="remove_{{ track.pk }}" type="checkbox">
+                </label>
+              </div>
+            {% endif %}
+
+            <ul class="tracks">
+              {% include "include/track.html" %}
+            </ul>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if request.user == object.user %}
+        <p class="aside">
+          <input type="submit" value="save order and removals" class="button">
+        </p>
+      {% endif %}
+
+    {% else %}
+      <p class="aside">there are no tracks in this list</p>
+    {% endif %}
+
+  </form>
+{% endblock %}
+
+{% block footer_scripts %}
+  <script type="text/x-nkdsu-data" id="icon-options">
+    {{ emoji_json }}
+  </script>
+{% endblock %}

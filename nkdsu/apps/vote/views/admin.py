@@ -25,6 +25,7 @@ from django.views.generic import (
 )
 from django.views.generic.base import TemplateResponseMixin
 
+from . import TrackSpecificMixin
 from .js import JSApiMixin
 from ..forms import LibraryUploadForm, MyriadExportUploadForm, NoteForm
 from ..managers import TrackQuerySet
@@ -50,14 +51,8 @@ class AdminMixin(LoginRequiredMixin):
         return user_passes_test(lambda u: u.is_staff)(super().as_view(**kw))
 
 
-class TrackSpecificAdminMixin(AdminMixin):
-    def get_track(self):
-        return get_object_or_404(Track, pk=self.kwargs['pk'])
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['track'] = self.get_track()
-        return context
+class TrackSpecificAdminMixin(TrackSpecificMixin, AdminMixin):
+    pass
 
 
 class AdminActionMixin(AdminMixin):

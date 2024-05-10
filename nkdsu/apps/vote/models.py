@@ -7,6 +7,7 @@ from dataclasses import asdict, dataclass
 from enum import Enum, auto
 from functools import cached_property
 from io import BytesIO
+from itertools import chain
 from string import ascii_letters
 from typing import Any, Iterable, Literal, Optional, TYPE_CHECKING, TypedDict, cast
 from urllib.parse import quote, urlparse
@@ -21,7 +22,7 @@ from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models
-from django.db.models import Q
+from django.db.models import Max, Q
 from django.db.models.constraints import CheckConstraint, UniqueConstraint
 from django.template.defaultfilters import slugify
 from django.templatetags.static import static
@@ -34,6 +35,7 @@ import requests
 
 from .anime import Anime, get_anime
 from .api_utils import JsonDict, Serializable
+from .emoji import OTHER_ALLOWED_EMOJI, SUGGESTABLE_EMOJI
 from .managers import NoteQuerySet, TrackQuerySet
 from .mastodon_instances import MASTODON_INSTANCES
 from .parsers import ParsedArtist, parse_artist
@@ -52,6 +54,7 @@ from .utils import (
     vote_edit_cutoff,
     vote_url,
 )
+from .validators import sluggable
 from .voter import Voter
 from ..vote import mixcloud
 
@@ -605,6 +608,98 @@ class UserWebsite(CleanOnSaveMixin, models.Model):
         return '_website'
 
 
+DEFAULT_LIST_ICON = '⭐'
+assert DEFAULT_LIST_ICON in SUGGESTABLE_EMOJI.keys()
+
+EMOJI_CHOICES: list[tuple[str, str]] = [
+    (char, f'{name} - {char}')
+    for char, name in chain(SUGGESTABLE_EMOJI.items(), OTHER_ALLOWED_EMOJI.items())
+]
+
+
+class UserTrackList(CleanOnSaveMixin, models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='track_lists')
+    name = models.CharField(
+        max_length=100,
+        blank=False,
+        validators=[sluggable],
+        help_text=(
+            "URLs for lists are based on their name. "
+            "If you change this name, you'll need to update any links you share to this list."
+        ),
+    )
+    slug = models.SlugField(blank=False)
+    description = models.TextField(blank=True)
+    public = models.BooleanField(default=False)
+    icon = models.CharField(
+        choices=EMOJI_CHOICES,
+        max_length=max(len(char) for char, name in EMOJI_CHOICES),
+        default=DEFAULT_LIST_ICON,
+    )
+    tracks: models.ManyToManyField[Track, UserTrackListTrack] = models.ManyToManyField(
+        'Track', through='UserTrackListTrack'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                *('user', 'slug'),
+                name='user_track_list_slug_unique',
+                violation_error_message='you already have a list with a very similar name',
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f'{self.icon} {self.name}'
+
+    def get_absolute_url(self) -> str:
+        return reverse(
+            'vote:profiles:track-list',
+            kwargs={'user': self.user.username, 'slug': self.slug},
+        )
+
+    def save(self, *args, **kwargs) -> None:
+        self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
+    def playlist(self) -> Iterable[Track]:
+        return (
+            utlt.track
+            for utlt in UserTrackListTrack.objects.filter(track_list=self).order_by(
+                'index'
+            )
+        )
+
+
+class UserTrackListTrack(CleanOnSaveMixin, models.Model):
+    track = models.ForeignKey('Track', on_delete=models.CASCADE)
+    track_list = models.ForeignKey('UserTrackList', on_delete=models.CASCADE)
+    index = models.PositiveIntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                *('track_list', 'index'),
+                name='user_track_list_track_index_unique',
+                violation_error_message='each index must only appear once per list',
+            ),
+            models.UniqueConstraint(
+                *('track_list', 'track'),
+                name='user_track_list_track_track_unique',
+                violation_error_message='tracks can only be present once per list',
+            ),
+        ]
+
+    def save(self, *args, **kwargs) -> None:
+        if self.pk is None and self.index is None:
+            max_index = UserTrackListTrack.objects.filter(
+                track_list=self.track_list
+            ).aggregate(max_index=Max('index'))['max_index']
+            self.index = 0 if max_index is None else max_index + 1
+
+        return super().save(*args, **kwargs)
+
+
 def art_path(i: Track, f: str) -> str:
     return 'art/bg/%s.%s' % (i.pk, f.split('.')[-1])
 
@@ -1071,6 +1166,12 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
     @memoize
     def public_notes(self) -> NoteQuerySet:
         return self.notes().filter(public=True)
+
+    @memoize
+    def visible_track_lists(self) -> models.QuerySet[UserTrackList]:
+        return UserTrackList.objects.filter(
+            public=True, tracks=self, user__profile__is_abuser=False
+        )
 
     def play_tweet_content(self) -> str:
         # here we add a zwsp after every . to prevent twitter from turning

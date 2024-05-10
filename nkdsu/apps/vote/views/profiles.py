@@ -1,19 +1,26 @@
-from typing import Optional
+from typing import Any, Optional
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User as DjangoUser
 from django.core.exceptions import ValidationError
-from django.db.models import QuerySet
-from django.http import HttpRequest, HttpResponse
+from django.db.models import Q, QuerySet
+from django.forms import BooleanField, IntegerField, ModelForm, TextInput
+from django.http import HttpRequest, HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import UpdateView
+from django.views.generic.base import ContextMixin
+import ujson
 
 from . import VoterDetail
+from ..emoji import SUGGESTABLE_EMOJI
 from ..forms import ClearableFileInput
-from ..models import Profile, UserWebsite
+from ..mixins import BreadcrumbMixin
+from ..models import Profile, UserTrackList, UserTrackListTrack, UserWebsite
 from ..utils import get_profile_for
 
 
@@ -78,10 +85,23 @@ class ProfileView(VoterDetail):
     def get_voter(self) -> Profile:
         user = self.get_object()
         assert isinstance(user, User)
-        return user.profile
+        return get_profile_for(user)
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        profile = self.get_voter()
+
+        track_lists = UserTrackList.objects.filter(user=profile.user)
+
+        if self.request.user != profile.user:
+            track_lists = track_lists.filter(public=True)
+
+        return {
+            **super().get_context_data(),
+            'track_lists': track_lists,
+        }
 
 
-class UpdateProfileView(LoginRequiredMixin, UpdateView):
+class UpdateProfileView(LoginRequiredMixin, UpdateView[Profile, ModelForm]):
     model = Profile
     fields = ['display_name', 'avatar']
     template_name = 'edit_profile.html'
@@ -101,3 +121,136 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         if not self.request.user.is_authenticated:
             raise RuntimeError('LoginRequiredMixin should have prevented this')
         return get_profile_for(self.request.user)
+
+
+class UserTrackListMixin(ContextMixin):
+    model: type[UserTrackList]
+    request: HttpRequest
+    kwargs: dict[str, Any]
+
+    def get_curator(self) -> DjangoUser:
+        return get_object_or_404(User, username=self.kwargs['user'])
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        return {
+            **super().get_context_data(**kwargs),
+            'curator': self.get_curator(),
+        }
+
+    def get_queryset(self) -> QuerySet[UserTrackList]:
+        q = Q(public=True)
+        if self.request.user.is_authenticated:
+            q = q | Q(user=self.request.user)
+        return self.model.objects.filter(q)
+
+
+class ModifyUserTrackList(UserTrackListMixin, UpdateView[UserTrackList, ModelForm]):
+    model = UserTrackList
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        if self.request.user.is_anonymous or self.request.user != self.get_curator():
+            return HttpResponseNotAllowed("you cannot modify another user's track list")
+
+        if 'delete' in request.POST:
+            track_list = self.get_object()
+            name = track_list.name
+            track_list.delete()
+            messages.success(self.request, f"track list {name!r} deleted")
+            return redirect(self.request.user.profile.get_absolute_url())
+
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form: ModelForm) -> HttpResponse:
+        try:
+            return super().form_valid(form)
+        except ValidationError as e:
+            form.instance.refresh_from_db()
+            form.add_error(None, e)
+            return self.form_invalid(form)
+
+    def get_object(
+        self, queryset: Optional[QuerySet[UserTrackList]] = None
+    ) -> UserTrackList:
+        return get_object_or_404(
+            queryset if queryset is not None else self.get_queryset(),
+            user__username=self.kwargs['user'],
+            slug=self.kwargs['slug'],
+        )
+
+
+class UserTrackListView(BreadcrumbMixin, ModifyUserTrackList):
+    model = UserTrackList
+    template_name = 'user_track_list_detail.html'
+    fields = ['name', 'public', 'icon', 'description']
+
+    def get_breadcrumbs(self) -> list[tuple[Optional[str], str]]:
+        curator = self.get_curator()
+        return [
+            (
+                curator.profile.get_absolute_url(),
+                curator.profile.display_name or curator.username,
+            ),
+        ]
+
+    def get_form_class(self) -> type[ModelForm]:
+        fc = super().get_form_class()
+        fc.base_fields['icon'].widget = TextInput()
+        fc.base_fields['icon'].help_text = (
+            'please provide one (1) emoji to use as an icon for this track list'
+        )
+        return fc
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        return {
+            **super().get_context_data(**kwargs),
+            'emoji_json': ujson.dumps(SUGGESTABLE_EMOJI),
+        }
+
+
+class UserTrackListModifyMembersView(ModifyUserTrackList):
+    fields = []
+
+    def get(self, request: HttpRequest, *a, **k) -> HttpResponse:
+        return redirect(self.get_object().get_absolute_url())
+
+    def get_form_class(self) -> type[ModelForm]:
+        form = super().get_form_class()
+        playlist = list(self.get_object().playlist())
+
+        return type(
+            'MembersForm',
+            (form,),
+            {
+                **{f'index_{t.pk}': IntegerField() for t in playlist},
+                **{f'remove_{t.pk}': BooleanField(required=False) for t in playlist},
+            },
+        )
+
+    def form_valid(self, form: ModelForm) -> HttpResponse:
+        track_list = self.get_object()
+        new_playlist = sorted(
+            (
+                t
+                for t in track_list.tracks.all()
+                if not form.cleaned_data[f'remove_{t.pk}']
+            ),
+            key=lambda t: form.cleaned_data[f'index_{t.pk}'],
+        )
+        UserTrackListTrack.objects.filter(track_list=track_list).delete()
+        for index, track in enumerate(new_playlist):
+            UserTrackListTrack.objects.create(
+                track_list=track_list, index=index, track=track
+            )
+
+        return redirect(track_list.get_absolute_url())
+
+    def form_invalid(self, form: ModelForm) -> HttpResponse:
+        messages.warning(
+            self.request,
+            (
+                str(form.errors)
+                if settings.DEBUG
+                else 'reordering invalid; perhaps the tracks in this list changed while you had the page loaded?'
+            ),
+        )
+        return redirect(form.instance.get_absolute_url())

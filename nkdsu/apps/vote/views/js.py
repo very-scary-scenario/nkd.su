@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 
 from ..models import Track
 from ..templatetags.vote_tags import eligible_for
-from ..utils import vote_url
+from ..utils import add_to_list_url, vote_url
 
 
 class JSApiMixin(object):
@@ -39,6 +39,8 @@ class SelectionView(JSApiMixin, TemplateView):
 
         if len(selection) <= settings.MAX_REQUEST_TRACKS:
             context['vote_url'] = vote_url(selection)
+
+        context['add_to_list_url'] = add_to_list_url(selection)
 
         return self.render_to_response(context)
 

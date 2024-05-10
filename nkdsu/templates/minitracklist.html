@@ -38,12 +38,19 @@
           <span><a href="{% url "vote:admin:archive_selection" %}">archive</a></span>
           <span><a href="{% url "vote:admin:archive_selection" %}">unarchive</a></span>
         </p>
+        <p class="actions">
+          <span><a class="add_to_list" href="{{ add_to_list_url }}">add to list</a></span>
+        </p>
       {% else %}
-        {% if vote_url %}
-          <p class="actions"><a class="mass_vote" href="{{ vote_url }}">request all</a></p>
-        {% else %}
-          <p class="refusal actions">too many tracks</p>
-        {% endif %}
+        <p class="actions">
+          {% if vote_url %}
+            <span><a class="mass_vote" href="{{ vote_url }}">request all</a></span>
+          {% else %}
+            <span class="refusal">too many to request</span>
+          {% endif %}
+
+          <span><a class="add_to_list" href="{{ add_to_list_url }}">add to list</a></span>
+        </p>
       {% endif %}
       <p class="actions minor">
         <span><a data-href="{% url "vote:js:clear_selection" %}" name="clear_selection">clear selection</a></span>
