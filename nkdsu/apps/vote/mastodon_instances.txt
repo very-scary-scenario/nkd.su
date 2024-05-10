@@ -15935,6 +15935,7 @@ dequevolem.com
 dequis.org
 der.gs
 der.herr.becker.soy
+der.tagesimpuls.org
 derangeddyke.xyz
 deravesoftware.eu.ngrok.io
 derblinkenlighters.blog
@@ -16038,6 +16039,7 @@ dev.dol.b-shock.org
 dev.dollarvigilante.tv
 dev.dtzbts.xyz
 dev.duckchat.me
+dev.e-komik.org
 dev.equel.social
 dev.evazero.club
 dev.fedi.blog
@@ -16130,6 +16132,7 @@ dev.trollian.space
 dev.tube.distrilab.org
 dev.tynn.is
 dev.unmappd.site
+dev.uvoic.com
 dev.v.st
 dev.vgai.de
 dev.videos.lecygnenoir.info
@@ -22037,6 +22040,7 @@ g8iktyb2.activitypub-troll.cf
 g9gvjhwg.activitypub-troll.cf
 g9yc2e3h.activitypub-troll.cf
 gaagl.com
+gab.jyrgi.de
 gab.polaris-1.work
 gab.protohype.net
 gabble.xyz
@@ -22267,6 +22271,7 @@ gaygay.me
 gaygeek.social
 gaygeeks.nl
 gayhorse.club
+gaylief.de
 gaymedmastadon.social
 gaymer.social
 gaymers.me
@@ -23583,6 +23588,7 @@ gts.tbh.gay
 gts.tbqdrn.de
 gts.teamtuck.xyz
 gts.tela.moe
+gts.telegrafverket.cc
 gts.test.fedi.monster
 gts.texto-plano.xyz
 gts.thatcat.space
@@ -23983,6 +23989,7 @@ handmade.social
 handon.club
 handwave.org.uk
 hanf.chat
+hanfling.id.au
 hanisanchi.masto.host
 hannah.raspberryip.com
 hannahaubry.online
@@ -26444,6 +26451,7 @@ iterate.no
 iterate.social
 ithe.dev
 ithoughthecamewithyou.com
+ithuna.org
 itinidkwi.masto.host
 itmgitmo.com
 itmslaves.com
@@ -33333,6 +33341,7 @@ mastodon.aurooba.com
 mastodon.autochthonia.net
 mastodon.autogestioncitoyenne.org
 mastodon.automario.eu
+mastodon.autostatic.net
 mastodon.autrechose.club
 mastodon.aventer.biz
 mastodon.averymatt.com
@@ -45480,6 +45489,7 @@ paws.gay
 paws.moe
 paws.press
 pawsitiv.space
+pawslut.party
 paxation.info
 paymentbanking.eu
 payravi.xyz
@@ -49402,6 +49412,7 @@ post.lurk.org
 post.manj.io
 post.mashek.net
 post.michae.lv
+post.miriel.net
 post.mrotek.xyz
 post.naskya.net
 post.nuro.lol
@@ -57778,6 +57789,7 @@ social.muppet-army.party
 social.murana.uy
 social.murat.io
 social.murty.au
+social.museus.gov.br
 social.musgrovegreen.co.uk
 social.mushroomfm.com
 social.musicedtechtalk.com
@@ -61150,6 +61162,7 @@ stream.djradim.click
 stream.donadvr.de
 stream.dpm.social
 stream.dragon-fly.club
+stream.dslaveone.online
 stream.dynacloud.ynh.fr
 stream.elven.pw
 stream.emile.space
@@ -62458,6 +62471,7 @@ teomahk.de
 tep.social
 tepes.space
 tepewu.pl
+teqpot.info
 teqqy.social
 tera.m.to
 terakoya-backstage.com
@@ -64983,6 +64997,7 @@ trunkle.social
 truska.xyz
 trust.photography
 truth-sandwich.com
+truth.rip
 truthandfreedom.social
 truthpirates.club
 truthpirates.gnusocial.club
@@ -68877,6 +68892,7 @@ woodplate.club
 woodweb.social
 woodwideweb.social
 woodworking.group
+woodworth.social
 woodynet.net
 woof.archandle.net
 woof.group
@@ -69473,6 +69489,7 @@ www.feminism.lgbt
 www.ffail-music.de
 www.ffca-parent.com
 www.fidgetykid.club
+www.fightthegoodfight.blog
 www.fightxing.com
 www.filklore.com
 www.filmvanalledag.nl
