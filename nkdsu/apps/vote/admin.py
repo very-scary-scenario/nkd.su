@@ -92,8 +92,8 @@ class NoteAdmin(admin.ModelAdmin):
 
 
 class UserTrackListAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'user', 'public')
-    list_filter = ('public', 'user')
+    list_display = ('__str__', 'slug', 'user', 'public')
+    list_filter = ('public',)
 
 
 admin.site.register(models.Show, ShowAdmin)
