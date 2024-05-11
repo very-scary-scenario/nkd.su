@@ -49,7 +49,7 @@ def _get_emoji() -> Iterable[tuple[str, str, str]]:
                     ), groups['name']
                 else:
                     for kp in range(
-                        int(groups['start'], base=16), int(groups['end'], base=16), 1
+                        int(groups['start'], base=16), int(groups['end'], base=16) + 1, 1
                     ):
                         char = chr(kp)
                         yield groups['block'], char, unicodedata.name(char).lower()
@@ -88,6 +88,7 @@ for group, char, name in chain(_get_emoji(), _get_zwj_sequences()):
 # some checks that we've read stuff correctly:
 assert SUGGESTABLE_EMOJI['⭐'] == 'star'
 assert SUGGESTABLE_EMOJI['🐕‍🦺'] == 'service dog'
+assert SUGGESTABLE_EMOJI['🤯'] == 'shocked face with exploding head'
 assert OTHER_ALLOWED_EMOJI['🧑🏿‍🦳'] == 'person: dark skin tone, white hair'
 assert OTHER_ALLOWED_EMOJI['🦳'] == 'emoji component white hair'
 
