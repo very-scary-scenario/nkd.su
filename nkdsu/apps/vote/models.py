@@ -628,7 +628,7 @@ class UserTrackList(CleanOnSaveMixin, models.Model):
             "If you change this name, you'll need to update any links you share to this list."
         ),
     )
-    slug = models.SlugField(blank=False)
+    slug = models.SlugField(blank=False, max_length=name.max_length)
     description = models.TextField(blank=True)
     public = models.BooleanField(default=False)
     icon = models.CharField(
