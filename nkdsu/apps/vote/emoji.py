@@ -49,7 +49,9 @@ def _get_emoji() -> Iterable[tuple[str, str, str]]:
                     ), groups['name']
                 else:
                     for kp in range(
-                        int(groups['start'], base=16), int(groups['end'], base=16) + 1, 1
+                        int(groups['start'], base=16),
+                        int(groups['end'], base=16) + 1,
+                        1,
                     ):
                         char = chr(kp)
                         yield groups['block'], char, unicodedata.name(char).lower()
