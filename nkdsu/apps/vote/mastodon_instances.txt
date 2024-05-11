@@ -9031,6 +9031,7 @@ atosoul.asuscomm.com
 atosoul.zapto.org
 atproto.brid.gy
 atravesdelcuento.es
+atrayu.net
 atri.ml
 atropos.network
 atsuchan.page
@@ -12350,6 +12351,7 @@ c0de.works
 c0debabe.com
 c0ffee.net
 c0l5o2u5d.birchgame.org
+c0ntr4.net
 c0tkxtn8.activitypub-troll.cf
 c0tt0n.world
 c101-52-119-116-148.ngrok.io
@@ -14780,6 +14782,7 @@ cretezy.com
 cretox.noblogs.org
 crew.moe
 crewfamily.social
+crib.social
 crid.land
 crikey.social
 crime-net.org
@@ -15567,6 +15570,7 @@ datashax.com
 datastory.cz
 dataterm.digital
 datatiede.org
+datavis.social
 datazone.social
 datboi.network
 datema.net
@@ -22856,6 +22860,7 @@ go.yiff.nz
 go0d.icu
 go2.elstabloserver.de
 go2social.hw2k.com
+go3.site
 go3.today
 go5.dev
 goapub.cf
@@ -26614,6 +26619,7 @@ jagibson.org
 jahait.tk
 jai.edusol.info
 jailbreak.chat
+jait.fossibl.com
 jakekara.com
 jakelacaze.com
 jakelazaroff.com
@@ -29527,6 +29533,7 @@ lemmy.riffel.family
 lemmy.rimkus.it
 lemmy.rjbasitali.com
 lemmy.robotra.sh
+lemmy.rochegmr.com
 lemmy.roembol.nl
 lemmy.roflblog.net
 lemmy.rogers-net.com
@@ -29648,6 +29655,7 @@ lemmy.utveckla.re
 lemmy.vegan.dev
 lemmy.vepta.org
 lemmy.vergaberecht-kanzlei.de
+lemmy.vg
 lemmy.virtim.dev
 lemmy.vollol.de
 lemmy.vonbergcompany.de
@@ -31734,6 +31742,7 @@ magialab.net
 magialaboratory.com
 magiasskey.magialabs.blog
 magic.win
+magica.winds.blue
 magical-ribbon.net
 magical.7d.gg
 magicalgirl.party
@@ -35622,6 +35631,7 @@ mastodon.naethure.com
 mastodon.naga.sh
 mastodon.nagaseyami.com
 mastodon.nagele.cloud
+mastodon.naglich.co
 mastodon.nagoya
 mastodon.naheimst.info
 mastodon.naii.io
@@ -40089,6 +40099,7 @@ mobilizon.azae.net
 mobilizon.be
 mobilizon.bstly.de
 mobilizon.c3d2.de
+mobilizon.cageundefined.org
 mobilizon.cemea.org
 mobilizon.chapril.org
 mobilizon.cloud-libre.eu
@@ -42616,6 +42627,7 @@ nekoland.fangluo.top
 nekomi.one
 nekomimi.yokohama
 nekomimisskey.com
+nekomimisskey.online
 nekomiya.net
 nekonet.cyou
 nekonote.fedicity.net
@@ -42791,6 +42803,7 @@ nettbaren.com
 nettles.social
 nettube.uc-netcorsoft.de
 nettv.duckdns.org
+netwatch.uk
 network.aipioneers.org
 network.blackwhitemint.de
 network.javier.computer
@@ -43102,6 +43115,7 @@ ni9uowv6.activitypub-troll.cf
 niadon.club
 niagara.social
 nial.to
+nibblehub.com
 nicagram.com
 nicalckey.nikola.love
 nicaloro.com
@@ -44491,6 +44505,7 @@ open-source.social
 open.audio
 open.movie
 open.pouet.social
+open.relay.social.techniverse.net
 open.the-door.uk
 open.tube
 open2.ch
@@ -45402,6 +45417,7 @@ parviainen.cc
 parzzix.com
 pasabo.ca
 pasay.social
+pascal-leinert.de
 paschelinos-poesie.de
 pasdo.com
 paseo.casacamelia.xyz
@@ -50093,6 +50109,7 @@ puha.no
 pukebucket.pedrocx486.club
 pukima.site
 pulgovsky.masto.host
+pulletsforever.com
 pullopen.xyz
 pulpunte-chinpun.xyz
 puls.im
@@ -52692,6 +52709,7 @@ schneckenradio.de
 schneesportlehrer.biz
 schnitzel-mit-pommes.de
 schnuffle.de
+schoenswetter.online
 schoenswetter.servus.at
 scholar.social
 schoolahead.social
@@ -53546,6 +53564,7 @@ siet.ynh.fr
 siew5hvc.activitypub-troll.cf
 sieweke.social
 siewert.blog
+sigb.us
 sigbonk.com
 sigcrap.org
 sigdrifa.eu
@@ -55184,6 +55203,7 @@ social.bruniau.net
 social.brunomassa.com
 social.bry.bar
 social.bryanmacmurray.com
+social.bryanthomestead.com
 social.bsc.ovh
 social.bsmhome.de
 social.bsmserverone.net
@@ -59472,6 +59492,7 @@ social.trackside.blog
 social.trailsroc.org
 social.tranquilbigfoot.gg
 social.transistorcafe.net
+social.translunar.academy
 social.transpeak.lgbt
 social.transrights.art
 social.transsafety.network
@@ -61950,6 +61971,7 @@ tafarn.glauca.space
 tafc.gay
 taffy.cafe
 taffytavern.com
+tagesimpuls.org
 tagessch.eu
 taggit.me
 tagpro.lol
@@ -67395,6 +67417,7 @@ video.yonatand.me
 video.zambito.xyz
 video.zarchbox.ovh
 video.ziez.eu
+video.zonawarpa.it
 video.zrythm.org
 videobit.cc
 videochina.net
@@ -68807,6 +68830,7 @@ wkwk.land
 wl1ug035.activitypub-troll.cf
 wlabs.de
 wlsly1.net
+wlslymast.com
 wltr.pw
 wm96fxx5.activitypub-troll.cf
 wmaf.masto.host
@@ -69799,6 +69823,7 @@ www.openlab-augsburg.de
 www.operationpuppet.com
 www.operationpuppet.live
 www.orion-hub.fr
+www.orkpiraten.de
 www.osirisguitar.com
 www.ostkreuzblog.de
 www.ourselves.space
@@ -70029,6 +70054,7 @@ www.vev.su
 www.videoneat.com
 www.videos-libr.es
 www.videospielgeschichten.de
+www.vielbunt.org
 www.villa-oita-pikapika.net
 www.villelepisto.fi
 www.vincentstpierre.com
@@ -70204,7 +70230,6 @@ x85rvvts.activitypub-troll.cf
 x86.eax.li
 x86.social
 x8nqis9a.activitypub-troll.cf
-x8r.net
 x9d2i8zl.activitypub-troll.cf
 x9i77rcj.activitypub-troll.cf
 x9i81jlz.activitypub-troll.cf
@@ -70963,6 +70988,7 @@ z2h.dev
 z38k7sb9.activitypub-troll.cf
 z3bra.club
 z3r0d4y.social
+z3z.xyz
 z49jc87r.activitypub-troll.cf
 z50spyhr.activitypub-troll.cf
 z58dyzeb.activitypub-troll.cf
