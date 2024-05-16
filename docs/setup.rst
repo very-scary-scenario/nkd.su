@@ -56,21 +56,18 @@ Headers for:
 Python packages
 ---------------
 
-You'll need to create a local environment for nkd.su. I strongly recommend
-:ref:`virtualenv <python:tut-venv>` for this, but if you have a tool you prefer
-(like Conda or something), feel free to use that. Common virtualenv names like
-``venv`` in the repository root will be ignored by git.
+nkd.su uses `Poetry`_ for managing Python dependencies. Consult their docs for
+details. The way I prefer to get up and running is to :ref:`create a virtualenv
+<python:tut-venv>`, ``pip install poetry``, and then ``poetry install``. If you
+prefer to let Poetry manage its own environments, you're welcome to do that
+instead.
 
-Once you're in your environment, run ``pip install -r requirements.txt`` from
-the repository root to install all of our Python dependencies.
+.. _Poetry: https://python-poetry.org/
 
-If you get compiler errors at this point, please try to skim through them for
-pointers about what the problem might be. There's a decent chance that compiler
-errors mean you don't have the right :ref:`headers <headers>` installed. If you
-are unable to resolve issues involving ``psycopg2``, you may be able to work
-around them by temporarily editing ``requirements.txt`` to list
-``psycopg2-binary`` instead of ``psycopg2`` and running ``pip install -r
-requirements.txt`` again.
+If you get compiler errors when installing dependencies, please try to skim
+through them for pointers about what the problem might be. There's a decent
+chance that compiler errors mean you don't have the right :ref:`headers
+<headers>` installed.
 
 .. _npm:
 
