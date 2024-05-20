@@ -65,6 +65,15 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_theme = 'furo'
 html_static_path = ['_static']
+_css_vars = {
+    'color-brand-primary': '#d60',
+    'color-brand-content': '#d60',
+    'color-brand-visited': '#d66',
+}
+html_theme_options = {
+    'light_css_variables': _css_vars,
+    'dark_css_variables': _css_vars,
+}
 
 # autodoc
 
