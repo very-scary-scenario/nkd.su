@@ -9,19 +9,19 @@
   <dl class="post-about-play">
     <dt>Twitter:</dt>
     <dd>
-      <p><code>{{ track.play_tweet_content }}</code></p>
+      <p><input readonly type="text" value="{{ track.play_tweet_content }}"></p>
       <p><a target="_blank" href="{{ track.play_tweet_intent_url }}" class="button">post this tweet</a></p>
     </dd>
 
     <dt>Bluesky:</dt>
     <dd>
-      <p><code>{{ track.play_bsky_content }}</code></p>
+      <p><input readonly type="text" value="{{ track.play_bsky_content }}"></p>
       <p><a target="_blank" href="{{ track.play_bsky_intent_url }}" class="button">post this skeet</a></p>
     </dd>
 
     <dt>Discord:</dt>
     <dd>
-      <p><code>{{ track.play_discord_content }}</code></p>
+      <p><input readonly type="text" value="{{ track.play_discord_content }}"></p>
     </dd>
   </dl>
 

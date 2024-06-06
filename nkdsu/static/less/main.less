@@ -827,6 +827,23 @@ p.new_tracks {
 }
 
 /* forms */
+.text-input() {
+  .nkdsu-font();
+  box-sizing: border-box;
+  background-color: @inv_fg;
+  color: @inv_bg;
+  border-radius: .2em;
+  border: none;
+  outline: 1px solid fade(@fg, 30%);
+  padding: .1em .2em;
+  font-size: 1.1em;
+  text-align: left;
+
+  &:focus {
+    outline: 2px solid @hl;
+  }
+}
+
 form {
   text-align: center;
   margin: .5em 0;
@@ -841,20 +858,7 @@ form {
     }
 
     input[type=text], input[type=password], textarea, select {
-      .nkdsu-font();
-      box-sizing: border-box;
-      background-color: @inv_fg;
-      color: @inv_bg;
-      border-radius: .2em;
-      border: none;
-      outline: 1px solid fade(@fg, 30%);
-      padding: .1em .2em;
-      font-size: 1.1em;
-      text-align: left;
-
-      &:focus {
-        outline: 2px solid @hl;
-      }
+      .text-input();
     }
 
     .helptext {
@@ -1122,6 +1126,11 @@ dl.post-about-play {
 
     p {
       margin-bottom: .5em;
+
+      input[type=text] {
+        .text-input();
+        width: 100%;
+      }
     }
   }
 }
