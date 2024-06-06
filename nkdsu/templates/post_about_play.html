@@ -5,18 +5,26 @@
 
 <h2>you played {{ track }}</h2>
 
-<div class="markdown">
-  <p>Twitter version: <code>{{ track.play_tweet_content }}</code></p>
-  <p><a target="_blank" href="{{ track.play_tweet_intent_url }}" class="button">post this tweet</a></p>
-</div>
+<div class="prose">
+  <dl>
+    <dt>Twitter:</dt>
+    <dd>
+      <p><code>{{ track.play_tweet_content }}</code></p>
+      <p><a target="_blank" href="{{ track.play_tweet_intent_url }}" class="button">post this tweet</a></p>
+    </dd>
 
-<div class="markdown">
-  <p>BlueSky version: <code>{{ track.play_bsky_content }}</code></p>
-  <p><a target="_blank" href="{{ track.play_bsky_intent_url }}" class="button">post this skeet</a></p>
-</div>
+    <dt>Bluesky:</dt>
+    <dd>
+      <p><code>{{ track.play_bsky_content }}</code></p>
+      <p><a target="_blank" href="{{ track.play_bsky_intent_url }}" class="button">post this skeet</a></p>
+    </dd>
 
-<div class="markdown">
-  <p>Discord version: <code>{{ track.play_discord_content }}</code></p>
+    <dt>Discord:</dt>
+    <dd>
+      <p><code>{{ track.play_discord_content }}</code></p>
+    </dd>
+  </dl>
+
   <p><a href="{% url "vote:index" %}">return home</a></p>
 </div>
 
