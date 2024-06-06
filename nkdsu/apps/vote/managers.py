@@ -8,6 +8,7 @@ from .utils import split_query_into_keywords
 
 if TYPE_CHECKING:
     from .models import Show, Track
+    from .models import Note  # noqa - it's used for the NoteQuerySet annotation
 
 
 class NoteQuerySet(models.QuerySet["Note"]):
@@ -16,16 +17,16 @@ class NoteQuerySet(models.QuerySet["Note"]):
 
 
 class TrackQuerySet(models.QuerySet["Track"]):
-    def _everything(self, show_secret_tracks: bool = False) -> TrackQuerySet:
+    def _everything(self, show_secret_tracks: bool = False) -> Self:
         if show_secret_tracks:
             return self.all()
         else:
             return self.public()
 
-    def for_decade(self, start_year: int) -> TrackQuerySet:
+    def for_decade(self, start_year: int) -> Self:
         return self.filter(year__gte=start_year, year__lt=start_year + 10)
 
-    def public(self) -> TrackQuerySet:
+    def public(self) -> Self:
         return self.filter(hidden=False, inudesu=False, archived=False)
 
     def by_artist(self, artist: str, show_secret_tracks: bool = False) -> list[Track]:
@@ -53,7 +54,7 @@ class TrackQuerySet(models.QuerySet["Track"]):
         qs = base_qs.filter(id3_title__contains=anime).order_by('id3_title')
         return [t for t in qs if t.has_anime(anime)]
 
-    def search(self, query: str, show_secret_tracks: bool = False) -> TrackQuerySet:
+    def search(self, query: str, show_secret_tracks: bool = False) -> Self:
         keywords = split_query_into_keywords(query)
 
         if len(keywords) == 0:
