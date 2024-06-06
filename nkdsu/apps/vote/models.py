@@ -1191,6 +1191,35 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
             text=quote(self.play_tweet_content())
         )
 
+    def play_bsky_content(self) -> str:
+        # here we add a zwsp after every . to prevent bluesky from turning
+        # things into links
+        delinked_name = str(self).replace('.', '.\u200b')
+
+        status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
+
+        if len(status) > settings.BSKY_POST_LENGTH:
+            status = status[: settings.BSKY_POST_LENGTH].strip() + '…'
+
+        return status
+
+    def play_bsky_intent_url(self) -> str:
+        return 'https://bsky.app/intent/compose?text={text}'.format(
+            text=quote(self.play_bsky_content())
+        )
+
+    def play_discord_content(self) -> str:
+        # here we add a zwsp after every . to prevent discord from turning
+        # things into links
+        delinked_name = str(self).replace('.', '.\u200b')
+
+        status = f'Now playing on Neko Desu: {delinked_name}'
+
+        if len(status) > settings.DISCORD_MESSAGE_LENGTH:
+            status = status[: settings.DISCORD_MESSAGE_LENGTH].strip() + '…'
+
+        return status
+
     def play(self) -> Play:
         """
         Mark this track as played.
