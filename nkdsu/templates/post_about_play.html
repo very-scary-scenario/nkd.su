@@ -6,8 +6,17 @@
 <h2>you played {{ track }}</h2>
 
 <div class="markdown">
-  <p><code>{{ track.play_tweet_content }}</code></p>
+  <p>Twitter version: <code>{{ track.play_tweet_content }}</code></p>
   <p><a target="_blank" href="{{ track.play_tweet_intent_url }}" class="button">post this tweet</a></p>
+</div>
+
+<div class="markdown">
+  <p>BlueSky version: <code>{{ track.play_bsky_content }}</code></p>
+  <p><a target="_blank" href="{{ track.play_bsky_intent_url }}" class="button">post this skeet</a></p>
+</div>
+
+<div class="markdown">
+  <p>Discord version: <code>{{ track.play_discord_content }}</code></p>
   <p><a href="{% url "vote:index" %}">return home</a></p>
 </div>
 
