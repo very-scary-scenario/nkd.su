@@ -58,6 +58,7 @@ const bindMembershipForm = () => {
 
   const sortable = Sortable.create(membershipContainer, {
     onSort: normalise,
+    handle: '.handle',
   })
 
   const orderingTutorial = document.createElement('p')
