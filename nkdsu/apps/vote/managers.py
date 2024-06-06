@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import Self, TYPE_CHECKING
 
 from django.conf import settings
 from django.db import models
 from .utils import split_query_into_keywords
 
 if TYPE_CHECKING:
-    from .models import Note, Show, Track
+    from .models import Show, Track
 
 
 class NoteQuerySet(models.QuerySet["Note"]):
-    def for_show_or_none(self, show: Show) -> models.QuerySet[Note]:
+    def for_show_or_none(self, show: Show) -> Self:
         return self.filter(models.Q(show=show) | models.Q(show=None))
 
 
