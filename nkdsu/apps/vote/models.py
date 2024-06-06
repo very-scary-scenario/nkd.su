@@ -1173,8 +1173,8 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
             public=True, tracks=self, user__profile__is_abuser=False
         )
 
-    def play_tweet_content(self) -> str:
-        # here we add a zwsp after every . to prevent twitter from turning
+    def play_post_content(self, max_length: int, ellipsis_length: int = 1) -> str:
+        # here we add a zwsp after every . to prevent websites from turning
         # things into links
         delinked_name = str(self).replace('.', '.\u200b')
 
@@ -1182,9 +1182,13 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
 
         if len(status) > settings.TWEET_LENGTH:
             # twitter counts ellipses as two characters for some reason, so we get rid of two:
-            status = status[: settings.TWEET_LENGTH - 2].strip() + '…'
+            status = status[: settings.TWEET_LENGTH - ellipsis_length].strip() + '…'
 
         return status
+
+
+    def play_tweet_content(self) -> str:
+        return self.play_post_content(settings.TWEET_LENGTH, 2)
 
     def play_tweet_intent_url(self) -> str:
         return 'https://twitter.com/intent/tweet?text={text}'.format(
@@ -1192,16 +1196,7 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
         )
 
     def play_bsky_content(self) -> str:
-        # here we add a zwsp after every . to prevent bluesky from turning
-        # things into links
-        delinked_name = str(self).replace('.', '.\u200b')
-
-        status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
-
-        if len(status) > settings.BSKY_POST_LENGTH:
-            status = status[: settings.BSKY_POST_LENGTH].strip() + '…'
-
-        return status
+        return self.play_post_content(settings.BSKY_POST_LENGTH)
 
     def play_bsky_intent_url(self) -> str:
         return 'https://bsky.app/intent/compose?text={text}'.format(
@@ -1209,16 +1204,7 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
         )
 
     def play_discord_content(self) -> str:
-        # here we add a zwsp after every . to prevent discord from turning
-        # things into links
-        delinked_name = str(self).replace('.', '.\u200b')
-
-        status = f'Now playing on Neko Desu: {delinked_name}'
-
-        if len(status) > settings.DISCORD_MESSAGE_LENGTH:
-            status = status[: settings.DISCORD_MESSAGE_LENGTH].strip() + '…'
-
-        return status
+        return self.play_post_content(settings.DISCORD_MESSAGE_LENGTH)
 
     def play(self) -> Play:
         """
