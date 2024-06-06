@@ -56,6 +56,9 @@ TMP_XML_PATH = '/tmp/songlibrary.xml'
 REQUEST_CURATOR = 'peter@nekodesu.radio'
 
 TWEET_LENGTH = 280
+BSKY_POST_LENGTH = 300
+# If we ever got Discord Nitro, this would be extended to 4000 characters
+DISCORD_MESSAGE_LENGTH = 2000
 
 #: The maximum number of tracks that can be associated with a single Vote object
 MAX_REQUEST_TRACKS = 6
