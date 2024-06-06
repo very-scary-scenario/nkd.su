@@ -59,7 +59,6 @@
           <div class="track-list-entry" data-id="{{ track.pk }}">
             {% if request.user == object.user %}
               <div class="track-list-membership-controls">
-                <span class="handle">handle</span>
                 <label>
                   order
                   <input class="order" name="index_{{ track.pk }}" type="number" value="{{ forloop.counter }}">

@@ -1283,7 +1283,18 @@ details.track-list-meta-edit {
 }
 .dark({ .track-list-meta-edit summary::marker { color: @inv_fg } });
 
+@grip: @fa-var-grip-lines;
+
 #track-list-membership-form {
+  .handle-placeholder {
+    padding: 0 .2em;
+
+    &::before {
+      .fas();
+      content: @grip;
+    }
+  }
+
   #track-list-membership {
     .track-list-entry {
       text-align: left;
@@ -1295,6 +1306,15 @@ details.track-list-meta-edit {
         border: 1px solid fade(@lighter, 70%);
         border-bottom: none;
         border-radius: .3em .3em 0 0;
+
+        .handle {
+          cursor: grab;
+
+          &::before {
+            .fas();
+            content: @grip;
+          }
+        }
 
         label {
           margin: .2em .3em;

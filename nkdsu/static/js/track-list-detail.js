@@ -38,6 +38,9 @@ const bindIconOptions = () => {
 }
 
 const bindMembershipForm = () => {
+  const HANDLE_CLASS = 'handle'
+  const HANDLE_TITLE = 'grab handle'
+
   const membershipForm = document.getElementById('track-list-membership-form')
   const membershipContainer = document.getElementById('track-list-membership')
 
@@ -46,6 +49,13 @@ const bindMembershipForm = () => {
   }
 
   const getOrderInputs = () => membershipContainer.querySelectorAll('input.order')
+
+  membershipContainer.querySelectorAll('.track-list-membership-controls').forEach(membershipControls => {
+    const handle = document.createElement('span')
+    handle.classList.add(HANDLE_CLASS)
+    handle.title = HANDLE_TITLE
+    membershipControls.prepend(handle)
+  })
 
   const normalise = e => {
     const orderInputs = getOrderInputs()
@@ -58,11 +68,18 @@ const bindMembershipForm = () => {
 
   const sortable = Sortable.create(membershipContainer, {
     onSort: normalise,
-    handle: '.handle',
+    handle: `.${HANDLE_CLASS}`,
   })
 
   const orderingTutorial = document.createElement('p')
-  orderingTutorial.innerText = 'you can drag tracks to reorder them'
+  const handlePlaceholder = document.createElement('span')
+  handlePlaceholder.classList.add(`${HANDLE_CLASS}-placeholder`)
+  handlePlaceholder.title = HANDLE_TITLE
+  orderingTutorial.append(
+    'you can drag tracks by their ',
+    handlePlaceholder,
+    ' to reorder them',
+  )
   orderingTutorial.classList.add('aside')
   membershipForm.insertBefore(orderingTutorial, membershipContainer)
 
