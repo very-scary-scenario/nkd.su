@@ -1186,7 +1186,6 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
 
         return status
 
-
     def play_tweet_content(self) -> str:
         return self.play_post_content(settings.TWEET_LENGTH, 2)
 
