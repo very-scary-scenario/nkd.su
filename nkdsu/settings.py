@@ -251,6 +251,7 @@ PIPELINE = {
                 'js/dark.js',
                 'js/browse.js',
                 'js/toggle-group-folds.js',
+                'js/post-about-play.js',
             ],
             'output_filename': 'js/min/base.js',
         },
