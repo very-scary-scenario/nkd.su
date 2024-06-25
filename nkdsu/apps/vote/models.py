@@ -457,6 +457,7 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
         # it'd be nice to optipng these as they're uploaded, but we can always do it later or in a cron job
     )
     display_name = models.CharField(max_length=100, blank=True)
+    pronouns = models.CharField(max_length=20, blank=True)
 
     is_patron = models.BooleanField(default=False)
     is_abuser = models.BooleanField(default=False)
