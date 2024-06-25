@@ -103,7 +103,7 @@ class ProfileView(VoterDetail):
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView[Profile, ModelForm]):
     model = Profile
-    fields = ['display_name', 'avatar']
+    fields = ['display_name', 'pronouns', 'avatar']
     template_name = 'edit_profile.html'
     base_breadcrumbs = [(reverse_lazy("vote:profiles:edit-profile"), "edit profile")]
 
