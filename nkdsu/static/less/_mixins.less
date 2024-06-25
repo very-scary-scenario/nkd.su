@@ -101,6 +101,14 @@
   animation: bell-ding 2s linear infinite;
 }
 
+.pronouns() {
+  &::before {
+    .fa();
+    content: @fa-var-user;
+    padding-right: .5em;
+  }
+}
+
 @keyframes bell-strike {
   000% { transform: rotate(180deg) translateY(-0.1em) scale(1.4); }
   090% { transform: rotate(200deg) translateY(1.4em) scale(0.8); }
