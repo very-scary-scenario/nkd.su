@@ -1,6 +1,7 @@
 import re
 from random import choice
 from typing import Any, Optional, Sequence
+from uuid import uuid4
 
 from django import forms
 from django.utils.safestring import mark_safe
@@ -32,6 +33,19 @@ class ClearableFileInput(forms.widgets.ClearableFileInput):
 
 class SearchForm(forms.Form):
     q = forms.CharField()
+
+
+class PronounsInput(forms.TextInput):
+    template_name = 'widgets/pronouns_input.html'
+
+    def __init__(self, attrs: Optional[dict[str, Any]] = None) -> None:
+        attrs = {} if attrs is None else attrs
+        attrs.update(
+            autocomplete="off",
+            list=str(uuid4()),
+            placeholder='we will use they/them for you if you leave this blank',
+        )
+        super().__init__(attrs)
 
 
 class TriviaForm(forms.Form):

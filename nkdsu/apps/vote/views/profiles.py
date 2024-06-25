@@ -18,7 +18,7 @@ import ujson
 
 from . import VoterDetail
 from ..emoji import SUGGESTABLE_EMOJI
-from ..forms import ClearableFileInput
+from ..forms import ClearableFileInput, PronounsInput
 from ..mixins import BreadcrumbMixin
 from ..models import Profile, UserTrackList, UserTrackListTrack, UserWebsite
 from ..utils import get_profile_for
@@ -110,6 +110,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView[Profile, ModelForm]):
     def get_form(self):
         form = super().get_form()
         form.fields['avatar'].widget = ClearableFileInput()
+        form.fields['pronouns'].widget = PronounsInput()
         return form
 
     def get_success_url(self) -> str:
