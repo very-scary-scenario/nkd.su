@@ -7149,6 +7149,7 @@ activitypub.sxa.org.uk
 activitypub.tk
 activitypub.webish.dev
 activitypub.winscloud.net
+activitypub.yz666.eu.org
 activitypubserver.onrender.com
 activitypubtest.hexaheximal.com
 activitypubtesting.duckdns.org
@@ -15041,6 +15042,7 @@ crucible.world
 crud.monster
 cruiserhome.org
 cruisers.social
+crumb.lt
 crunchtunes.com
 crunchy.social
 crunchywatch.uk
@@ -20697,6 +20699,7 @@ firefish.meerjungfrauengrotte.de
 firefish.metalbanana.net
 firefish.metalhearf.fr
 firefish.mfyo.jp
+firefish.minecraftchest1.us
 firefish.mv2k.com
 firefish.nbsp.one
 firefish.nekoq.top
@@ -26749,6 +26752,7 @@ is.hardly.engineering
 is.horse
 is.lewd.pm
 is.livingunder.rocks
+is.meow.i.ng
 is.nota.live
 is.notaweso.me
 is.queerenough.com
@@ -40179,6 +40183,7 @@ misskey.weebcouncil.online
 misskey.wildtree.jp
 misskey.wimmer-edv.de
 misskey.wine
+misskey.winscloud.net
 misskey.works
 misskey.world
 misskey.wtf
@@ -46655,6 +46660,7 @@ peertube.librenet.co.za
 peertube.libresolutions.network
 peertube.libretic.fr
 peertube.librosphere.fr
+peertube.linuxrenaissance.com
 peertube.linuxrocks.online
 peertube.live
 peertube.livingutopia.org
@@ -53333,6 +53339,7 @@ sarjant.social
 sarmento.org
 sarnia.lambton.social
 saronno.one
+sartic.yz666.eu.org
 sartorial.online
 saru.moe
 sarubobo.red
