@@ -403,7 +403,9 @@
   "pk": 45,
   "model": "vote.profile",
   "fields": {
-    "user": 43
+    "user": 43,
+    "display_name": "a user of some kind",
+    "pronouns": "xe/xir"
   }
 }
 ]
