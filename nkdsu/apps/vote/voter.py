@@ -22,6 +22,7 @@ class ModelVoterMeta(_ProtocolMeta, ModelBase):
 
 class Voter(Protocol, metaclass=ModelVoterMeta):
     name: str | CharField
+    pronouns: str | CharField = ''
     pk: int
     is_abuser: bool | BooleanField
     is_patron: bool | BooleanField
