@@ -43,6 +43,9 @@
           <p class="meta full_name">@{{ vote.user.username }}</p>
         {% endif %}
       {% endif %}
+      {% if user.is_staff and vote.voter.pronouns %}
+        <p class="meta pronouns">{{ vote.voter.pronouns }}</p>
+      {% endif %}
 
       <p class="meta when">{{ vote.date|when }}</p>
 
