@@ -75,6 +75,7 @@ This can include:
 - a [hashed][django-password-storage] password
 - a screen name and a display name
 - any commitments you have made under pro roulette
+- pronouns
 - an avatar
 - email addresses
 - URLs of websites you choose to show on your profile page
@@ -85,6 +86,7 @@ These will be used to:
 
 - authenticate you
 - represent you to other users
+- refer to you on the radio show
 
 Email addresses will be used to issue password reset requests. We may also use
 them to notify you about security issues or other things that may require
