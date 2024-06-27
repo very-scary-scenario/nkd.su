@@ -7410,6 +7410,7 @@ aim.5f5.org
 aimeee.site
 aincrad.lol
 aint.johnmark.org
+aion.social
 aioo.ooo
 aiparadise.moe
 aipi.social
@@ -7529,6 +7530,7 @@ akitadon.com
 akitadon.info
 akitaken.m.to
 akitsune.dev
+akizumimasaki.me
 akk.de-lacom.be
 akk.everyoneattack.com
 akk.ii7mood.com
@@ -15627,6 +15629,7 @@ danielwarshaw.com
 danirod.es
 danishgoldfish.com
 dankchicken.social
+dankim.social
 dankmemes.gg
 danlife.co
 danny.page
@@ -17691,6 +17694,7 @@ eclecticshock.com
 eclesia.space
 eclibse.com
 ecliptik.com
+eclosion.social
 ecneret.com
 ecocentraal.social
 ecodigital.social
@@ -18284,6 +18288,7 @@ entwickler-gilde.de
 enum.run
 env.sqdsh.top
 envia.sitios.win
+environmentalists.social
 envismo.social
 enwypxut.activitypub-troll.cf
 enyutech.io
@@ -21341,6 +21346,7 @@ freak.garden
 freak.social
 freakenstein.nl
 freaklab.es
+freakmix.com
 freaknik.vip
 freaknweekend.com
 freakrho.com
@@ -23383,6 +23389,7 @@ goto.wirespeed.cafe
 goto.ylvie.monster
 gotobar.tk
 gotocard.site
+gotosocial-a92488f6.cloudplane.app
 gotosocial-dev.ovo.st
 gotosocial-dev.svc.0x0a.network
 gotosocial.0sn.net
@@ -25031,6 +25038,7 @@ hoenn.eu
 hoerli.net
 hoerspielkritik.de
 hoezithetnuecht.nl
+hof.23.nu
 hofra.rocks
 hofund.berzerk.pl
 hoge-poyo.moe
@@ -27146,6 +27154,7 @@ jawa.gay
 jawa.moe
 jawaters.com
 jawns.club
+jawsome.nevy.xyz
 jax.social
 jaxbeach.social
 jaydns.de
@@ -30702,6 +30711,7 @@ live.geekgonecrazy.com
 live.gianmarco.gg
 live.grafo.zone
 live.greenboi.me
+live.greenleft.org.au
 live.grumbulon.xyz
 live.hatnix.net
 live.hermitcollective.net
@@ -38356,6 +38366,7 @@ mdn.axi.cx
 mdn.camden.wtf
 mdn.crows.tokyo
 mdn.hinaloe.net
+mdn.ion.trbroyles.com
 mdn.kaitou.org
 mdn.keasti.net
 mdn.nate601.me
@@ -39291,6 +39302,7 @@ miikka-mbp15.tail1d6df.ts.net
 miipub.com
 mijn.masto.host
 mikado-city.jp
+mike-whiskey.de
 mike.ai
 mike.brailer.info
 mikecoats.social
@@ -40212,6 +40224,7 @@ misskey.xinglili.love
 misskey.xn--krsgw--n73t.com
 misskey.xn--tmp-qb4b9c2eyc.tokyo
 misskey.xps2.net
+misskey.xsns.jp
 misskey.xyz
 misskey.xzh.gs
 misskey.yakijake.net
@@ -43092,6 +43105,7 @@ nazi.social
 naziwatchdd.noblogs.org
 nazokey.com
 nazuwa.de
+nb-fedi.de
 nb12zm0v.activitypub-troll.cf
 nba7arts.wordpress.com
 nbaden.club
@@ -44073,6 +44087,7 @@ nog.community
 nog20.social
 nogafam.zone
 nogamenolife.me
+nogaoga.wordpress.com
 nogitsune.moe
 nognu.de
 nogweii.net
@@ -45965,6 +45980,7 @@ pal.camp
 pal.icu
 palau.pro
 palautgn.duckdns.org
+palaver.p3x.de
 palaver.tet42.org
 palcarajo.social
 pale.o-k-i.net
@@ -47179,6 +47195,7 @@ petmemorywall.pixel.peer2peer.help
 petr.biz.id
 petr.kratinovi.cz
 petras.kudaras.lt
+petrashealingjourney.uk
 petri.dog
 petrichor.pt
 petristrasse2.de
@@ -51295,6 +51312,7 @@ quip.social
 quip.tk
 quippini.net
 quit.im
+quitaxd.online
 quite.exposed
 quite.lewd.today
 quite.social
@@ -55650,7 +55668,6 @@ social.alton.cloud
 social.alxtratrstrl.id
 social.alyve.be
 social.alyx.pink
-social.alyx.to
 social.am-networks.fr
 social.amairo.space
 social.amanzi.nz
@@ -62383,6 +62400,7 @@ su.kurotanesou.online
 su.siberia.work
 su3.io
 sub.buck.al
+sub.club
 sub.fediversekey.com
 sub.mb.draculaojisan.com
 sub.miok.space
@@ -67854,6 +67872,7 @@ velocipederider.com
 velociraptor.ircbots.progval.net
 velodrama.cc
 velour.social
+velzie.rip
 ven.uber.space
 venera.social
 vengeful.eu
@@ -69481,6 +69500,7 @@ weekly.org
 weep.jp
 weep.m.to
 weep.me
+weep.si
 weewee.social
 weeweird1s.space
 wehavecookies.social
@@ -71307,6 +71327,7 @@ x.good.news
 x.goonj.xyz
 x.gthree.win
 x.hrzn.ee
+x.intron014.com
 x.ir31.com
 x.isalman.dev
 x.juick.com
