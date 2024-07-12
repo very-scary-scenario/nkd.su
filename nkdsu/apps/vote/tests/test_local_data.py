@@ -5,7 +5,7 @@ from django.core.management import call_command
 
 
 class LocalDataTest(TestCase):
-    def test_local_data_udated(self) -> None:
+    def test_local_data_updated(self) -> None:
         def status() -> str:
             return subprocess.check_output(['git', 'status', '-s']).decode('utf-8')
 
