@@ -390,7 +390,6 @@ body.tracks-collapsed li.vote {
         right: -.8em;
         top: -.8em;
         pointer-events: none;
-        text-align: right;
         z-index: 3;
 
         .uninvert();
@@ -402,6 +401,8 @@ body.tracks-collapsed li.vote {
         min-width: 9em;
         max-width: 17em;
         border-radius: .4em;
+
+        p { text-align: right !important; }
 
         img {
           float: right;
@@ -416,7 +417,7 @@ body.tracks-collapsed li.vote {
 
         .text, .hat-info {
           clear: both;
-          text-align: center;
+          text-align: center !important;
           word-wrap: break-word;
           overflow: hidden;
           position: relative;
