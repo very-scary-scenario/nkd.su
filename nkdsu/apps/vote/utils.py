@@ -4,6 +4,7 @@ import logging
 import re
 import string
 from dataclasses import dataclass
+from functools import wraps
 from os import environ
 from typing import (
     Any,
@@ -240,16 +241,17 @@ def cached(seconds: int, cache_key: str) -> Callable[[C], C]:
     return wrapper
 
 
-def pk_cached(seconds: int) -> Callable[[T], T]:
+def pk_cached(seconds: int) -> Callable[[C], C]:
     # does nothing (currently), but expresses a desire to cache stuff in future
-    def wrapper(func: T) -> T:
+    def wrapper(func: C) -> C:
+        @wraps(func)
         def wrapped(obj, *a, **k):
             def do_thing(func, pk, *a, **k):
                 return func(obj, *a, **k)
 
             return do_thing(func, obj.pk, *a, **k)
 
-        return cast(T, wrapped)
+        return cast(C, wrapped)
 
     return wrapper
 
