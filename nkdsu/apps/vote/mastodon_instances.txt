@@ -72,6 +72,7 @@
 0ojl4f98eegmbn0nn1l2cb.mdrqnxtagon.pw
 0p0.top
 0pp.us
+0px.no
 0q0.xyz
 0qz.fun
 0rb.it
@@ -108,6 +109,7 @@
 0x7be.selfhost.eu
 0x80.org
 0xa1.social
+0xadmi.net
 0xcb.dev
 0xd.0xa.pw
 0xdd.org.ru
@@ -6045,6 +6047,7 @@
 4427-65-190-132-176.ngrok.io
 4429-2001-1c00-f00-1800-e57c-d97d-6f8e-25c0.ngrok-free.app
 4445xzqf.activitypub-troll.cf
+448a-99-13-229-57.ngrok-free.app
 448c.net
 44a6-154-126-10-15.ngrok.io
 44b0-2405-201-e026-50c6-6d65-a8b1-673f-330f.ngrok.io
@@ -6192,6 +6195,7 @@
 56e2-82-65-180-17.eu.ngrok.io
 56fa-24-191-246-107.ngrok-free.app
 56iv8ie8.activitypub-troll.cf
+56k.dile-up.nl
 56k.social
 56k.space
 56ksocial.com
@@ -7379,6 +7383,7 @@ agora-thinktanks.social
 agora.echelon.pl
 agora.fedi.cat
 agora.ilot.io
+agora.jkvirt.de
 agora.kleinrot.net
 agora.lol
 agora.quellet.blue
@@ -7690,6 +7695,7 @@ akkoma.netzwerk-it.org
 akkoma.newt.li
 akkoma.nl
 akkoma.nrd.li
+akkoma.owobots.com
 akkoma.paranoiamachinery.com
 akkoma.pfcd.me
 akkoma.ponderduck.cc
@@ -7781,6 +7787,7 @@ albireo.am0300snow.com
 album.craftweg.com
 alcatir.com
 alceawisteria.de
+alcohol.msnic.jp
 alcove.bnolet.me
 alcove.website
 alcyon.twilightparadox.com
@@ -7905,6 +7912,7 @@ allies.social
 allies.video
 allison.social
 allistodon.xyz
+allmende.io
 allmendenetz.de
 allnet.hfrc.de
 allnutt.net
@@ -8144,6 +8152,7 @@ anabautistadigital.wordpress.com
 anagram.adapulawska.org
 anakmanis.com
 anakut.org
+analfisting.emailaffinity.top
 analog.am
 analogdreams.blog
 analogphoto.social
@@ -8857,9 +8866,11 @@ art-software.fr
 art-ts8.begin.app
 art.atarijunge.de
 art.glitch.monster
+art.gnieh.org
 art.isabellang.net
 art.kitsuna.net
 art.librepunk.club
+art.masto.host
 art.sulairris.com
 art.sutty.nl
 art.yangzhi.org
@@ -9310,6 +9321,7 @@ av8r.ca
 avali.hu
 avali.ink
 avali.one
+avalonjazz.ca
 avalos.me
 avancee.agency
 avantwhatever.org
@@ -9953,6 +9965,7 @@ beautrait.com
 beaware.live
 bebamm.io
 bebear.net
+bebopping.social
 becauseimbored.com
 becausetrigger.ga
 bech.glitch.me
@@ -10251,6 +10264,7 @@ bgrimace.wordpress.com
 bgtest.prodottoinrete.com
 bgtooter.social
 bgzashtita.espisma
+bharrison.icu
 bhis.social
 bhmx010n.activitypub-troll.cf
 bhre.social
@@ -10756,6 +10770,7 @@ blobfox.coffee
 blobfox.es
 blobturtle.club
 blobular.com
+bloc.in4matics.cat
 block.sytes.net
 blockbastler.de
 blockchainvm2.genetechz.com
@@ -11039,6 +11054,7 @@ blog.hughhollowell.org
 blog.hugoleroux.ovh
 blog.iaddg.net
 blog.iamor.me
+blog.ibb.town
 blog.icod.de
 blog.idolheaven.org
 blog.igelko.space
@@ -11146,6 +11162,7 @@ blog.lrhale.com
 blog.lubar.me
 blog.lucfaucher.fr
 blog.ludivine.nohost.me
+blog.lukaszm.xyz
 blog.lukenbaugh.com
 blog.lukepeltier.com
 blog.lust.works
@@ -11722,6 +11739,7 @@ bonfire.kiwi.mayel.space
 bonfire.lapineige.fr
 bonfire.privacity.org
 bonfire.social.coop
+bonfire.srkn.org
 bonfiredev.kawen.site
 bonfiretest.kawen.site
 bong.social
@@ -11783,6 +11801,7 @@ booknetwork.ca
 bookofadamz.com
 bookrastinating.com
 bookrastination.anyaforger.art
+books-lighthouse.xsns.jp
 books.ahermitforhire.net
 books.andoria.space
 books.babb.no
@@ -11794,6 +11813,7 @@ books.chriswb.dev
 books.colordisco.com
 books.dev.v.st
 books.disinfosocial.club
+books.duck.cafe
 books.dysfunctional.technology
 books.gnieh.org
 books.hccp.org
@@ -12307,6 +12327,7 @@ btw.no
 bu49lnyv.activitypub-troll.cf
 bub.cat
 bub.waifuism.life
+bubalova.com
 bubbleguts.social
 bubbles.leobrown.net
 bubblesthebunny.com
@@ -12316,9 +12337,11 @@ buc.ci
 buchwurm.social
 buckaroo.city
 bucketofcrabs.club
+buckeye.cafe
 buckeye.social
 buckeyestate.social
 bud.camp
+buddel.caasn.de
 buddhalow.masto.host
 buddhist.tv
 buddyverse.xyz
@@ -12892,6 +12915,7 @@ caracol.nodocomun.org
 caraldi.com
 caramelbeard.social
 caranmegil.com
+carapatage.noblogs.org
 carbonatic.com
 carcio.fi
 carck.co.uk
@@ -12967,6 +12991,7 @@ cast.grueproof.net
 cast.iamtalon.me
 cast.kvuzet.org
 cast.kyanos.one
+cast.larsn.fr
 cast.mitch.science
 cast.nsa.lol
 cast.plapperbu.de
@@ -12999,6 +13024,7 @@ castopod.it
 castopod.kahachepe.org
 castopod.millenium.red
 castopod.popolon.org
+castopod.radioprogres.fr
 castopod.schuerz.at
 castopod.server.lukecourt.co.uk
 castopod.social
@@ -13245,6 +13271,7 @@ celt.social
 celti.name
 celtic.blue
 cemocom.de
+censored.social
 censorproof.tv
 censorship.icu
 censurion.tk
@@ -13629,6 +13656,7 @@ chomp.life
 choob.h.etbus.ch
 choochoo.social
 choochoo.space
+choom.club
 chor-blog.de
 chordtoll.com
 chorus.space
@@ -14208,6 +14236,7 @@ cloud.zordhak.fr
 cloud18.xyz
 cloud2.vault84.de
 cloudaf.site
+cloudbattle.net
 cloudclan.net
 clouded.monster
 cloudfiction.social
@@ -14665,6 +14694,7 @@ confederac.io
 conference.glass-lab.net
 conference.tchnics.de
 conffab.com
+conffab2024stg.wpenginepowered.com
 confidential.exposed
 configure.ac
 confinement.me
@@ -15406,6 +15436,7 @@ cyberpaws.lol
 cyberpigeon.net
 cyberplace.social
 cyberpunk.earth
+cyberpunk.gay
 cyberpunk.gmbh
 cyberpunk.haus
 cyberpunk.lol
@@ -15465,6 +15496,7 @@ cypherpunks.it
 cypherpunks.social
 cyphrags.social
 cyrenesavage.com
+cyrilsebek.cz
 cyrix.matto.nl
 cysec.social
 cysioland.pl
@@ -16018,6 +16050,7 @@ decentralized.faith
 decept.org
 decepticons.eu.org
 deception.codes
+decipher2k.com
 deckard.pub
 declin.eu
 decoding.io
@@ -16319,6 +16352,7 @@ dev.cubalibre.social
 dev.dblgrm.com
 dev.dearsarkar.com
 dev.decentralized.faith
+dev.diablocanyon2.com
 dev.diode.zone
 dev.dobschat.io
 dev.dol.b-shock.org
@@ -16833,6 +16867,7 @@ divergence.pp.ua
 divergent.de
 diversispiritus.net.br
 diversity.kitchen
+diversitybayern.wordpress.com
 dividuate.me
 divination.disinfo.zone
 divinemp3.com
@@ -16997,6 +17032,7 @@ dojos.social
 dokasen.com
 dol.bal.ovh
 dol.lei202.com
+dolagasape.sutty.nl
 doll.moe
 doll.social
 dollarvigilante.tv
@@ -18219,6 +18255,7 @@ emi.cx
 emil.morime.gay
 emil.nexus
 emilcar.social
+emile.space
 emily.news
 emilylilyli.me
 emlviewer.com
@@ -18286,6 +18323,7 @@ encephalon.tech
 enchanted.social
 enchantedherb.social
 encircle.cc
+encode.agency
 encode42.dev
 encom.social
 encryptionin.space
@@ -18342,6 +18380,7 @@ ennomeijers.nl
 ennui.industries
 ennui.ws
 enoent.org
+enola-02.com
 enola.space
 enovale.com
 enquequedo.org
@@ -18852,6 +18891,7 @@ explainedchem.wordpress.com
 exploding-heads.com
 explodingcomma.com
 exploit.social
+exploited.site
 explore.beer
 explorer.niwego.com
 exploring.michaelpaskevicius.com
@@ -19011,6 +19051,7 @@ f3.a9z.dev
 f386dfc4.ngrok.io
 f3907c1e5e82c5.lhrtunnel.link
 f3bf-66-65-153-73.ngrok-free.app
+f3d1.eu
 f4.ts-idg.de
 f40867by.activitypub-troll.cf
 f424-82-65-180-17.eu.ngrok.io
@@ -19717,6 +19758,7 @@ fedi.fazbear.lol
 fedi.fedibox.com
 fedi.feltmarker.uk
 fedi.femby.page
+fedi.fennec.town
 fedi.fh3m.de
 fedi.fish
 fedi.fishtheduck.icu
@@ -20022,6 +20064,7 @@ fedi.solibre.de
 fedi.solimano.org
 fedi.somedevfox.ru
 fedi.soundbored.org
+fedi.sowi.space
 fedi.space
 fedi.sphericalcow.space
 fedi.spi.id.au
@@ -22893,6 +22936,7 @@ gentlyflowing.anymanystreams.cc
 gentoo.live
 genuinepet.rocks
 genxer.nz
+genxnotes.com
 genzedong.net
 geobla.net
 geoffreysperl.com
@@ -22932,6 +22976,7 @@ geshasky.45wa.jp
 gesichtsbu.ch
 gespenst-jaeger.net
 gestaltit.com
+gestaltleben.wordpress.com
 gestaltmentor.wordpress.com
 gestative-gharial-0206.dataplicity.io
 gesteves.com
@@ -23303,6 +23348,7 @@ go.lefti.sh
 go.leitsinn.de
 go.matri.cx
 go.mesh2.net
+go.mxtthxw.art
 go.myfed.party
 go.phocks.org
 go.pnyhf.eu
@@ -23532,6 +23578,7 @@ gotosocial.fricklers.org
 gotosocial.funkymonkey.org
 gotosocial.fynhslittle.space
 gotosocial.fyrf.li
+gotosocial.grnwds.uk
 gotosocial.gundan.es
 gotosocial.hd-dn.com
 gotosocial.hybridlehrer.de
@@ -23914,6 +23961,7 @@ gts.astolfo.cool
 gts.ath.cx
 gts.autonomic.zone
 gts.aylamz.me
+gts.aznas.eu.org
 gts.bassinet.uber.space
 gts.bekserver.xyz
 gts.binomech.me
@@ -24087,6 +24135,7 @@ gts.travelpandas.eu
 gts.trycht.cz
 gts.tryptophonic.com
 gts.tunpok.com
+gts.tuttipazzi.cyou
 gts.umany222.net
 gts.unimportant.business
 gts.urmaul.com
@@ -24384,6 +24433,7 @@ hagion.org
 hagn.online
 hagoromofox.com
 hagra.net
+hagringar.org
 haha.iim.gay
 haha.rocks
 hahei.life
@@ -25288,6 +25338,7 @@ homothrive.com
 homunculus.lol
 homura.space
 honey.church
+honey.lauraorchid.tech
 honey.town
 honeybadger.social
 honeybank.net
@@ -25686,6 +25737,7 @@ hub.hubcont.org
 hub.hubzilla.de
 hub.hubzilla.hu
 hub.hw2k.com
+hub.hypernovae.co.uk
 hub.jbesse.info
 hub.joinfediverse.online
 hub.kliklak.net
@@ -25803,6 +25855,7 @@ hub2.eldao.io
 hub2.hannebrook.info
 hub3.eldao.io
 hubbz.de
+hubcont.org
 huber.social
 hubi.4lima.de
 hubi.probierkiste.de
@@ -25963,7 +26016,6 @@ hybridby.design
 hybridenterprise.net
 hydra.phasegate.icu
 hydrangea.emelyne.eu
-hydrantosaurus.com
 hydrate.space
 hydratrash.party
 hydrocube.space
@@ -26429,6 +26481,7 @@ imaginair.es
 imaginarykarin.com
 imagisphe.re
 imahbub.com
+imake.coffee
 imanageproducts.com
 imarc.co.uk
 imas.fun
@@ -27192,6 +27245,7 @@ jagibson.org
 jahait.tk
 jai.edusol.info
 jailbreak.chat
+jaisloweddown.wordpress.com
 jait.fossibl.com
 jakekara.com
 jakelacaze.com
@@ -27724,6 +27778,7 @@ journal.paoloamoroso.com
 journal.thierry-pelle.eu
 journal.tonybark.com
 journal.will-mccann.com
+journalctl.uk
 journalism.social
 journalist.social
 journme.social
@@ -29440,6 +29495,7 @@ latte.isnot.coffee
 lau.digitalesparadies.de
 lauderdale.social
 laura.social
+lauraorchid.tech
 laurenrelarkin.com
 laurens-bookmarks.glitch.me
 laurens.sutty.nl
@@ -30519,6 +30575,7 @@ lgtm.systems
 lgug2z.com
 lgv2.com
 lh-luttes.info
+lh.warrows.fr
 lh747.net
 lhub.social
 lhzs27ld.activitypub-troll.cf
@@ -30715,6 +30772,7 @@ lindgren.tech
 lindhom.no
 line.yamanote.tokyo.jp
 linernotes.club
+linery.m-c.us.kg
 linfan.moe
 linglings.party
 lingo.lol
@@ -30752,6 +30810,7 @@ links.ls.gy
 links.mrraph.photo
 links.msfjarvis.dev
 links.neonxp.ru
+links.nikityy.me
 links.potsda.mn
 links.roobre.es
 linksehobbys.nl
@@ -31104,6 +31163,7 @@ lnbrg.net
 lncgq8pp.activitypub-troll.cf
 lnyan.com
 lo.hn
+lo.nr1a.inc
 lo3.online
 lo789bc8.activitypub-troll.cf
 loa.masto.host
@@ -31984,6 +32044,7 @@ m.natalie.ee
 m.nebula.moe
 m.nekohub.uk
 m.nekol.cc
+m.nennneko5787.net
 m.nerdgineer.com
 m.nerdhub.co
 m.neso.mydns.jp
@@ -32331,6 +32392,7 @@ ma.s0c.in
 ma.sns.onl
 ma.steffo.eu
 ma.strangeworld.jp
+ma.suldomi.net
 ma.wumix.net
 ma.zcx.cc
 ma.zy.lc
@@ -33980,6 +34042,7 @@ mastodon.amxl.com
 mastodon.andr3w.net
 mastodon.andreafortuna.org
 mastodon.andreasrohner.dev
+mastodon.andreasrohner.net
 mastodon.andreasvongunten.com
 mastodon.andrevillien.fr
 mastodon.andrewappleton.net
@@ -35626,6 +35689,7 @@ mastodon.jeroenvd.nl
 mastodon.jeronimo.dev.br
 mastodon.jerrybase.com
 mastodon.jes.xxx
+mastodon.jesse-tong.work
 mastodon.jessecrouch.com
 mastodon.jesserizzo.com
 mastodon.jesuscova.com
@@ -36115,6 +36179,7 @@ mastodon.makoism.com
 mastodon.makotoworkshop.org
 mastodon.malbak.fr
 mastodon.malbela.net
+mastodon.maliksoft.eu
 mastodon.mallettedavid.com
 mastodon.mallorn.de
 mastodon.malmorrow.com
@@ -38427,6 +38492,7 @@ mbi.masto.host
 mbin.0ut0f.space
 mbin.cocopoops.com
 mbin.grits.dev
+mbin.homelab-india.com
 mbin.ja91.uk
 mbin.kyanos.one
 mbin.theonecurly.page
@@ -38677,6 +38743,7 @@ media.privacyinternational.org
 media.reseaumilitant.org
 media.schunzel.de
 media.skewed.de
+media.theplattform.net
 media.undeadnetwork.de
 media.unifiedberets.com
 media.zat.im
@@ -38929,6 +38996,7 @@ meowz.moe
 mercadosocial.madrid
 merci-la-police.fr
 mercur.ing
+mercurial.blogplpl.p.projecthermes.plplreommermercmercurial.mer.pl.mercurial.blog
 mercurial.solar
 mercury.social
 merfolk.social
@@ -38938,6 +39006,7 @@ meridiangrp.co.uk
 merkel.info
 merkel.social
 merlion.social
+mermaid.social
 mero.je
 meron.cloud
 meron.io
@@ -38972,6 +39041,7 @@ meta.appinn.net
 meta.becausetrigger.ga
 meta.discourse.org
 meta.jorun.dev
+meta.kpoppann.com
 meta.legu.one
 meta.masto.host
 meta.writing.exchange
@@ -39013,6 +39083,7 @@ meter2cash.ch
 methamphetamine.monster
 methedr.one
 method-n.com
+metikumity.com
 metokur.org
 metreee.com
 metro.bieszczady.pl
@@ -39084,6 +39155,7 @@ mi.8mitsu.net
 mi.9lab.jp
 mi.ablaze.one
 mi.amari-noa.com
+mi.amsc.f5.si
 mi.antoru.me
 mi.ap-log.net
 mi.arkw.work
@@ -39187,6 +39259,7 @@ mi.nyaa.app
 mi.nycu.moe
 mi.okin-jp.net
 mi.orito-itsuki.net
+mi.osamu-storage.info
 mi.oya0831.net
 mi.oyasumi.dev
 mi.painted.jp
@@ -39220,6 +39293,7 @@ mi.syobon.net
 mi.t0.si
 mi.taichan.site
 mi.takaion.net
+mi.taketoa.com
 mi.takuann.net
 mi.tani-exe.f5.si
 mi.tani-exe.net
@@ -39699,6 +39773,7 @@ minohdon.jp
 minordon.dip.jp
 minorkey.social
 minorthoughts.com
+minreol.dk
 minsterhorn.com
 mint-n-er.de
 mint-nrw.social
@@ -39740,6 +39815,7 @@ mirwarso.de
 mirza.ee
 mis.hokkaidoskey.com
 mis.n1cham0c.net
+mis.nekonohige.jp
 mis.shiokazehs.jp
 mis.ski
 mis.suzakurin.work
@@ -39847,6 +39923,7 @@ misskey.334.ovh
 misskey.3644859.xyz
 misskey.3dcg.love
 misskey.4nm1tsu.com
+misskey.5ouma.me
 misskey.5unl1fe3.com
 misskey.7ka.org
 misskey.9tail.net
@@ -40310,6 +40387,7 @@ misskey.sakanana.me
 misskey.sanao.dev
 misskey.sappagetti.com
 misskey.sasakulab.com
+misskey.satoki.dev
 misskey.sbite0138.net
 misskey.sc3.fun
 misskey.scorpios.uk
@@ -40433,7 +40511,6 @@ misskey.usakoya.net
 misskey.usbharu.dev
 misskey.usuwolabo.page
 misskey.usuyuki.net
-misskey.uwussy.eu
 misskey.uz
 misskey.v-nr.net
 misskey.vcborn.com
@@ -40549,6 +40626,7 @@ mitchw.blog
 miteff.co
 mitente.club
 mitest.eggplant.place
+mitetu.xsns.jp
 mithuru.online
 mitir.social
 mitra-dev.stesan.dev
@@ -40580,6 +40658,7 @@ mittn.ca
 mittwochsfrage.de
 mitzelten.de
 miv2nir.synology.me
+mivatter.com
 mivox.net
 miw0ndvy.activitypub-troll.cf
 miwkey.miwpayou0808.info
@@ -40619,6 +40698,7 @@ mk.ab2m.cf
 mk.absturztau.be
 mk.aetheri.ca
 mk.ahri.cloud
+mk.airis.dev
 mk.aleteoryx.me
 mk.alicey.dev
 mk.amanita.zone
@@ -40736,6 +40816,7 @@ mk.michizev.de
 mk.mii.gay
 mk.mistli.net
 mk.mornie.org
+mk.moth.zone
 mk.mozc-plasma.tech
 mk.mozcmozc.club
 mk.msjp.pro
@@ -40804,6 +40885,7 @@ mk.szkod.ovh
 mk.t0.si
 mk.taiy.me
 mk.tenpest-moon.uk
+mk.therwi.net
 mk.toast.cafe
 mk.togen.xyz
 mk.tomboyfan.club
@@ -40818,6 +40900,7 @@ mk.undercurrents.io
 mk.undfnd.dev
 mk.unixlike.org
 mk.uwu.is
+mk.uwussy.eu
 mk.veryamt.com
 mk.vibbe.xyz
 mk.vijf.life
@@ -41159,6 +41242,7 @@ monkeystew.social
 monkeysthumb.co.uk
 monks.city
 mono.cafe
+mono.pcsfield.com
 monocles.social
 monodes.com
 monodon.monomarchos.agency
@@ -41712,6 +41796,7 @@ mstdn-server.jp
 mstdn-skyblue.net
 mstdn-social.activitypub-proxy.cf
 mstdn-social.com
+mstdn-stg.monapii.net
 mstdn-syui-2.herokuapp.com
 mstdn-syui-3.herokuapp.com
 mstdn-syui.herokuapp.com
@@ -43785,6 +43870,7 @@ neuraldiverseuniverse.com
 neuro.cooking
 neurodifferent.me
 neurodiver.ge
+neurodivergentscribbles.blog
 neurodiverseleader.net
 neurodiversity-in.au
 neurohack.net
@@ -45018,6 +45104,7 @@ obak-key.com
 obapom.work
 obelix.stoneartprod.xyz
 oberberg.nrw
+oberlausitz.vonunten.org
 oberpfalz.social
 obese.cat
 obey.social
@@ -45197,6 +45284,7 @@ ohess.org
 ohgodohfuck.fraudulent.link
 ohhi.icu
 ohjames.eu
+ohkasskey.top
 ohmidon.m.to
 ohmygod.social
 ohmylanta.today
@@ -45684,6 +45772,7 @@ orthis.social
 orthoheterodox.blog
 orthy.de
 ortodogs.info
+oru.ski
 orwell.fun
 orx.me
 orygs7tr.activitypub-troll.cf
@@ -45968,6 +46057,7 @@ owncast.djbrine1.ru
 owncast.dragon-fly.club
 owncast.eticadigital.eu
 owncast.everythingbut.fish
+owncast.f2n.me
 owncast.funcube.space
 owncast.glenplonk.fr
 owncast.grautier.com
@@ -46598,6 +46688,7 @@ peer.madiator.cloud
 peer.madiator.com
 peer.masto.host
 peer.mathdacloud.ovh
+peer.mrschneeball.xyz
 peer.newsmovies.online
 peer.nuxlight.xyz
 peer.philoxweb.be
@@ -46957,6 +47048,7 @@ peertube.koreus.com
 peertube.kosebamse.com
 peertube.krapace.fr
 peertube.kriom.net
+peertube.krserv.social
 peertube.kswk.org
 peertube.kx.studio
 peertube.kyriog.eu
@@ -46964,6 +47056,7 @@ peertube.la-scic.fr
 peertube.laas.fr
 peertube.lagob.fr
 peertube.lagrottedelours.ovh
+peertube.laguixeta.cat
 peertube.langfamilie.de
 peertube.ldclrcq.top
 peertube.le43.eu
@@ -47424,6 +47517,7 @@ perfumefan.jp
 perhapspleroma.iscute.ovh
 pericles.uber.space
 perkins.pub
+perksey.com
 perktold.xyz
 perl.social
 permaculture.masto.host
@@ -47777,6 +47871,7 @@ piconic.co
 picosize.misskey.moe
 pics.80px.com
 pics.80px.online
+pics.ahermitforhire.net
 pics.airis.work
 pics.beep.computer
 pics.brocolis.party
@@ -47835,6 +47930,7 @@ piercingtheveil.tv
 piero.bosio.info
 pierre.tube
 pieter.kon.ink
+pieterhendrikse.com
 pifke.social
 pigeon.depht.com
 pigeon.place
@@ -47886,6 +47982,7 @@ pinetree.ink
 ping.de
 ping.panoptic.onl
 ping.the-planet.space
+pingie.com
 pings.spaceshipsin.space
 pinheirodeabrantes.pt
 pink-hair.studio
@@ -47907,6 +48004,7 @@ pinskiy.space
 pint.com
 pint.social
 pinter.family
+pinty.fr
 pio47bqw.activitypub-troll.cf
 pioneer.uber.space
 piou.ark.lu
@@ -47991,6 +48089,7 @@ pix.diaspodon.fr
 pix.divas.joburg
 pix.domanske.de
 pix.dup.bz
+pix.durehed.se
 pix.echelon4.space
 pix.everythingbut.fish
 pix.famichiki.jp
@@ -48089,6 +48188,7 @@ pix.toot.wales
 pix.travelpandas.eu
 pix.tyrel.dev
 pix.ublog.tech
+pix.unchat.cat
 pix.underworld.fr
 pix.unixcat.net
 pix.verya.pe
@@ -48202,6 +48302,7 @@ pixel.mikka.md
 pixel.misterbanal.net
 pixel.moahr.de
 pixel.moee.fr
+pixel.molea.cloud
 pixel.muenster.im
 pixel.natalenko.name
 pixel.netzspielplatz.de
@@ -48600,6 +48701,7 @@ pixelig.social
 pixellife.app
 pixelpets.xyz
 pixelpost.photo
+pixelpost.uk
 pixelpups.place
 pixelroiber.de
 pixels.abraum.de
@@ -50187,6 +50289,7 @@ podcast.c3po.rocks
 podcast.clemlatz.dev
 podcast.damienplaysrecords.com
 podcast.dimitriregnier.net
+podcast.es-antoinegapp.fr
 podcast.extrasentido.com
 podcast.fediverse.pl
 podcast.fetzer.me
@@ -50436,6 +50539,7 @@ ponkotsu.now.sh
 ponnuki-paderborn.de
 ponpon.tk
 pont-bl.eu.org
+pontebianco.noblogs.org
 pony.gallery
 pony.social
 pony.tube
@@ -50910,6 +51014,7 @@ prologic.blog
 promessia.masto.host
 prometheus.quest
 promptfission.com
+pronounmail.com
 proofte.ch
 propaganda.global
 propaganda.lol
@@ -51978,6 +52083,7 @@ raptorpond.com
 raptube.antipub.org
 raqueorabelo.wordpress.com
 rar5gte5.activitypub-troll.cf
+rare.lauraorchid.link
 rarebooks.miskatonic.cymru
 rarez.lol
 rarez.me
@@ -52825,6 +52931,7 @@ robboss.art
 robermar.social
 robert.winter.ink
 robertbrook.masto.host
+robertjacobsen.no
 robertjames1971.blog
 robertlogger.vivaldi.net
 roberto.selbach.ca
@@ -52982,6 +53089,7 @@ roryprice.me
 roryprice.net
 rosafamily.social
 rosafluffmoln.nu
+rosahaj.xyz
 rosaline.systems
 rosariotech.com.br
 rosaryfaith.com
@@ -53003,6 +53111,7 @@ rossabaker.com
 rosti.social
 rot.deadbeef.monster
 rotaru.cloud
+rotating.computer
 rotes.potsda.mn
 rothery.me
 rothoff.masto.host
@@ -53943,6 +54052,7 @@ science.channel.org
 science.patchwork.online
 science.social
 sciencefiction.nl
+sciencefictionruminations.com
 sciencemastodon.com
 sciencemediacenter.social
 sciences.dental
@@ -54531,6 +54641,7 @@ sharknado.tombies.eu
 sharktale.xyz
 sharktest.baka.social
 sharktest.eldritch.gift
+sharky.acorneroftheweb.com
 sharlayan.in
 sharlayan.me
 sharma.io
@@ -54731,6 +54842,7 @@ shrimp.fear.garden
 shrimp.foxwit.ch
 shrimp.oliphant.social
 shrimp.quest
+shrimp.robustjumprope.lol
 shrimp.simcha.lgbt
 shrimp.tapenoise.cafe
 shrimp.w.on-t.work
@@ -55728,6 +55840,7 @@ soc.techentuzjasta.pl
 soc.texto-plano.xyz
 soc.thatone.gay
 soc.thefediblock.wiki
+soc.til.pm
 soc.titouan.co
 soc.tldr.tk
 soc.triangleidiot.online
@@ -55749,6 +55862,7 @@ soc.x.kape.xyz
 soc.xmit.xyz
 soc.xn--wxa.zone
 soc.z80.moe
+soc.zenoverse.net
 soc.zhcode.fun
 soc.zom.bi
 soc0.outrnat.nl
@@ -56495,7 +56609,6 @@ social.butash.net
 social.butnot.today
 social.butterknifeestates.com
 social.buzzworkers.com
-social.bvoigtlaender.de
 social.bwpost.online
 social.bybliotheca.net
 social.bylsem.com
@@ -57498,6 +57611,7 @@ social.franssen.mobi
 social.franssen.xyz
 social.frbg.me
 social.freakingfurries.ca
+social.freddev.org
 social.freechristian.life
 social.freecodecamp.org
 social.freeculture.org
@@ -60217,6 +60331,7 @@ social.sgf.dev
 social.sgsknote.org
 social.shaarad.me
 social.shabsters.com
+social.shadow-corporation.com
 social.shadowfacts.net
 social.shadowkat.net
 social.shadowtoot.world
@@ -60354,6 +60469,7 @@ social.sometimes.io
 social.sonicbunny.com
 social.sonofy.io
 social.sonsofbattlefield.de
+social.soongyu.me
 social.sopuzzled.com
 social.soraharu.com
 social.soup6020.dev
@@ -60382,6 +60498,7 @@ social.spheron.one
 social.spicysources.de
 social.spicyweb.dev
 social.spiegelslust.xyz
+social.spielenmitlili.com
 social.spiezmaestro.ch
 social.spin.wtf
 social.spiritofcontradiction.eu
@@ -61449,6 +61566,7 @@ socialspace.xyz
 socialspidev.masto.host
 socialsync.glitch.me
 socialsyncs.glitch.me
+socialtest.5everin.de
 socialtest.decatec.de
 socialtest.f4grx.net
 socialtest.guldan.net
@@ -61901,6 +62019,7 @@ spl-mstdn.net
 spla.cat
 spla.mastodont.cat
 splain.club
+splann-pod.kaz.bzh
 splashcat.social
 splat.social
 splat.soy
@@ -61981,6 +62100,7 @@ spse.dev
 spswoodturners.org
 spt.social
 spudwart.com
+spunky.nz
 spurlock.social
 spurs.collabfc.com
 spv.sh
@@ -62042,6 +62162,7 @@ srilankans.online
 srkn.org
 srks.social
 srostreamtest.sroallcap.com
+srs.lol
 srsakamoto.wordpress.com
 srsly.lol
 srweaver.com
@@ -62388,6 +62509,7 @@ stevesnider.com
 steviebobbins.com
 stevieness.uk
 stevijo.me
+stfate.site
 stfu.social
 stg-deepsee-dev.kinsta.cloud
 stg-mstdn.yono.kuropen.org
@@ -63473,6 +63595,7 @@ talk.marketally.com
 talk.marq42.xyz
 talk.mls20.de
 talk.neovibe.app
+talk.nerdmusic.net
 talk.ogre.red
 talk.rocketsfall.net
 talk.sevvie.ltd
@@ -63665,6 +63788,7 @@ tcw.mitch.science
 tda.zone
 tdbdj92k.activitypub-troll.cf
 tdd.social
+tdn.today
 tds.xyz
 tdsdak89.activitypub-troll.cf
 tdx-labs.com
@@ -63747,6 +63871,7 @@ techandmusic.space
 techarts.wordpress.com
 techbacon.social
 techbites.info
+techcoffe.masto.host
 techdon.dev
 techdon.info
 techdonuts.uk
@@ -63931,6 +64056,7 @@ ternoc.social
 terokankaanpera.fi
 terra.incognita.net
 terra.social
+terra.techpriesthub.xyz
 terradaliberdade.pt
 terrafirma.space
 terraforminglatam.net
@@ -64284,6 +64410,7 @@ thaisocial.in.th
 thaitodon.social
 thaitube.in.th
 thames.blisses.org
+thamizhi-d08e60.ingress-haven.ewp.live
 thanatos.at
 thanetcreative.co.uk
 thanius.chuggybumba.com
@@ -64780,6 +64907,7 @@ thias.xyz
 thicc.horse
 thicc.site
 thickey.com
+thickliquidsonly.fyi
 thickrips.cloud
 thickskull.net
 thiele.m.to
@@ -65392,6 +65520,7 @@ toot.darkcooger.net
 toot.dawggzeass.ddnss.org
 toot.deepmindstate.net
 toot.demo.cloudron.io
+toot.derpingu.in
 toot.design
 toot.dessert.coffee
 toot.dev.120v.ac
@@ -65690,6 +65819,7 @@ toot.phasorburn.com
 toot.philevans.uk
 toot.phseiff.com
 toot.piaf.eu
+toot.pikopublish.ing
 toot.pimux.de
 toot.pingu.lol
 toot.pingu4.me
@@ -66027,6 +66157,7 @@ toots.legohousein.space
 toots.logomancy.net
 toots.lyven.live
 toots.magnocrm.com
+toots.maik.ch
 toots.maikel.dev
 toots.martyn.berlin
 toots.mashton.party
@@ -66171,6 +66302,7 @@ town.kapuluan.link
 town.planetai.re
 town.thousand.rocks
 town.voyager.blue
+towner.blog
 towns.gay
 townsends.online
 townsquareapp.com
@@ -66934,6 +67066,7 @@ tube.privacytools.io
 tube.probono.media
 tube.project47.xyz
 tube.ptinem.io
+tube.public.apolut.net
 tube.public.cat
 tube.puggaard-nyborg.dk
 tube.pustule.org
@@ -67185,6 +67318,7 @@ tutoteket.no
 tutox.fr
 tuts.eloyou.online
 tuts.ravoque.com.br
+tutu.social
 tutut.delire.party
 tuub00qf.activitypub-troll.cf
 tuulaniemi.net
@@ -67323,6 +67457,7 @@ twilight.garden
 twilight.social
 twilightprincess.se
 twilighttangledthoughts.com
+twily.lauraorchid.link
 twimblr.live
 twimblr.xyz
 twincities.photo
@@ -68063,6 +68198,7 @@ v03goyk3.activitypub-troll.cf
 v0idkr4ft.com
 v0u2vv7q.activitypub-troll.cf
 v1.microblog.chriskrycho.com
+v1.pt
 v1.smartit.nu
 v10.minetaro12.com
 v11-k.yumeka.xyz
@@ -68189,6 +68325,7 @@ vaping.social
 vapokland.io
 vapor.highspirits.games
 vaporghost.at
+vapourtrail.jp
 vaqbbdpr.activitypub-troll.cf
 var.abl.cl
 var.one
@@ -69735,6 +69872,7 @@ watch.libertaria.space
 watch.linya.live
 watch.minecraftchest1.us
 watch.mitch.science
+watch.muhh.lol
 watch.nuked.social
 watch.ocaml.org
 watch.owncast.online
@@ -70825,6 +70963,7 @@ wuthering.online
 wutup.wtfflorida.com
 wv30eo0n.activitypub-troll.cf
 wvpz8j5.activitypub-troll.cf
+wvy.my.id
 ww1.extradienst.net
 ww1.mindblast.space
 ww3.vnchich.cc
@@ -71070,6 +71209,7 @@ www.fightthegoodfight.blog
 www.fightxing.com
 www.filklore.com
 www.filmvanalledag.nl
+www.finertech.com
 www.fireflies.nl
 www.firr.cam
 www.flatbushgardener.com
@@ -71546,6 +71686,7 @@ www.stpaulinu.de
 www.streamery.club
 www.stress404.dev
 www.strigo.social
+www.stuartgrimshaw.co.uk
 www.stuxie.dev
 www.submissionwrestling.net
 www.subquestspod.com
@@ -71560,6 +71701,7 @@ www.synthbear.xyz
 www.tafelcloud.de
 www.takagi.icu
 www.techdon.info
+www.technoetic.com
 www.technowizardry.net
 www.teknoids.net
 www.teknopata.eus
@@ -72052,6 +72194,7 @@ xn--uiq450e.club
 xn--undsk-jra.se
 xn--videogames-bo3g.gg
 xn--vilmoskrte-kcb.de
+xn--vusz0j.art
 xn--wda.fr
 xn--wmq.jp
 xn--xckta9b2cyc.page
@@ -72339,6 +72482,7 @@ yknk.work
 ykzts.technology
 ylan.page
 ylavyder.activitypub-troll.cf
+ylay.netlify.app
 ylor.tg
 ylwsgn.cc
 ym.rookieo.com
