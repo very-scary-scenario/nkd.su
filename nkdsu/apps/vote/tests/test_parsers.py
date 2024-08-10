@@ -211,6 +211,14 @@ PART_EXAMPLES: list[tuple[str, list[tuple[bool, str]]]] = [
         ],
     ),
     (
+        'FLOWxORANGE RANGE',
+        [
+            (True, 'FLOW'),
+            (False, 'x'),
+            (True, 'ORANGE RANGE'),
+        ],
+    ),
+    (
         'fu_mou (Hifumi,inc.)',
         [
             (True, 'fu_mou'),
