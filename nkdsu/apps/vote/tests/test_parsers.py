@@ -199,12 +199,6 @@ PART_EXAMPLES: list[tuple[str, list[tuple[bool, str]]]] = [
         ],
     ),
     (
-        'FLOWxGRANDRODEO',
-        [
-            (True, 'FLOWxGRANDRODEO'),
-        ],
-    ),
-    (
         'FLOWxORANGE RANGE',
         [
             (True, 'FLOW'),

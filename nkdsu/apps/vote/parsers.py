@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 from typing import Iterable, Optional
 
@@ -37,6 +38,19 @@ class ParsedArtist:
         return iter(self.chunks)
 
 
+SPECIAL_CASES: list[tuple[str, str, str]] = [
+    ('FLOW', 'x', '&'),
+    ('SawanoHiroyuki[nZk]', ':', '&'),
+    ('(K)NoW_NAME', ':', '&'),
+]
+_SPECIAL_CASE_TOKEN = r'^{}$'.format(
+    '|'.join(
+        r'({}.*)'.format(re.escape(startswith + split))
+        for startswith, split, collab_delim in SPECIAL_CASES
+    )
+)
+
+
 class ArtistLexer(Lexer):
     tokens = {
         SPECIAL_CASE,  # type: ignore  # noqa
@@ -49,7 +63,7 @@ class ArtistLexer(Lexer):
         CV,  # type: ignore  # noqa
     }
 
-    SPECIAL_CASE = r'^(' r'FLOWxGRANRODEO|' r'SawanoHiroyuki\[nZk\]:.*' r')$'
+    SPECIAL_CASE = _SPECIAL_CASE_TOKEN
     VIA = (
         r'\s+('
         r'from|'
@@ -133,18 +147,16 @@ artist_lexer = ArtistLexer()
 
 
 def handle_special_case(token) -> Iterable[ArtistChunk]:
-    if token.value == "FLOWxGRANRODEO":
-        yield ArtistChunk('FLOW', is_artist=True)
-        yield ArtistChunk('x', is_artist=False)
-        yield ArtistChunk('GRANRODEO', is_artist=True)
-    elif token.value.startswith('SawanoHiroyuki[nZk]:'):
-        sawano, collaborators = token.value.split(':', 1)
-        yield ArtistChunk(sawano, is_artist=True)
-        yield ArtistChunk(':', is_artist=False)
-        for i, collaborator in enumerate(collaborators.split('&')):
-            if i != 0:
-                yield ArtistChunk('&', is_artist=False)
-            yield ArtistChunk(collaborator, is_artist=True)
+    for startswith, split, collab_delim in SPECIAL_CASES:
+        if token.value.startswith(startswith + split):
+            primary, collaborators = token.value.split(split, 1)
+            yield ArtistChunk(primary, is_artist=True)
+            yield ArtistChunk(split, is_artist=False)
+            for i, collaborator in enumerate(collaborators.split(collab_delim)):
+                if i != 0:
+                    yield ArtistChunk(collab_delim, is_artist=False)
+                yield ArtistChunk(collaborator, is_artist=True)
+            break
 
     else:
         raise NotImplementedError(token.value)
