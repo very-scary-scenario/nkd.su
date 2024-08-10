@@ -237,6 +237,16 @@ PART_EXAMPLES: list[tuple[str, list[tuple[bool, str]]]] = [
             (True, 'Ookubo Yuki'),
         ],
     ),
+    (
+        '(K)NoW_NAME:NIKIIE&Tachibana Ayaka',
+        [
+            (True, '(K)NoW_NAME'),
+            (False, ':'),
+            (True, 'NIKIIE'),
+            (False, '&'),
+            (True, 'Tachibana Ayaka'),
+        ],
+    ),
 ]
 
 GROUP_EXAMPLES = [
