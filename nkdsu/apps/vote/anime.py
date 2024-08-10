@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import re
 from itertools import chain
 from typing import Literal, Optional
 
@@ -131,7 +132,16 @@ class Anime(BaseModel):
         ]
 
 
-by_title: dict[str, Anime] = {}
+def normalise_title(title: str) -> str:
+    """
+    Normalise the format of a title to erase distinctions that aren't important to us.
+    """
+
+    return re.sub(r'[`‘’‛ߵߴ❛❜]', "'", title)
+
+
+by_normalised_title: dict[str, Anime] = {}
+
 
 with open(
     os.path.join(
@@ -151,11 +161,11 @@ with open(
             }
         )
 
-        for title in chain([a.title], a.synonyms):
-            if (title not in by_title) or (
-                by_title[title].inclusion_ranking() > a.inclusion_ranking()
+        for title in (normalise_title(title) for title in chain([a.title], a.synonyms)):
+            if (title not in by_normalised_title) or (
+                by_normalised_title[title].inclusion_ranking() > a.inclusion_ranking()
             ):
-                by_title[title] = a
+                by_normalised_title[title] = a
 
 
 def get_anime(title: str) -> Optional[Anime]:
@@ -167,7 +177,7 @@ def get_anime(title: str) -> Optional[Anime]:
     >>> get_anime('shamiko')
     """
 
-    return by_title.get(title)
+    return by_normalised_title.get(normalise_title(title))
 
 
 def fuzzy_nkdsu_aliases() -> dict[str, str]:
