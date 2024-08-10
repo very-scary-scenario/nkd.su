@@ -191,12 +191,6 @@ PART_EXAMPLES: list[tuple[str, list[tuple[bool, str]]]] = [
         ],
     ),
     (
-        'SawanoHiroyuki[nzk]:collab',
-        [
-            (True, 'SawanoHiroyuki[nzk]:collab'),
-        ],
-    ),
-    (
         'FLOWxGRANRODEO',
         [
             (True, 'FLOW'),
