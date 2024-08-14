@@ -9,7 +9,7 @@ from functools import cached_property
 from io import BytesIO
 from itertools import chain
 from string import ascii_letters
-from typing import Any, Iterable, Literal, Optional, TYPE_CHECKING, TypedDict, cast
+from typing import Any, Iterable, Literal, Optional, TypedDict, cast
 from urllib.parse import quote, urlparse
 from uuid import uuid4
 
@@ -57,10 +57,6 @@ from .utils import (
 from .validators import sluggable
 from .voter import Voter
 from ..vote import mixcloud
-
-
-if TYPE_CHECKING:
-    from django.db.models.fields.manager import RelatedManager
 
 
 User = get_user_model()
@@ -831,6 +827,9 @@ class Role:
         ]
 
 
+TrackManager = models.Manager.from_queryset(TrackQuerySet)
+
+
 class Track(CleanOnSaveMixin, Serializable, models.Model):
     class Meta:
         constraints = [
@@ -846,11 +845,7 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
             ),
         ]
 
-    objects = TrackQuerySet.as_manager()
-
-    note_set: RelatedManager[Note]
-    play_set: RelatedManager[Play]
-    vote_set: RelatedManager[Vote]
+    objects = TrackManager()
 
     # derived from iTunes
     id = models.CharField(max_length=16, primary_key=True)
@@ -1938,12 +1933,15 @@ class ElfShelving(CleanOnSaveMixin, models.Model):
     reason_disabled = models.TextField(blank=True)
 
 
+NoteManager = models.Manager.from_queryset(NoteQuerySet)
+
+
 class Note(CleanOnSaveMixin, models.Model):
     """
     A note about whatever for a particular track.
     """
 
-    objects = NoteQuerySet.as_manager()
+    objects = NoteManager()
 
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
     show = models.ForeignKey(Show, blank=True, null=True, on_delete=models.CASCADE)
