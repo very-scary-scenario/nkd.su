@@ -88,12 +88,16 @@ for group, char, name in chain(_get_emoji(), _get_zwj_sequences()):
 
 
 # some checks that we've read stuff correctly:
-assert SUGGESTABLE_EMOJI['⭐'] == 'star'
-assert SUGGESTABLE_EMOJI['🐕‍🦺'] == 'service dog'
-assert SUGGESTABLE_EMOJI['🤯'] == 'shocked face with exploding head'
-assert SUGGESTABLE_EMOJI['🫟'] == 'splatter'
-assert OTHER_ALLOWED_EMOJI['🧑🏿‍🦳'] == 'person: dark skin tone, white hair'
-assert OTHER_ALLOWED_EMOJI['🦳'] == 'emoji component white hair'
+def _check_emoji(src: dict[str, str], char: str, expected_name: str) -> None:
+    assert src[char] == expected_name, f'got {src[char]!r} for {char!r}, expected {expected_name!r}'
+
+
+_check_emoji(SUGGESTABLE_EMOJI, '⭐', 'star')
+_check_emoji(SUGGESTABLE_EMOJI, '🐕‍🦺', 'service dog')
+_check_emoji(SUGGESTABLE_EMOJI, '🤯', 'shocked face with exploding head')
+_check_emoji(SUGGESTABLE_EMOJI, '🫟', 'splatter')
+_check_emoji(OTHER_ALLOWED_EMOJI, '🧑🏿‍🦳', 'person: dark skin tone, white hair')
+_check_emoji(OTHER_ALLOWED_EMOJI, '🦳', 'emoji component white hair')
 
 
 if __name__ == '__main__':
