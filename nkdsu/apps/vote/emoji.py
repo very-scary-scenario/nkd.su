@@ -91,6 +91,7 @@ for group, char, name in chain(_get_emoji(), _get_zwj_sequences()):
 assert SUGGESTABLE_EMOJI['⭐'] == 'star'
 assert SUGGESTABLE_EMOJI['🐕‍🦺'] == 'service dog'
 assert SUGGESTABLE_EMOJI['🤯'] == 'shocked face with exploding head'
+assert SUGGESTABLE_EMOJI['🫟'] == 'splatter'
 assert OTHER_ALLOWED_EMOJI['🧑🏿‍🦳'] == 'person: dark skin tone, white hair'
 assert OTHER_ALLOWED_EMOJI['🦳'] == 'emoji component white hair'
 
