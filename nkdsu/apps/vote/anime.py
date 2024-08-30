@@ -77,7 +77,13 @@ class Anime(BaseModel):
 
     def cache_picture(self) -> None:
         resp = requests.get(str(self.picture))
-        resp.raise_for_status()
+
+        try:
+            resp.raise_for_status()
+        except requests.HTTPError:
+            resp = requests.get(str(self.thumbnail))
+            resp.raise_for_status()
+
         image_content = resp.content
         with open(self.cached_picture_path(), 'wb') as image_file:
             image_file.write(image_content)
