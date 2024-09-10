@@ -89,7 +89,9 @@ for group, char, name in chain(_get_emoji(), _get_zwj_sequences()):
 
 # some checks that we've read stuff correctly:
 def _check_emoji(src: dict[str, str], char: str, expected_name: str) -> None:
-    assert src[char] == expected_name, f'got {src[char]!r} for {char!r}, expected {expected_name!r}'
+    assert (
+        src[char] == expected_name
+    ), f'got {src[char]!r} for {char!r}, expected {expected_name!r}'
 
 
 _check_emoji(SUGGESTABLE_EMOJI, '⭐', 'star')
