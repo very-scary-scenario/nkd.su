@@ -22564,6 +22564,7 @@ friendica.dinven.de
 friendica.dispark.org
 friendica.djan-gicquel.fr
 friendica.donky.social
+friendica.doosom.com
 friendica.doskel.net
 friendica.draky.net
 friendica.drk.network
@@ -23914,6 +23915,7 @@ girak.moe
 girak.net
 girevik.su
 girl-is.gay
+girlboss.gaslight.love
 girlboss.ing
 girlc.at
 girlclock.club
@@ -62118,7 +62120,6 @@ social.rahim.li
 social.raidarou.com
 social.raincloud.dev
 social.raindev.org
-social.rainevixen.com
 social.raise-uav.com
 social.raithsphe.re
 social.raitisoja.com
