@@ -167,9 +167,6 @@ class EverythingTest(
         )
 
     def ensure_all_urls_resolve(self, urls):
-        # linode has robot protection that makes automated testing of links to their site impossible, so:
-        del urls['https://www.linode.com/legal-privacy/']
-
         # the cat's website returns HTTP 429 when crawled in these tests
         del urls['https://thecat.radio']
 
