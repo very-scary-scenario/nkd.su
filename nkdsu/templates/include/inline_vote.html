@@ -31,7 +31,7 @@
 
       {% if vote.is_manual %}
         <p class="meta full_name">{{ vote.name }}</p>
-        <p class="meta kind">via {{ vote.kind }}</p>
+        <p class="meta kind">via {{ vote.get_kind_display }}</p>
       {% elif vote.is_twitter %}
         <p class="meta full_name">{{ vote.twitter_user.name }}</p>
         <p class="meta screen_name">@{{ vote.twitter_user.screen_name }}</p>
