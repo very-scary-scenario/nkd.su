@@ -1469,6 +1469,7 @@ MANUAL_VOTE_KINDS = (
     ('text', 'text'),
     ('tweet', 'tweet'),
     ('person', 'in person'),
+    ('pigeon', 'carrier pigeon'),
     ('phone', 'on the phone'),
 )
 
