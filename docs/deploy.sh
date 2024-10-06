@@ -12,6 +12,7 @@ mv _build/html/* "$td"
 
 # make a single-commit git reposotory containing the build
 cd "$td"
+echo 'dev-docs.nkd.su' > .domains
 git init
 git checkout -b pages
 git add .
