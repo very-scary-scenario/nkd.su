@@ -1,5 +1,7 @@
 #!/bin/sh -ex
 
+cd "$(dirname "$0")"
+
 # build the docs
 make clean
 make html
