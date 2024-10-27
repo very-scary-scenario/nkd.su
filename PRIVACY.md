@@ -16,9 +16,9 @@ The **host**, Peter Shillito, who runs the show.
 
 We also have a hosting provider, who technically could get access to a lot of
 this information, but we don't expect them to. If you want, you can have a look
-at [their privacy policy][linode-privacy], too.
+at [their data protection documentation][hetzner-tom], too.
 
-[linode-privacy]: https://www.linode.com/legal-privacy/ "Linode's privacy policy"
+[hetzner-tom]: https://www.hetzner.com/AV/TOM_en.pdf "Hetzner's Technical and Organizational Measures"
 
 ## things we gather and how they will be used
 

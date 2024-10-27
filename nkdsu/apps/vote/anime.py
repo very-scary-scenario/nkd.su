@@ -12,7 +12,7 @@ import requests
 from typing_extensions import TypedDict
 import ujson
 
-from .utils import camel_to_snake
+from .utils import UA, camel_to_snake
 
 
 MAX_ANIME_SUGGESTIONS = 10
@@ -76,12 +76,12 @@ class Anime(BaseModel):
         return f'{settings.MEDIA_URL.rstrip("/")}/ap/{self.cached_picture_filename()}'
 
     def cache_picture(self) -> None:
-        resp = requests.get(str(self.picture))
+        resp = requests.get(str(self.picture), headers={'User-Agent': UA})
 
         try:
             resp.raise_for_status()
         except requests.HTTPError:
-            resp = requests.get(str(self.thumbnail))
+            resp = requests.get(str(self.thumbnail), headers={'User-Agent': UA})
             resp.raise_for_status()
 
         image_content = resp.content
