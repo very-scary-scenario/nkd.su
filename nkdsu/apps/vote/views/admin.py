@@ -291,7 +291,7 @@ class MakeBlock(TrackSpecificAdminMixin, CreateView):
         except ValidationError as e:
             return self.handle_validation_error(e)
 
-        messages.success(self.request, u"'{}' blocked".format(self.get_object().title))
+        messages.success(self.request, u"'{}' blocked".format(self.get_track().title))
 
         return redirect(reverse('vote:index'))
 
