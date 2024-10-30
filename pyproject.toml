@@ -72,7 +72,7 @@ pytest-xdist = "*"
 django-stubs = { version = "*", extras = ["compatible-mypy"] }
 flake8 = "*"
 flake8-import-order = "<2"
-mypy = { version = ">=1.1,<1.11", extras = ["mypyc"] }
+mypy = { version = "*", extras = ["mypyc"] }
 types-Pillow = "*"
 types-markdown = "*"
 types-python-dateutil = "*"
