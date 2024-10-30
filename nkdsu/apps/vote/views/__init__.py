@@ -548,7 +548,7 @@ class Anime(mixins.BreadcrumbMixin, ListView):
     template_name = 'anime_detail.html'
     context_object_name = 'tracks'
 
-    def get_queryset(self) -> list[Track]:
+    def get_queryset(self) -> list[Track]:  # type: ignore[override]
         tracks = self.model.objects.by_anime(
             self.kwargs['anime'],
             show_secret_tracks=(

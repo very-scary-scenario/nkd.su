@@ -86,7 +86,7 @@ class TrackListWithAnimeGrouping(ContextMixin):
 
 
 class TrackListWithAnimeGroupingListView(TrackListWithAnimeGrouping, ListView):
-    def get_queryset(self) -> Sequence[Track] | TrackQuerySet:
+    def get_queryset(self) -> Sequence[Track] | TrackQuerySet:  # type: ignore [override]
         return self.get_track_queryset()
 
 

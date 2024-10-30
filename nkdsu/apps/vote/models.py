@@ -9,7 +9,7 @@ from functools import cached_property
 from io import BytesIO
 from itertools import chain
 from string import ascii_letters
-from typing import Any, Iterable, Literal, Optional, TypedDict, cast
+from typing import Any, Iterable, Literal, Optional, Self, TypedDict, overload
 from urllib.parse import quote, urlparse
 from uuid import uuid4
 
@@ -130,7 +130,7 @@ class Show(CleanOnSaveMixin, Serializable, models.Model):
         return cls.at(timezone.now())
 
     @classmethod
-    def _at(cls, time: datetime.datetime, create: bool = True) -> Optional[Show]:
+    def _at(cls, time: datetime.datetime, create: bool = True) -> Optional[Self]:
         """
         Get (or create, if necessary) the show for `time`. Use .at() instead.
         """
@@ -168,7 +168,7 @@ class Show(CleanOnSaveMixin, Serializable, models.Model):
             return show
 
     @classmethod
-    def at(cls, time: datetime.datetime) -> Show:
+    def at(cls, time: datetime.datetime) -> Self:
         """
         Get the show for the date specified, creating every intervening show
         in the process if necessary.
@@ -192,7 +192,7 @@ class Show(CleanOnSaveMixin, Serializable, models.Model):
 
         while show.end < time:
             # if create=True, show.next will never return None
-            show = cast(Show, show.next(create=True))
+            show = show.next(create=True)
 
         return show
 
@@ -207,14 +207,20 @@ class Show(CleanOnSaveMixin, Serializable, models.Model):
 
         return (time >= self.showtime) and (time < self.end)
 
+    @overload
+    def next(self, create: Literal[True]) -> Self: ...
+
+    @overload
+    def next(self, create: Literal[False] = False) -> Optional[Self]: ...
+
     @memoize
     @pk_cached(indefinitely)
-    def next(self, create: bool = False) -> Optional[Show]:
+    def next(self, create: bool = False) -> Optional[Self]:
         """
         Return the :class:`Show` chronologically after that one.
         """
 
-        return Show._at(self.end + datetime.timedelta(microseconds=1), create)
+        return self.__class__._at(self.end + datetime.timedelta(microseconds=1), create)
 
     @memoize
     @pk_cached(indefinitely)
@@ -1427,7 +1433,7 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
     def api_dict(self, verbose: bool = False) -> JsonDict:
         show_revealed = self.show_revealed()
 
-        the_track = {
+        the_track: JsonDict = {
             'id': self.id,
             'title': self.title,
             'role': self.role,
