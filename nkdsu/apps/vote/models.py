@@ -2103,6 +2103,16 @@ BADGES: list[Badge] = [
         datetime.datetime(2023, 9, 9, tzinfo=get_default_timezone()),
         datetime.datetime(2023, 12, 2, tzinfo=get_default_timezone()),
     ),
+    Badge(
+        'charity-2024',
+        '{name} donated to the Very Scary Scenario charity streams '
+        'for Medical Aid for Palestinians in 2024.',
+        'donated to the 2024 Very Scary Scenario charity streams',
+        'truck-medical',
+        'https://www.justgiving.com/page/very-charity-scenario-2024',
+        datetime.datetime(2024, 11, 1, tzinfo=get_default_timezone()),
+        datetime.datetime(2023, 11, 29, tzinfo=get_default_timezone()),
+    ),
 ]
 
 
