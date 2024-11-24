@@ -1,4 +1,5 @@
-from django.urls import include, path, re_path as url
+from django.urls import include, path, re_path as url, reverse_lazy
+from django.views.generic import RedirectView
 
 from nkdsu.apps.vote import views
 from nkdsu.apps.vote.views import admin, api, elf, js, profiles
@@ -241,6 +242,9 @@ urlpatterns = [
     url(r'^info/privacy/$', views.Privacy.as_view(), name='privacy'),
     url(r'^info/tos/$', views.TermsOfService.as_view(), name='tos'),
     url(r'^info/api/$', views.APIDocs.as_view(), name='api_docs'),
+    url(r'^support/$', views.Support.as_view(), name='support'),
+    url(r'^donate/$', RedirectView.as_view(url=reverse_lazy('support'))),
+    url(r'^patreon/$', RedirectView.as_view(url=reverse_lazy('support'))),
     url(
         r'^request-addition/$', views.RequestAddition.as_view(), name='request_addition'
     ),

@@ -728,6 +728,10 @@ class Info(MarkdownView):
     filename = 'README.md'
 
 
+class Support(TemplateView):
+    template_name = 'support.html'
+
+
 class APIDocs(MarkdownView):
     title = 'api'
     filename = 'API.md'
