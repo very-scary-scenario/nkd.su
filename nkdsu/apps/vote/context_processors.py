@@ -44,7 +44,7 @@ def get_sections(request):
             ('roulette', reverse('vote:roulette')),
             ('stats', reverse('vote:stats')),
             ('discord', 'https://discord.nekodesu.radio/'),
-            ('donate', 'https://www.patreon.com/NekoDesu'),
+            ('donate', reverse('vote:support')),
             ('etc', 'https://nekodesu.radio/'),
         ]
         if url

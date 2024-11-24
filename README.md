@@ -50,10 +50,10 @@ know on [Codeberg][new-issue-codeberg] or [GitHub][new-issue-github].
 
 ## Who's to blame?
 
-[Peter][peter] runs the show, a bunch of suspiciously [anonymous elfs][patreon]
+[Peter][peter] runs the show, a bunch of suspiciously [anonymous elfs][support]
 do work managing the library, and [some nerds][contributors] work on this
 website.
 
 [contributors]: https://github.com/very-scary-scenario/nkd.su/graphs/contributors
 [peter]: https://twitter.com/theshillito
-[patreon]: https://www.patreon.com/NekoDesu
+[support]: https://nkd.su/support/

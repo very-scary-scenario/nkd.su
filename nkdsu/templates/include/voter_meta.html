@@ -53,7 +53,7 @@
   {% endif %}
 
   {% if voter.is_patron %}
-    <p class="patron">{{ voter.name }} supports Neko Desu <a href="https://www.patreon.com/NekoDesu">financially</a>!</p>
+    <p class="patron">{{ voter.name }} supports Neko Desu <a href="{% url "vote:support" %}">financially</a>!</p>
   {% endif %}
 
   {% if voter.get_websites or voter == request.user.profile %}
