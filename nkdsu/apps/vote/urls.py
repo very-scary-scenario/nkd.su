@@ -243,8 +243,8 @@ urlpatterns = [
     url(r'^info/tos/$', views.TermsOfService.as_view(), name='tos'),
     url(r'^info/api/$', views.APIDocs.as_view(), name='api_docs'),
     url(r'^support/$', views.Support.as_view(), name='support'),
-    url(r'^donate/$', RedirectView.as_view(url=reverse_lazy('support'))),
-    url(r'^patreon/$', RedirectView.as_view(url=reverse_lazy('support'))),
+    url(r'^donate/$', RedirectView.as_view(url=reverse_lazy('vote:support'))),
+    url(r'^patreon/$', RedirectView.as_view(url=reverse_lazy('vote:support'))),
     url(
         r'^request-addition/$', views.RequestAddition.as_view(), name='request_addition'
     ),
