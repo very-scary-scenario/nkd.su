@@ -2,13 +2,7 @@
   <div class="paginator">
     <p class="pages">
       {% if page_obj.has_previous %}
-        <a
-          {% if query %}
-            href="{% querystring q=query page=page_obj.previous_page_number %}"
-          {% else %}
-            href="{% querystring page=page_obj.previous_page_number %}"
-          {% endif %}
-        >« prev</a>
+        <a href="{% querystring page=page_obj.previous_page_number %}">« prev</a>
       {% else %}
         <span class="unavailable">« prev</span>
       {% endif %}
@@ -18,13 +12,7 @@
       </span>
 
       {% if page_obj.has_next %}
-        <a
-          {% if query %}
-            href="{% querystring q=query page=page_obj.next_page_number %}"
-          {% else %}
-            href="{% querystring page=page_obj.next_page_number %}"
-          {% endif %}
-        >next »</a>
+        <a href="{% querystring page=page_obj.next_page_number %}">next »</a>
       {% else %}
         <span class="unavailable">next »</span>
       {% endif %}
