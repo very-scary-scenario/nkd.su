@@ -10,8 +10,9 @@ steps:
     image: nikolaik/python-nodejs:python3.12-nodejs20
     commands:
       - npm install
-      - mkdir .venv
-      - poetry config virtualenvs.path ./.venv
+      - python -m venv .venv
+      - . .venv/bin/activate
+      - pip install 'poetry>=2.0,<3'
       - poetry install
       - poetry run ./manage.py migrate --settings=nkdsu.settings_testing
       - poetry run ./manage.py collectstatic --no-input --settings=nkdsu.settings_testing
@@ -20,18 +21,21 @@ steps:
     image: nikolaik/python-nodejs:python3.12-nodejs20
     depends_on: setup
     commands:
+      - . .venv/bin/activate
       - poetry run npm run-script test
 
   check-migrations:
     image: nikolaik/python-nodejs:python3.12-nodejs20
     depends_on: setup
     commands:
+      - . .venv/bin/activate
       - poetry run npm run-script check-migrations
 
   docs:
     image: nikolaik/python-nodejs:python3.12-nodejs20
     depends_on: setup
     commands:
+      - . .venv/bin/activate
       - cd docs
       - poetry run make html
 
@@ -39,22 +43,26 @@ steps:
     image: nikolaik/python-nodejs:python3.12-nodejs20
     depends_on: setup
     commands:
+      - . .venv/bin/activate
       - poetry run npm run-script lint-black
 
   flake8:
     image: nikolaik/python-nodejs:python3.12-nodejs20
     depends_on: setup
     commands:
+      - . .venv/bin/activate
       - poetry run npm run-script lint-flake8
 
   mypy:
     image: nikolaik/python-nodejs:python3.12-nodejs20
     depends_on: setup
     commands:
+      - . .venv/bin/activate
       - poetry run npm run-script lint-mypy
 
   eslint:
     image: nikolaik/python-nodejs:python3.12-nodejs20
     depends_on: setup
     commands:
+      - . .venv/bin/activate
       - poetry run npm run-script lint-js
