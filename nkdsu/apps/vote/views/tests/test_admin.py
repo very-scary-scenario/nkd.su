@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -41,3 +42,32 @@ class BlockTest(VoteAdminViewTest):
         )
 
         self.assertEqual(track().ineligible(), reason)
+
+
+class PostAboutPlayTest(VoteAdminViewTest):
+    def test_track_strings_truncated_appropriately(self) -> None:
+        track = Track.objects.create(
+            id='123',
+            id3_title='a' * 500,
+            id3_artist='a' * 2000,
+            added='2025-01-01T00:00:00Z',
+            hidden=True,
+            inudesu=False,
+        )
+        self.assertEqual(len(str(track)), 2505)
+
+        resp = self.client.get(reverse('vote:admin:post_about_play', kwargs={'pk': track.pk}))
+        self.assertEqual(resp.status_code, 200, resp.content)
+        soup = BeautifulSoup(resp.content)
+        post_about_play, = soup.select('dl.post-about-play')
+        dts = post_about_play.select('dt')
+        dds = post_about_play.select('dd input')
+
+        self.assertEqual([
+            (dt.text, len(dd['value']))
+            for dt, dd in zip(dts, dds)
+        ], [
+            ('Twitter:', 279),  # ellipsis gets counted different
+            ('Bluesky:', 300),
+            ('Discord:', 2000),
+        ])
