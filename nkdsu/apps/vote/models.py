@@ -1182,9 +1182,9 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
 
         status = f'Now playing on {settings.HASHTAG}: {delinked_name}'
 
-        if len(status) > settings.TWEET_LENGTH:
+        if len(status) > max_length:
             # twitter counts ellipses as two characters for some reason, so we get rid of two:
-            status = status[: settings.TWEET_LENGTH - ellipsis_length].strip() + '…'
+            status = status[: max_length - ellipsis_length].strip() + '…'
 
         return status
 
