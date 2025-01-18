@@ -56,18 +56,20 @@ class PostAboutPlayTest(VoteAdminViewTest):
         )
         self.assertEqual(len(str(track)), 2505)
 
-        resp = self.client.get(reverse('vote:admin:post_about_play', kwargs={'pk': track.pk}))
+        resp = self.client.get(
+            reverse('vote:admin:post_about_play', kwargs={'pk': track.pk})
+        )
         self.assertEqual(resp.status_code, 200, resp.content)
         soup = BeautifulSoup(resp.content)
-        post_about_play, = soup.select('dl.post-about-play')
+        (post_about_play,) = soup.select('dl.post-about-play')
         dts = post_about_play.select('dt')
         dds = post_about_play.select('dd input')
 
-        self.assertEqual([
-            (dt.text, len(dd['value']))
-            for dt, dd in zip(dts, dds)
-        ], [
-            ('Twitter:', 279),  # ellipsis gets counted different
-            ('Bluesky:', 300),
-            ('Discord:', 2000),
-        ])
+        self.assertEqual(
+            [(dt.text, len(dd['value'])) for dt, dd in zip(dts, dds)],
+            [
+                ('Twitter:', 279),  # ellipsis gets counted different
+                ('Bluesky:', 300),
+                ('Discord:', 2000),
+            ],
+        )
