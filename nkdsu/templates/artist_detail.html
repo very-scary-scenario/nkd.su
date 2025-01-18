@@ -22,7 +22,7 @@
         {% endfor %}
       {% endif %}
 
-      You may want to <a href="{% url "vote:search" %}?q={{ artist|urlencode }}">run a search</a> if that's unhelpful.
+      You may want to <a href="{% url "vote:search" %}{% querystring q=artist %}">run a search</a> if that's unhelpful.
 
     {% elif tracks|length == 1 %}
       {% if played|length == 0 %}

@@ -1,3 +1,9 @@
+[project]
+name = "nkdsu"
+version = "0.0.0"
+description = "A Neko Desu request robot"
+authors = []
+
 [tool.black]
 skip-string-normalization = true
 preview = true
@@ -24,18 +30,12 @@ timeout = 120
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry]
-name = "nkdsu"
-version = "0.0.0"
-description = "A Neko Desu request robot"
-authors = []
-
 [tool.poetry.dependencies]
 Levenshtein = "*"
 Markdown = "*"
 Pillow = "*"
 black = "*"
-django = ">=4.2.0,<4.3"
+django = ">=5.1.0,<5.2"
 django-allauth = "*"
 django-extensions = "*"
 django-instant-coverage = "*"
@@ -44,10 +44,11 @@ django-resized = "*"
 django-stubs-ext = "*"
 musicbrainzngs = "<0.6"
 ndg-httpsclient = "*"
+poetry = ">=2,<3"
 psycopg2 = "*"
 pyasn1 = "*"
 pymemcache = "<5"
-python = ">=3.12"
+python = ">=3.12,<4"
 python-dateutil = "*"
 requests = "*"
 sly = "*"

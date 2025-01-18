@@ -498,7 +498,7 @@ class Profile(Voter, CleanOnSaveMixin, models.Model):
 
         return Vote.objects.filter(q)
 
-    @property  # type: ignore[override]
+    @property
     def name(self) -> str:
         return self.display_name or f'@{self.user.username}'
 
