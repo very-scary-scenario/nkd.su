@@ -2111,7 +2111,7 @@ BADGES: list[Badge] = [
         'truck-medical',
         'https://www.justgiving.com/page/very-charity-scenario-2024',
         datetime.datetime(2024, 11, 1, tzinfo=get_default_timezone()),
-        datetime.datetime(2023, 11, 29, tzinfo=get_default_timezone()),
+        datetime.datetime(2024, 11, 29, tzinfo=get_default_timezone()),
     ),
 ]
 
