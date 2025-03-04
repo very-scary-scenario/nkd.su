@@ -136,3 +136,7 @@
     </ul>
   </div>
 {% endif %}
+
+{% if not user.is_authenticated %}
+  <p class="aside">to request music, <a href="{% url "login" %}?next={{ request.path|urlencode }}{% if request.META.QUERY_STRING %}{{ "?"|urlencode }}{{ request.META.QUERY_STRING|urlencode }}{% endif %}">log in or create an account</p>
+{% endif %}
