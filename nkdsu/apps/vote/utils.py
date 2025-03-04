@@ -247,10 +247,14 @@ def pk_cached(seconds: int) -> Callable[[C], C]:
     def wrapper(func: C) -> C:
         @wraps(func)
         def wrapped(obj, *a, **k):
-            def do_thing(func, pk, *a, **k):
-                return func(obj, *a, **k)
+            ck = f"{obj._meta.app_label}:{obj._meta.model_name}:{func.__name__}:{obj.pk}"
+            hit = cache.get(ck)
+            if hit is not None:
+                return hit
 
-            return do_thing(func, obj.pk, *a, **k)
+            rv = func(obj, *a, **k)
+            cache.set(ck, rv, seconds)
+            return rv
 
         return cast(C, wrapped)
 

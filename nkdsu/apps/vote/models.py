@@ -1036,6 +1036,7 @@ class Track(CleanOnSaveMixin, Serializable, models.Model):
         return self.play_set.order_by('-date')
 
     @memoize
+    @pk_cached(indefinitely)
     def weeks_since_play(self) -> Optional[int]:
         """
         Get the number of weeks since this track's last Play.
