@@ -59,6 +59,12 @@ class VoteAdmin(admin.ModelAdmin):
 
 
 class TrackAdmin(admin.ModelAdmin):
+    list_filter = (
+        'archived',
+        'hidden',
+        'inudesu',
+        'metadata_locked',
+    )
     list_display = ('id3_title', 'id3_artist')
 
 
