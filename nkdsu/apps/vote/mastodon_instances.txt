@@ -183,6 +183,7 @@
 1040ste.net
 1042.info
 1043-2406-3003-2000-76e4-b8a2-ff0d-a2ee-3e30.ngrok-free.app
+105hikes.com
 105sk3woc.activitypub-troll.cf
 1066.social
 106ow546c.activitypub-troll.cf
@@ -8385,6 +8386,7 @@ allulla.space
 allwell.rest
 ally.bitma.st
 ally.koodaacraft.org
+allykotetsu.com
 almajlis.me
 almere.social
 almeresociaal.nl
@@ -8866,6 +8868,7 @@ ankokunogrove.space
 anmax.direct
 anml.io
 anmol.net.in
+anna-stephens.com
 annakirche.at
 annalist.noblogs.org
 annameurer.com
@@ -21147,6 +21150,7 @@ events.cudy.org
 events.dev.v.st
 events.dmv.community
 events.eastfrisia.de
+events.estrogen.jetzt
 events.everythingbagel.me
 events.exma.de
 events.fedibikes.social
@@ -21178,6 +21182,7 @@ events.osm.lat
 events.pol-rev.com
 events.poridge.club
 events.publicspaces.net
+events.radicals.cc
 events.rebellion.global
 events.rennes.tech
 events.rheinmain.social
@@ -21676,6 +21681,7 @@ fals.tru.io
 falsehood.social
 falsy.cat
 fam-spoo.de
+fam.ous.monster
 fam.westen.xyz
 famfam.us
 famichiki.com
@@ -24235,6 +24241,7 @@ forum.sc07.com
 forum.scf.social
 forum.statler.ws
 forum.thesoftstorm.com
+forum.toplap.org
 forum.turris.cz
 forum.wedistribute.org
 forum.yeswas.pl
@@ -25746,6 +25753,7 @@ gametech.masto.host
 gamethattune.club
 gametoot.org
 gametoots.de
+gamezonline.me
 gaming.channel.org
 gaming.rip
 gaminginthe.cloud
@@ -27461,6 +27469,7 @@ gts.idhq.org
 gts.idtn.org
 gts.ifhub.club
 gts.ihatebeinga.live
+gts.iliazeus.lol
 gts.interlace.space
 gts.introvertnudist.com
 gts.io18.eu
@@ -27563,6 +27572,7 @@ gts.q66.moe
 gts.quickbrb.com
 gts.r8z.us
 gts.radhitya.id
+gts.radjah.ru
 gts.ramsdr.ru
 gts.reb-ii.uk
 gts.redterminal.org
@@ -27579,6 +27589,7 @@ gts.rrr.sh
 gts.rutile.red
 gts.rvn.ovh
 gts.s.0l.cx
+gts.sadauskas.id.au
 gts.sadium.cyou
 gts.samsterby.com
 gts.scambier.xyz
@@ -27928,6 +27939,7 @@ hackers.town
 hackershell.noblogs.org
 hackerspace.au
 hackerspace.pl
+hackerspub-ask-bot.deno.dev
 hackertribe.io
 hackerzlab.net
 hackingne.ws
@@ -28318,6 +28330,7 @@ hckr.lol
 hckr.no
 hcommons-dev.social
 hcommons.social
+hcongrove2.com
 hcworldservice.wordpress.com
 hcxp.co
 hd.206267.xyz
@@ -32419,6 +32432,7 @@ kar.ly
 karab.in
 karagedon.com
 karakui.blog
+karakun-peertube-codecamp.k8s.karakun.com
 karakun.social
 karamatsu.blue
 karapara.net
@@ -34217,6 +34231,7 @@ lemmings.world
 lemmini.fi
 lemmit.nyc.what.if.ua
 lemmit.xyz
+lemmitor.com
 lemmon.website
 lemmonade.marbledfennec.net
 lemmony.click
@@ -37718,6 +37733,7 @@ manowar.social
 manton.org
 manton.wordpress.com
 manu.collabfc.com
+manu.quebec
 manual-test.glitch.me
 manualdousuario.net
 manualesfaciles1.wordpress.com
@@ -38504,6 +38520,7 @@ masto.gspot.lol
 masto.guedel.eu
 masto.gundan.es
 masto.gutterpupper.com
+masto.hackers.town
 masto.halfpastfour.club
 masto.haus
 masto.henchmonkey.org
@@ -39080,6 +39097,7 @@ mastodon.aekrylov.me
 mastodon.aether.us
 mastodon.aethernet.cc
 mastodon.africa
+mastodon.afristemi.org
 mastodon.afromunkee.live
 mastodon.ag7su.com
 mastodon.agadius.de
@@ -39851,6 +39869,7 @@ mastodon.darksheep.social
 mastodon.dasfinkatos.de
 mastodon.dataden.gay
 mastodon.datadyne.at
+mastodon.datafreedom.fr
 mastodon.datamanifesto.org
 mastodon.datanom.net
 mastodon.datengrab.online
@@ -40288,6 +40307,7 @@ mastodon.ff-sec.eu
 mastodon.fhlqs.com
 mastodon.fhocorp.com
 mastodon.fi
+mastodon.fi2net.com
 mastodon.fib112358.net
 mastodon.fibee.fr
 mastodon.fibre74.fr
@@ -41624,6 +41644,7 @@ mastodon.misty.garden
 mastodon.mit.edu
 mastodon.mita.me
 mastodon.mituhide.net
+mastodon.mjksoftware.de
 mastodon.mkr.house
 mastodon.ml
 mastodon.mlabouri.fr
@@ -44171,6 +44192,7 @@ me.fishingdev.com
 me.frankmeeuwsen.xyz
 me.gloristar.space
 me.gonerd.me
+me.gxbs.dev
 me.iamnate.net
 me.illis.ddns.net
 me.its2.fun
@@ -56196,6 +56218,7 @@ plateia.org
 platformonomics.com
 platica.io
 platinumloveshiphop.com
+plato-was-a-dick.ghost.io
 platopunk.com
 platt.social
 platt.video
@@ -58334,6 +58357,7 @@ productordesostenibilidad.es
 producttalk.org
 profa.co
 professio.ifwo.eu
+professionalmoron.com
 profile.michaelpuckett.engineer
 profiles.lol
 prognesubis.net
@@ -66325,6 +66349,7 @@ social.frbg.me
 social.freakingfurries.ca
 social.freddev.org
 social.frederico.me
+social.fredix.xyz
 social.freebsd.amsterdam
 social.freechristian.life
 social.freecodecamp.org
@@ -67363,6 +67388,7 @@ social.knubbel.me
 social.koda.re
 social.kodraus.com
 social.koehler-klm.de
+social.koehn.lol
 social.koeia.de
 social.koenigsmuenster.de
 social.kofo.com
@@ -67694,6 +67720,7 @@ social.lunardream.space
 social.lunarlabz.com
 social.lunasqu.ee
 social.lunaticgeek.com
+social.lundseidler.dk
 social.lutra-it.eu
 social.lux.blue
 social.luxiferapp.com
@@ -70804,8 +70831,8 @@ sofritoandsons.com
 soft-scifi.isbrill.com
 soft.cudd.ls
 softer.social
+softeryx.org
 softgirl.online
-softly.social
 softlyspoken.taylormadetech.dev
 softman.blog
 softwarecurmudgeon.social
@@ -71501,6 +71528,7 @@ stage8.die.one
 stages-alter25.masto.host
 staging-10d3-rghedin.wpcomstaging.com
 staging-152b-aaronrosspowellcom.wpcomstaging.com
+staging-2d13-mashyjp.wpcomstaging.com
 staging-3ce6-mashyjp.wpcomstaging.com
 staging-3f5f-itserviceguru.wpcomstaging.com
 staging-40bf-flugundzeit.wpcomstaging.com
@@ -75967,6 +75995,7 @@ toothy.dscpef.net
 tootie.social
 tootik.000090000.xyz
 tootik.patatas.ca
+tootin.ard0.gg
 tootin.masto.host
 tootin.online
 tootin.tokyo
@@ -77141,6 +77170,7 @@ tube.sleeping.town
 tube.slobbe.ch
 tube.sloth.network
 tube.socozy.casa
+tube.solidairesfinancespubliques.org
 tube.solidcharity.net
 tube.source.news
 tube.sp-codes.de
@@ -77562,7 +77592,6 @@ twit.zagasy.cf
 twitbridge.click
 twitchain.net
 twitchfr.social
-twitchyhagg.is
 twitiverse.com
 twitodon.net
 twitoot.com
@@ -79745,6 +79774,7 @@ vinzenz.social
 violet-apple-machine.fedicity.net
 violet.lua-mu.org
 violet.news
+violetgarden.pe.kr
 violetists.violetism.com
 violetmillie.me
 violette.lechantdesmuses.fr
@@ -79795,6 +79825,7 @@ vitalighting.wordpress.com
 vitalis.social
 vitaminedev.susheep.net
 vitaulium.nl
+vitayuzu.day
 vitriplume.alpharius.io
 vitruvian.services
 viva.intifada.nl
@@ -79980,6 +80011,7 @@ vote-mk.solveorpay.kr
 voterintegrity.today
 votho.social
 votingaccessforall.org
+votme.sh
 vottvaxr.activitypub-troll.cf
 vousenreprendrezbienunpeu.wpcomstaging.com
 vov.camp
@@ -81785,6 +81817,7 @@ www.bizdenzo.biz
 www.bjjjournal.jp
 www.blabbergoats.com
 www.blablaismo.com.br
+www.blindirl.com
 www.blog.private-universe.net
 www.blogautismus.de
 www.blogdeviajes.com.ar
@@ -82903,6 +82936,7 @@ www.toest.bg
 www.togniser.com
 www.tojio.com
 www.tomfosdick.com
+www.tomhaus.net
 www.too-much.info
 www.toot.pt
 www.tootr.io
