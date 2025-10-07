@@ -14,6 +14,8 @@ class Command(BaseCommand):
         )
         with (
             open(MPAOD_FILE, 'wb') as mpaod_file,
-            gzip.GzipFile(filename='', mode='w', compresslevel=9, fileobj=mpaod_file, mtime=0) as gz,
+            gzip.GzipFile(
+                filename='', mode='w', compresslevel=9, fileobj=mpaod_file, mtime=0
+            ) as gz,
         ):
             gz.write(mpaod_json.content)
