@@ -1,0 +1,1 @@
+nkdsu/apps/vote/data/anime-offline-database.json.gz filter=lfs diff=lfs merge=lfs -text

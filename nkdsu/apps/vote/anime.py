@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gzip
 import hashlib
 import os
 import re
@@ -25,6 +26,12 @@ ANIME_WEBSITES = {
 }
 
 ANIME_PICTURE_DIR = os.path.join(settings.MEDIA_ROOT, 'ap')
+
+MPAOD_FILE = os.path.join(
+    os.path.dirname(__file__),
+    'data',
+    'anime-offline-database.json.gz',
+)
 
 
 class Season(TypedDict):
@@ -149,13 +156,8 @@ def normalise_title(title: str) -> str:
 by_normalised_title: dict[str, Anime] = {}
 
 
-with open(
-    os.path.join(
-        os.path.dirname(__file__),
-        'data',
-        'mpaod',
-        'anime-offline-database.json',
-    ),
+with gzip.open(
+    MPAOD_FILE,
     'rt',
 ) as aodf:
     for d in ujson.load(aodf)['data']:
@@ -163,6 +165,10 @@ with open(
             **{
                 'sources': [],
                 'relations': d.pop('relatedAnime'),
+                'anime_season': {
+                    'year': None,
+                    **d.pop('animeSeason'),
+                },
                 **{camel_to_snake(k): v for k, v in d.items()},
             }
         )
