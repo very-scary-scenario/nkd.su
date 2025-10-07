@@ -12,5 +12,8 @@ class Command(BaseCommand):
             'https://github.com/manami-project/anime-offline-database/'
             'releases/download/latest/anime-offline-database-minified.json'
         )
-        with gzip.open(MPAOD_FILE, 'wb') as mpaod_file:
-            mpaod_file.write(mpaod_json.content)
+        with (
+            open(MPAOD_FILE, 'wb') as mpaod_file,
+            gzip.GzipFile(filename='', mode='w', compresslevel=9, fileobj=mpaod_file, mtime=0) as gz,
+        ):
+            gz.write(mpaod_json.content)
