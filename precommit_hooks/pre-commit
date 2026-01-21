@@ -1,0 +1,4 @@
+#!/bin/sh
+
+root_dir=$(git rev-parse --show-toplevel)
+exec bash ${root_dir}/precommit_hooks/main.sh
